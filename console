@@ -1,0 +1,62 @@
+#!/usr/bin/env php
+<?php
+
+use Doctrine\DBAL\Connection;
+use Externals\Domain\Command\Handler\ReceiveEmailHandler;
+use Externals\Domain\Command\ReceiveEmail;
+use Imapi\Client;
+use Imapi\Query\QueryBuilder;
+use Silly\Application;
+
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/.puli/GeneratedPuliFactory.php';
+
+$kernel = new \Externals\Application\Application([], [
+    'error-handler',
+    'app',
+]);
+
+$application = new Application();
+$application->useContainer($kernel->getContainer(), true, true);
+
+$application->command('sync', function (Client $imapClient, ReceiveEmailHandler $receiveEmailHandler) {
+    $query = QueryBuilder::create('INBOX')
+        ->youngerThan(10) // 1 day
+        ->getQuery();
+    $emails = $imapClient->getEmails($query);
+
+    foreach ($emails as $email) {
+        $receiveEmailHandler(new ReceiveEmail($email));
+    }
+});
+
+$application->command('init', function (Connection $db) {
+    $db->beginTransaction();
+
+    // Drop all existing tables
+    $tables = $db->getSchemaManager()->listTables();
+    foreach ($tables as $table) {
+        $db->getSchemaManager()->dropTable($table->getName());
+    }
+
+    // Create tables
+    $schema = new \Doctrine\DBAL\Schema\Schema();
+    $emailsTable = $schema->createTable('emails');
+    $emailsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
+    $emailsTable->addColumn('subject', 'text');
+    $emailsTable->addColumn('threadId', 'integer', ['unsigned' => true]);
+    $emailsTable->addColumn('date', 'datetime');
+    $emailsTable->addColumn('content', 'text');
+    $emailsTable->setPrimaryKey(['id']);
+    $emailsTable->addIndex(['threadId']);
+    $threadsTable = $schema->createTable('threads');
+    $threadsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
+    $threadsTable->addColumn('subject', 'text');
+    $threadsTable->setPrimaryKey(['id']);
+    foreach ($schema->toSql($db->getDatabasePlatform()) as $query) {
+        $db->exec($query);
+    }
+    $db->commit();
+});
+
+$application->run();

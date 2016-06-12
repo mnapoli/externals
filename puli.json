@@ -1,0 +1,295 @@
+{
+    "version": "1.0",
+    "name": "mnapoli/externals",
+    "path-mappings": {
+        "/app": "res"
+    },
+    "config": {
+        "bootstrap-file": "vendor/autoload.php"
+    },
+    "packages": {
+        "aura/router": {
+            "install-path": "vendor/aura/router",
+            "installer": "composer"
+        },
+        "container-interop/container-interop": {
+            "install-path": "vendor/container-interop/container-interop",
+            "installer": "composer"
+        },
+        "doctrine/annotations": {
+            "install-path": "vendor/doctrine/annotations",
+            "installer": "composer"
+        },
+        "doctrine/cache": {
+            "install-path": "vendor/doctrine/cache",
+            "installer": "composer"
+        },
+        "doctrine/collections": {
+            "install-path": "vendor/doctrine/collections",
+            "installer": "composer"
+        },
+        "doctrine/common": {
+            "install-path": "vendor/doctrine/common",
+            "installer": "composer"
+        },
+        "doctrine/dbal": {
+            "install-path": "vendor/doctrine/dbal",
+            "installer": "composer"
+        },
+        "doctrine/inflector": {
+            "install-path": "vendor/doctrine/inflector",
+            "installer": "composer"
+        },
+        "doctrine/lexer": {
+            "install-path": "vendor/doctrine/lexer",
+            "installer": "composer"
+        },
+        "exercise/htmlpurifier-bundle": {
+            "install-path": "vendor/exercise/htmlpurifier-bundle",
+            "installer": "composer"
+        },
+        "ezyang/htmlpurifier": {
+            "install-path": "vendor/ezyang/htmlpurifier",
+            "installer": "composer"
+        },
+        "filp/whoops": {
+            "install-path": "vendor/filp/whoops",
+            "installer": "composer"
+        },
+        "ircmaxell/password-compat": {
+            "install-path": "vendor/ircmaxell/password-compat",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "justinrainbow/json-schema": {
+            "install-path": "vendor/justinrainbow/json-schema",
+            "installer": "composer"
+        },
+        "messaged/php-mime-mail-parser": {
+            "install-path": "vendor/messaged/php-mime-mail-parser",
+            "installer": "composer"
+        },
+        "mnapoli/imapi": {
+            "install-path": "vendor/mnapoli/imapi",
+            "installer": "composer"
+        },
+        "mnapoli/silly": {
+            "install-path": "vendor/mnapoli/silly",
+            "installer": "composer"
+        },
+        "myclabs/array-comparator": {
+            "install-path": "vendor/myclabs/array-comparator",
+            "installer": "composer"
+        },
+        "paragonie/random_compat": {
+            "install-path": "vendor/paragonie/random_compat",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_crypt_blowfish": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Crypt_Blowfish",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_exception": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Exception",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_idna": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Idna",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_imap_client": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Imap_Client",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_listheaders": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_ListHeaders",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_mail": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Mail",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_mime": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Mime",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_secret": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Secret",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_socket_client": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Socket_Client",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_stream": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Stream",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_stream_filter": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Stream_Filter",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_stream_wrapper": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Stream_Wrapper",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_support": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Support",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_text_flowed": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Text_Flowed",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_translation": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Translation",
+            "installer": "composer"
+        },
+        "pear-pear.horde.org/horde_util": {
+            "install-path": "vendor/pear-pear.horde.org/Horde_Util",
+            "installer": "composer"
+        },
+        "php-di/invoker": {
+            "install-path": "vendor/php-di/invoker",
+            "installer": "composer"
+        },
+        "php-di/php-di": {
+            "install-path": "vendor/php-di/php-di",
+            "installer": "composer"
+        },
+        "php-di/phpdoc-reader": {
+            "install-path": "vendor/php-di/phpdoc-reader",
+            "installer": "composer"
+        },
+        "psr/http-message": {
+            "install-path": "vendor/psr/http-message",
+            "installer": "composer"
+        },
+        "psr/log": {
+            "install-path": "vendor/psr/log",
+            "installer": "composer"
+        },
+        "puli/composer-plugin": {
+            "install-path": "vendor/puli/composer-plugin",
+            "installer": "composer"
+        },
+        "puli/discovery": {
+            "install-path": "vendor/puli/discovery",
+            "installer": "composer"
+        },
+        "puli/repository": {
+            "install-path": "vendor/puli/repository",
+            "installer": "composer"
+        },
+        "puli/url-generator": {
+            "install-path": "vendor/puli/url-generator",
+            "installer": "composer"
+        },
+        "ramsey/uuid": {
+            "install-path": "vendor/ramsey/uuid",
+            "installer": "composer"
+        },
+        "seld/jsonlint": {
+            "install-path": "vendor/seld/jsonlint",
+            "installer": "composer"
+        },
+        "stratify/error-handler-module": {
+            "install-path": "vendor/stratify/error-handler-module",
+            "installer": "composer"
+        },
+        "stratify/framework": {
+            "install-path": "vendor/stratify/framework",
+            "installer": "composer"
+        },
+        "stratify/http": {
+            "install-path": "vendor/stratify/http",
+            "installer": "composer"
+        },
+        "stratify/router": {
+            "install-path": "vendor/stratify/router",
+            "installer": "composer"
+        },
+        "symfony/polyfill-apcu": {
+            "install-path": "vendor/symfony/polyfill-apcu",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "symfony/polyfill-intl-icu": {
+            "install-path": "vendor/symfony/polyfill-intl-icu",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "symfony/polyfill-mbstring": {
+            "install-path": "vendor/symfony/polyfill-mbstring",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "symfony/polyfill-php54": {
+            "install-path": "vendor/symfony/polyfill-php54",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "symfony/polyfill-php55": {
+            "install-path": "vendor/symfony/polyfill-php55",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "symfony/polyfill-php56": {
+            "install-path": "vendor/symfony/polyfill-php56",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "symfony/polyfill-php70": {
+            "install-path": "vendor/symfony/polyfill-php70",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "symfony/polyfill-util": {
+            "install-path": "vendor/symfony/polyfill-util",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "symfony/security-acl": {
+            "install-path": "vendor/symfony/security-acl",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "symfony/symfony": {
+            "install-path": "vendor/symfony/symfony",
+            "installer": "composer",
+            "env": "dev"
+        },
+        "twig/extensions": {
+            "install-path": "vendor/twig/extensions",
+            "installer": "composer"
+        },
+        "twig/twig": {
+            "install-path": "vendor/twig/twig",
+            "installer": "composer"
+        },
+        "webmozart/assert": {
+            "install-path": "vendor/webmozart/assert",
+            "installer": "composer"
+        },
+        "webmozart/expression": {
+            "install-path": "vendor/webmozart/expression",
+            "installer": "composer"
+        },
+        "webmozart/glob": {
+            "install-path": "vendor/webmozart/glob",
+            "installer": "composer"
+        },
+        "webmozart/json": {
+            "install-path": "vendor/webmozart/json",
+            "installer": "composer"
+        },
+        "webmozart/path-util": {
+            "install-path": "vendor/webmozart/path-util",
+            "installer": "composer"
+        },
+        "zendframework/zend-diactoros": {
+            "install-path": "vendor/zendframework/zend-diactoros",
+            "installer": "composer"
+        }
+    }
+}
