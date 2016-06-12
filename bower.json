@@ -1,23 +1,12 @@
 {
-  "name": "zero",
+  "name": "externals",
   "version": "0.0.0",
-  "homepage": "https://github.com/mnapoli/Zero",
+  "homepage": "",
   "license": "proprietary",
   "private": true,
   "dependencies": {
-    "jquery": "~1.11",
+    "jquery": "~2.0",
     "bootstrap": "~3.1",
-    "fontawesome": "*",
-    "angular": "~1.2",
-    "angular-route": "~1.2",
-    "angular-sanitize": "~1.2",
-    "angular-resource": "~1.2",
-    "angular-cookies": "~1.2",
-    "angular-ui-bootstrap-bower": "~0.11",
-    "angular-ui-select2": "~0.0.5",
-    "select2-bootstrap-css": "bootstrap3",
-    "notify.js": "~1.2",
-    "angular-moment": "~0.9.0",
-    "angular-gravatar": "~0.2.4"
+    "fontawesome": "*"
   }
 }

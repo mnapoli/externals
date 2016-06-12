@@ -181,6 +181,10 @@
             "install-path": "vendor/puli/repository",
             "installer": "composer"
         },
+        "puli/twig-extension": {
+            "install-path": "vendor/puli/twig-extension",
+            "installer": "composer"
+        },
         "puli/url-generator": {
             "install-path": "vendor/puli/url-generator",
             "installer": "composer"
@@ -207,6 +211,10 @@
         },
         "stratify/router": {
             "install-path": "vendor/stratify/router",
+            "installer": "composer"
+        },
+        "stratify/twig-module": {
+            "install-path": "vendor/stratify/twig-module",
             "installer": "composer"
         },
         "symfony/polyfill-apcu": {

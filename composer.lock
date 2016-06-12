@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fda5e3433cfa108f71f9bfa27ac93fb8",
-    "content-hash": "1c35d64a64a5d912ac748badc1b6db0c",
+    "hash": "2e00f1e2fd9a01b37ccb223d598f0005",
+    "content-hash": "255077feb5a0b38663930612781cdc95",
     "packages": [
         {
             "name": "aura/router",
@@ -1945,6 +1945,61 @@
             "time": "2016-02-05 10:12:35"
         },
         {
+            "name": "puli/twig-extension",
+            "version": "1.0.0-beta8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/puli/twig-extension.git",
+                "reference": "41972f1b7330bec8481fd5ea2c30f52afa381730"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/puli/twig-extension/zipball/41972f1b7330bec8481fd5ea2c30f52afa381730",
+                "reference": "41972f1b7330bec8481fd5ea2c30f52afa381730",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.9|^7.0",
+                "puli/repository": "^1.0-beta9",
+                "twig/twig": "^1.20|^2.0",
+                "webmozart/path-util": "^2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.6",
+                "puli/discovery": "^1.0-beta9",
+                "puli/url-generator": "^1.0-beta4",
+                "sebastian/version": "^1.0.1",
+                "symfony/http-kernel": "^2.3"
+            },
+            "suggest": {
+                "puli/url-generator": "to use the resource_url() function"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Puli\\TwigExtension\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@gmail.com"
+                }
+            ],
+            "description": "A Puli extension for the Twig templating system.",
+            "homepage": "http://puli.io",
+            "time": "2016-01-14 12:44:30"
+        },
+        {
             "name": "puli/url-generator",
             "version": "1.0.0-beta4",
             "source": {
@@ -2255,6 +2310,43 @@
                 "MIT"
             ],
             "time": "2016-02-05 22:31:11"
+        },
+        {
+            "name": "stratify/twig-module",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stratifyphp/twig-module.git",
+                "reference": "5648ab9255e9a9f4b3aec1cbb4d56dd96b21164a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stratifyphp/twig-module/zipball/5648ab9255e9a9f4b3aec1cbb4d56dd96b21164a",
+                "reference": "5648ab9255e9a9f4b3aec1cbb4d56dd96b21164a",
+                "shasum": ""
+            },
+            "require": {
+                "php-di/php-di": "^5.0",
+                "puli/repository": "^1.0",
+                "puli/twig-extension": "^1.0",
+                "puli/url-generator": "^1.0",
+                "stratify/router": "~0.1.0",
+                "twig/twig": "^1.21"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.0@dev"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Stratify\\TwigModule\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "time": "2015-09-10 11:33:43"
         },
         {
             "name": "symfony/polyfill-apcu",

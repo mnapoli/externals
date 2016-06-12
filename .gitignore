@@ -1,3 +1,4 @@
 /var/
 /vendor/
+/web/vendor/
 /res/config/parameters.php

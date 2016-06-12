@@ -19,7 +19,8 @@
         "exercise/htmlpurifier-bundle": "dev-master@dev",
         "myclabs/array-comparator": "~1.0",
         "mnapoli/imapi": "dev-master",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+        "stratify/twig-module": "^0.1.1"
     },
     "repositories": [
         {
