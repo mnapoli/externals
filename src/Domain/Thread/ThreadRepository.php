@@ -14,4 +14,6 @@ interface ThreadRepository
     public function findBySubject(string $subject);
 
     public function create(string $subject) : int;
+
+    public function findLatest() : array;
 }

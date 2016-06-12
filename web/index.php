@@ -1,6 +1,6 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface;
+use Externals\Domain\Thread\ThreadRepository;
 use Stratify\ErrorHandlerModule\ErrorHandlerMiddleware;
 use function Stratify\Framework\pipe;
 use function Stratify\Framework\router;
@@ -23,9 +23,10 @@ $http = pipe([
     ErrorHandlerMiddleware::class,
 
     router([
-        '/' => function (ResponseInterface $response, Twig_Environment $twig) {
-            $response->getBody()->write($twig->render('/app/views/home.html.twig'));
-            return $response;
+        '/' => function (Twig_Environment $twig, ThreadRepository $threadRepository) {
+            return $twig->render('/app/views/home.html.twig', [
+                'threads' => $threadRepository->findLatest(),
+            ]);
         },
     ]),
 ]);

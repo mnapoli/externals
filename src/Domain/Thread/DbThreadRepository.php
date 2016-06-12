@@ -35,4 +35,15 @@ class DbThreadRepository implements ThreadRepository
 
         return (int) $this->db->lastInsertId();
     }
+
+    public function findLatest() : array
+    {
+        $query = 'SELECT threads.id, threads.subject, COUNT(emails.id), MAX(emails.date) as lastUpdate
+            FROM threads
+            LEFT JOIN emails ON threads.id = emails.threadId
+            GROUP BY threads.id
+            ORDER BY lastUpdate DESC
+            LIMIT 10';
+        return $this->db->fetchAll($query);
+    }
 }
