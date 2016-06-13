@@ -1,9 +1,17 @@
 body {
     background-color: #FAFAFA;
 }
+
+.thread-list {
+    font-size: 1.2em;
+}
+
 article {
     background-color: white;
     border: 1px solid #e6e6e6;
     padding: 16px;
     margin: 10px 0;
+}
+article .quoted-line {
+    color: #999;
 }

@@ -6,8 +6,15 @@
         <h1>PHP #internals</h1>
     </div>
 
-    {% for thread in threads %}
-        <p><a href="thread/{{ thread.id }}">{{ thread.subject }}</a> {{ thread.lastUpdate|time_diff }}</p>
-    {% endfor %}
+    <table class="thread-list table table-striped table-hover">
+        {% for thread in threads %}
+            <tr>
+                <td>
+                    <a href="thread/{{ thread.id }}">{{ thread.subject }}</a>
+                    <small class="text-muted">{{ thread.lastUpdate|time_diff }}</small>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 
 {% endblock %}
