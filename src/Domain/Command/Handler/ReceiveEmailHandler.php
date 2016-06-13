@@ -5,6 +5,7 @@ namespace Externals\Domain\Command\Handler;
 
 use Doctrine\DBAL\Connection;
 use Externals\Domain\Command\ReceiveEmail;
+use Externals\Domain\Email\EmailContentParser;
 use Externals\Domain\Email\EmailSubjectParser;
 use Externals\Domain\Thread\ThreadRepository;
 
@@ -26,13 +27,23 @@ class ReceiveEmailHandler
     /**
      * @var EmailSubjectParser
      */
-    private $emailSubjectParser;
+    private $subjectParser;
 
-    public function __construct(Connection $db, ThreadRepository $threadRepository, EmailSubjectParser $emailSubjectParser)
-    {
+    /**
+     * @var EmailContentParser
+     */
+    private $contentParser;
+
+    public function __construct(
+        Connection $db,
+        ThreadRepository $threadRepository,
+        EmailSubjectParser $subjectParser,
+        EmailContentParser $contentParser
+    ) {
         $this->db = $db;
         $this->threadRepository = $threadRepository;
-        $this->emailSubjectParser = $emailSubjectParser;
+        $this->subjectParser = $subjectParser;
+        $this->contentParser = $contentParser;
     }
 
     public function __invoke(ReceiveEmail $receiveEmail)
@@ -45,7 +56,8 @@ class ReceiveEmailHandler
             return;
         }
 
-        $threadSubject = $this->emailSubjectParser->sanitize($email->getSubject());
+        $threadSubject = $this->subjectParser->sanitize($email->getSubject());
+        $content = $this->contentParser->parse($email->getTextContent());
 
         $threadId = $this->threadRepository->findBySubject($threadSubject);
         if (!$threadId) {
@@ -56,7 +68,7 @@ class ReceiveEmailHandler
         $this->db->insert('emails', [
             'id' => $email->getId(),
             'subject' => $email->getSubject(),
-            'content' => $email->getTextContent(),
+            'content' => $content,
             'threadId' => $threadId,
             'date' => $email->getDate(),
         ], [
