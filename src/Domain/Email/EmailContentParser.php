@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Externals\Domain\Email;
 
@@ -11,11 +12,24 @@ class EmailContentParser
         'PHP Internals - PHP Runtime Development Mailing List',
         'To unsubscribe, visit: http://www.php.net/unsub.php',
     ];
+    const QUOTE = '>';
 
     public function parse(string $content) : string
     {
         $content = str_replace(self::FOOTER, '', $content);
+        $content = trim($content, " \t\n\r\0\x0B->");
 
-        return trim($content, " \t\n\r\0\x0B->");
+        $lines = preg_split('/\R/', $content); // explode all lines
+
+        $lines = array_map(function (string $line) : string {
+            if (substr($line, 0, 1) === self::QUOTE) {
+                $line = "<span class='quoted-line'>$line</span>";
+            }
+            return $line;
+        }, $lines);
+
+        $content = implode("<br>\n", $lines);
+
+        return $content;
     }
 }

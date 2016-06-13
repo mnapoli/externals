@@ -52,6 +52,11 @@ class Email
         return $this->content;
     }
 
+    public function setContent(string $content)
+    {
+        $this->content = $content;
+    }
+
     public function getOriginalContent() : string
     {
         return $this->originalContent;

@@ -30,11 +30,33 @@ class EmailRepository
      */
     public function findByThread(int $threadId) : array
     {
-        $query = 'SELECT id, subject, content, originalContent FROM emails WHERE threadId = ? ORDER BY date DESC';
+        $query = 'SELECT * FROM emails WHERE threadId = ? ORDER BY date DESC';
         $emails = $this->db->fetchAll($query, [$threadId]);
 
-        return array_map(function (array $row) : Email {
-            return new Email($row['id'], $row['subject'], $row['content'], $row['originalContent']);
-        }, $emails);
+        return array_map([$this, 'createEmail'], $emails);
+    }
+
+    /**
+     * @return Email[]
+     */
+    public function findAll() : array
+    {
+        return array_map([$this, 'createEmail'], $this->db->fetchAll('SELECT * FROM emails'));
+    }
+
+    public function update(Email $email)
+    {
+        $this->db->update('emails', [
+            'subject' => $email->getSubject(),
+            'content' => $email->getContent(),
+        ], ['id' => $email->getId()], [
+            'text',
+            'text',
+        ]);
+    }
+
+    private function createEmail(array $row) : Email
+    {
+        return new Email($row['id'], $row['subject'], $row['content'], $row['originalContent']);
     }
 }

@@ -11,7 +11,7 @@
 
     {% for email in emails %}
         <article>
-            {{ email.content|nl2br }}
+            {{ email.content|raw }}
         </article>
     {% endfor %}
 

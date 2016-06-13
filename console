@@ -5,6 +5,8 @@ declare(strict_types = 1);
 use Externals\Application\Command\InitCommand;
 use Externals\Domain\Command\Handler\ReceiveEmailHandler;
 use Externals\Domain\Command\ReceiveEmail;
+use Externals\Domain\Email\EmailContentParser;
+use Externals\Domain\Email\EmailRepository;
 use Imapi\Client;
 use Imapi\Query\QueryBuilder;
 use Silly\Application;
@@ -31,6 +33,14 @@ $application->command('sync', function (Client $imapClient, ReceiveEmailHandler 
 
     foreach ($emails as $email) {
         $receiveEmailHandler(new ReceiveEmail($email));
+    }
+});
+
+$application->command('reparse', function (EmailRepository $emailRepository, EmailContentParser $contentParser) {
+    foreach ($emailRepository->findAll() as $email) {
+        $newContent = $contentParser->parse($email->getOriginalContent());
+        $email->setContent($newContent);
+        $emailRepository->update($email);
     }
 });
 
