@@ -2,22 +2,20 @@
 
 namespace Externals\Domain\Command;
 
-use Imapi\Email;
-
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
 class ReceiveEmail
 {
-    private $email;
+    private $emailId;
 
-    public function __construct(Email $email)
+    public function __construct(string $emailId)
     {
-        $this->email = $email;
+        $this->emailId = $emailId;
     }
 
-    public function getEmail() : Email
+    public function getEmailId() : string
     {
-        return $this->email;
+        return $this->emailId;
     }
 }

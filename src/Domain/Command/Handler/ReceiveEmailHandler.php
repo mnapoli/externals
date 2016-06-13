@@ -9,12 +9,18 @@ use Externals\Domain\Email\EmailContentParser;
 use Externals\Domain\Email\EmailRepository;
 use Externals\Domain\Email\EmailSubjectParser;
 use Externals\Domain\Thread\ThreadRepository;
+use Imapi\Client;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
 class ReceiveEmailHandler
 {
+    /**
+     * @var Client
+     */
+    private $imapClient;
+
     /**
      * @var Connection
      */
@@ -41,12 +47,14 @@ class ReceiveEmailHandler
     private $contentParser;
 
     public function __construct(
+        Client $imapClient,
         Connection $db,
         ThreadRepository $threadRepository,
         EmailRepository $emailRepository,
         EmailSubjectParser $subjectParser,
         EmailContentParser $contentParser
     ) {
+        $this->imapClient = $imapClient;
         $this->db = $db;
         $this->threadRepository = $threadRepository;
         $this->emailRepository = $emailRepository;
@@ -56,12 +64,14 @@ class ReceiveEmailHandler
 
     public function __invoke(ReceiveEmail $receiveEmail)
     {
-        $email = $receiveEmail->getEmail();
+        $emailId = $receiveEmail->getEmailId();
 
         // Check if we have already received the email
-        if ($this->emailRepository->contains((string) $email->getId())) {
+        if ($this->emailRepository->contains($emailId)) {
             return;
         }
+
+        $email = $this->imapClient->getEmailFromId($emailId);
 
         $threadSubject = $this->subjectParser->sanitize($email->getSubject());
         $content = $this->contentParser->parse($email->getTextContent());

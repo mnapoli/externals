@@ -30,7 +30,7 @@ class EmailRepository
      */
     public function findByThread(int $threadId) : array
     {
-        $query = 'SELECT * FROM emails WHERE threadId = ? ORDER BY date DESC';
+        $query = 'SELECT * FROM emails WHERE threadId = ? ORDER BY date ASC';
         $emails = $this->db->fetchAll($query, [$threadId]);
 
         return array_map([$this, 'createEmail'], $emails);

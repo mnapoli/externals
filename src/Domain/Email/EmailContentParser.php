@@ -22,6 +22,7 @@ class EmailContentParser
         $lines = preg_split('/\R/', $content); // explode all lines
 
         $lines = array_map(function (string $line) : string {
+            $line = trim($line);
             if (substr($line, 0, 1) === self::QUOTE) {
                 $line = "<span class='quoted-line'>$line</span>";
             }

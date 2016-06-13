@@ -25,14 +25,14 @@ $application->useContainer($kernel->getContainer(), true, true);
 
 $application->command('sync', function (Client $imapClient, ReceiveEmailHandler $receiveEmailHandler, OutputInterface $output) {
     $query = QueryBuilder::create('INBOX')
-        ->youngerThan(3600*10) // 1 day
+        ->youngerThan(3600*24*1)
         ->getQuery();
-    $emails = $imapClient->getEmails($query);
+    $emailIds = $imapClient->getEmailIds($query);
 
-    $output->writeln(sprintf('<comment>%d emails to synchronize</comment>', count($emails)));
+    $output->writeln(sprintf('<comment>%d emails to synchronize</comment>', count($emailIds)));
 
-    foreach ($emails as $email) {
-        $receiveEmailHandler(new ReceiveEmail($email));
+    foreach ($emailIds as $emailId) {
+        $receiveEmailHandler(new ReceiveEmail((string) $emailId));
     }
 });
 
