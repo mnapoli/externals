@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+declare(strict_types = 1);
 
 use Doctrine\DBAL\Connection;
 use Externals\Domain\Command\Handler\ReceiveEmailHandler;
@@ -45,15 +46,13 @@ $application->command('init', function (Connection $db) {
     // Create tables
     $schema = new \Doctrine\DBAL\Schema\Schema();
     $emailsTable = $schema->createTable('emails');
-    $emailsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
+    $emailsTable->addColumn('id', 'string');
     $emailsTable->addColumn('subject', 'text');
     $emailsTable->addColumn('threadId', 'integer', ['unsigned' => true]);
-    $emailsTable->addColumn('emailUniqueId', 'string');
     $emailsTable->addColumn('date', 'datetime');
     $emailsTable->addColumn('content', 'text');
     $emailsTable->setPrimaryKey(['id']);
     $emailsTable->addIndex(['threadId']);
-    $emailsTable->addUniqueIndex(['emailUniqueId']);
     $threadsTable = $schema->createTable('threads');
     $threadsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
     $threadsTable->addColumn('subject', 'text');

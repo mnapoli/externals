@@ -40,7 +40,7 @@ class ReceiveEmailHandler
         $email = $receiveEmail->getEmail();
 
         // Check if we have already received the email
-        $emailId = $this->db->fetchColumn('SELECT id FROM emails WHERE emailUniqueId = ?', [$email->getId()]);
+        $emailId = $this->db->fetchColumn('SELECT id FROM emails WHERE id = ?', [$email->getId()]);
         if ($emailId) {
             return;
         }
@@ -54,7 +54,7 @@ class ReceiveEmailHandler
         }
 
         $this->db->insert('emails', [
-            'emailUniqueId' => $email->getId(),
+            'id' => $email->getId(),
             'subject' => $email->getSubject(),
             'content' => $email->getTextContent(),
             'threadId' => $threadId,

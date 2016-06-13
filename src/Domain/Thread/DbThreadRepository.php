@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Externals\Domain\Thread;
 
 use Doctrine\DBAL\Connection;
+use Externals\Domain\NotFound;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
@@ -24,7 +25,18 @@ class DbThreadRepository implements ThreadRepository
     {
         $threadId = $this->db->fetchColumn('SELECT id FROM threads WHERE subject = ?', [$subject]);
 
-        return (int) $threadId;
+        return $threadId ? (int) $threadId : null;
+    }
+
+    public function getSubject(int $id) : string
+    {
+        $subject = $this->db->fetchColumn('SELECT subject FROM threads WHERE id = ?', [$id]);
+
+        if (!$subject) {
+            throw new NotFound('No thread found for ID ' . $id);
+        }
+
+        return $subject;
     }
 
     public function create(string $subject) : int

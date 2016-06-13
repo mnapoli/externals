@@ -1,0 +1,15 @@
+{% extends '/app/views/layout.html.twig' %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>{{ subject }}</h1>
+    </div>
+
+    {% for email in emails %}
+        <article>
+            {{ email.content|nl2br }}
+        </article>
+    {% endfor %}
+
+{% endblock %}
