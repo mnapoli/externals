@@ -1,0 +1,9 @@
+body {
+    background-color: #FAFAFA;
+}
+article {
+    background-color: white;
+    border: 1px solid #e6e6e6;
+    padding: 16px 16px 0 14px;
+    margin: 10px 0;
+}
