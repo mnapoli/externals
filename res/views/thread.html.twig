@@ -3,7 +3,10 @@
 {% block content %}
 
     <div class="page-header">
-        <h1>{{ subject }}</h1>
+        <h1>
+            <a href="/"><span class="fa fa-caret-left"></span></a>
+            {{ subject }}
+        </h1>
     </div>
 
     {% for email in emails %}
