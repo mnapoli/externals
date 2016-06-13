@@ -2,7 +2,7 @@
 <?php
 declare(strict_types = 1);
 
-use Doctrine\DBAL\Connection;
+use Externals\Application\Command\InitCommand;
 use Externals\Domain\Command\Handler\ReceiveEmailHandler;
 use Externals\Domain\Command\ReceiveEmail;
 use Imapi\Client;
@@ -34,34 +34,6 @@ $application->command('sync', function (Client $imapClient, ReceiveEmailHandler 
     }
 });
 
-$application->command('init', function (Connection $db) {
-    $db->beginTransaction();
-
-    // Drop all existing tables
-    $tables = $db->getSchemaManager()->listTables();
-    foreach ($tables as $table) {
-        $db->getSchemaManager()->dropTable($table->getName());
-    }
-
-    // Create tables
-    $schema = new \Doctrine\DBAL\Schema\Schema();
-    $emailsTable = $schema->createTable('emails');
-    $emailsTable->addColumn('id', 'string');
-    $emailsTable->addColumn('subject', 'text');
-    $emailsTable->addColumn('threadId', 'integer', ['unsigned' => true]);
-    $emailsTable->addColumn('date', 'datetime');
-    $emailsTable->addColumn('content', 'text');
-    $emailsTable->setPrimaryKey(['id']);
-    $emailsTable->addIndex(['threadId']);
-    $threadsTable = $schema->createTable('threads');
-    $threadsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
-    $threadsTable->addColumn('subject', 'text');
-    $threadsTable->addIndex(['subject']);
-    $threadsTable->setPrimaryKey(['id']);
-    foreach ($schema->toSql($db->getDatabasePlatform()) as $query) {
-        $db->exec($query);
-    }
-    $db->commit();
-});
+$application->command('init', InitCommand::class);
 
 $application->run();

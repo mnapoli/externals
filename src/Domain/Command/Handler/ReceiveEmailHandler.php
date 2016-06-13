@@ -6,6 +6,7 @@ namespace Externals\Domain\Command\Handler;
 use Doctrine\DBAL\Connection;
 use Externals\Domain\Command\ReceiveEmail;
 use Externals\Domain\Email\EmailContentParser;
+use Externals\Domain\Email\EmailRepository;
 use Externals\Domain\Email\EmailSubjectParser;
 use Externals\Domain\Thread\ThreadRepository;
 
@@ -25,6 +26,11 @@ class ReceiveEmailHandler
     private $threadRepository;
 
     /**
+     * @var EmailRepository
+     */
+    private $emailRepository;
+
+    /**
      * @var EmailSubjectParser
      */
     private $subjectParser;
@@ -37,11 +43,13 @@ class ReceiveEmailHandler
     public function __construct(
         Connection $db,
         ThreadRepository $threadRepository,
+        EmailRepository $emailRepository,
         EmailSubjectParser $subjectParser,
         EmailContentParser $contentParser
     ) {
         $this->db = $db;
         $this->threadRepository = $threadRepository;
+        $this->emailRepository = $emailRepository;
         $this->subjectParser = $subjectParser;
         $this->contentParser = $contentParser;
     }
@@ -51,8 +59,7 @@ class ReceiveEmailHandler
         $email = $receiveEmail->getEmail();
 
         // Check if we have already received the email
-        $emailId = $this->db->fetchColumn('SELECT id FROM emails WHERE id = ?', [$email->getId()]);
-        if ($emailId) {
+        if ($this->emailRepository->contains((string) $email->getId())) {
             return;
         }
 
@@ -69,10 +76,12 @@ class ReceiveEmailHandler
             'id' => $email->getId(),
             'subject' => $email->getSubject(),
             'content' => $content,
+            'originalContent' => $email->getTextContent(),
             'threadId' => $threadId,
             'date' => $email->getDate(),
         ], [
             'string',
+            'text',
             'text',
             'text',
             'integer',

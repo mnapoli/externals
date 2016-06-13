@@ -20,14 +20,21 @@ class Email
      */
     private $content;
 
+    /**
+     * @var string
+     */
+    private $originalContent;
+
     public function __construct(
         string $id,
         string $subject,
-        string $content
+        string $content,
+        string $originalContent
     ) {
         $this->id = $id;
         $this->subject = $subject;
         $this->content = $content;
+        $this->originalContent = $originalContent;
     }
 
     public function getId() : string
@@ -43,5 +50,10 @@ class Email
     public function getContent() : string
     {
         return $this->content;
+    }
+
+    public function getOriginalContent() : string
+    {
+        return $this->originalContent;
     }
 }
