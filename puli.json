@@ -44,10 +44,6 @@
             "install-path": "vendor/doctrine/lexer",
             "installer": "composer"
         },
-        "exercise/htmlpurifier-bundle": {
-            "install-path": "vendor/exercise/htmlpurifier-bundle",
-            "installer": "composer"
-        },
         "ezyang/htmlpurifier": {
             "install-path": "vendor/ezyang/htmlpurifier",
             "installer": "composer"
@@ -65,20 +61,12 @@
             "install-path": "vendor/justinrainbow/json-schema",
             "installer": "composer"
         },
-        "messaged/php-mime-mail-parser": {
-            "install-path": "vendor/messaged/php-mime-mail-parser",
-            "installer": "composer"
-        },
         "mnapoli/imapi": {
             "install-path": "vendor/mnapoli/imapi",
             "installer": "composer"
         },
         "mnapoli/silly": {
             "install-path": "vendor/mnapoli/silly",
-            "installer": "composer"
-        },
-        "myclabs/array-comparator": {
-            "install-path": "vendor/myclabs/array-comparator",
             "installer": "composer"
         },
         "paragonie/random_compat": {
@@ -159,6 +147,10 @@
         },
         "php-di/phpdoc-reader": {
             "install-path": "vendor/php-di/phpdoc-reader",
+            "installer": "composer"
+        },
+        "php-mime-mail-parser/php-mime-mail-parser": {
+            "install-path": "vendor/php-mime-mail-parser/php-mime-mail-parser",
             "installer": "composer"
         },
         "psr/http-message": {

@@ -13,20 +13,12 @@
         "mnapoli/silly": "^1.3",
         "stratify/framework": "~0.1.3",
         "doctrine/annotations": "^1.2",
-        "twig/extensions": "~1.0",
-        "pear-pear.horde.org/Horde_Imap_Client": "~2.19",
-        "messaged/php-mime-mail-parser": "~1.0",
-        "exercise/htmlpurifier-bundle": "dev-master@dev",
-        "myclabs/array-comparator": "~1.0",
         "mnapoli/imapi": "dev-master",
         "doctrine/dbal": "^2.5",
-        "stratify/twig-module": "^0.1.1"
+        "stratify/twig-module": "^0.1.1",
+        "twig/extensions": "~1.0"
     },
     "repositories": [
-        {
-            "type": "pear",
-            "url": "http://pear.horde.org"
-        },
         {
             "type": "vcs",
             "url": "git@github.com:mnapoli/Imapi.git"

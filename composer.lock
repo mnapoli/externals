@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2e00f1e2fd9a01b37ccb223d598f0005",
-    "content-hash": "255077feb5a0b38663930612781cdc95",
+    "hash": "1a412552213b3c4ef7221414de7916d2",
+    "content-hash": "f3b6fd753b8497c46a38573cc1661ca3",
     "packages": [
         {
             "name": "aura/router",
@@ -552,57 +552,6 @@
             "time": "2014-09-09 13:34:57"
         },
         {
-            "name": "exercise/htmlpurifier-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Exercise/HTMLPurifierBundle.git",
-                "reference": "3b5842de5e7ffee2c360eb7746519797a2fbb0f6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Exercise/HTMLPurifierBundle/zipball/3b5842de5e7ffee2c360eb7746519797a2fbb0f6",
-                "reference": "3b5842de5e7ffee2c360eb7746519797a2fbb0f6",
-                "shasum": ""
-            },
-            "require": {
-                "ezyang/htmlpurifier": "~4.0",
-                "php": ">=5.3.2",
-                "symfony/framework-bundle": "~2.0|~3.0"
-            },
-            "require-dev": {
-                "symfony/form": "~2.0",
-                "twig/twig": "~1.3"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Exercise\\HTMLPurifierBundle\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "contributors",
-                    "homepage": "https://github.com/Exercise/HTMLPurifierBundle/contributors"
-                }
-            ],
-            "description": "HTMLPurifier integration for your Symfony2 project",
-            "homepage": "https://github.com/Exercise/HTMLPurifierBundle",
-            "keywords": [
-                "htmlpurifier"
-            ],
-            "time": "2015-12-01 17:32:26"
-        },
-        {
             "name": "ezyang/htmlpurifier",
             "version": "v4.7.0",
             "source": {
@@ -813,89 +762,37 @@
             "time": "2016-01-25 15:43:01"
         },
         {
-            "name": "messaged/php-mime-mail-parser",
-            "version": "v1.0.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/message/php-mime-mail-parser.git",
-                "reference": "e129df8e95d83f8bff52936a37ae227d820c4e92"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/message/php-mime-mail-parser/zipball/e129df8e95d83f8bff52936a37ae227d820c4e92",
-                "reference": "e129df8e95d83f8bff52936a37ae227d820c4e92",
-                "shasum": ""
-            },
-            "require": {
-                "ext-mailparse": "*",
-                "ext-mbstring": "*",
-                "php": ">=5.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "MimeMailParser": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "CC BY-SA 3.0"
-            ],
-            "authors": [
-                {
-                    "name": "Dmitry Polovka",
-                    "email": "messaged@messaged.lv",
-                    "homepage": "http://messaged.lv"
-                },
-                {
-                    "name": "Gabe",
-                    "email": "gabe@fijiwebdesign.com",
-                    "homepage": "http://www.fijiwebdesign.com/"
-                }
-            ],
-            "description": "Mailparse extension wrapper for PHP 5.3+",
-            "homepage": "http://github.com/message/php-mime-mail-parser",
-            "keywords": [
-                "MimeMailParser",
-                "mail",
-                "mailparse",
-                "mime"
-            ],
-            "abandoned": "php-mime-mail-parser/php-mime-mail-parser",
-            "time": "2015-01-04 16:11:33"
-        },
-        {
             "name": "mnapoli/imapi",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@github.com:mnapoli/Imapi.git",
-                "reference": "62e4baa031f1c8c52753a9a9e9236575ff854896"
+                "reference": "0f40a6b3202731c40fdd4ced836c8732e7762584"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mnapoli/Imapi/zipball/62e4baa031f1c8c52753a9a9e9236575ff854896",
-                "reference": "62e4baa031f1c8c52753a9a9e9236575ff854896",
+                "url": "https://api.github.com/repos/mnapoli/Imapi/zipball/0f40a6b3202731c40fdd4ced836c8732e7762584",
+                "reference": "0f40a6b3202731c40fdd4ced836c8732e7762584",
                 "shasum": ""
             },
             "require": {
-                "exercise/htmlpurifier-bundle": "dev-master@dev",
-                "messaged/php-mime-mail-parser": "~1.0",
+                "ezyang/htmlpurifier": "~4.7",
                 "pear-pear.horde.org/horde_imap_client": "~2.19",
-                "php": ">=5.5"
+                "php": "~7.0",
+                "php-mime-mail-parser/php-mime-mail-parser": "~2.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0"
+                "phpunit/phpunit": "~5.0"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Imapi\\": "src/Imapi/"
+                    "Imapi\\": "src/"
                 }
             },
             "autoload-dev": {
                 "psr-4": {
-                    "Tests\\Imapi\\": "tests/"
+                    "Imapi\\Test\\": "tests/"
                 }
             },
             "license": [
@@ -906,7 +803,7 @@
                 "source": "https://github.com/mnapoli/Imapi/tree/master",
                 "issues": "https://github.com/mnapoli/Imapi/issues"
             },
-            "time": "2015-03-12 08:18:29"
+            "time": "2016-06-13 20:17:38"
         },
         {
             "name": "mnapoli/silly",
@@ -951,41 +848,6 @@
                 "silly"
             ],
             "time": "2016-02-27 10:11:44"
-        },
-        {
-            "name": "myclabs/array-comparator",
-            "version": "1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/myclabs/ArrayComparator.git",
-                "reference": "07a29bb93676adbbcc2225af96921f4cb3c94421"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/ArrayComparator/zipball/07a29bb93676adbbcc2225af96921f4cb3c94421",
-                "reference": "07a29bb93676adbbcc2225af96921f4cb3c94421",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "ArrayComparator": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Array comparator",
-            "homepage": "https://github.com/myclabs/ArrayComparator",
-            "keywords": [
-                "array",
-                "comparator"
-            ],
-            "time": "2014-08-04 11:36:10"
         },
         {
             "name": "paragonie/random_compat",
@@ -1546,16 +1408,16 @@
         },
         {
             "name": "php-di/invoker",
-            "version": "1.3.1",
+            "version": "1.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-DI/Invoker.git",
-                "reference": "e67ce4ca7b2cebcd06929bf383e0b18441e8ea4d"
+                "reference": "4140c38ca17268adc500b1e5c85c4055e48608d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/Invoker/zipball/e67ce4ca7b2cebcd06929bf383e0b18441e8ea4d",
-                "reference": "e67ce4ca7b2cebcd06929bf383e0b18441e8ea4d",
+                "url": "https://api.github.com/repos/PHP-DI/Invoker/zipball/4140c38ca17268adc500b1e5c85c4055e48608d2",
+                "reference": "4140c38ca17268adc500b1e5c85c4055e48608d2",
                 "shasum": ""
             },
             "require": {
@@ -1585,7 +1447,7 @@
                 "invoke",
                 "invoker"
             ],
-            "time": "2016-05-29 13:31:47"
+            "time": "2016-06-12 09:09:55"
         },
         {
             "name": "php-di/php-di",
@@ -1683,6 +1545,86 @@
                 "reflection"
             ],
             "time": "2015-11-29 10:34:25"
+        },
+        {
+            "name": "php-mime-mail-parser/php-mime-mail-parser",
+            "version": "2.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-mime-mail-parser/php-mime-mail-parser.git",
+                "reference": "3c0365e60ceb00827e95ad42d71b3a302b685fc1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-mime-mail-parser/php-mime-mail-parser/zipball/3c0365e60ceb00827e95ad42d71b3a302b685fc1",
+                "reference": "3c0365e60ceb00827e95ad42d71b3a302b685fc1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mailparse": "*",
+                "php": "^5.4.0 || ^7.0"
+            },
+            "replace": {
+                "exorus/php-mime-mail-parser": "*",
+                "messaged/php-mime-mail-parser": "*"
+            },
+            "require-dev": {
+                "phpunit/php-token-stream": "^1.3.0",
+                "phpunit/phpunit": "^4.0 || ^5.0",
+                "satooshi/php-coveralls": "0.*",
+                "squizlabs/php_codesniffer": "2.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PhpMimeMailParser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "bucabay",
+                    "email": "gabe@fijiwebdesign.com",
+                    "homepage": "http://www.fijiwebdesign.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "eXorus",
+                    "email": "exorus.spam@gmail.com",
+                    "homepage": "https://github.com/eXorus/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "M.Valinskis",
+                    "email": "M.Valins@gmail.com",
+                    "homepage": "https://code.google.com/p/php-mime-mail-parser",
+                    "role": "Developer"
+                },
+                {
+                    "name": "eugene.emmett.wood",
+                    "email": "gene_w@cementhorizon.com",
+                    "homepage": "https://code.google.com/p/php-mime-mail-parser",
+                    "role": "Developer"
+                },
+                {
+                    "name": "alknetso",
+                    "email": "alkne@gmail.com",
+                    "homepage": "https://code.google.com/p/php-mime-mail-parser",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Fully Tested Mailparse Extension Wrapper for PHP 5.4+",
+            "homepage": "https://github.com/php-mime-mail-parser/php-mime-mail-parser",
+            "keywords": [
+                "MimeMailParser",
+                "mail",
+                "mailparse",
+                "mime"
+            ],
+            "time": "2016-06-01 04:29:37"
         },
         {
             "name": "psr/http-message",
@@ -3400,7 +3342,6 @@
     "aliases": [],
     "minimum-stability": "beta",
     "stability-flags": {
-        "exercise/htmlpurifier-bundle": 20,
         "mnapoli/imapi": 20
     },
     "prefer-stable": true,
