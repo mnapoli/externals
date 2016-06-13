@@ -7,6 +7,7 @@ use Externals\Domain\Command\ReceiveEmail;
 use Imapi\Client;
 use Imapi\Query\QueryBuilder;
 use Silly\Application;
+use Symfony\Component\Console\Output\OutputInterface;
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/.puli/GeneratedPuliFactory.php';
@@ -19,11 +20,13 @@ $kernel = new \Externals\Application\Application([], [
 $application = new Application();
 $application->useContainer($kernel->getContainer(), true, true);
 
-$application->command('sync', function (Client $imapClient, ReceiveEmailHandler $receiveEmailHandler) {
+$application->command('sync', function (Client $imapClient, ReceiveEmailHandler $receiveEmailHandler, OutputInterface $output) {
     $query = QueryBuilder::create('INBOX')
-        ->youngerThan(10) // 1 day
+        ->youngerThan(3600*10) // 1 day
         ->getQuery();
     $emails = $imapClient->getEmails($query);
+
+    $output->writeln(sprintf('<comment>%d emails to synchronize</comment>', count($emails)));
 
     foreach ($emails as $email) {
         $receiveEmailHandler(new ReceiveEmail($email));
@@ -45,13 +48,16 @@ $application->command('init', function (Connection $db) {
     $emailsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
     $emailsTable->addColumn('subject', 'text');
     $emailsTable->addColumn('threadId', 'integer', ['unsigned' => true]);
+    $emailsTable->addColumn('emailUniqueId', 'string');
     $emailsTable->addColumn('date', 'datetime');
     $emailsTable->addColumn('content', 'text');
     $emailsTable->setPrimaryKey(['id']);
     $emailsTable->addIndex(['threadId']);
+    $emailsTable->addUniqueIndex(['emailUniqueId']);
     $threadsTable = $schema->createTable('threads');
     $threadsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
     $threadsTable->addColumn('subject', 'text');
+    $threadsTable->addIndex(['subject']);
     $threadsTable->setPrimaryKey(['id']);
     foreach ($schema->toSql($db->getDatabasePlatform()) as $query) {
         $db->exec($query);

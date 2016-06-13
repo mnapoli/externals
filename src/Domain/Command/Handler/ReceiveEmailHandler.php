@@ -38,6 +38,13 @@ class ReceiveEmailHandler
     public function __invoke(ReceiveEmail $receiveEmail)
     {
         $email = $receiveEmail->getEmail();
+
+        // Check if we have already received the email
+        $emailId = $this->db->fetchColumn('SELECT id FROM emails WHERE emailUniqueId = ?', [$email->getId()]);
+        if ($emailId) {
+            return;
+        }
+
         $threadSubject = $this->emailSubjectParser->sanitize($email->getSubject());
 
         $threadId = $this->threadRepository->findBySubject($threadSubject);
@@ -47,11 +54,13 @@ class ReceiveEmailHandler
         }
 
         $this->db->insert('emails', [
+            'emailUniqueId' => $email->getId(),
             'subject' => $email->getSubject(),
             'content' => $email->getTextContent(),
             'threadId' => $threadId,
             'date' => $email->getDate(),
         ], [
+            'string',
             'text',
             'text',
             'integer',
