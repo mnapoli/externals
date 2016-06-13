@@ -7,7 +7,7 @@
     </div>
 
     {% for thread in threads %}
-        <p><a href="thread/{{ thread.id }}">{{ thread.subject }}</a> {{ thread.lastUpdate }}</p>
+        <p><a href="thread/{{ thread.id }}">{{ thread.subject }}</a> {{ thread.lastUpdate|time_diff }}</p>
     {% endfor %}
 
 {% endblock %}
