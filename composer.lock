@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e5b393b4ec7ccd72deff785784e773ed",
-    "content-hash": "45f8f835f68674e0e3a6bfedf1b4d07f",
+    "hash": "8966e583bcdcc62ebb339586f1e586e7",
+    "content-hash": "f85f77d2bd069d2c8d0a5096789b3fd1",
     "packages": [
         {
             "name": "aura/router",
@@ -597,37 +597,40 @@
         },
         {
             "name": "filp/whoops",
-            "version": "1.1.10",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "72538eeb70bbfb11964412a3d098d109efd012f7"
+                "reference": "d13505b240a6f580bc75ba591da30299d6cb0eec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/72538eeb70bbfb11964412a3d098d109efd012f7",
-                "reference": "72538eeb70bbfb11964412a3d098d109efd012f7",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/d13505b240a6f580bc75ba591da30299d6cb0eec",
+                "reference": "d13505b240a6f580bc75ba591da30299d6cb0eec",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=5.5.9"
             },
             "require-dev": {
-                "mockery/mockery": "0.9.*"
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "^4.8 || ^5.0",
+                "symfony/var-dumper": "~3.0"
+            },
+            "suggest": {
+                "symfony/var-dumper": "Pretty print complex values better with var-dumper available",
+                "whoops/soap": "Formats errors as SOAP responses"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.2-dev"
+                    "dev-master": "2.0-dev"
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Whoops": "src/"
-                },
-                "classmap": [
-                    "src/deprecated"
-                ]
+                "psr-4": {
+                    "Whoops\\": "src/Whoops/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -647,11 +650,10 @@
                 "exception",
                 "handling",
                 "library",
-                "silex-provider",
                 "whoops",
                 "zf2"
             ],
-            "time": "2015-06-29 05:42:04"
+            "time": "2016-04-07 06:16:25"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -814,7 +816,7 @@
         },
         {
             "name": "mnapoli/imapi",
-            "version": "dev-master",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:mnapoli/Imapi.git",
@@ -2227,21 +2229,28 @@
         },
         {
             "name": "stratify/error-handler-module",
-            "version": "0.1.1",
+            "version": "0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stratifyphp/error-handler-module.git",
-                "reference": "6b6567bdd39459ff19e384c53bb52453e0986677"
+                "reference": "e5fe83323df185234ac69d2cc7edf283fc937503"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stratifyphp/error-handler-module/zipball/6b6567bdd39459ff19e384c53bb52453e0986677",
-                "reference": "6b6567bdd39459ff19e384c53bb52453e0986677",
+                "url": "https://api.github.com/repos/stratifyphp/error-handler-module/zipball/e5fe83323df185234ac69d2cc7edf283fc937503",
+                "reference": "e5fe83323df185234ac69d2cc7edf283fc937503",
                 "shasum": ""
             },
             "require": {
-                "filp/whoops": "^1.1",
-                "psr/http-message": "^1.0"
+                "container-interop/container-interop": "^1.1",
+                "filp/whoops": "^2.0",
+                "psr/http-message": "^1.0",
+                "psr/log": "^1.0"
+            },
+            "require-dev": {
+                "php-di/php-di": "^5.2",
+                "phpunit/phpunit": "^5.2",
+                "zendframework/zend-diactoros": "^1.3"
             },
             "type": "library",
             "autoload": {
@@ -2253,35 +2262,38 @@
             "license": [
                 "MIT"
             ],
-            "time": "2015-12-06 11:04:56"
+            "description": "Error handler module for Stratify",
+            "time": "2016-06-14 21:03:27"
         },
         {
             "name": "stratify/framework",
-            "version": "0.1.3",
+            "version": "0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stratifyphp/framework.git",
-                "reference": "ea6099677e67c08e31835bfd3488418484586de1"
+                "reference": "0d8eed8989a9ece1293d4acb464f80273afed7dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stratifyphp/framework/zipball/ea6099677e67c08e31835bfd3488418484586de1",
-                "reference": "ea6099677e67c08e31835bfd3488418484586de1",
+                "url": "https://api.github.com/repos/stratifyphp/framework/zipball/0d8eed8989a9ece1293d4acb464f80273afed7dc",
+                "reference": "0d8eed8989a9ece1293d4acb464f80273afed7dc",
                 "shasum": ""
             },
             "require": {
-                "php-di/php-di": "^5.0",
+                "mnapoli/silly": "^1.2",
+                "php": ">=7.0",
+                "php-di/php-di": "^5.2",
                 "puli/composer-plugin": "^1.0",
                 "puli/discovery": "^1.0",
                 "puli/repository": "^1.0",
                 "puli/url-generator": "^1.0",
-                "stratify/error-handler-module": "~0.1.0",
+                "stratify/error-handler-module": "~0.2.0",
                 "stratify/http": "~0.1.0",
-                "stratify/router": "~0.1.0"
+                "stratify/router": "~0.2.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^5.0@dev",
-                "symfony/filesystem": "*"
+                "phpunit/phpunit": "^5.1",
+                "symfony/filesystem": "^3.0"
             },
             "type": "library",
             "autoload": {
@@ -2296,7 +2308,8 @@
             "license": [
                 "MIT"
             ],
-            "time": "2015-10-30 23:05:14"
+            "description": "Stratify framework package",
+            "time": "2016-06-14 21:25:55"
         },
         {
             "name": "stratify/http",
@@ -2332,20 +2345,22 @@
         },
         {
             "name": "stratify/router",
-            "version": "0.1.2",
+            "version": "0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stratifyphp/router.git",
-                "reference": "2f92e65e3740000d56dacaf32230734e6f3c276d"
+                "reference": "fbc790f71a2fa61c2717c61e9b5ec8f5645258d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stratifyphp/router/zipball/2f92e65e3740000d56dacaf32230734e6f3c276d",
-                "reference": "2f92e65e3740000d56dacaf32230734e6f3c276d",
+                "url": "https://api.github.com/repos/stratifyphp/router/zipball/fbc790f71a2fa61c2717c61e9b5ec8f5645258d7",
+                "reference": "fbc790f71a2fa61c2717c61e9b5ec8f5645258d7",
                 "shasum": ""
             },
             "require": {
                 "aura/router": "^3.0",
+                "container-interop/container-interop": "^1.1",
+                "php-di/invoker": "^1.2",
                 "psr/http-message": "^1.0",
                 "stratify/http": "~0.1.0"
             },
@@ -2365,32 +2380,29 @@
             "license": [
                 "MIT"
             ],
-            "time": "2016-02-05 22:31:11"
+            "time": "2016-02-05 22:50:59"
         },
         {
             "name": "stratify/twig-module",
-            "version": "0.1.1",
+            "version": "0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stratifyphp/twig-module.git",
-                "reference": "5648ab9255e9a9f4b3aec1cbb4d56dd96b21164a"
+                "reference": "79eb99ec4673194a9cd0b353e26999c0cd6e2652"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stratifyphp/twig-module/zipball/5648ab9255e9a9f4b3aec1cbb4d56dd96b21164a",
-                "reference": "5648ab9255e9a9f4b3aec1cbb4d56dd96b21164a",
+                "url": "https://api.github.com/repos/stratifyphp/twig-module/zipball/79eb99ec4673194a9cd0b353e26999c0cd6e2652",
+                "reference": "79eb99ec4673194a9cd0b353e26999c0cd6e2652",
                 "shasum": ""
             },
             "require": {
-                "php-di/php-di": "^5.0",
+                "php-di/php-di": "^5.2",
                 "puli/repository": "^1.0",
                 "puli/twig-extension": "^1.0",
                 "puli/url-generator": "^1.0",
-                "stratify/router": "~0.1.0",
+                "stratify/router": "~0.2.0",
                 "twig/twig": "^1.21"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.0@dev"
             },
             "type": "library",
             "autoload": {
@@ -2402,7 +2414,8 @@
             "license": [
                 "MIT"
             ],
-            "time": "2015-09-10 11:33:43"
+            "description": "Twig module",
+            "time": "2016-06-14 21:33:27"
         },
         {
             "name": "symfony/polyfill-apcu",
@@ -3505,13 +3518,11 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "beta",
-    "stability-flags": {
-        "mnapoli/imapi": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "~7.0"
+        "php": "^7.0"
     },
     "platform-dev": []
 }

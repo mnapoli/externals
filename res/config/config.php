@@ -14,6 +14,8 @@ use Ornicar\GravatarBundle\Twig\GravatarExtension;
 
 return [
 
+    'debug' => env('DEBUG', true),
+
     'imap.config' => [
         'host' => env('IMAP_HOST'),
         'user' => env('IMAP_USER'),

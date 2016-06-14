@@ -8,18 +8,18 @@
         }
     },
     "require": {
-        "php": "~7.0",
-        "php-di/php-di": "~5.1",
+        "php": "^7.0",
+        "php-di/php-di": "^5.1",
+        "vlucas/phpdotenv": "^2.3",
+        "stratify/framework": "~0.2.0",
         "mnapoli/silly": "^1.3",
-        "stratify/framework": "~0.1.3",
         "doctrine/annotations": "^1.2",
-        "mnapoli/imapi": "dev-master",
+        "mnapoli/imapi": "~0.1.0",
         "doctrine/dbal": "^2.5",
-        "stratify/twig-module": "^0.1.1",
-        "twig/extensions": "~1.0",
+        "stratify/twig-module": "~0.1.1",
+        "twig/extensions": "^1.0",
         "ornicar/gravatar-bundle": "^1.1",
-        "misd/linkify": "^1.1",
-        "vlucas/phpdotenv": "^2.3"
+        "misd/linkify": "^1.1"
     },
     "repositories": [
         {
