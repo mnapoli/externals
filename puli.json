@@ -69,6 +69,10 @@
             "install-path": "vendor/mnapoli/silly",
             "installer": "composer"
         },
+        "ornicar/gravatar-bundle": {
+            "install-path": "vendor/ornicar/gravatar-bundle/Ornicar/GravatarBundle",
+            "installer": "composer"
+        },
         "paragonie/random_compat": {
             "install-path": "vendor/paragonie/random_compat",
             "installer": "composer"

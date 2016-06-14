@@ -16,7 +16,8 @@
         "mnapoli/imapi": "dev-master",
         "doctrine/dbal": "^2.5",
         "stratify/twig-module": "^0.1.1",
-        "twig/extensions": "~1.0"
+        "twig/extensions": "~1.0",
+        "ornicar/gravatar-bundle": "^1.1"
     },
     "repositories": [
         {

@@ -2,6 +2,10 @@ body {
     background-color: #FAFAFA;
 }
 
+.container {
+    max-width: 750px;
+}
+
 .thread-list {
     font-size: 1.2em;
 }
@@ -11,6 +15,18 @@ article {
     border: 1px solid #e6e6e6;
     padding: 16px;
     margin: 10px 0;
+}
+article header {
+    border-bottom: 1px solid #e6e6e6;
+    padding: 10px 16px;
+    margin: -16px -16px 16px;
+    background-color: #f1f1f1;
+    color: #757575;
+}
+article header .avatar {
+    float: right;
+    border-radius: 50%;
+    box-shadow: 1px 2px 5px 1px #c0c0c0;
 }
 article .quoted-line {
     color: #999;
