@@ -61,6 +61,10 @@
             "install-path": "vendor/justinrainbow/json-schema",
             "installer": "composer"
         },
+        "misd/linkify": {
+            "install-path": "vendor/misd/linkify",
+            "installer": "composer"
+        },
         "mnapoli/imapi": {
             "install-path": "vendor/mnapoli/imapi",
             "installer": "composer"
