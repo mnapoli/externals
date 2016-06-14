@@ -55,7 +55,7 @@ class DbThreadRepository implements ThreadRepository
             LEFT JOIN emails ON threads.id = emails.threadId
             GROUP BY threads.id
             ORDER BY lastUpdate DESC
-            LIMIT 10';
+            LIMIT 30';
         return $this->db->fetchAll($query);
     }
 }
