@@ -27,6 +27,9 @@
             "url": "git@github.com:mnapoli/Imapi.git"
         }
     ],
+    "config": {
+        "secure-http": false
+    },
     "minimum-stability": "beta",
     "prefer-stable": true
 }
