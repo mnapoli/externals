@@ -24,7 +24,7 @@ $application->command('init', InitCommand::class);
 
 $application->command('sync', function (Client $imapClient, ReceiveEmailHandler $receiveEmailHandler, OutputInterface $output) {
     $query = QueryBuilder::create('INBOX')
-        ->youngerThan(3600*24*1)
+        ->youngerThan(3600*24*7)
         ->getQuery();
     $emailIds = $imapClient->getEmailIds($query);
 
