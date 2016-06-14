@@ -42,6 +42,8 @@ class InitCommand
         $emailsTable->addColumn('date', 'datetime');
         $emailsTable->addColumn('content', 'text');
         $emailsTable->addColumn('originalContent', 'text');
+        $emailsTable->addColumn('fromEmail', 'string');
+        $emailsTable->addColumn('fromName', 'string', ['notnull' => false]);
         $emailsTable->setPrimaryKey(['id']);
         $emailsTable->addIndex(['threadId']);
 
@@ -49,7 +51,6 @@ class InitCommand
         $threadsTable = $schema->createTable('threads');
         $threadsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
         $threadsTable->addColumn('subject', 'text');
-        $threadsTable->addIndex(['subject']);
         $threadsTable->setPrimaryKey(['id']);
 
         foreach ($schema->toSql($this->db->getDatabasePlatform()) as $query) {

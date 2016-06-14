@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace Externals\Domain\Email;
 
+use DateTimeInterface;
+
 class Email
 {
     /**
@@ -25,16 +27,37 @@ class Email
      */
     private $originalContent;
 
+    /**
+     * @var int
+     */
+    private $threadId;
+
+    /**
+     * @var DateTimeInterface
+     */
+    private $date;
+
+    /**
+     * @var EmailAddress
+     */
+    private $from;
+
     public function __construct(
         string $id,
         string $subject,
         string $content,
-        string $originalContent
+        string $originalContent,
+        int $threadId,
+        DateTimeInterface $date,
+        EmailAddress $from
     ) {
         $this->id = $id;
         $this->subject = $subject;
         $this->content = $content;
         $this->originalContent = $originalContent;
+        $this->threadId = $threadId;
+        $this->date = $date;
+        $this->from = $from;
     }
 
     public function getId() : string
@@ -60,5 +83,20 @@ class Email
     public function getOriginalContent() : string
     {
         return $this->originalContent;
+    }
+
+    public function getThreadId() : int
+    {
+        return $this->threadId;
+    }
+
+    public function getDate() : DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function getFrom() : EmailAddress
+    {
+        return $this->from;
     }
 }

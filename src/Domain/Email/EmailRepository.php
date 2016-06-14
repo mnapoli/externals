@@ -44,6 +44,29 @@ class EmailRepository
         return array_map([$this, 'createEmail'], $this->db->fetchAll('SELECT * FROM emails'));
     }
 
+    public function add(Email $email)
+    {
+        $this->db->insert('emails', [
+            'id' => $email->getId(),
+            'subject' => $email->getSubject(),
+            'content' => $email->getContent(),
+            'originalContent' => $email->getOriginalContent(),
+            'threadId' => $email->getThreadId(),
+            'date' => $email->getDate(),
+            'fromEmail' => $email->getFrom()->getEmail(),
+            'fromName' => $email->getFrom()->getName(),
+        ], [
+            'string',
+            'text',
+            'text',
+            'text',
+            'integer',
+            'datetime',
+            'string',
+            'string',
+        ]);
+    }
+
     public function update(Email $email)
     {
         $this->db->update('emails', [
@@ -57,6 +80,19 @@ class EmailRepository
 
     private function createEmail(array $row) : Email
     {
-        return new Email($row['id'], $row['subject'], $row['content'], $row['originalContent']);
+        $date = $row['date'];
+        if (is_string($date)) {
+            $date = new \DateTimeImmutable($date);
+        }
+
+        return new Email(
+            $row['id'],
+            $row['subject'],
+            $row['content'],
+            $row['originalContent'],
+            (int) $row['threadId'],
+            $date,
+            new EmailAddress($row['fromEmail'], $row['fromName'])
+        );
     }
 }

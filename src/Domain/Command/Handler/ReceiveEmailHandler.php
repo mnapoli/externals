@@ -5,6 +5,8 @@ namespace Externals\Domain\Command\Handler;
 
 use Doctrine\DBAL\Connection;
 use Externals\Domain\Command\ReceiveEmail;
+use Externals\Domain\Email\Email;
+use Externals\Domain\Email\EmailAddress;
 use Externals\Domain\Email\EmailContentParser;
 use Externals\Domain\Email\EmailRepository;
 use Externals\Domain\Email\EmailSubjectParser;
@@ -82,20 +84,19 @@ class ReceiveEmailHandler
             $threadId = $this->threadRepository->create($threadSubject);
         }
 
-        $this->db->insert('emails', [
-            'id' => $email->getId(),
-            'subject' => $email->getSubject(),
-            'content' => $content,
-            'originalContent' => $email->getTextContent(),
-            'threadId' => $threadId,
-            'date' => $email->getDate(),
-        ], [
-            'string',
-            'text',
-            'text',
-            'text',
-            'integer',
-            'datetime',
-        ]);
+        $fromArray = $email->getFrom();
+        /** @var \Imapi\EmailAddress $from */
+        $from = reset($fromArray);
+
+        $newEmail = new Email(
+            $email->getId(),
+            $email->getSubject(),
+            $content,
+            $email->getTextContent(),
+            $threadId,
+            $email->getDate(),
+            new EmailAddress($from->getEmail(), $from->getName())
+        );
+        $this->emailRepository->add($newEmail);
     }
 }
