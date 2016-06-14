@@ -15,14 +15,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/.puli/GeneratedPuliFactory.php';
 
-$kernel = new Application;
+$cli = (new Application)->cli();
 
-$application = new \Silly\Application();
-$application->useContainer($kernel->getContainer(), true, true);
+$cli->command('init', InitCommand::class);
 
-$application->command('init', InitCommand::class);
-
-$application->command('sync', function (Client $imapClient, ReceiveEmailHandler $receiveEmailHandler, OutputInterface $output) {
+$cli->command('sync', function (Client $imapClient, ReceiveEmailHandler $receiveEmailHandler, OutputInterface $output) {
     $query = QueryBuilder::create('INBOX')
         ->youngerThan(3600*24*7)
         ->getQuery();
@@ -35,7 +32,7 @@ $application->command('sync', function (Client $imapClient, ReceiveEmailHandler 
     }
 });
 
-$application->command('reparse', function (EmailRepository $emailRepository, EmailContentParser $contentParser) {
+$cli->command('reparse', function (EmailRepository $emailRepository, EmailContentParser $contentParser) {
     foreach ($emailRepository->findAll() as $email) {
         $newContent = $contentParser->parse($email->getOriginalContent());
         $email->setContent($newContent);
@@ -43,4 +40,4 @@ $application->command('reparse', function (EmailRepository $emailRepository, Ema
     }
 });
 
-$application->run();
+$cli->run();

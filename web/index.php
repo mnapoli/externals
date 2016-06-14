@@ -35,4 +35,4 @@ $http = pipe([
 ]);
 
 $app = new Application($http);
-$app->runHttp();
+$app->http()->run();
