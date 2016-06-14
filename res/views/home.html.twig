@@ -10,7 +10,9 @@
         {% for thread in threads %}
             <tr>
                 <td>
-                    <span class="badge badge-default">{{ thread.emailCount }}</span>
+                    {% if thread.emailCount > 1 %}
+                        <span class="badge badge-default">{{ thread.emailCount }}</span>
+                    {% endif %}
                 </td>
                 <td>
                     <a href="thread/{{ thread.id }}">{{ thread.subject }}</a>

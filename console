@@ -2,6 +2,7 @@
 <?php
 declare(strict_types = 1);
 
+use Externals\Application\Application;
 use Externals\Application\Command\InitCommand;
 use Externals\Domain\Command\Handler\ReceiveEmailHandler;
 use Externals\Domain\Command\ReceiveEmail;
@@ -9,19 +10,17 @@ use Externals\Domain\Email\EmailContentParser;
 use Externals\Domain\Email\EmailRepository;
 use Imapi\Client;
 use Imapi\Query\QueryBuilder;
-use Silly\Application;
 use Symfony\Component\Console\Output\OutputInterface;
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/.puli/GeneratedPuliFactory.php';
 
-$kernel = new \Externals\Application\Application([], [
-    'error-handler',
-    'app',
-]);
+$kernel = new Application;
 
-$application = new Application();
+$application = new \Silly\Application();
 $application->useContainer($kernel->getContainer(), true, true);
+
+$application->command('init', InitCommand::class);
 
 $application->command('sync', function (Client $imapClient, ReceiveEmailHandler $receiveEmailHandler, OutputInterface $output) {
     $query = QueryBuilder::create('INBOX')
@@ -43,7 +42,5 @@ $application->command('reparse', function (EmailRepository $emailRepository, Ema
         $emailRepository->update($email);
     }
 });
-
-$application->command('init', InitCommand::class);
 
 $application->run();

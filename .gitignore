@@ -1,3 +1,4 @@
+/.env
 /var/
 /vendor/
 /web/vendor/

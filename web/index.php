@@ -1,6 +1,7 @@
 <?php
 declare(strict_types = 1);
 
+use Externals\Application\Application;
 use Externals\Domain\Email\EmailRepository;
 use Externals\Domain\Thread\ThreadRepository;
 use Stratify\ErrorHandlerModule\ErrorHandlerMiddleware;
@@ -14,12 +15,6 @@ if (php_sapi_name() === 'cli-server' && is_file(__DIR__ . preg_replace('#(\?.*)$
 
 require __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../.puli/GeneratedPuliFactory.php';
-
-$modules = [
-    'error-handler',
-    'twig',
-    'app',
-];
 
 $http = pipe([
     ErrorHandlerMiddleware::class,
@@ -39,5 +34,5 @@ $http = pipe([
     ]),
 ]);
 
-$app = new \Externals\Application\Application($http, $modules);
+$app = new Application($http);
 $app->runHttp();

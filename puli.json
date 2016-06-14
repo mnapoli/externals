@@ -275,6 +275,10 @@
             "install-path": "vendor/twig/twig",
             "installer": "composer"
         },
+        "vlucas/phpdotenv": {
+            "install-path": "vendor/vlucas/phpdotenv",
+            "installer": "composer"
+        },
         "webmozart/assert": {
             "install-path": "vendor/webmozart/assert",
             "installer": "composer"
