@@ -12,6 +12,7 @@ use Externals\Domain\Email\EmailRepository;
 use Externals\Domain\Email\EmailSubjectParser;
 use Externals\Domain\Thread\ThreadRepository;
 use Imapi\Client;
+use Psr\Log\LoggerInterface;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
@@ -48,13 +49,19 @@ class ReceiveEmailHandler
      */
     private $contentParser;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
         Client $imapClient,
         Connection $db,
         ThreadRepository $threadRepository,
         EmailRepository $emailRepository,
         EmailSubjectParser $subjectParser,
-        EmailContentParser $contentParser
+        EmailContentParser $contentParser,
+        LoggerInterface $logger
     ) {
         $this->imapClient = $imapClient;
         $this->db = $db;
@@ -62,6 +69,7 @@ class ReceiveEmailHandler
         $this->emailRepository = $emailRepository;
         $this->subjectParser = $subjectParser;
         $this->contentParser = $contentParser;
+        $this->logger = $logger;
     }
 
     public function __invoke(ReceiveEmail $receiveEmail)
@@ -70,6 +78,7 @@ class ReceiveEmailHandler
 
         // Check if we have already received the email
         if ($this->emailRepository->contains($emailId)) {
+            $this->logger->debug('Skipping email ' . $emailId);
             return;
         }
 
@@ -98,5 +107,7 @@ class ReceiveEmailHandler
             new EmailAddress($from->getEmail(), $from->getName())
         );
         $this->emailRepository->add($newEmail);
+
+        $this->logger->info('New email: ' . $email->getSubject());
     }
 }

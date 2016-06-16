@@ -10,16 +10,20 @@ use Externals\Domain\Email\EmailContentParser;
 use Externals\Domain\Email\EmailRepository;
 use Imapi\Client;
 use Imapi\Query\QueryBuilder;
+use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/.puli/GeneratedPuliFactory.php';
 
-$cli = (new Application)->cli();
+$application = new Application;
+$cli = $application->cli();
 
 $cli->command('init', InitCommand::class);
 
-$cli->command('sync [days]', function (int $days = 1, Client $imapClient, ReceiveEmailHandler $receiveEmailHandler, OutputInterface $output) {
+$cli->command('sync [days]', function (int $days = null, Client $imapClient, ReceiveEmailHandler $receiveEmailHandler, OutputInterface $output) {
+    $days = $days ?? 1;
     $query = QueryBuilder::create('INBOX')
         ->youngerThan(3600 * 24 * $days)
         ->getQuery();
@@ -40,4 +44,6 @@ $cli->command('reparse', function (EmailRepository $emailRepository, EmailConten
     }
 });
 
-$cli->run();
+$output = new ConsoleOutput();
+$application->getContainer()->get(ConsoleHandler::class)->setOutput($output);
+$cli->run(null, $output);

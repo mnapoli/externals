@@ -73,6 +73,10 @@
             "install-path": "vendor/mnapoli/silly",
             "installer": "composer"
         },
+        "monolog/monolog": {
+            "install-path": "vendor/monolog/monolog",
+            "installer": "composer"
+        },
         "ornicar/gravatar-bundle": {
             "install-path": "vendor/ornicar/gravatar-bundle/Ornicar/GravatarBundle",
             "installer": "composer"
@@ -215,6 +219,10 @@
         },
         "stratify/twig-module": {
             "install-path": "vendor/stratify/twig-module",
+            "installer": "composer"
+        },
+        "symfony/monolog-bridge": {
+            "install-path": "vendor/symfony/monolog-bridge",
             "installer": "composer"
         },
         "symfony/polyfill-apcu": {
