@@ -2,9 +2,11 @@
 declare(strict_types = 1);
 
 use Externals\Application\Application;
+use Externals\Domain\Email\Email;
 use Externals\Domain\Email\EmailRepository;
 use Externals\Domain\Thread\ThreadRepository;
 use Stratify\ErrorHandlerModule\ErrorHandlerMiddleware;
+use Zend\Diactoros\Response\JsonResponse;
 use function Stratify\Framework\pipe;
 use function Stratify\Framework\router;
 use function Stratify\Router\route;
@@ -30,6 +32,18 @@ $http = pipe([
                 'subject' => $threadRepository->getSubject($id),
                 'emails' => $emailRepository->findByThread($id),
             ]);
+        },
+        '/api/threads/{id}/messages' => function (int $id, EmailRepository $emailRepository) {
+            $emails = $emailRepository->findByThread($id);
+            $data = array_map(function (Email $email) {
+                return [
+                    'id' => $email->getId(),
+                    'subject' => $email->getSubject(),
+                    'content' => $email->getContent(),
+                    'date' => $email->getDate()->format('U'),
+                ];
+            }, $emails);
+            return new JsonResponse($data);
         },
     ]),
 ]);
