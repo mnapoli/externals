@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 
 use Externals\Application\Application;
+use Externals\Application\Controller\NotFoundController;
 use Externals\Domain\Email\Email;
 use Externals\Domain\Email\EmailRepository;
 use Externals\Domain\Thread\ThreadRepository;
@@ -46,6 +47,8 @@ $http = pipe([
             return new JsonResponse($data);
         },
     ]),
+
+    NotFoundController::class,
 ]);
 
 $app = new Application();
