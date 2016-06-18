@@ -153,6 +153,10 @@
             "install-path": "vendor/php-di/invoker",
             "installer": "composer"
         },
+        "php-di/kernel": {
+            "install-path": "vendor/php-di/kernel",
+            "installer": "composer"
+        },
         "php-di/php-di": {
             "install-path": "vendor/php-di/php-di",
             "installer": "composer"

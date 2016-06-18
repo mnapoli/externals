@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7361b5ee5749a1ff7f634087021e2111",
-    "content-hash": "638ba450af93d4b2b286397cf2b19b21",
+    "hash": "beed07be94e416173a0c04471b5ecfd6",
+    "content-hash": "a712210809c4cc18e9c76fd16282c0ec",
     "packages": [
         {
             "name": "aura/router",
@@ -1644,6 +1644,50 @@
             "time": "2016-06-12 09:09:55"
         },
         {
+            "name": "php-di/kernel",
+            "version": "0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHP-DI/Kernel.git",
+                "reference": "52998e30a9724bf9fc26dac01001607031f8f8e2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHP-DI/Kernel/zipball/52998e30a9724bf9fc26dac01001607031f8f8e2",
+                "reference": "52998e30a9724bf9fc26dac01001607031f8f8e2",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/cache": "^1.4",
+                "php": "^5.5|^7.0",
+                "php-di/php-di": "^5.2",
+                "puli/composer-plugin": "^1.0.0-beta8",
+                "puli/discovery": "^1.0.0-beta8",
+                "puli/repository": "^1.0.0-beta8"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DI\\Kernel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Kernel for PHP-DI applications",
+            "homepage": "http://php-di.org",
+            "keywords": [
+                "application",
+                "kernel",
+                "php-di"
+            ],
+            "time": "2016-06-18 08:34:37"
+        },
+        {
             "name": "php-di/php-di",
             "version": "5.3.0",
             "source": {
@@ -2345,21 +2389,22 @@
         },
         {
             "name": "stratify/framework",
-            "version": "0.2.0",
+            "version": "0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stratifyphp/framework.git",
-                "reference": "0d8eed8989a9ece1293d4acb464f80273afed7dc"
+                "reference": "8b8102f29ab424fe3671d0df4bd889403727b577"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stratifyphp/framework/zipball/0d8eed8989a9ece1293d4acb464f80273afed7dc",
-                "reference": "0d8eed8989a9ece1293d4acb464f80273afed7dc",
+                "url": "https://api.github.com/repos/stratifyphp/framework/zipball/8b8102f29ab424fe3671d0df4bd889403727b577",
+                "reference": "8b8102f29ab424fe3671d0df4bd889403727b577",
                 "shasum": ""
             },
             "require": {
                 "mnapoli/silly": "^1.2",
                 "php": ">=7.0",
+                "php-di/kernel": "~0.2.1",
                 "php-di/php-di": "^5.2",
                 "puli/composer-plugin": "^1.0",
                 "puli/discovery": "^1.0",
@@ -2387,7 +2432,7 @@
                 "MIT"
             ],
             "description": "Stratify framework package",
-            "time": "2016-06-14 21:25:55"
+            "time": "2016-06-18 09:01:37"
         },
         {
             "name": "stratify/http",

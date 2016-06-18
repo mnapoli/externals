@@ -24,10 +24,9 @@ class Application extends \Stratify\Framework\Application
         parent::__construct($http, $modules);
     }
 
-    protected function createContainerBuilder(array $modules) : ContainerBuilder
+    protected function configureContainerBuilder(ContainerBuilder $containerBuilder)
     {
-        $builder = parent::createContainerBuilder($modules);
-        $builder->useAnnotations(true);
-        return $builder;
+        $containerBuilder->useAnnotations(true);
+        return $containerBuilder;
     }
 }
