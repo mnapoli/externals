@@ -19,21 +19,13 @@ use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 
 return [
 
-    'debug' => env('DEBUG', true),
+    'debug' => false,
 
-    'imap.config' => [
-        'host' => env('IMAP_HOST'),
-        'user' => env('IMAP_USER'),
-        'password' => env('IMAP_PASSWORD'),
-        'port' => env('IMAP_PORT'),
-        'security' => env('IMAP_SECURITY'),
-    ],
     Client::class => function(ContainerInterface $c) {
         $config = $c->get('imap.config');
         return Client::connect($config['host'], $config['user'], $config['password'], $config['port'], $config['security']);
     },
 
-    'db.url' => env('DB_URL'),
     Connection::class => function (ContainerInterface $c) {
         return DriverManager::getConnection([
             'url' => $c->get('db.url'),

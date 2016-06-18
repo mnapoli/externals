@@ -10,7 +10,7 @@ use Dotenv\Dotenv;
  */
 class Application extends \Stratify\Framework\Application
 {
-    public function __construct($http = null)
+    public function __construct()
     {
         $modules = [
             'error-handler',
@@ -20,8 +20,9 @@ class Application extends \Stratify\Framework\Application
 
         $dotenv = new Dotenv(__DIR__ . '/../../');
         $dotenv->load();
+        $environment = getenv('ENV') ?? 'prod';
 
-        parent::__construct($http, $modules);
+        parent::__construct($modules, $environment);
     }
 
     protected function configureContainerBuilder(ContainerBuilder $containerBuilder)
