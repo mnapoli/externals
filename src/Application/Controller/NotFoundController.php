@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Externals\Application\Controller;
 
-use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\HtmlResponse;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
@@ -22,6 +22,7 @@ class NotFoundController
 
     public function __invoke()
     {
-        return new Response($this->twig->render('/app/views/404.html.twig'));
+        $response = new HtmlResponse($this->twig->render('/app/views/404.html.twig'));
+        return $response->withStatus(404);
     }
 }
