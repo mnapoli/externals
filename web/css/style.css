@@ -33,3 +33,12 @@ article blockquote {
     padding: 0 20px;
     font-size: 0.98em;
 }
+article h1 {
+    font-size: 1.3em;
+}
+article h2 {
+    font-size: 1.2em;
+}
+article h3 {
+    font-size: 1.1em;
+}
