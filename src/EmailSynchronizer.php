@@ -83,7 +83,7 @@ class EmailSynchronizer
 
         foreach ($emailIds as $emailId) {
             // Check if we have already received the email
-            if ($this->emailRepository->contains($emailId)) {
+            if ($this->emailRepository->contains((string) $emailId)) {
                 $this->logger->debug('Skipping email ' . $emailId);
                 continue;
             }
