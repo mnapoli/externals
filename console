@@ -4,15 +4,11 @@ declare(strict_types = 1);
 
 use Externals\Application\Application;
 use Externals\Application\Command\InitCommand;
-use Externals\EmailReceiver;
-use Externals\Domain\Command\ReceiveEmail;
+use Externals\EmailSynchronizer;
 use Externals\Email\EmailContentParser;
 use Externals\Email\EmailRepository;
-use Imapi\Client;
-use Imapi\Query\QueryBuilder;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/.puli/GeneratedPuliFactory.php';
@@ -22,18 +18,8 @@ $cli = $application->cli();
 
 $cli->command('init', InitCommand::class);
 
-$cli->command('sync [days]', function (int $days = null, Client $imapClient, EmailReceiver $receiveEmailHandler, OutputInterface $output) {
-    $days = $days ?? 1;
-    $query = QueryBuilder::create('INBOX')
-        ->youngerThan(3600 * 24 * $days)
-        ->getQuery();
-    $emailIds = $imapClient->getEmailIds($query);
-
-    $output->writeln(sprintf('<comment>%d emails to synchronize</comment>', count($emailIds)));
-
-    foreach ($emailIds as $emailId) {
-        $receiveEmailHandler(new ReceiveEmail((string) $emailId));
-    }
+$cli->command('sync [days]', function (int $days = null, EmailSynchronizer $synchronizer) {
+    $synchronizer->synchronize($days ?? 1);
 });
 
 $cli->command('reparse', function (EmailRepository $emailRepository, EmailContentParser $contentParser) {

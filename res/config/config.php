@@ -23,7 +23,7 @@ return [
 
     Client::class => function(ContainerInterface $c) {
         $config = $c->get('imap.config');
-        return Client::connect($config['host'], $config['user'], $config['password'], $config['port'], $config['security']);
+        return Client::connect($config['host'], $config['user'], $config['password'], (string) $config['port'], $config['security']);
     },
 
     Connection::class => function (ContainerInterface $c) {

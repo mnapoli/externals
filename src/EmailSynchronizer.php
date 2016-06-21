@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace Externals;
 
 use Doctrine\DBAL\Connection;
-use Externals\Domain\Command\ReceiveEmail;
 use Externals\Email\Email;
 use Externals\Email\EmailAddress;
 use Externals\Email\EmailContentParser;
@@ -12,12 +11,13 @@ use Externals\Email\EmailRepository;
 use Externals\Email\EmailSubjectParser;
 use Externals\Thread\ThreadRepository;
 use Imapi\Client;
+use Imapi\Query\QueryBuilder;
 use Psr\Log\LoggerInterface;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class EmailReceiver
+class EmailSynchronizer
 {
     /**
      * @var Client
@@ -72,16 +72,28 @@ class EmailReceiver
         $this->logger = $logger;
     }
 
-    public function __invoke(ReceiveEmail $receiveEmail)
+    public function synchronize(int $days)
     {
-        $emailId = $receiveEmail->getEmailId();
+        $query = QueryBuilder::create('INBOX')
+            ->youngerThan(3600 * 24 * $days)
+            ->getQuery();
+        $emailIds = $this->imapClient->getEmailIds($query);
 
-        // Check if we have already received the email
-        if ($this->emailRepository->contains($emailId)) {
-            $this->logger->debug('Skipping email ' . $emailId);
-            return;
+        $this->logger->info(sprintf('%d emails to synchronize over the last %d day(s)', count($emailIds), $days));
+
+        foreach ($emailIds as $emailId) {
+            // Check if we have already received the email
+            if ($this->emailRepository->contains($emailId)) {
+                $this->logger->debug('Skipping email ' . $emailId);
+                continue;
+            }
+
+            $this->fetchEmail((string) $emailId);
         }
+    }
 
+    public function fetchEmail(string $emailId)
+    {
         $email = $this->imapClient->getEmailFromId($emailId);
 
         $threadSubject = $this->subjectParser->sanitize($email->getSubject());
