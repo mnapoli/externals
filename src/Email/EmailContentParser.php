@@ -52,24 +52,5 @@ class EmailContentParser
         ]);
 
         return $content;
-
-        $lines = preg_split('/\R/', $content); // explode all lines
-
-        $inQuote = false;
-        foreach ($lines as &$line) {
-            $line = trim($line);
-            $isLineQuote = substr($line, 0, 1) === self::QUOTE;
-            if (!$inQuote && $isLineQuote) {
-                $line = "<blockquote>" . $line;
-                $inQuote = true;
-            } elseif ($inQuote && !$isLineQuote) {
-                $line .= '</blockquote>';
-                $inQuote = false;
-            }
-        }
-
-        $content = implode("<br>\n", $lines);
-
-        return $content;
     }
 }
