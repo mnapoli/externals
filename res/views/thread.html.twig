@@ -10,8 +10,9 @@
     </div>
 
     {% for email in emails %}
-        <article class="clearfix">
+        <article id="email-{{ email.id }}" class="clearfix">
             <header>
+                <a href="#email-{{ email.id }}"><span class="fa fa-link"></span></a>
                 Posted by <a href="mailto:{{ email.from.email }}">{{ email.from.nameOrEmail }}</a> {{ email.date|time_diff }}
                 <img class="avatar" src="{{ gravatar(email.from.email, 80, 'g', 'retro') }}">
             </header>
