@@ -21,7 +21,8 @@
         "ornicar/gravatar-bundle": "^1.1",
         "misd/linkify": "^1.1",
         "monolog/monolog": "^1.19",
-        "symfony/monolog-bridge": "^3.1"
+        "symfony/monolog-bridge": "^3.1",
+        "league/commonmark": "^0.13.4"
     },
     "repositories": [
         {

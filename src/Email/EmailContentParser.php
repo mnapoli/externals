@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace Externals\Email;
 
+use League\CommonMark\DocParser;
+use League\CommonMark\HtmlRenderer;
 use Misd\Linkify\Linkify;
 
 /**
@@ -21,9 +23,21 @@ class EmailContentParser
      */
     private $linkify;
 
-    public function __construct(Linkify $linkify)
+    /**
+     * @var DocParser
+     */
+    private $markdownParser;
+
+    /**
+     * @var HtmlRenderer
+     */
+    private $htmlRenderer;
+
+    public function __construct(Linkify $linkify, DocParser $markdownParser, HtmlRenderer $htmlRenderer)
     {
         $this->linkify = $linkify;
+        $this->markdownParser = $markdownParser;
+        $this->htmlRenderer = $htmlRenderer;
     }
 
     public function parse(string $content) : string
@@ -31,19 +45,28 @@ class EmailContentParser
         $content = str_replace(self::FOOTER, '', $content);
         $content = trim($content, " \t\n\r\0\x0B->");
 
+        $content = $this->htmlRenderer->renderBlock($this->markdownParser->parse($content));
+
         $content = $this->linkify->process($content, [
             'attr' => ['rel' => 'nofollow'],
         ]);
 
+        return $content;
+
         $lines = preg_split('/\R/', $content); // explode all lines
 
-        $lines = array_map(function (string $line) : string {
+        $inQuote = false;
+        foreach ($lines as &$line) {
             $line = trim($line);
-            if (substr($line, 0, 1) === self::QUOTE) {
-                $line = "<span class='quoted-line'>$line</span>";
+            $isLineQuote = substr($line, 0, 1) === self::QUOTE;
+            if (!$inQuote && $isLineQuote) {
+                $line = "<blockquote>" . $line;
+                $inQuote = true;
+            } elseif ($inQuote && !$isLineQuote) {
+                $line .= '</blockquote>';
+                $inQuote = false;
             }
-            return $line;
-        }, $lines);
+        }
 
         $content = implode("<br>\n", $lines);
 

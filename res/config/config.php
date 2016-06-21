@@ -9,6 +9,10 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Imapi\Client;
 use Interop\Container\ContainerInterface;
+use League\CommonMark\DocParser;
+use League\CommonMark\Environment;
+use League\CommonMark\HtmlRenderer;
+use League\CommonMark\HtmlElement;
 use Monolog\Logger;
 use Ornicar\GravatarBundle\Templating\Helper\GravatarHelper;
 use Ornicar\GravatarBundle\Templating\Helper\GravatarHelperInterface;
@@ -21,9 +25,10 @@ return [
 
     'debug' => false,
 
-    Client::class => function(ContainerInterface $c) {
+    Client::class => function (ContainerInterface $c) {
         $config = $c->get('imap.config');
-        return Client::connect($config['host'], $config['user'], $config['password'], (string) $config['port'], $config['security']);
+        return Client::connect($config['host'], $config['user'], $config['password'], (string) $config['port'],
+            $config['security']);
     },
 
     Connection::class => function (ContainerInterface $c) {
@@ -46,5 +51,21 @@ return [
     ],
     ConsoleHandler::class => object()
         ->method('setFormatter', get(ConsoleFormatter::class)),
+
+    DocParser::class => function (ContainerInterface $c) {
+        return new DocParser($c->get(Environment::class));
+    },
+    HtmlRenderer::class => function (ContainerInterface $c) {
+        return new HtmlRenderer($c->get(Environment::class));
+    },
+    Environment::class => function () {
+        $environment = Environment::createCommonMarkEnvironment();
+        $environment->mergeConfig([
+            'renderer' => [
+                'soft_break' => " <br>\n",
+            ],
+        ]);
+        return $environment;
+    },
 
 ];

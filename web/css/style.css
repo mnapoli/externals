@@ -28,6 +28,8 @@ article header .avatar {
     border-radius: 50%;
     box-shadow: 1px 2px 5px 1px #c0c0c0;
 }
-article .quoted-line {
+article blockquote {
     color: #999;
+    padding: 0 20px;
+    font-size: 0.98em;
 }
