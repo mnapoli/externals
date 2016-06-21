@@ -1,6 +1,6 @@
 <?php
 
-namespace Externals\Domain\Email;
+namespace Externals\Email;
 
 /**
  * Parses an email subject.

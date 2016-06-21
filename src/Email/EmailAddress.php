@@ -1,6 +1,6 @@
 <?php
 
-namespace Externals\Domain\Email;
+namespace Externals\Email;
 
 /**
  * Email address that may be associated to a name.

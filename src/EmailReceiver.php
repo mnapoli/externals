@@ -1,23 +1,23 @@
 <?php
 declare(strict_types = 1);
 
-namespace Externals\Domain\Command\Handler;
+namespace Externals;
 
 use Doctrine\DBAL\Connection;
 use Externals\Domain\Command\ReceiveEmail;
-use Externals\Domain\Email\Email;
-use Externals\Domain\Email\EmailAddress;
-use Externals\Domain\Email\EmailContentParser;
-use Externals\Domain\Email\EmailRepository;
-use Externals\Domain\Email\EmailSubjectParser;
-use Externals\Domain\Thread\ThreadRepository;
+use Externals\Email\Email;
+use Externals\Email\EmailAddress;
+use Externals\Email\EmailContentParser;
+use Externals\Email\EmailRepository;
+use Externals\Email\EmailSubjectParser;
+use Externals\Thread\ThreadRepository;
 use Imapi\Client;
 use Psr\Log\LoggerInterface;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class ReceiveEmailHandler
+class EmailReceiver
 {
     /**
      * @var Client

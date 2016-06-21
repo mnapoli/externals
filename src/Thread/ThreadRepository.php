@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace Externals\Domain\Thread;
+namespace Externals\Thread;
 
 use Doctrine\DBAL\Connection;
-use Externals\Domain\NotFound;
+use Externals\NotFound;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>

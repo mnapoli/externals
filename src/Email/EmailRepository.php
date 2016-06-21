@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Externals\Domain\Email;
+namespace Externals\Email;
 
 use Doctrine\DBAL\Connection;
 

@@ -3,9 +3,9 @@ declare(strict_types = 1);
 
 use Externals\Application\Application;
 use Externals\Application\Controller\NotFoundController;
-use Externals\Domain\Email\Email;
-use Externals\Domain\Email\EmailRepository;
-use Externals\Domain\Thread\ThreadRepository;
+use Externals\Email\Email;
+use Externals\Email\EmailRepository;
+use Externals\Thread\ThreadRepository;
 use Stratify\ErrorHandlerModule\ErrorHandlerMiddleware;
 use Zend\Diactoros\Response\JsonResponse;
 use function Stratify\Framework\pipe;

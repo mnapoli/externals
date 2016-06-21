@@ -1,6 +1,6 @@
 <?php
 
-namespace Externals\Domain;
+namespace Externals;
 
 use Exception;
 
