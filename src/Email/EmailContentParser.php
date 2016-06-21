@@ -45,6 +45,11 @@ class EmailContentParser
         $content = str_replace(self::FOOTER, '', $content);
         $content = trim($content, " \t\n\r\0\x0B->");
 
+        // Auto-transform PHP functions to inline code
+        $content = $this->parsePhpFunctions($content);
+        // Auto-transform PHP constants to inline code
+        $content = $this->parsePhpConstants($content);
+
         $content = $this->htmlRenderer->renderBlock($this->markdownParser->parse($content));
 
         $content = $this->linkify->process($content, [
@@ -52,5 +57,27 @@ class EmailContentParser
         ]);
 
         return $content;
+    }
+
+    private function parsePhpFunctions(string $content) : string
+    {
+        return preg_replace_callback('/\s([a-zA-Z0-9_]+)\(\)/', function ($matches) : string {
+            $function = $matches[1];
+            if (function_exists($function)) {
+                return " `$function()`";
+            }
+            return $matches[0];
+        }, $content);
+    }
+
+    private function parsePhpConstants(string $content) : string
+    {
+        return preg_replace_callback('/\s([A-Z_]+)\s/', function ($matches) : string {
+            $name = $matches[1];
+            if (defined($name)) {
+                return " `$name` ";
+            }
+            return $matches[0];
+        }, $content);
     }
 }
