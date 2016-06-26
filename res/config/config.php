@@ -5,6 +5,7 @@ use function DI\add;
 use function DI\env;
 use function DI\get;
 use function DI\object;
+use function DI\string;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Imapi\Client;
@@ -12,7 +13,6 @@ use Interop\Container\ContainerInterface;
 use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
 use League\CommonMark\HtmlRenderer;
-use League\CommonMark\HtmlElement;
 use Monolog\Logger;
 use Ornicar\GravatarBundle\Templating\Helper\GravatarHelper;
 use Ornicar\GravatarBundle\Templating\Helper\GravatarHelperInterface;
@@ -24,6 +24,7 @@ use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 return [
 
     'debug' => false,
+    'path.cache' => __DIR__ . '/../../var/cache',
 
     Client::class => function (ContainerInterface $c) {
         $config = $c->get('imap.config');
@@ -37,6 +38,9 @@ return [
         ]);
     },
 
+    'twig.options' => [
+        'cache' => string('{path.cache}/twig'),
+    ],
     'twig.extensions' => add([
         get(Twig_Extensions_Extension_Date::class),
         get(GravatarExtension::class),
