@@ -2,7 +2,6 @@
 
 namespace Externals\Application;
 
-use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 
 /**
@@ -23,11 +22,5 @@ class Application extends \Stratify\Framework\Application
         $environment = getenv('ENV') ?? 'prod';
 
         parent::__construct($modules, $environment);
-    }
-
-    protected function configureContainerBuilder(ContainerBuilder $containerBuilder)
-    {
-        $containerBuilder->useAnnotations(true);
-        return $containerBuilder;
     }
 }
