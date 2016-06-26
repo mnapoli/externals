@@ -44,6 +44,8 @@ class InitCommand
         $emailsTable->addColumn('originalContent', 'text');
         $emailsTable->addColumn('fromEmail', 'string');
         $emailsTable->addColumn('fromName', 'string', ['notnull' => false]);
+        $emailsTable->addColumn('imapId', 'string', ['notnull' => false]);
+        $emailsTable->addColumn('inReplyTo', 'string', ['notnull' => false]);
         $emailsTable->setPrimaryKey(['id']);
         $emailsTable->addIndex(['threadId']);
 

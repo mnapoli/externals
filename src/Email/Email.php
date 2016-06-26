@@ -42,6 +42,18 @@ class Email
      */
     private $from;
 
+    /**
+     * @var string|null
+     */
+    private $imapId;
+
+    /**
+     * ID ($imapId) of the message it replies to.
+     *
+     * @var string|null
+     */
+    private $inReplyTo;
+
     public function __construct(
         string $id,
         string $subject,
@@ -49,7 +61,9 @@ class Email
         string $originalContent,
         int $threadId,
         DateTimeInterface $date,
-        EmailAddress $from
+        EmailAddress $from,
+        $imapId,
+        $inReplyTo
     ) {
         $this->id = $id;
         $this->subject = $subject;
@@ -58,6 +72,8 @@ class Email
         $this->threadId = $threadId;
         $this->date = $date;
         $this->from = $from;
+        $this->imapId = $imapId;
+        $this->inReplyTo = $inReplyTo;
     }
 
     public function getId() : string
@@ -98,5 +114,21 @@ class Email
     public function getFrom() : EmailAddress
     {
         return $this->from;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getImapId()
+    {
+        return $this->imapId;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getInReplyTo()
+    {
+        return $this->inReplyTo;
     }
 }

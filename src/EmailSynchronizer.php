@@ -102,13 +102,15 @@ class EmailSynchronizer
         $from = reset($fromArray);
 
         $newEmail = new Email(
-            $email->getId(),
+            $email->getUid(),
             $email->getSubject(),
             $content,
             $email->getTextContent(),
             $threadId,
             $email->getDate(),
-            new EmailAddress($from->getEmail(), $from->getName())
+            new EmailAddress($from->getEmail(), $from->getName()),
+            $email->getMessageId(),
+            $email->getInReplyTo()
         );
         $this->emailRepository->add($newEmail);
 

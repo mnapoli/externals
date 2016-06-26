@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "749a01672506d321449e54813f0a07af",
-    "content-hash": "9bcbf9779fdae09dbc5f5c94e413ba7f",
+    "hash": "360ad62ae10e084504414ce1a586fc9d",
+    "content-hash": "5fd978698ce3d00d6d16488655ecc591",
     "packages": [
         {
             "name": "aura/router",
@@ -885,16 +885,16 @@
         },
         {
             "name": "mnapoli/imapi",
-            "version": "0.1.0",
+            "version": "0.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mnapoli/imapi.git",
-                "reference": "0f40a6b3202731c40fdd4ced836c8732e7762584"
+                "reference": "ebae38162843b070a49c33bb2ce68fbfceaa4809"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mnapoli/imapi/zipball/0f40a6b3202731c40fdd4ced836c8732e7762584",
-                "reference": "0f40a6b3202731c40fdd4ced836c8732e7762584",
+                "url": "https://api.github.com/repos/mnapoli/imapi/zipball/ebae38162843b070a49c33bb2ce68fbfceaa4809",
+                "reference": "ebae38162843b070a49c33bb2ce68fbfceaa4809",
                 "shasum": ""
             },
             "require": {
@@ -922,10 +922,10 @@
             ],
             "description": "IMAP API",
             "support": {
-                "source": "https://github.com/mnapoli/Imapi/tree/master",
-                "issues": "https://github.com/mnapoli/Imapi/issues"
+                "source": "https://github.com/mnapoli/imapi/tree/0.2.2",
+                "issues": "https://github.com/mnapoli/imapi/issues"
             },
-            "time": "2016-06-13 20:17:38"
+            "time": "2016-06-26 19:25:30"
         },
         {
             "name": "mnapoli/silly",

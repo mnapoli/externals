@@ -55,6 +55,8 @@ class EmailRepository
             'date' => $email->getDate(),
             'fromEmail' => $email->getFrom()->getEmail(),
             'fromName' => $email->getFrom()->getName(),
+            'imapId' => $email->getImapId(),
+            'inReplyTo' => $email->getInReplyTo(),
         ], [
             'string',
             'text',
@@ -64,18 +66,16 @@ class EmailRepository
             'datetime',
             'string',
             'string',
+            'string',
+            'string',
         ]);
     }
 
-    public function update(Email $email)
+    public function updateContent(Email $email)
     {
         $this->db->update('emails', [
-            'subject' => $email->getSubject(),
             'content' => $email->getContent(),
-        ], ['id' => $email->getId()], [
-            'text',
-            'text',
-        ]);
+        ], ['id' => $email->getId()], ['text']);
     }
 
     private function createEmail(array $row) : Email
@@ -92,7 +92,9 @@ class EmailRepository
             $row['originalContent'],
             (int) $row['threadId'],
             $date,
-            new EmailAddress($row['fromEmail'], $row['fromName'])
+            new EmailAddress($row['fromEmail'], $row['fromName']),
+            $row['imapId'],
+            $row['inReplyTo']
         );
     }
 }
