@@ -8,15 +8,13 @@ use function DI\object;
 use function DI\string;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Gravatar\Twig\GravatarExtension;
 use Imapi\Client;
 use Interop\Container\ContainerInterface;
 use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
 use League\CommonMark\HtmlRenderer;
 use Monolog\Logger;
-use Ornicar\GravatarBundle\Templating\Helper\GravatarHelper;
-use Ornicar\GravatarBundle\Templating\Helper\GravatarHelperInterface;
-use Ornicar\GravatarBundle\Twig\GravatarExtension;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
@@ -45,8 +43,6 @@ return [
         get(Twig_Extensions_Extension_Date::class),
         get(GravatarExtension::class),
     ]),
-
-    GravatarHelperInterface::class => DI\object(GravatarHelper::class),
 
     LoggerInterface::class => object(Logger::class)
         ->constructor('app', get('logger.handlers')),

@@ -52,10 +52,13 @@
             "install-path": "vendor/filp/whoops",
             "installer": "composer"
         },
-        "ircmaxell/password-compat": {
-            "install-path": "vendor/ircmaxell/password-compat",
-            "installer": "composer",
-            "env": "dev"
+        "gravatarphp/gravatar": {
+            "install-path": "vendor/gravatarphp/gravatar",
+            "installer": "composer"
+        },
+        "gravatarphp/twig-integration": {
+            "install-path": "vendor/gravatarphp/twig-integration",
+            "installer": "composer"
         },
         "justinrainbow/json-schema": {
             "install-path": "vendor/justinrainbow/json-schema",
@@ -79,10 +82,6 @@
         },
         "monolog/monolog": {
             "install-path": "vendor/monolog/monolog",
-            "installer": "composer"
-        },
-        "ornicar/gravatar-bundle": {
-            "install-path": "vendor/ornicar/gravatar-bundle/Ornicar/GravatarBundle",
             "installer": "composer"
         },
         "paragonie/random_compat": {
@@ -229,59 +228,25 @@
             "install-path": "vendor/stratify/twig-module",
             "installer": "composer"
         },
+        "symfony/console": {
+            "install-path": "vendor/symfony/console",
+            "installer": "composer"
+        },
+        "symfony/filesystem": {
+            "install-path": "vendor/symfony/filesystem",
+            "installer": "composer"
+        },
         "symfony/monolog-bridge": {
             "install-path": "vendor/symfony/monolog-bridge",
             "installer": "composer"
         },
-        "symfony/polyfill-apcu": {
-            "install-path": "vendor/symfony/polyfill-apcu",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "symfony/polyfill-intl-icu": {
-            "install-path": "vendor/symfony/polyfill-intl-icu",
-            "installer": "composer",
-            "env": "dev"
-        },
         "symfony/polyfill-mbstring": {
             "install-path": "vendor/symfony/polyfill-mbstring",
-            "installer": "composer",
-            "env": "dev"
+            "installer": "composer"
         },
-        "symfony/polyfill-php54": {
-            "install-path": "vendor/symfony/polyfill-php54",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "symfony/polyfill-php55": {
-            "install-path": "vendor/symfony/polyfill-php55",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "symfony/polyfill-php56": {
-            "install-path": "vendor/symfony/polyfill-php56",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "symfony/polyfill-php70": {
-            "install-path": "vendor/symfony/polyfill-php70",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "symfony/polyfill-util": {
-            "install-path": "vendor/symfony/polyfill-util",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "symfony/security-acl": {
-            "install-path": "vendor/symfony/security-acl",
-            "installer": "composer",
-            "env": "dev"
-        },
-        "symfony/symfony": {
-            "install-path": "vendor/symfony/symfony",
-            "installer": "composer",
-            "env": "dev"
+        "symfony/process": {
+            "install-path": "vendor/symfony/process",
+            "installer": "composer"
         },
         "twig/extensions": {
             "install-path": "vendor/twig/extensions",
