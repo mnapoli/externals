@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace Externals;
 
-use Doctrine\DBAL\Connection;
 use Externals\Email\Email;
 use Externals\Email\EmailAddress;
 use Externals\Email\EmailContentParser;
@@ -23,11 +22,6 @@ class EmailSynchronizer
      * @var Client
      */
     private $imapClient;
-
-    /**
-     * @var Connection
-     */
-    private $db;
 
     /**
      * @var ThreadRepository
@@ -56,7 +50,6 @@ class EmailSynchronizer
 
     public function __construct(
         Client $imapClient,
-        Connection $db,
         ThreadRepository $threadRepository,
         EmailRepository $emailRepository,
         EmailSubjectParser $subjectParser,
@@ -64,7 +57,6 @@ class EmailSynchronizer
         LoggerInterface $logger
     ) {
         $this->imapClient = $imapClient;
-        $this->db = $db;
         $this->threadRepository = $threadRepository;
         $this->emailRepository = $emailRepository;
         $this->subjectParser = $subjectParser;
