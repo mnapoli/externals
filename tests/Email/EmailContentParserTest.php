@@ -68,6 +68,31 @@ HTML;
     /**
      * @test
      */
+    public function should_encode_html_entities()
+    {
+        $this->markTestSkipped('Waiting for https://github.com/thephpleague/commonmark/issues/252 to be answered');
+        $content = <<<'EMAIL'
+> and the test:
+>
+> <?php
+> ini_set("pcntl.async_signals", "1");
+
+We use 2/3 vote for "a feature affecting the language itself".
+EMAIL;
+        $expected = <<<HTML
+<p>and the test:</p>
+<blockquote>
+&gt;?php
+ini_set(&quot;pcntl.async_signals&quot;, &quot;1&quot;);
+</blockquote>
+<p>We use 2/3 vote for &quot;a feature affecting the language itself&quot;.</p>
+HTML;
+        $this->assertEquals($expected, trim($this->parser->parse($content)));
+    }
+
+    /**
+     * @test
+     */
     public function should_strip_mailing_list_signature()
     {
         $content = <<<MARKDOWN
