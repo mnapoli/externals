@@ -32,6 +32,9 @@ article header .avatar {
     border-radius: 50%;
     box-shadow: 1px 2px 5px 1px #c0c0c0;
 }
+article header .email-date {
+    color: inherit;
+}
 article blockquote {
     color: #999;
     padding: 0 20px;
@@ -45,6 +48,20 @@ article h2 {
 }
 article h3 {
     font-size: 1.1em;
+}
+
+/* Collapse last blockquote of an email */
+article blockquote:last-child {
+    visibility: hidden;
+    height: 1em;
+    position: relative;
+}
+article blockquote:last-child:after {
+    content: '…';
+    visibility: visible;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 /* Article nesting*/

@@ -6,33 +6,40 @@
 
 {% macro threadItem(item) %}
     {% set email = item.email %}
+
     <article id="email-{{ email.id }}" class="clearfix">
+
         <header>
-            <a href="#email-{{ email.id }}"><span class="fa fa-link"></span></a>
-            Posted by <a href="mailto:{{ email.from.email }}">{{ email.from.nameOrEmail }}</a>
-            <span title="{{ email.date|date }}">{{ email.date|time_diff }}</span>
+            <a href="#email-{{ email.id }}-content" role="button" data-toggle="collapse"><span class="fa fa-compress"></span></a>
+            Posted
+            <a class="email-date" href="#email-{{ email.id }}" title="{{ email.date|date }}">{{ email.date|time_diff }}</a>
+            by <strong>{{ email.from.nameOrEmail }}</strong>
             <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro', s: 50}) }}">
         </header>
-        {{ email.content|raw }}
-        {% for reply in item.replies %}
-            {{ _self.threadItem(reply) }}
-        {% endfor %}
+
+        <div id="email-{{ email.id }}-body" class="collapse in">
+            <div class="email-content">
+                {{ email.content|raw }}
+            </div>
+            {% for reply in item.replies %}
+                {{ _self.threadItem(reply) }}
+            {% endfor %}
+        </div>
+
     </article>
+
 {% endmacro %}
 
 {% block content %}
-
     <div class="page-header">
         <h1>
             <a href="/"><span class="fa fa-caret-left"></span></a>
             {{ subject }}
         </h1>
     </div>
-
     <section class="thread">
         {% for item in thread %}
             {{ macros.threadItem(item) }}
         {% endfor %}
     </section>
-
 {% endblock %}
