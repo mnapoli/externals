@@ -3,25 +3,29 @@ body {
 }
 
 .container {
-    max-width: 750px;
+    max-width: 1000px;
 }
 
 .thread-list {
     font-size: 1.2em;
 }
 
+.thread {
+    margin-bottom: 50px;
+}
 article {
     background-color: white;
     border: 1px solid #e6e6e6;
-    padding: 16px;
-    margin: 10px 0;
+    padding: 20px;
+    margin: 20px 0 0;
 }
 article header {
     border-bottom: 1px solid #e6e6e6;
-    padding: 10px 16px;
-    margin: -16px -16px 16px;
+    padding: 5px 16px;
+    margin: -20px -20px 20px;
     background-color: #f1f1f1;
     color: #757575;
+    font-size: 0.9em;
 }
 article header .avatar {
     float: right;
@@ -41,4 +45,12 @@ article h2 {
 }
 article h3 {
     font-size: 1.1em;
+}
+
+/* Article nesting*/
+article article, article article article article, article article article article article article {
+    background-color: #f9fafb;
+}
+article article article, article article article article article, article article article article article article article {
+    background-color: white;
 }

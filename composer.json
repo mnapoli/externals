@@ -13,7 +13,6 @@
         "vlucas/phpdotenv": "^2.3",
         "stratify/framework": "~0.3.0",
         "mnapoli/silly": "^1.3",
-        "doctrine/annotations": "^1.2",
         "mnapoli/imapi": "~0.2.0",
         "doctrine/dbal": "^2.5",
         "stratify/twig-module": "~0.1.1",

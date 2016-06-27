@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f1e46da09823cb9a3e42577dce773d42",
-    "content-hash": "54edcad696f48bca13ab85619a98beb6",
+    "hash": "b6d04dd9d724dbeeb9fa69808a495e5d",
+    "content-hash": "8fdc80026acc15febb8ee6ea2cea3954",
     "packages": [
         {
             "name": "aura/router",

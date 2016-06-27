@@ -1,6 +1,24 @@
 {% extends '/app/views/layout.html.twig' %}
 
+{% import _self as macros %}
+
 {% block pageTitle %}{{ subject }} - Externals{% endblock %}
+
+{% macro threadItem(item) %}
+    {% set email = item.email %}
+    <article id="email-{{ email.id }}" class="clearfix">
+        <header>
+            <a href="#email-{{ email.id }}"><span class="fa fa-link"></span></a>
+            Posted by <a href="mailto:{{ email.from.email }}">{{ email.from.nameOrEmail }}</a>
+            <span title="{{ email.date|date }}">{{ email.date|time_diff }}</span>
+            <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro', s: 50}) }}">
+        </header>
+        {{ email.content|raw }}
+        {% for reply in item.replies %}
+            {{ _self.threadItem(reply) }}
+        {% endfor %}
+    </article>
+{% endmacro %}
 
 {% block content %}
 
@@ -11,16 +29,10 @@
         </h1>
     </div>
 
-    {% for email in emails %}
-        <article id="email-{{ email.id }}" class="clearfix">
-            <header>
-                <a href="#email-{{ email.id }}"><span class="fa fa-link"></span></a>
-                Posted by <a href="mailto:{{ email.from.email }}">{{ email.from.nameOrEmail }}</a>
-                <span title="{{ email.date|date }}">{{ email.date|time_diff }}</span>
-                <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro'}) }}">
-            </header>
-            {{ email.content|raw }}
-        </article>
-    {% endfor %}
+    <section class="thread">
+        {% for item in thread %}
+            {{ macros.threadItem(item) }}
+        {% endfor %}
+    </section>
 
 {% endblock %}

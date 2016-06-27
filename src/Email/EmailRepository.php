@@ -26,14 +26,37 @@ class EmailRepository
     }
 
     /**
-     * @return Email[]
+     * Returns a threaded view of the emails.
+     *
+     * @return ThreadItem[]
      */
-    public function findByThread(int $threadId) : array
+    public function getThreadView(int $threadId) : array
     {
         $query = 'SELECT * FROM emails WHERE threadId = ? ORDER BY date ASC';
         $emails = $this->db->fetchAll($query, [$threadId]);
+        /** @var Email[] $emails */
+        $emails = array_map([$this, 'createEmail'], $emails);
 
-        return array_map([$this, 'createEmail'], $emails);
+        // Index by ID
+        /** @var ThreadItem[] $indexedThreadItem */
+        $indexedThreadItem = [];
+        foreach ($emails as $email) {
+            $id = $email->getImapId() ?? $email->getId();
+            $indexedThreadItem[$id] = new ThreadItem($email);
+        }
+
+        // Link each email to the one it replies to
+        $rootItems = [];
+        foreach ($indexedThreadItem as $item) {
+            $replyId = $item->getEmail()->getInReplyTo();
+            if ($replyId && isset($indexedThreadItem[$replyId])) {
+                $indexedThreadItem[$replyId]->addReply($item);
+            } else {
+                $rootItems[] = $item;
+            }
+        }
+
+        return $rootItems;
     }
 
     /**
