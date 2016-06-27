@@ -83,6 +83,43 @@ MARKDOWN;
     /**
      * @test
      */
+    public function should_strip_unindented_trailing_quotation_1()
+    {
+        $content = <<<MARKDOWN
+Hello Georges
+
+---
+
+From: Georges Henry gh@example.com
+Sent: Friday, June 24, 2016 6:50:59 PM
+To: Pierre Lefroie
+Cc: PHP internals
+Subject: Re: [PHP-DEV] [RFC] Asynchronous Signal Handling
+MARKDOWN;
+        $this->assertEquals('<p>Hello Georges</p>', trim($this->parser->parse($content)));
+    }
+
+    /**
+     * @test
+     */
+    public function should_strip_unindented_trailing_quotation_2()
+    {
+        $content = <<<MARKDOWN
+Hello Georges
+
+________________________________
+From: Georges Henry gh@example.com
+Sent: Friday, June 24, 2016 6:50:59 PM
+To: Pierre Lefroie
+Cc: PHP internals
+Subject: Re: [PHP-DEV] [RFC] Asynchronous Signal Handling
+MARKDOWN;
+        $this->assertEquals('<p>Hello Georges</p>', trim($this->parser->parse($content)));
+    }
+
+    /**
+     * @test
+     */
     public function should_strip_trailing_line_breaks()
     {
         $content = <<<MARKDOWN

@@ -56,6 +56,8 @@ class EmailContentParser
         $content = str_replace(self::FOOTER, '', $content);
         $content = trim($content, " \t\n\r\0\x0B->");
 
+        $content = $this->stripTrailingUnindentedQuotation($content);
+
         // Auto-transform PHP functions to inline code
         $content = $this->parsePhpFunctions($content);
         // Auto-transform PHP constants to inline code
@@ -99,5 +101,18 @@ class EmailContentParser
             }
             return $matches[0];
         }, $content);
+    }
+
+    private function stripTrailingUnindentedQuotation(string $content) : string
+    {
+        return preg_replace('/
+                # At least 2 line breaks
+                \R\R
+                # A line of "---" or "___" (at least 2 of them)
+                [-_]{2,}\R
+                # Optional extra line break
+                \R?
+                From: .+$
+            /sx', '', $content);
     }
 }
