@@ -51,12 +51,12 @@ article h3 {
 }
 
 /* Collapse last blockquote of an email */
-article blockquote:last-child {
+article .email-content>blockquote:last-child {
     visibility: hidden;
     height: 1em;
     position: relative;
 }
-article blockquote:last-child:after {
+article .email-content>blockquote:last-child:after {
     content: '…';
     visibility: visible;
     position: absolute;
