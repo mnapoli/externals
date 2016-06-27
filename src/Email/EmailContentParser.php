@@ -13,12 +13,6 @@ use Psr\Log\LoggerInterface;
  */
 class EmailContentParser
 {
-    const FOOTER = [
-        'PHP Internals - PHP Runtime Development Mailing List',
-        'To unsubscribe, visit: http://www.php.net/unsub.php',
-    ];
-    const QUOTE = '>';
-
     /**
      * @var Linkify
      */
@@ -53,9 +47,8 @@ class EmailContentParser
 
     public function parse(string $content) : string
     {
-        $content = str_replace(self::FOOTER, '', $content);
+        $content = $this->stripMailingListFooter($content);
         $content = trim($content, " \t\n\r\0\x0B->");
-
         $content = $this->stripTrailingUnindentedQuotation($content);
 
         // Auto-transform PHP functions to inline code
@@ -101,6 +94,15 @@ class EmailContentParser
             }
             return $matches[0];
         }, $content);
+    }
+
+    private function stripMailingListFooter(string $content)
+    {
+        $footer = [
+            'PHP Internals - PHP Runtime Development Mailing List',
+            'To unsubscribe, visit: http://www.php.net/unsub.php',
+        ];
+        return str_replace($footer, '', $content);
     }
 
     private function stripTrailingUnindentedQuotation(string $content) : string
