@@ -6,6 +6,7 @@ namespace Externals\Email;
 use League\CommonMark\DocParser;
 use League\CommonMark\HtmlRenderer;
 use Misd\Linkify\Linkify;
+use Psr\Log\LoggerInterface;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
@@ -33,11 +34,21 @@ class EmailContentParser
      */
     private $htmlRenderer;
 
-    public function __construct(Linkify $linkify, DocParser $markdownParser, HtmlRenderer $htmlRenderer)
-    {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(
+        Linkify $linkify,
+        DocParser $markdownParser,
+        HtmlRenderer $htmlRenderer,
+        LoggerInterface $logger
+    ) {
         $this->linkify = $linkify;
         $this->markdownParser = $markdownParser;
         $this->htmlRenderer = $htmlRenderer;
+        $this->logger = $logger;
     }
 
     public function parse(string $content) : string
@@ -50,7 +61,14 @@ class EmailContentParser
         // Auto-transform PHP constants to inline code
         $content = $this->parsePhpConstants($content);
 
-        $content = $this->htmlRenderer->renderBlock($this->markdownParser->parse($content));
+        try {
+            $content = $this->htmlRenderer->renderBlock($this->markdownParser->parse($content));
+        } catch (\Exception $e) {
+            $this->logger->warning('Unable to parse email content as Markdown: ' . $e->getMessage(), [
+                'exception' => $e,
+                'text' => $content,
+            ]);
+        }
 
         $content = $this->linkify->process($content, [
             'attr' => ['rel' => 'nofollow'],
