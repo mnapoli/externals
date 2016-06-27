@@ -7,6 +7,11 @@
             "Externals\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Externals\\Test\\": "tests/"
+        }
+    },
     "require": {
         "php": "^7.0",
         "php-di/php-di": "^5.1",
@@ -35,5 +40,8 @@
         "secure-http": false
     },
     "minimum-stability": "beta",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "require-dev": {
+        "phpunit/phpunit": "^5.4"
+    }
 }
