@@ -68,6 +68,8 @@ class EmailContentParser
                 'exception' => $e,
                 'text' => $content,
             ]);
+            // Fallback to basic formatting:
+            $content = nl2br($content);
         }
 
         $content = $this->linkify->process($content, [
