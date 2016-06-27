@@ -232,6 +232,10 @@
             "install-path": "vendor/symfony/console",
             "installer": "composer"
         },
+        "symfony/event-dispatcher": {
+            "install-path": "vendor/symfony/event-dispatcher",
+            "installer": "composer"
+        },
         "symfony/filesystem": {
             "install-path": "vendor/symfony/filesystem",
             "installer": "composer"

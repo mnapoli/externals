@@ -21,6 +21,7 @@
         "misd/linkify": "^1.1",
         "monolog/monolog": "^1.19",
         "symfony/monolog-bridge": "^3.1",
+        "symfony/event-dispatcher": "^3.1",
         "league/commonmark": "^0.13.4",
         "gravatarphp/gravatar": "^1.0",
         "gravatarphp/twig-integration": "^1.0"
