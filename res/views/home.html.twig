@@ -6,20 +6,60 @@
         <h1>PHP #internals</h1>
     </div>
 
-    <table class="thread-list table table-striped table-hover">
-        {% for thread in threads %}
-            <tr>
-                <td>
-                    {% if thread.emailCount > 1 %}
-                        <span class="badge badge-default">{{ thread.emailCount }}</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="thread/{{ thread.id }}">{{ thread.subject }}</a>
-                    <small class="text-muted">{{ thread.lastUpdate|time_diff }}</small>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+    <section id="threads">
+
+        <table class="thread-list table table-striped table-hover">
+            {% for thread in threads %}
+                <tr>
+                    <td>
+                        {% if thread.emailCount > 1 %}
+                            <span class="badge badge-default">{{ thread.emailCount }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="thread/{{ thread.id }}">{{ thread.subject }}</a>
+                        <small class="text-muted">{{ thread.lastUpdate|time_diff }}</small>
+                    </td>
+                </tr>
+            {% endfor %}
+            {# VueJS template #}
+            {% verbatim %}
+                <tr v-for="thread in threads">
+                    <td>
+                        <span v-if="thread.emailCount > 1" class="badge badge-default">{{ thread.emailCount }}</span>
+                    </td>
+                    <td>
+                        <a href="thread/{{ thread.id }}">{{ thread.subject }}</a>
+                    </td>
+                </tr>
+            {% endverbatim %}
+        </table>
+
+        <p>
+            <button v-on:click="showMore" class="btn btn-default btn-block btn-lg">Show more</button>
+        </p>
+
+    </section>
+
+    <script>
+        $(function () {
+            var vue = new Vue({
+                el: '#threads',
+                data: {
+                    page: 2,
+                    threads: []
+                },
+                methods: {
+                    showMore: function () {
+                        var self = this;
+                        $.get('/api/threads?page=' + this.page, function (newThreads) {
+                            self.threads = self.threads.concat(newThreads);
+                        });
+                        this.page++;
+                    }
+                }
+            });
+        });
+    </script>
 
 {% endblock %}

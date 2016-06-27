@@ -48,14 +48,18 @@ class ThreadRepository
         return (int) $this->db->lastInsertId();
     }
 
-    public function findLatest() : array
+    public function findLatest(int $page = 1) : array
     {
+        $perPage = 20;
+        $offset = ($page - 1) * $perPage;
+
         $query = 'SELECT threads.id, threads.subject, COUNT(emails.id) as emailCount, MAX(emails.date) as lastUpdate
             FROM threads
             LEFT JOIN emails ON threads.id = emails.threadId
             GROUP BY threads.id
             ORDER BY lastUpdate DESC
-            LIMIT 30';
-        return $this->db->fetchAll($query);
+            LIMIT ? OFFSET ?';
+
+        return $this->db->fetchAll($query, [$perPage, $offset], [\PDO::PARAM_INT, \PDO::PARAM_INT]);
     }
 }

@@ -5,10 +5,12 @@ use Externals\Application\Application;
 use Externals\Application\Controller\NotFoundController;
 use Externals\Email\EmailRepository;
 use Externals\Thread\ThreadRepository;
+use Psr\Http\Message\ServerRequestInterface;
 use Stratify\ErrorHandlerModule\ErrorHandlerMiddleware;
 use function Stratify\Framework\pipe;
 use function Stratify\Framework\router;
 use function Stratify\Router\route;
+use Zend\Diactoros\Response\JsonResponse;
 
 if (php_sapi_name() === 'cli-server' && is_file(__DIR__ . preg_replace('#(\?.*)$#', '', $_SERVER['REQUEST_URI']))) {
     return false;
@@ -31,6 +33,11 @@ $http = pipe([
                 'subject' => $threadRepository->getSubject($id),
                 'thread' => $emailRepository->getThreadView($id),
             ]);
+        },
+        '/api/threads' => function (ThreadRepository $threadRepository, ServerRequestInterface $request) {
+            $query = $request->getQueryParams();
+            $page = (int) max(1, $query['page'] ?? 1);
+            return new JsonResponse($threadRepository->findLatest($page));
         },
     ]),
 
