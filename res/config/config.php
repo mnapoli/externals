@@ -38,6 +38,7 @@ return [
 
     'twig.options' => [
         'cache' => string('{path.cache}/twig'),
+        'auto_reload' => true,
     ],
     'twig.extensions' => add([
         get(Twig_Extensions_Extension_Date::class),
