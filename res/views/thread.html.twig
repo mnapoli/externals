@@ -10,7 +10,7 @@
     <article id="email-{{ email.id }}" class="clearfix">
 
         <header>
-            <a href="#email-{{ email.id }}-content" role="button" data-toggle="collapse"><span class="fa fa-compress"></span></a>
+            <a href="#email-{{ email.id }}-body" role="button" data-toggle="collapse"><span class="fa fa-compress"></span></a>
             Posted
             <a class="email-date" href="#email-{{ email.id }}" title="{{ email.date|date }}">{{ email.date|time_diff }}</a>
             by <strong>{{ email.from.nameOrEmail }}</strong>
