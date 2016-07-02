@@ -47,6 +47,15 @@ HTML;
     /**
      * @test
      */
+    public function should_escape_html()
+    {
+        $content = '<strong>Test</strong> <script>alert("xss")</script>';
+        $this->assertEquals('<p>&lt;strong&gt;Test&lt;/strong&gt; &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;</p>', trim($this->parser->parse($content)));
+    }
+
+    /**
+     * @test
+     */
     public function should_keep_line_breaks()
     {
         $content = <<<MARKDOWN

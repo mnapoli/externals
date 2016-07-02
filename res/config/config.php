@@ -65,6 +65,7 @@ return [
             'renderer' => [
                 'soft_break' => " <br>\n",
             ],
+            'safe' => true,
         ]);
         return $environment;
     },
