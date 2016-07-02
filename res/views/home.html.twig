@@ -10,7 +10,7 @@
 
         <table class="thread-list table table-striped table-hover">
             {% for thread in threads %}
-                <tr v-bind:class="{ 'unread': isUnread({{ thread.id|json_encode }}) }">
+                <tr v-bind:class="{ 'unread': isUnread({{ thread.id|json_encode }}, {{ thread.emailCount|json_encode }}) }">
                     <td>
                         {% if thread.emailCount > 1 %}
                             <span class="badge badge-default">{{ thread.emailCount }}</span>
@@ -24,12 +24,12 @@
             {% endfor %}
             {# VueJS template #}
             {% verbatim %}
-                <tr v-for="thread in threads" v-cloak>
+                <tr v-for="thread in threads" v-cloak v-bind:class="{ 'unread': isUnread(thread.id, thread.emailCount) }">
                     <td>
                         <span v-if="thread.emailCount > 1" class="badge badge-default">{{ thread.emailCount }}</span>
                     </td>
                     <td>
-                        <a href="thread/{{ thread.id }}">{{ thread.subject }}</a>
+                        <a class="thread-subject" href="thread/{{ thread.id }}">{{ thread.subject }}</a>
                     </td>
                 </tr>
             {% endverbatim %}
@@ -57,8 +57,13 @@
                         });
                         this.page++;
                     },
-                    isUnread: function(threadId) {
-                        return !localStorage.getItem('thread.' + threadId);
+                    isUnread: function (threadId, threadEmailCount) {
+                        var numberOfEmailsRead = localStorage.getItem('thread.' + threadId);
+                        if (!numberOfEmailsRead) {
+                            // Unread thread
+                            return true;
+                        }
+                        return threadEmailCount > numberOfEmailsRead;
                     }
                 }
             });

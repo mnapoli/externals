@@ -46,9 +46,10 @@
     </section>
 
     <script>
-        // Mark current thread as read
+        // Mark the number of email in this thread as read
         var threadId = '{{ threadId|e('js') }}';
-        localStorage.setItem('thread.' + threadId, true);
+        var emailCount = {{ emailCount|json_encode }};
+        localStorage.setItem('thread.' + threadId, emailCount);
     </script>
 
 {% endblock %}

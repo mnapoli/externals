@@ -33,6 +33,7 @@ $http = pipe([
                 'subject' => $threadRepository->getSubject($id),
                 'thread' => $emailRepository->getThreadView($id),
                 'threadId' => $id,
+                'emailCount' => $emailRepository->getThreadCount($id),
             ]);
         },
         '/api/threads' => function (ThreadRepository $threadRepository, ServerRequestInterface $request) {

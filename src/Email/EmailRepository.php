@@ -60,6 +60,14 @@ class EmailRepository
     }
 
     /**
+     * Returns the number of emails in a thread.
+     */
+    public function getThreadCount(int $threadId) : int
+    {
+        return (int) $this->db->fetchColumn('SELECT COUNT(id) FROM emails WHERE threadId = ?', [$threadId]);
+    }
+
+    /**
      * @return Email[]
      */
     public function findAll() : array
