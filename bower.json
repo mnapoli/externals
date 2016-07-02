@@ -1,13 +1,14 @@
 {
-    "name": "externals",
-    "version": "0.0.0",
-    "homepage": "",
-    "license": "proprietary",
-    "private": true,
-    "dependencies": {
-        "jquery": "~2.0",
-        "bootstrap": "~3.1",
-        "fontawesome": "*",
-        "vue": "~1.0"
-    }
+  "name": "externals",
+  "version": "0.0.0",
+  "homepage": "",
+  "license": "proprietary",
+  "private": true,
+  "dependencies": {
+    "jquery": "~2.0",
+    "bootstrap": "~3.1",
+    "fontawesome": "*",
+    "vue": "~1.0",
+    "less": "^2.7.1"
+  }
 }
