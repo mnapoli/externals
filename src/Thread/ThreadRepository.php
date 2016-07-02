@@ -36,7 +36,7 @@ class ThreadRepository
             throw new NotFound('No thread found for ID ' . $id);
         }
 
-        return $subject;
+        return (string) $subject;
     }
 
     public function create(string $subject) : int
