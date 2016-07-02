@@ -32,6 +32,7 @@ $http = pipe([
             return $twig->render('/app/views/thread.html.twig', [
                 'subject' => $threadRepository->getSubject($id),
                 'thread' => $emailRepository->getThreadView($id),
+                'threadId' => $id,
             ]);
         },
         '/api/threads' => function (ThreadRepository $threadRepository, ServerRequestInterface $request) {

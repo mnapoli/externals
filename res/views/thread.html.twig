@@ -31,15 +31,24 @@
 {% endmacro %}
 
 {% block content %}
+
     <div class="page-header">
         <h1>
             <a href="/"><span class="fa fa-caret-left"></span></a>
             {{ subject }}
         </h1>
     </div>
+
     <section class="thread">
         {% for item in thread %}
             {{ macros.threadItem(item) }}
         {% endfor %}
     </section>
+
+    <script>
+        // Mark current thread as read
+        var threadId = '{{ threadId|e('js') }}';
+        localStorage.setItem('thread.' + threadId, true);
+    </script>
+
 {% endblock %}

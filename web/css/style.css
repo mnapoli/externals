@@ -1,3 +1,7 @@
+[v-cloak] {
+    display: none;
+}
+
 body {
     background-color: #FAFAFA;
 }
@@ -8,6 +12,9 @@ body {
 
 .thread-list {
     font-size: 1.2em;
+}
+.thread-list .unread .thread-subject {
+    font-weight: bold;
 }
 
 .thread {

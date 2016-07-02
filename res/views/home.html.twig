@@ -10,21 +10,21 @@
 
         <table class="thread-list table table-striped table-hover">
             {% for thread in threads %}
-                <tr>
+                <tr v-bind:class="{ 'unread': isUnread({{ thread.id|json_encode }}) }">
                     <td>
                         {% if thread.emailCount > 1 %}
                             <span class="badge badge-default">{{ thread.emailCount }}</span>
                         {% endif %}
                     </td>
                     <td>
-                        <a href="thread/{{ thread.id }}">{{ thread.subject }}</a>
+                        <a class="thread-subject" href="thread/{{ thread.id }}">{{ thread.subject }}</a>
                         <small class="text-muted">{{ thread.lastUpdate|time_diff }}</small>
                     </td>
                 </tr>
             {% endfor %}
             {# VueJS template #}
             {% verbatim %}
-                <tr v-for="thread in threads">
+                <tr v-for="thread in threads" v-cloak>
                     <td>
                         <span v-if="thread.emailCount > 1" class="badge badge-default">{{ thread.emailCount }}</span>
                     </td>
@@ -56,6 +56,9 @@
                             self.threads = self.threads.concat(newThreads);
                         });
                         this.page++;
+                    },
+                    isUnread: function(threadId) {
+                        return !localStorage.getItem('thread.' + threadId);
                     }
                 }
             });
