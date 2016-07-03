@@ -55,6 +55,14 @@ class InitCommand
         $threadsTable->addColumn('subject', 'text');
         $threadsTable->setPrimaryKey(['id']);
 
+        // Users table
+        $threadsTable = $schema->createTable('users');
+        $threadsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
+        $threadsTable->addColumn('githubId', 'string');
+        $threadsTable->addColumn('name', 'string');
+        $threadsTable->setPrimaryKey(['id']);
+        $threadsTable->addIndex(['githubId']);
+
         foreach ($schema->toSql($this->db->getDatabasePlatform()) as $query) {
             $this->db->exec($query);
         }

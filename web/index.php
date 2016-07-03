@@ -2,14 +2,15 @@
 declare(strict_types = 1);
 
 use Externals\Application\Application;
+use Externals\Application\Controller\AuthController;
 use Externals\Application\Controller\NotFoundController;
+use Externals\Application\Middleware\SessionMiddleware;
 use Externals\Email\EmailRepository;
 use Externals\Thread\ThreadRepository;
 use Psr\Http\Message\ServerRequestInterface;
 use Stratify\ErrorHandlerModule\ErrorHandlerMiddleware;
 use function Stratify\Framework\pipe;
 use function Stratify\Framework\router;
-use function Stratify\Router\route;
 use Zend\Diactoros\Response\JsonResponse;
 
 if (php_sapi_name() === 'cli-server' && is_file(__DIR__ . preg_replace('#(\?.*)$#', '', $_SERVER['REQUEST_URI']))) {
@@ -21,6 +22,7 @@ require_once __DIR__ . '/../.puli/GeneratedPuliFactory.php';
 
 $http = pipe([
     ErrorHandlerMiddleware::class,
+    SessionMiddleware::class,
 
     router([
         '/' => function (Twig_Environment $twig, ThreadRepository $threadRepository) {
@@ -41,6 +43,7 @@ $http = pipe([
             $page = (int) max(1, $query['page'] ?? 1);
             return new JsonResponse($threadRepository->findLatest($page));
         },
+        '/login' => [AuthController::class, 'login'],
     ]),
 
     NotFoundController::class,

@@ -13,7 +13,14 @@
     <script src="/vendor/jquery/jquery.min.js"></script>
 </head>
 <body>
-    <div class="container">
+    <header class="site-header container">
+        <div class="account">
+            <span class="fa fa-github"></span> <a href="/login">Log in with GitHub</a><br>
+            to track unread emails
+        </div>
+    </header>
+
+    <div class="container main-container">
         {% block content %}{% endblock %}
     </div>
 

@@ -65,12 +65,40 @@
             "install-path": "vendor/gravatarphp/twig-integration",
             "installer": "composer"
         },
+        "guzzlehttp/guzzle": {
+            "install-path": "vendor/guzzlehttp/guzzle",
+            "installer": "composer"
+        },
+        "guzzlehttp/promises": {
+            "install-path": "vendor/guzzlehttp/promises",
+            "installer": "composer"
+        },
+        "guzzlehttp/psr7": {
+            "install-path": "vendor/guzzlehttp/psr7",
+            "installer": "composer"
+        },
+        "ircmaxell/random-lib": {
+            "install-path": "vendor/ircmaxell/random-lib",
+            "installer": "composer"
+        },
+        "ircmaxell/security-lib": {
+            "install-path": "vendor/ircmaxell/security-lib",
+            "installer": "composer"
+        },
         "justinrainbow/json-schema": {
             "install-path": "vendor/justinrainbow/json-schema",
             "installer": "composer"
         },
         "league/commonmark": {
             "install-path": "vendor/league/commonmark",
+            "installer": "composer"
+        },
+        "league/oauth2-client": {
+            "install-path": "vendor/league/oauth2-client",
+            "installer": "composer"
+        },
+        "league/oauth2-github": {
+            "install-path": "vendor/league/oauth2-github",
             "installer": "composer"
         },
         "misd/linkify": {
@@ -353,6 +381,10 @@
         },
         "symfony/filesystem": {
             "install-path": "vendor/symfony/filesystem",
+            "installer": "composer"
+        },
+        "symfony/http-foundation": {
+            "install-path": "vendor/symfony/http-foundation",
             "installer": "composer"
         },
         "symfony/monolog-bridge": {

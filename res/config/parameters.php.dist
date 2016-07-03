@@ -11,5 +11,8 @@ return [
         'security' => 'ssl',
     ],
     'db.url' => 'mysql://root:@localhost/externals',
+    'github.oauth.client_id' => '',
+    'github.oauth.client_secret' => '',
+    'github.oauth.redirect_url' => 'http://localhost:8000/login',
 
 ];

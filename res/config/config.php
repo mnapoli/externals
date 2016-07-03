@@ -14,6 +14,8 @@ use Interop\Container\ContainerInterface;
 use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
 use League\CommonMark\HtmlRenderer;
+use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Provider\Github;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
@@ -69,5 +71,13 @@ return [
         ]);
         return $environment;
     },
+
+    AbstractProvider::class => object(Github::class)
+        ->constructor(get('oauth.github.config')),
+    'oauth.github.config' => [
+        'clientId' => get('github.oauth.client_id'),
+        'clientSecret' => get('github.oauth.client_secret'),
+        'redirectUri' => get('github.oauth.redirect_url'),
+    ],
 
 ];
