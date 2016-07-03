@@ -375,6 +375,10 @@
             "install-path": "vendor/symfony/console",
             "installer": "composer"
         },
+        "symfony/debug": {
+            "install-path": "vendor/symfony/debug",
+            "installer": "composer"
+        },
         "symfony/event-dispatcher": {
             "install-path": "vendor/symfony/event-dispatcher",
             "installer": "composer"
@@ -385,6 +389,10 @@
         },
         "symfony/http-foundation": {
             "install-path": "vendor/symfony/http-foundation",
+            "installer": "composer"
+        },
+        "symfony/http-kernel": {
+            "install-path": "vendor/symfony/http-kernel",
             "installer": "composer"
         },
         "symfony/monolog-bridge": {

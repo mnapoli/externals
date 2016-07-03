@@ -33,18 +33,12 @@
         "league/oauth2-client": "^1.4",
         "league/oauth2-github": "^0.2.1"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:mnapoli/Imapi.git"
-        }
-    ],
+    "require-dev": {
+        "phpunit/phpunit": "^5.4"
+    },
     "config": {
         "secure-http": false
     },
     "minimum-stability": "beta",
-    "prefer-stable": true,
-    "require-dev": {
-        "phpunit/phpunit": "^5.4"
-    }
+    "prefer-stable": true
 }
