@@ -55,9 +55,9 @@ footer {
 
 .thread-list {
     font-size: 1.2em;
-}
-.thread-list .unread .thread-subject {
-    font-weight: bold;
+    .unread .thread-subject {
+        font-weight: bold;
+    }
 }
 
 .thread {
@@ -68,53 +68,56 @@ article {
     border: 1px solid #e6e6e6;
     padding: 20px;
     margin: 20px 0 0;
-}
-article header {
-    border-bottom: 1px solid #e6e6e6;
-    padding: 5px 16px;
-    margin: -20px -20px 20px;
-    background-color: #f1f1f1;
-    color: #757575;
-    font-size: 0.9em;
-}
-article header .avatar {
-    float: right;
-    border-radius: 50%;
-    box-shadow: 1px 2px 5px 1px #c0c0c0;
-}
-article header .email-date {
-    color: inherit;
-}
-article blockquote {
-    color: #999;
-    padding: 0 20px;
-    font-size: 0.98em;
-}
-article h1 {
-    font-size: 1.3em;
-}
-article h2 {
-    font-size: 1.2em;
-}
-article h3 {
-    font-size: 1.1em;
+    header {
+        border-bottom: 1px solid #e6e6e6;
+        padding: 5px 16px;
+        margin: -20px -20px 20px;
+        background-color: #f1f1f1;
+        color: #757575;
+        font-size: 0.9em;
+        .avatar {
+            float: right;
+            border-radius: 50%;
+            box-shadow: 1px 2px 5px 1px #c0c0c0;
+        }
+        .email-date {
+            color: inherit;
+        }
+    }
+    blockquote {
+        color: #999;
+        padding: 0 20px;
+        font-size: 0.98em;
+    }
+    h1 {
+        font-size: 1.3em;
+    }
+    h2 {
+        font-size: 1.2em;
+    }
+    h3 {
+        font-size: 1.1em;
+    }
+
+    .email-content {
+        overflow-x: scroll;
+    }
+    /* Collapse last blockquote of an email */
+    .email-content>blockquote:last-child {
+        visibility: hidden;
+        height: 1em;
+        position: relative;
+        &:after {
+            content: '…';
+            visibility: visible;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    }
 }
 
-/* Collapse last blockquote of an email */
-article .email-content>blockquote:last-child {
-    visibility: hidden;
-    height: 1em;
-    position: relative;
-}
-article .email-content>blockquote:last-child:after {
-    content: '…';
-    visibility: visible;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-/* Article nesting*/
+/* Article nesting :p */
 article article, article article article article, article article article article article article {
     background-color: #f9fafb;
 }
