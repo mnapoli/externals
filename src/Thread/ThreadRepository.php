@@ -64,9 +64,11 @@ class ThreadRepository
             ->setMaxResults($perPage);
 
         if ($user) {
-            $qb->addSelect('readStatus.emailsRead')
+            $qb->addSelect('readStatus.emailsRead as emailsRead')
                 ->leftJoin('threads', 'user_threads_read', 'readStatus', 'threads.id = readStatus.threadId AND readStatus.userId = :userId');
             $qb->setParameter('userId', $user->getId());
+        } else {
+            $qb->addSelect('0 as emailsRead');
         }
 
         return $qb->execute()->fetchAll();
