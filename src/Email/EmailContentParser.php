@@ -68,7 +68,10 @@ class EmailContentParser
         }
 
         $content = $this->linkify->process($content, [
-            'attr' => ['rel' => 'nofollow'],
+            'attr' => [
+                'rel' => 'nofollow',
+                'target' => '_blank',
+            ],
         ]);
 
         return $content;
