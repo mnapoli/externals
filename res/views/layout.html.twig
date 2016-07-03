@@ -21,6 +21,7 @@
                 (<a href="/logout" rel="nofollow">logout</a>)
             {% else %}
                 <a href="/login" rel="nofollow">Log in with GitHub</a> <br> to track unread emails
+                <span class="fa fa-info-circle" data-toggle="tooltip" data-placement="bottom" title="No personal data is fetched or stored from GitHub, read more in the footer of the page."></span>
             {% endif %}
         </div>
     </header>
@@ -34,9 +35,18 @@
             <p>
                 Contribute to the project on GitHub: <a href="https://github.com/mnapoli/externals" target="_blank">mnapoli/externals</a>
             </p>
+            <p>
+                <strong>About data:</strong> if you login using GitHub, no personal data (or GitHub token) will be stored.<br>
+                The only thing stored is your GitHub ID, username and which threads/emails you have already read.
+            </p>
         </div>
     </footer>
 
     <script src="/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+    </script>
 </body>
 </html>
