@@ -16,6 +16,7 @@ use League\CommonMark\Environment;
 use League\CommonMark\HtmlRenderer;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Github;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
@@ -25,6 +26,7 @@ return [
 
     'debug' => false,
     'path.cache' => __DIR__ . '/../../var/cache',
+    'path.logs' => __DIR__ . '/../../var/log',
 
     Client::class => function (ContainerInterface $c) {
         $config = $c->get('imap.config');
@@ -51,9 +53,12 @@ return [
         ->constructor('app', get('logger.handlers')),
     'logger.handlers' => [
         get(ConsoleHandler::class),
+        get('logger.file_handler'),
     ],
     ConsoleHandler::class => object()
         ->method('setFormatter', get(ConsoleFormatter::class)),
+    'logger.file_handler' => object(StreamHandler::class)
+        ->constructor(string('{path.logs}/app.log'), Logger::INFO),
 
     DocParser::class => function (ContainerInterface $c) {
         return new DocParser($c->get(Environment::class));
