@@ -18,8 +18,9 @@
             <span class="fa fa-github"></span>
             {% if user is defined and user is not empty %}
                 Welcome {{ user.name }}
+                (<a href="/logout" rel="nofollow">logout</a>)
             {% else %}
-                <a href="/login">Log in with GitHub</a> <br> to track unread emails
+                <a href="/login" rel="nofollow">Log in with GitHub</a> <br> to track unread emails
             {% endif %}
         </div>
     </header>

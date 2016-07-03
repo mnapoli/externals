@@ -48,6 +48,7 @@ $http = pipe([
             return new JsonResponse($threadRepository->findLatest($page));
         },
         '/login' => [AuthController::class, 'login'],
+        '/logout' => [AuthController::class, 'logout'],
     ]),
 
     NotFoundController::class,

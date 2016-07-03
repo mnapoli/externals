@@ -88,4 +88,11 @@ class AuthController
 
         return new RedirectResponse('/');
     }
+
+    public function logout(ServerRequestInterface $request)
+    {
+        $session = $request->getAttribute(SessionInterface::class);
+        $session->remove('user');
+        return new RedirectResponse('/');
+    }
 }
