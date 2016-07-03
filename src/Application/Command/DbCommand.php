@@ -5,11 +5,12 @@ namespace Externals\Application\Command;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class InitCommand
+class DbCommand
 {
     /**
      * @var Connection
@@ -21,21 +22,13 @@ class InitCommand
         $this->db = $db;
     }
 
-    public function __invoke()
+    public function __invoke(bool $force, OutputInterface $output)
     {
         $schemaManager = $this->db->getSchemaManager();
-        $schema = new Schema();
-
-        $this->db->beginTransaction();
-
-        // Drop all existing tables
-        $tables = $schemaManager->listTables();
-        foreach ($tables as $table) {
-            $schemaManager->dropTable($table->getName());
-        }
+        $newSchema = new Schema();
 
         // Emails tables
-        $emailsTable = $schema->createTable('emails');
+        $emailsTable = $newSchema->createTable('emails');
         $emailsTable->addColumn('id', 'string');
         $emailsTable->addColumn('subject', 'text');
         $emailsTable->addColumn('threadId', 'integer', ['unsigned' => true]);
@@ -50,23 +43,38 @@ class InitCommand
         $emailsTable->addIndex(['threadId']);
 
         // Threads table
-        $threadsTable = $schema->createTable('threads');
+        $threadsTable = $newSchema->createTable('threads');
         $threadsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
         $threadsTable->addColumn('subject', 'text');
         $threadsTable->setPrimaryKey(['id']);
 
         // Users table
-        $threadsTable = $schema->createTable('users');
+        $threadsTable = $newSchema->createTable('users');
         $threadsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
         $threadsTable->addColumn('githubId', 'string');
         $threadsTable->addColumn('name', 'string');
         $threadsTable->setPrimaryKey(['id']);
         $threadsTable->addIndex(['githubId']);
 
-        foreach ($schema->toSql($this->db->getDatabasePlatform()) as $query) {
-            $this->db->exec($query);
-        }
+        $this->db->transactional(function () use ($schemaManager, $newSchema, $force, $output) {
+            $currentSchema = $schemaManager->createSchema();
+            $queries = $currentSchema->getMigrateToSql($newSchema, $this->db->getDatabasePlatform());
 
-        $this->db->commit();
+            foreach ($queries as $query) {
+                $output->writeln(sprintf('Running <info>%s</info>', $query));
+                if ($force) {
+                    $this->db->exec($query);
+                }
+            }
+            if (empty($queries)) {
+                $output->writeln('<info>The database is up to date</info>');
+            }
+        });
+
+        if (!$force) {
+            $output->writeln('<comment>No query was run, use the --force option to run the queries</comment>');
+        } else {
+            $output->writeln('<comment>Queries were successfully run against the database</comment>');
+        }
     }
 }

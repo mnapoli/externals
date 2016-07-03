@@ -3,7 +3,7 @@
 declare(strict_types = 1);
 
 use Externals\Application\Application;
-use Externals\Application\Command\InitCommand;
+use Externals\Application\Command\DbCommand;
 use Externals\EmailSynchronizer;
 use Externals\Email\EmailContentParser;
 use Externals\Email\EmailRepository;
@@ -16,7 +16,7 @@ require_once __DIR__ . '/.puli/GeneratedPuliFactory.php';
 $application = new Application;
 $cli = $application->cli();
 
-$cli->command('init', InitCommand::class);
+$cli->command('db [--force]', DbCommand::class);
 
 $cli->command('sync [days]', function (int $days = null, EmailSynchronizer $synchronizer) {
     $synchronizer->synchronize($days ?? 1);
