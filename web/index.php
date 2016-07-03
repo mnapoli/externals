@@ -50,10 +50,12 @@ $http = pipe([
             ]);
         },
         '/threads/list' => function (Twig_Environment $twig, ThreadRepository $threadRepository, ServerRequestInterface $request) {
+            $user = $request->getAttribute('user');
             $query = $request->getQueryParams();
             $page = (int) max(1, $query['page'] ?? 1);
             return $twig->render('/app/views/threads/thread-list.html.twig', [
-                'threads' => $threadRepository->findLatest($page, $request->getAttribute('user')),
+                'threads' => $threadRepository->findLatest($page, $user),
+                'user' => $user,
             ]);
         },
         '/login' => [AuthController::class, 'login'],
