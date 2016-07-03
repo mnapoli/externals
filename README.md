@@ -1,5 +1,3 @@
-Currently work in progress.
+[![](http://i.imgur.com/BrCb8gu.png)](http://externals.io/)
 
-Want to get involved? Open an issue or ping me [on Twitter](https://twitter.com/matthieunapoli).
-
-![](http://i.imgur.com/bQ6BAQy.png)
+[![](http://i.imgur.com/gD7Let2.png)](http://externals.io/)
