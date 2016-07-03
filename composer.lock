@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dbe73dde8cedf02ccacbad61e8a2b1b2",
-    "content-hash": "64a63f6fefbbb89339c8c0fe7acd4485",
+    "hash": "46f9939cfaf5a41e4c508e4e7bba906d",
+    "content-hash": "3c1e352f6698fdb5f4b38547cd038a4e",
     "packages": [
         {
             "name": "aura/router",
@@ -1096,16 +1096,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "0.13.4",
+            "version": "0.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "83f8210427fb01f671e272bb8d44b4ed3a94d459"
+                "reference": "b73c0b7288bd0e6f9f56bd0b20d0657214b91838"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/83f8210427fb01f671e272bb8d44b4ed3a94d459",
-                "reference": "83f8210427fb01f671e272bb8d44b4ed3a94d459",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/b73c0b7288bd0e6f9f56bd0b20d0657214b91838",
+                "reference": "b73c0b7288bd0e6f9f56bd0b20d0657214b91838",
                 "shasum": ""
             },
             "require": {
@@ -1134,7 +1134,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.14-dev"
+                    "dev-master": "0.15-dev"
                 }
             },
             "autoload": {
@@ -1161,7 +1161,7 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2016-06-14 14:49:29"
+            "time": "2016-07-02 18:48:39"
         },
         {
             "name": "league/oauth2-client",

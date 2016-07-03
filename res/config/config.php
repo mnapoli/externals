@@ -67,7 +67,8 @@ return [
             'renderer' => [
                 'soft_break' => " <br>\n",
             ],
-            'safe' => true,
+            'html_input' => Environment::HTML_INPUT_ESCAPE,
+            'allow_unsafe_links' => false,
         ]);
         return $environment;
     },

@@ -49,8 +49,11 @@ HTML;
      */
     public function should_escape_html()
     {
-        $content = '<strong>Test</strong> <script>alert("xss")</script>';
-        $this->assertEquals('<p>&lt;strong&gt;Test&lt;/strong&gt; &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;</p>', trim($this->parser->parse($content)));
+        $content = 'Test of <strong>XSS</strong> <script>alert("xss")</script> injection';
+        $this->assertEquals(
+            '<p>Test of &lt;strong&gt;XSS&lt;/strong&gt; &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; injection</p>',
+            trim($this->parser->parse($content))
+        );
     }
 
     /**
@@ -79,7 +82,6 @@ HTML;
      */
     public function should_encode_html_entities()
     {
-        $this->markTestSkipped('Waiting for https://github.com/thephpleague/commonmark/issues/252 to be answered');
         $content = <<<'EMAIL'
 > and the test:
 >
@@ -91,8 +93,8 @@ EMAIL;
         $expected = <<<HTML
 <p>and the test:</p>
 <blockquote>
-&gt;?php
-ini_set(&quot;pcntl.async_signals&quot;, &quot;1&quot;);
+&lt;?php
+ini_set("pcntl.async_signals", "1");
 </blockquote>
 <p>We use 2/3 vote for &quot;a feature affecting the language itself&quot;.</p>
 HTML;
