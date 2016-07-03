@@ -172,7 +172,7 @@ MARKDOWN;
     public function should_linkify_links()
     {
         $content = 'Hello http://google.com';
-        $expected = '<p>Hello <a href="http://google.com" rel="nofollow">http://google.com</a></p>';
+        $expected = '<p>Hello <a href="http://google.com" rel="nofollow" target="_blank">http://google.com</a></p>';
         $this->assertEquals($expected, trim($this->parser->parse($content)));
     }
 
