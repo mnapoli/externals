@@ -66,12 +66,15 @@ footer {
 article {
     background-color: white;
     border: 1px solid #e6e6e6;
-    padding: 20px;
+    padding: 20px 0 20px 20px;
     margin: 20px 0 0;
+    article {
+        border-right: none;
+    }
     header {
         border-bottom: 1px solid #e6e6e6;
         padding: 5px 16px;
-        margin: -20px -20px 20px;
+        margin: -20px 0 20px -20px;
         background-color: #f1f1f1;
         color: #757575;
         font-size: 0.9em;
@@ -100,8 +103,7 @@ article {
     }
 
     .email-content {
-        overflow-x: auto;
-        overflow-y: hidden;
+        overflow: hidden;
     }
     /* Collapse last blockquote of an email */
     .email-content>blockquote:last-child {
