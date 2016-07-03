@@ -15,8 +15,12 @@
 <body>
     <header class="site-header container">
         <div class="account">
-            <span class="fa fa-github"></span> <a href="/login">Log in with GitHub</a><br>
-            to track unread emails
+            <span class="fa fa-github"></span>
+            {% if user is defined and user is not empty %}
+                Welcome {{ user.name }}
+            {% else %}
+                <a href="/login">Log in with GitHub</a> <br> to track unread emails
+            {% endif %}
         </div>
     </header>
 

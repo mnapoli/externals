@@ -4,6 +4,7 @@ declare(strict_types = 1);
 use Externals\Application\Application;
 use Externals\Application\Controller\AuthController;
 use Externals\Application\Controller\NotFoundController;
+use Externals\Application\Middleware\AuthMiddleware;
 use Externals\Application\Middleware\SessionMiddleware;
 use Externals\Email\EmailRepository;
 use Externals\Thread\ThreadRepository;
@@ -23,19 +24,22 @@ require_once __DIR__ . '/../.puli/GeneratedPuliFactory.php';
 $http = pipe([
     ErrorHandlerMiddleware::class,
     SessionMiddleware::class,
+    AuthMiddleware::class,
 
     router([
-        '/' => function (Twig_Environment $twig, ThreadRepository $threadRepository) {
+        '/' => function (Twig_Environment $twig, ThreadRepository $threadRepository, ServerRequestInterface $request) {
             return $twig->render('/app/views/home.html.twig', [
                 'threads' => $threadRepository->findLatest(),
+                'user' => $request->getAttribute('user'),
             ]);
         },
-        '/thread/{id}' => function (int $id, Twig_Environment $twig, ThreadRepository $threadRepository, EmailRepository $emailRepository) {
+        '/thread/{id}' => function (int $id, Twig_Environment $twig, ThreadRepository $threadRepository, EmailRepository $emailRepository, ServerRequestInterface $request) {
             return $twig->render('/app/views/thread.html.twig', [
                 'subject' => $threadRepository->getSubject($id),
                 'thread' => $emailRepository->getThreadView($id),
                 'threadId' => $id,
                 'emailCount' => $emailRepository->getThreadCount($id),
+                'user' => $request->getAttribute('user'),
             ]);
         },
         '/api/threads' => function (ThreadRepository $threadRepository, ServerRequestInterface $request) {
