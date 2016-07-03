@@ -1,0 +1,19 @@
+{% for thread in threads %}
+    {% set unread = (thread.emailCount > thread.emailsRead) %}
+    <tr {% if unread %}class="unread"{% endif %}>
+        <td>
+            {% if unread %}
+                <span class="badge badge-default">{{ thread.emailCount - thread.emailsRead }}</span>
+            {% endif %}
+        </td>
+        <td>
+            <a class="thread-subject" href="thread/{{ thread.id }}">{{ thread.subject }}</a>
+            <small class="text-muted">
+                {{ thread.lastUpdate|time_diff }}
+                {% if thread.emailCount > 1 %}
+                    - {{ thread.emailCount }} emails
+                {% endif %}
+            </small>
+        </td>
+    </tr>
+{% endfor %}

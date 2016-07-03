@@ -12,63 +12,25 @@
     <section id="threads">
 
         <table class="thread-list table table-striped table-hover">
-            {% for thread in threads %}
-                <tr v-bind:class="{ 'unread': isUnread({{ thread.id|json_encode }}, {{ thread.emailCount|json_encode }}) }">
-                    <td>
-                        {% if thread.emailCount > 1 %}
-                            <span class="badge badge-default">{{ thread.emailCount }}</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a class="thread-subject" href="thread/{{ thread.id }}">{{ thread.subject }}</a>
-                        <small class="text-muted">{{ thread.lastUpdate|time_diff }}</small>
-                    </td>
-                </tr>
-            {% endfor %}
-            {# VueJS template #}
-            {% verbatim %}
-                <tr v-for="thread in threads" v-cloak v-bind:class="{ 'unread': isUnread(thread.id, thread.emailCount) }">
-                    <td>
-                        <span v-if="thread.emailCount > 1" class="badge badge-default">{{ thread.emailCount }}</span>
-                    </td>
-                    <td>
-                        <a class="thread-subject" href="/thread/{{ thread.id }}">{{ thread.subject }}</a>
-                    </td>
-                </tr>
-            {% endverbatim %}
+            {% include '/app/views/threads/thread-list.html.twig' %}
         </table>
 
-        <p>
-            <button v-on:click="showMore" class="btn btn-default btn-block btn-lg">Show more</button>
-        </p>
+        <button id="show-more-threads" class="btn btn-default btn-block btn-lg">Show more</button>
 
     </section>
 
     <script>
         $(function () {
-            var vue = new Vue({
-                el: '#threads',
-                data: {
-                    page: 2,
-                    threads: []
-                },
-                methods: {
-                    showMore: function () {
-                        var self = this;
-                        $.get('/api/threads?page=' + this.page, function (newThreads) {
-                            self.threads = self.threads.concat(newThreads);
-                        });
-                        this.page++;
-                    },
-                    isUnread: function (threadId, threadEmailCount) {
-                        var numberOfEmailsRead = localStorage.getItem('thread.' + threadId);
-                        if (!numberOfEmailsRead) {
-                            // Unread thread
-                            return true;
-                        }
-                        return threadEmailCount > numberOfEmailsRead;
+            var page = 2;
+            $('#show-more-threads').click(function () {
+                $.get('/threads/list?page=' + page, function (html) {
+                    if (html === '') {
+                        $('#show-more-threads').remove();
+                        return;
                     }
-                }
+                    $('.thread-list tbody').append(html);
+                });
+                page++;
             });
         });
     </script>

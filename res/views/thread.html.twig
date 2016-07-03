@@ -45,11 +45,4 @@
         {% endfor %}
     </section>
 
-    <script>
-        // Mark the number of email in this thread as read
-        var threadId = '{{ threadId|e('js') }}';
-        var emailCount = {{ emailCount|json_encode }};
-        localStorage.setItem('thread.' + threadId, emailCount);
-    </script>
-
 {% endblock %}

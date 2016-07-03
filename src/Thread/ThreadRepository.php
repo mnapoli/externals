@@ -5,6 +5,7 @@ namespace Externals\Thread;
 
 use Doctrine\DBAL\Connection;
 use Externals\NotFound;
+use Externals\User\User;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
@@ -48,18 +49,35 @@ class ThreadRepository
         return (int) $this->db->lastInsertId();
     }
 
-    public function findLatest(int $page = 1) : array
+    public function findLatest(int $page = 1, User $user = null) : array
     {
         $perPage = 20;
         $offset = ($page - 1) * $perPage;
 
-        $query = 'SELECT threads.id, threads.subject, COUNT(emails.id) as emailCount, MAX(emails.date) as lastUpdate
-            FROM threads
-            LEFT JOIN emails ON threads.id = emails.threadId
-            GROUP BY threads.id
-            ORDER BY lastUpdate DESC
-            LIMIT ? OFFSET ?';
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('threads.id', 'threads.subject', 'COUNT(emails.id) as emailCount', 'MAX(emails.date) as lastUpdate')
+            ->from('threads')
+            ->leftJoin('threads', 'emails', 'emails', 'threads.id = emails.threadId')
+            ->groupBy('threads.id')
+            ->orderBy('lastUpdate', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($perPage);
 
-        return $this->db->fetchAll($query, [$perPage, $offset], [\PDO::PARAM_INT, \PDO::PARAM_INT]);
+        if ($user) {
+            $qb->addSelect('readStatus.emailsRead')
+                ->leftJoin('threads', 'user_threads_read', 'readStatus', 'threads.id = readStatus.threadId AND readStatus.userId = :userId');
+            $qb->setParameter('userId', $user->getId());
+        }
+
+        return $qb->execute()->fetchAll();
+    }
+
+    public function markThreadRead(int $threadId, User $user, int $emailCount)
+    {
+        $this->db->executeQuery('REPLACE INTO user_threads_read (userId, threadId, emailsRead) VALUES (?, ?, ?)', [
+            $user->getId(),
+            $threadId,
+            $emailCount,
+        ]);
     }
 }
