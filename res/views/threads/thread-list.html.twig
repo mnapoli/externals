@@ -1,9 +1,10 @@
 {% for thread in threads %}
     {% set unread = (thread.emailCount > thread.emailsRead) %}
-    <tr {% if unread %}class="unread"{% endif %}>
+    {% set emailsToRead = thread.emailCount - thread.emailsRead %}
+    <tr {% if user and unread %}class="unread"{% endif %}>
         <td>
-            {% if unread %}
-                <span class="badge badge-default">{{ thread.emailCount - thread.emailsRead }}</span>
+            {% if unread and (emailsToRead > 1) %}
+                <span class="badge badge-default">{{ emailsToRead }}</span>
             {% endif %}
         </td>
         <td>
