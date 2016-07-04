@@ -14,16 +14,19 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300,400italic,700italic,300italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 </head>
 <body>
-    <header class="site-header container">
-        <div class="account">
-            <span class="fa fa-github"></span>
-            {% if user is defined and user is not empty %}
-                Welcome {{ user.name }}
-                (<a href="/logout" rel="nofollow">logout</a>)
-            {% else %}
-                <a href="/login" rel="nofollow">Log in with GitHub</a> <br> to track unread emails
-                <span class="fa fa-info-circle" data-toggle="tooltip" data-placement="bottom" title="No personal data is fetched or stored from GitHub, read more in the footer of the page."></span>
-            {% endif %}
+    <header class="site-header">
+        <div class="container">
+            <ul><li><a href="/">#externals</a></li></ul>
+            <div class="account">
+                <span class="fa fa-github"></span>
+                {% if user is defined and user is not empty %}
+                    Welcome {{ user.name }}
+                    (<a href="/logout" rel="nofollow">logout</a>)
+                {% else %}
+                    <a href="/login" rel="nofollow">Log in with GitHub</a> to track unread emails
+                    <span class="fa fa-info-circle" data-toggle="tooltip" data-placement="bottom" title="No personal data is fetched or stored from GitHub, read more in the footer of the page."></span>
+                {% endif %}
+            </div>
         </div>
     </header>
 
