@@ -14,6 +14,9 @@
             Posted
             <a class="email-date" href="#email-{{ email.id }}" title="{{ email.date|date }}">{{ email.date|time_diff }}</a>
             by <strong>{{ email.from.nameOrEmail }}</strong>
+            {% if not email.isRead %}
+                <div class="label label-primary">unread</div>
+            {% endif %}
             <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro', s: 50}) }}">
         </header>
 

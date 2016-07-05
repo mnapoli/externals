@@ -56,12 +56,18 @@ class DbCommand
         $threadsTable->setPrimaryKey(['id']);
         $threadsTable->addIndex(['githubId']);
 
-        // Reading status table
+        // Thread reading status table
         $threadsTable = $newSchema->createTable('user_threads_read');
         $threadsTable->addColumn('userId', 'integer', ['unsigned' => true]);
         $threadsTable->addColumn('threadId', 'integer', ['unsigned' => true]);
         $threadsTable->addColumn('emailsRead', 'integer');
         $threadsTable->setPrimaryKey(['userId', 'threadId']);
+
+        // Email reading status table
+        $threadsTable = $newSchema->createTable('user_emails_read');
+        $threadsTable->addColumn('userId', 'integer', ['unsigned' => true]);
+        $threadsTable->addColumn('emailId', 'string');
+        $threadsTable->setPrimaryKey(['userId', 'emailId']);
 
         $this->db->transactional(function () use ($schemaManager, $newSchema, $force, $output) {
             $currentSchema = $schemaManager->createSchema();

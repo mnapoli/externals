@@ -76,10 +76,17 @@ class ThreadRepository
 
     public function markThreadRead(int $threadId, User $user, int $emailCount)
     {
+        // Mark the thread as read
         $this->db->executeQuery('REPLACE INTO user_threads_read (userId, threadId, emailsRead) VALUES (?, ?, ?)', [
             $user->getId(),
             $threadId,
             $emailCount,
+        ]);
+
+        // Mark all emails as read
+        $this->db->executeQuery('INSERT IGNORE INTO user_emails_read (userId, emailId) SELECT ?, emails.id FROM emails WHERE emails.threadId = ?', [
+            $user->getId(),
+            $threadId,
         ]);
     }
 }

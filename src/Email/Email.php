@@ -54,6 +54,11 @@ class Email
      */
     private $inReplyTo;
 
+    /**
+     * @var bool
+     */
+    private $isRead = false;
+
     public function __construct(
         string $id,
         string $subject,
@@ -130,5 +135,15 @@ class Email
     public function getInReplyTo()
     {
         return $this->inReplyTo;
+    }
+
+    public function markAsRead()
+    {
+        $this->isRead = true;
+    }
+
+    public function isRead(): bool
+    {
+        return $this->isRead;
     }
 }

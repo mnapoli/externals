@@ -38,12 +38,14 @@ $http = pipe([
         '/thread/{id}' => function (int $id, Twig_Environment $twig, ThreadRepository $threadRepository, EmailRepository $emailRepository, ServerRequestInterface $request) {
             $user = $request->getAttribute('user');
             $emailCount = $emailRepository->getThreadCount($id);
+            // Get thread view **before** marking the thread as read
+            $threadView = $emailRepository->getThreadView($id);
             if ($user instanceof User) {
                 $threadRepository->markThreadRead($id, $user, $emailCount);
             }
             return $twig->render('/app/views/thread.html.twig', [
                 'subject' => $threadRepository->getSubject($id),
-                'thread' => $emailRepository->getThreadView($id),
+                'thread' => $threadView,
                 'threadId' => $id,
                 'emailCount' => $emailCount,
                 'user' => $user,

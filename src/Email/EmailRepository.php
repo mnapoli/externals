@@ -32,7 +32,11 @@ class EmailRepository
      */
     public function getThreadView(int $threadId) : array
     {
-        $query = 'SELECT * FROM emails WHERE threadId = ? ORDER BY date ASC';
+        $query = 'SELECT emails.*, IF(read_status.userId, 1, 0) as was_read
+                  FROM emails
+                  LEFT JOIN user_emails_read read_status ON read_status.emailId = emails.id
+                  WHERE threadId = ?
+                  ORDER BY date ASC';
         $emails = $this->db->fetchAll($query, [$threadId]);
         /** @var Email[] $emails */
         $emails = array_map([$this, 'createEmail'], $emails);
@@ -116,7 +120,7 @@ class EmailRepository
             $date = new \DateTimeImmutable($date);
         }
 
-        return new Email(
+        $email = new Email(
             $row['id'],
             $row['subject'],
             $row['content'],
@@ -127,5 +131,11 @@ class EmailRepository
             $row['imapId'],
             $row['inReplyTo']
         );
+
+        if (array_key_exists('was_read', $row) && $row['was_read']) {
+            $email->markAsRead();
+        }
+
+        return $email;
     }
 }
