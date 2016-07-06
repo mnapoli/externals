@@ -1,0 +1,17 @@
+{% extends '/app/views/layout.html.twig' %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>Stats!</h1>
+    </div>
+
+    <p>There are:</p>
+
+    <ul>
+        <li>{{ userCount }} users</li>
+        <li>{{ threadCount }} threads</li>
+        <li>{{ emailCount }} emails</li>
+    </ul>
+
+{% endblock %}

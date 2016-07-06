@@ -89,4 +89,9 @@ class ThreadRepository
             $threadId,
         ]);
     }
+
+    public function getThreadCount() : int
+    {
+        return (int) $this->db->fetchColumn('SELECT COUNT(*) FROM threads');
+    }
 }

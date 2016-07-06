@@ -38,4 +38,9 @@ class UserRepository
 
         return new User($id, $githubId, $name);
     }
+
+    public function getUserCount() : int
+    {
+        return (int) $this->db->fetchColumn('SELECT COUNT(*) FROM users');
+    }
 }

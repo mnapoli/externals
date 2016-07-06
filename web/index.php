@@ -9,6 +9,7 @@ use Externals\Application\Middleware\SessionMiddleware;
 use Externals\Email\EmailRepository;
 use Externals\Thread\ThreadRepository;
 use Externals\User\User;
+use Externals\User\UserRepository;
 use Psr\Http\Message\ServerRequestInterface;
 use Stratify\ErrorHandlerModule\ErrorHandlerMiddleware;
 use function Stratify\Framework\pipe;
@@ -62,6 +63,15 @@ $http = pipe([
         },
         '/login' => [AuthController::class, 'login'],
         '/logout' => [AuthController::class, 'logout'],
+        '/stats' => function (Twig_Environment $twig, ThreadRepository $threadRepository, EmailRepository $emailRepository, UserRepository $userRepository, ServerRequestInterface $request) {
+            $user = $request->getAttribute('user');
+            return $twig->render('/app/views/stats.html.twig', [
+                'userCount' => $userRepository->getUserCount(),
+                'threadCount' => $threadRepository->getThreadCount(),
+                'emailCount' => $emailRepository->getEmailCount(),
+                'user' => $user,
+            ]);
+        },
     ]),
 
     NotFoundController::class,

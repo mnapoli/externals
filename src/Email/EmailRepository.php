@@ -113,6 +113,11 @@ class EmailRepository
         ], ['id' => $email->getId()], ['text']);
     }
 
+    public function getEmailCount() : int
+    {
+        return (int) $this->db->fetchColumn('SELECT COUNT(*) FROM emails');
+    }
+
     private function createEmail(array $row) : Email
     {
         $date = $row['date'];
