@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Externals\Application\Controller;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
@@ -21,7 +22,7 @@ class NotFoundController
         $this->twig = $twig;
     }
 
-    public function __invoke(ServerRequestInterface $request)
+    public function __invoke(ServerRequestInterface $request) : ResponseInterface
     {
         newrelic_name_transaction('404');
         $response = new HtmlResponse($this->twig->render('/app/views/404.html.twig', [

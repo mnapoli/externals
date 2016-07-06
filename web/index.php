@@ -5,6 +5,7 @@ use Externals\Application\Application;
 use Externals\Application\Controller\AuthController;
 use Externals\Application\Controller\NotFoundController;
 use Externals\Application\Middleware\AuthMiddleware;
+use Externals\Application\Middleware\NotFoundMiddleware;
 use Externals\Application\Middleware\SessionMiddleware;
 use Externals\Email\EmailRepository;
 use Externals\Thread\ThreadRepository;
@@ -14,7 +15,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Stratify\ErrorHandlerModule\ErrorHandlerMiddleware;
 use function Stratify\Framework\pipe;
 use function Stratify\Framework\router;
-use Zend\Diactoros\Response\JsonResponse;
 
 if (php_sapi_name() === 'cli-server' && is_file(__DIR__ . preg_replace('#(\?.*)$#', '', $_SERVER['REQUEST_URI']))) {
     return false;
@@ -25,6 +25,7 @@ require_once __DIR__ . '/../.puli/GeneratedPuliFactory.php';
 
 $http = pipe([
     ErrorHandlerMiddleware::class,
+    NotFoundMiddleware::class,
     SessionMiddleware::class,
     AuthMiddleware::class,
 
