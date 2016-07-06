@@ -43,12 +43,14 @@
         </h1>
     </div>
 
-    <div class="thread-navigation visible-lg container">
-        <div class="navigation">
-            go to next <br> unread email
-            <button id="next-unread" type="button" class="btn btn-link btn-block"><span class="fa fa-arrow-down"></span></button>
+    {% if user is not empty %}
+        <div class="thread-navigation visible-lg container">
+            <div class="navigation">
+                go to next <br> unread email
+                <button id="next-unread" type="button" class="btn btn-link btn-block"><span class="fa fa-arrow-down"></span></button>
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     <section class="thread">
         {% for item in thread %}
@@ -63,9 +65,15 @@
             }).get();
             var i = 0;
             $('#next-unread').click(function() {
+                if ((i + 1) > unreadEmailIds.length) {
+                    return;
+                }
                 window.location.hash = '#' + unreadEmailIds[i];
                 i++;
             });
+            if (unreadEmailIds.length === 0) {
+                $('.thread-navigation').remove();
+            }
         });
     </script>
 
