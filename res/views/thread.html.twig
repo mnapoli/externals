@@ -17,7 +17,8 @@
             {% if not email.isRead %}
                 <div class="label label-primary">unread</div>
             {% endif %}
-            <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro', s: 50}) }}">
+            <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro', s: 50}) }}"
+                 alt="{{ email.from.nameOrEmail }}" title="{{ email.from.nameOrEmail }}">
         </header>
 
         <div id="email-{{ email.id }}-body" class="collapse in">
