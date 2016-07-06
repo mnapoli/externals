@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "da1fcfde8297b060d5d23563a710af03",
-    "content-hash": "c4067076ce6f0fb3ebfa6a9437c28125",
+    "hash": "f3fe2be662dafe7c43268b7aff0ba330",
+    "content-hash": "7116fe0b75b90e75eefc6f0a016d4d2d",
     "packages": [
         {
             "name": "aura/router",
@@ -3930,6 +3930,37 @@
             ],
             "description": "A robust cross-platform utility for normalizing, comparing and modifying file paths.",
             "time": "2015-12-17 08:42:14"
+        },
+        {
+            "name": "wizacha/new-relic-polyfill",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wizacha/new-relic-polyfill-php.git",
+                "reference": "f433222f6fd63fd899955e65d90feae5bff50b4f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wizacha/new-relic-polyfill-php/zipball/f433222f6fd63fd899955e65d90feae5bff50b4f",
+                "reference": "f433222f6fd63fd899955e65d90feae5bff50b4f",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/NewRelic.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Polyfill for the New Relic PHP extension",
+            "keywords": [
+                "new relic",
+                "polyfill"
+            ],
+            "time": "2016-06-06 16:41:50"
         },
         {
             "name": "zendframework/zend-diactoros",

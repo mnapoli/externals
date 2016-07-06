@@ -43,6 +43,8 @@ class AuthController
 
     public function login(ServerRequestInterface $request)
     {
+        newrelic_name_transaction('login');
+
         $session = $request->getAttribute(SessionInterface::class);
 
         // If already logged in
@@ -91,6 +93,7 @@ class AuthController
 
     public function logout(ServerRequestInterface $request)
     {
+        newrelic_name_transaction('logout');
         $session = $request->getAttribute(SessionInterface::class);
         $session->remove('user');
         return new RedirectResponse('/');

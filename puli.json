@@ -444,6 +444,10 @@
             "install-path": "vendor/webmozart/path-util",
             "installer": "composer"
         },
+        "wizacha/new-relic-polyfill": {
+            "install-path": "vendor/wizacha/new-relic-polyfill",
+            "installer": "composer"
+        },
         "zendframework/zend-diactoros": {
             "install-path": "vendor/zendframework/zend-diactoros",
             "installer": "composer"

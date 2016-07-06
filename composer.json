@@ -31,7 +31,8 @@
         "gravatarphp/gravatar": "^1.0",
         "gravatarphp/twig-integration": "^1.0",
         "league/oauth2-client": "^1.4",
-        "league/oauth2-github": "^0.2.1"
+        "league/oauth2-github": "^0.2.1",
+        "wizacha/new-relic-polyfill": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.4"

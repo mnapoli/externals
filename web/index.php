@@ -30,6 +30,7 @@ $http = pipe([
 
     router([
         '/' => function (Twig_Environment $twig, ThreadRepository $threadRepository, ServerRequestInterface $request) {
+            newrelic_name_transaction('home');
             $user = $request->getAttribute('user');
             return $twig->render('/app/views/home.html.twig', [
                 'threads' => $threadRepository->findLatest(1, $user),
@@ -37,6 +38,8 @@ $http = pipe([
             ]);
         },
         '/thread/{id}' => function (int $id, Twig_Environment $twig, ThreadRepository $threadRepository, EmailRepository $emailRepository, ServerRequestInterface $request) {
+            newrelic_name_transaction('thread');
+            newrelic_add_custom_parameter('thread', $id);
             $user = $request->getAttribute('user');
             $emailCount = $emailRepository->getThreadCount($id);
             // Get thread view **before** marking the thread as read
@@ -53,6 +56,7 @@ $http = pipe([
             ]);
         },
         '/threads/list' => function (Twig_Environment $twig, ThreadRepository $threadRepository, ServerRequestInterface $request) {
+            newrelic_name_transaction('thread-list');
             $user = $request->getAttribute('user');
             $query = $request->getQueryParams();
             $page = (int) max(1, $query['page'] ?? 1);
@@ -64,6 +68,7 @@ $http = pipe([
         '/login' => [AuthController::class, 'login'],
         '/logout' => [AuthController::class, 'logout'],
         '/stats' => function (Twig_Environment $twig, ThreadRepository $threadRepository, EmailRepository $emailRepository, UserRepository $userRepository, ServerRequestInterface $request) {
+            newrelic_name_transaction('stats');
             $user = $request->getAttribute('user');
             return $twig->render('/app/views/stats.html.twig', [
                 'userCount' => $userRepository->getUserCount(),
