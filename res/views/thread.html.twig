@@ -7,7 +7,7 @@
 {% macro threadItem(item) %}
     {% set email = item.email %}
 
-    <article id="email-{{ email.id }}" class="clearfix">
+    <article id="email-{{ email.id }}" class="clearfix {% if not email.isRead %}unread{% endif %}">
 
         <header>
             <a href="#email-{{ email.id }}-body" role="button" data-toggle="collapse"><span class="fa fa-compress"></span></a>
@@ -42,10 +42,30 @@
         </h1>
     </div>
 
+    <div class="thread-navigation visible-lg container">
+        <div class="navigation">
+            go to next <br> unread email
+            <button id="next-unread" type="button" class="btn btn-link btn-block"><span class="fa fa-arrow-down"></span></button>
+        </div>
+    </div>
+
     <section class="thread">
         {% for item in thread %}
             {{ macros.threadItem(item) }}
         {% endfor %}
     </section>
+
+    <script>
+        $(function() {
+            var unreadEmailIds = $('article.unread').map(function() {
+                return this.id;
+            }).get();
+            var i = 0;
+            $('#next-unread').click(function() {
+                window.location.hash = '#' + unreadEmailIds[i];
+                i++;
+            });
+        });
+    </script>
 
 {% endblock %}
