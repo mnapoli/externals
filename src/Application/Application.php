@@ -2,8 +2,6 @@
 
 namespace Externals\Application;
 
-use Dotenv\Dotenv;
-
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
@@ -17,8 +15,6 @@ class Application extends \Stratify\Framework\Application
             'app',
         ];
 
-        $dotenv = new Dotenv(__DIR__ . '/../../');
-        $dotenv->load();
         $environment = getenv('ENV') ?? 'prod';
 
         parent::__construct($modules, $environment);
