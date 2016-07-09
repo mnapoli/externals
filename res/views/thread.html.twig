@@ -11,14 +11,14 @@
 
         <header>
             <a href="#email-{{ email.id }}-body" role="button" data-toggle="collapse"><span class="fa fa-compress"></span></a>
-            Posted
+            <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro', s: 50}) }}"
+                 alt="{{ email.from.nameOrEmail }}" title="{{ email.from.nameOrEmail }}">
+            <span class="hidden-xs">Posted</span>
             <a class="email-date" href="#email-{{ email.id }}" title="{{ email.date|date }}">{{ email.date|time_diff }}</a>
             by <strong>{{ email.from.nameOrEmail }}</strong>
             {% if not email.isRead %}
                 <div class="label label-primary">unread</div>
             {% endif %}
-            <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro', s: 50}) }}"
-                 alt="{{ email.from.nameOrEmail }}" title="{{ email.from.nameOrEmail }}">
         </header>
 
         <div id="email-{{ email.id }}-body" class="collapse in">

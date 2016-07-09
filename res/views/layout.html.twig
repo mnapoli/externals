@@ -22,7 +22,8 @@
                     Welcome {{ user.name }}
                     (<a href="/logout" rel="nofollow">logout</a>)
                 {% else %}
-                    <a href="/login" rel="nofollow">Log in with GitHub</a> to track unread emails
+                    <a href="/login" rel="nofollow">Log in with GitHub</a>
+                    <span class="hidden-xs">to track unread emails</span>
                     <span class="fa fa-info-circle" data-toggle="tooltip" data-placement="bottom" title="No personal data is fetched or stored from GitHub, read more in the footer of the page."></span>
                 {% endif %}
             </div>
