@@ -98,6 +98,10 @@ article {
     border: 1px solid #e6e6e6;
     padding: 20px 0 20px 20px;
     margin: 20px 0 0;
+    overflow: hidden;
+    @media (max-width: @screen-xs-max) {
+        padding-left: 5px;
+    }
     article {
         border-right: none;
     }
@@ -111,6 +115,9 @@ article {
         background-color: #f1f1f1;
         color: #757575;
         font-size: 0.9em;
+        @media (max-width: @screen-xs-max) {
+            margin-left: -5px;
+        }
         .label {
             margin-left: 10px;
             font-weight: normal;
@@ -135,6 +142,28 @@ article {
         color: #999;
         padding: 0 20px;
         font-size: 0.98em;
+        @media (max-width: @screen-xs-max) {
+            border-left: none;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            // Collapse quote in quote on mobile
+            blockquote {
+                visibility: hidden;
+                height: 1em;
+                position: relative;
+                &:after {
+                    content: '…';
+                    visibility: visible;
+                    position: absolute;
+                    top: 0;
+                    left: 20px;
+                }
+                // Hide completely sub-quotes
+                blockquote {
+                    display: none;
+                }
+            }
+        }
     }
     h1 {
         font-size: 1.3em;
