@@ -44,7 +44,7 @@ $http = pipe([
             $user = $request->getAttribute('user');
             $emailCount = $emailRepository->getThreadCount($id);
             // Get thread view **before** marking the thread as read
-            $threadView = $emailRepository->getThreadView($id);
+            $threadView = $emailRepository->getThreadView($id, $user);
             if ($user instanceof User) {
                 $threadRepository->markThreadRead($id, $user, $emailCount);
             }

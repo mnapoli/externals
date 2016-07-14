@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Externals\Email;
 
 use Doctrine\DBAL\Connection;
+use Externals\User\User;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
@@ -30,16 +31,28 @@ class EmailRepository
      *
      * @return ThreadItem[]
      */
-    public function getThreadView(int $threadId) : array
+    public function getThreadView(int $threadId, User $user = null) : array
     {
-        $query = 'SELECT emails.*, IF(read_status.userId, 1, 0) as was_read
-                  FROM emails
-                  LEFT JOIN user_emails_read read_status ON read_status.emailId = emails.id
-                  WHERE threadId = ?
-                  ORDER BY date ASC';
-        $emails = $this->db->fetchAll($query, [$threadId]);
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('emails.*')
+            ->from('emails')
+            ->where('emails.threadId = :threadId')
+            ->orderBy('emails.date', 'ASC')
+            ->setParameter('threadId', $threadId);
+
+        if ($user) {
+            $qb->addSelect('IF(readStatus.userId, 1, 0) as wasRead')
+                ->leftJoin('emails', 'user_emails_read', 'readStatus', 'emails.id = readStatus.emailId AND readStatus.userId = :userId');
+            $qb->setParameter('userId', $user->getId());
+        } else {
+            $qb->addSelect('0 as wasRead');
+        }
+
         /** @var Email[] $emails */
-        $emails = array_map([$this, 'createEmail'], $emails);
+        $emails = array_map(
+            [$this, 'createEmail'],
+            $qb->execute()->fetchAll()
+        );
 
         // Index by ID
         /** @var ThreadItem[] $indexedThreadItem */
@@ -137,7 +150,7 @@ class EmailRepository
             $row['inReplyTo']
         );
 
-        if (array_key_exists('was_read', $row) && $row['was_read']) {
+        if (array_key_exists('wasRead', $row) && $row['wasRead']) {
             $email->markAsRead();
         }
 
