@@ -19,7 +19,7 @@
         "mnapoli/silly": "^1.3",
         "mnapoli/imapi": "~0.2.0",
         "doctrine/dbal": "^2.5",
-        "stratify/twig-module": "~0.1.3",
+        "stratify/twig-module": "~0.1.4",
         "twig/extensions": "^1.0",
         "misd/linkify": "^1.1",
         "monolog/monolog": "^1.19",

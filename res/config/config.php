@@ -44,6 +44,9 @@ return [
         'cache' => string('{path.cache}/twig'),
         'auto_reload' => true,
     ],
+    'twig.globals' => [
+        'debug' => get('debug'),
+    ],
     'twig.extensions' => add([
         get(Twig_Extensions_Extension_Date::class),
         get(GravatarExtension::class),
