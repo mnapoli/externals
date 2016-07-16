@@ -22,6 +22,11 @@
 
     </section>
 
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+
     <script>
         $(function () {
             var page = 2;
@@ -37,5 +42,4 @@
             });
         });
     </script>
-
 {% endblock %}

@@ -58,6 +58,11 @@
         {% endfor %}
     </section>
 
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+
     <script>
         $(function() {
             var unreadEmailIds = $('article.unread').map(function() {
@@ -76,5 +81,4 @@
             }
         });
     </script>
-
 {% endblock %}
