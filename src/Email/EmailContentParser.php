@@ -50,6 +50,7 @@ class EmailContentParser
         $content = $this->stripMailingListFooter($content);
         $content = rtrim($content, " \t\n\r\0\x0B->");
         $content = $this->stripTrailingUnindentedQuotation($content);
+        $content = $this->stripQuoteHeaders($content);
 
         // Auto-transform PHP functions to inline code
         $content = $this->parsePhpFunctions($content);
@@ -119,5 +120,10 @@ class EmailContentParser
                 \R?
                 From: .+$
             /sx', '', $content);
+    }
+
+    private function stripQuoteHeaders(string $content) : string
+    {
+        return preg_replace('/^([> ]*)On .+, .+ wrote:\r?$/m', '$1', $content);
     }
 }

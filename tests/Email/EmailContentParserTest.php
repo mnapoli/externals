@@ -216,4 +216,46 @@ proper escaping function.</p>
 HTML;
         $this->assertEquals($expected, trim($this->parser->parse($content)));
     }
+
+    /**
+     * @test
+     */
+    public function should_strip_quote_headers()
+    {
+        $content = <<<MARKDOWN
+On Tue, Jul 5, 2016 at 3:21 PM, Levi Morrison <levim+test@php.net> wrote:\r\n
+
+> But you still have to remember to use
+
+Test with indented quotation header:
+
+> Test that the blockquote is not cut in half
+>
+> On 30/06/16 23:46, Thomas Bley wrote:
+>
+> > But you still have to remember to use
+> >
+>>> On 30/06/16 23:46, Thomas Bley wrote:
+>>> abc
+
+Trick: don't forget that On Wed, Stanislav wrote:
+MARKDOWN;
+        $expected = <<<HTML
+<blockquote>
+<p>But you still have to remember to use</p>
+</blockquote>
+<p>Test with indented quotation header:</p>
+<blockquote>
+<p>Test that the blockquote is not cut in half</p>
+<blockquote>
+<p>But you still have to remember to use</p>
+<blockquote>
+<p>abc</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Trick: don't forget that On Wed, Stanislav wrote:</p>
+HTML;
+        $this->assertEquals($expected, trim($this->parser->parse($content)));
+    }
 }
