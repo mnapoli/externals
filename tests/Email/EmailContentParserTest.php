@@ -91,8 +91,8 @@ HTML;
 We use 2/3 vote for "a feature affecting the language itself".
 EMAIL;
         $expected = <<<HTML
-<p>and the test:</p>
 <blockquote>
+<p>and the test:</p>
 &lt;?php
 ini_set("pcntl.async_signals", "1");
 </blockquote>
@@ -193,6 +193,27 @@ MARKDOWN;
     {
         $content = 'Try to use PHP_INT_MAX and you will see.';
         $expected = '<p>Try to use <code>PHP_INT_MAX</code> and you will see.</p>';
+        $this->assertEquals($expected, trim($this->parser->parse($content)));
+    }
+
+    /**
+     * @test
+     */
+    public function should_handle_leading_blockquote()
+    {
+        $content = <<<MARKDOWN
+> But you still have to remember to use a
+> proper escaping function.
+
+I see no problem.
+MARKDOWN;
+        $expected = <<<HTML
+<blockquote>
+<p>But you still have to remember to use a <br>
+proper escaping function.</p>
+</blockquote>
+<p>I see no problem.</p>
+HTML;
         $this->assertEquals($expected, trim($this->parser->parse($content)));
     }
 }

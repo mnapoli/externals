@@ -48,7 +48,7 @@ class EmailContentParser
     public function parse(string $content) : string
     {
         $content = $this->stripMailingListFooter($content);
-        $content = trim($content, " \t\n\r\0\x0B->");
+        $content = rtrim($content, " \t\n\r\0\x0B->");
         $content = $this->stripTrailingUnindentedQuotation($content);
 
         // Auto-transform PHP functions to inline code
