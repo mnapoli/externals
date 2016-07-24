@@ -15,6 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Stratify\ErrorHandlerModule\ErrorHandlerMiddleware;
 use function Stratify\Framework\pipe;
 use function Stratify\Framework\router;
+use Zend\Diactoros\Response\TextResponse;
 
 if (php_sapi_name() === 'cli-server' && is_file(__DIR__ . preg_replace('#(\?.*)$#', '', $_SERVER['REQUEST_URI']))) {
     return false;
@@ -77,6 +78,10 @@ $http = pipe([
                 'emailCount' => $emailRepository->getEmailCount(),
                 'user' => $user,
             ]);
+        },
+        '/email/{id}/source' => function (string $id, EmailRepository $emailRepository) {
+            newrelic_name_transaction('email_source');
+            return new TextResponse($emailRepository->getEmailSource($id));
         },
     ]),
 

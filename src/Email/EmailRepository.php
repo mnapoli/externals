@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Externals\Email;
 
 use Doctrine\DBAL\Connection;
+use Externals\NotFound;
 use Externals\User\User;
 
 /**
@@ -117,6 +118,16 @@ class EmailRepository
             'string',
             'string',
         ]);
+    }
+
+    public function getEmailSource(string $id) : string
+    {
+        $email = $this->db->fetchAssoc('SELECT * FROM emails WHERE id = ?', [$id]);
+        if (!$email) {
+            throw new NotFound('Email not found');
+        }
+        $email = $this->createEmail($email);
+        return $email->getOriginalContent();
     }
 
     public function updateContent(Email $email)

@@ -16,6 +16,9 @@
             <span class="hidden-xs">Posted</span>
             <a class="email-date" href="#email-{{ email.id }}" title="{{ email.date|date }}">{{ email.date|time_diff }}</a>
             by <strong>{{ email.from.nameOrEmail }}</strong>
+            <span class="view-source">
+                — <a href="/email/{{ email.id }}/source" target="_blank">view source</a>
+            </span>
             {% if not email.isRead %}
                 <div class="label label-primary">unread</div>
             {% endif %}
