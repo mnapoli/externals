@@ -24,14 +24,10 @@ class NotFoundMiddleware implements Middleware
         $this->controller = $controller;
     }
 
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next
-    ) : ResponseInterface
+    public function __invoke(ServerRequestInterface $request, callable $next) : ResponseInterface
     {
         try {
-            return $next($request, $response);
+            return $next($request);
         } catch (NotFound $e) {
             return $this->controller->__invoke($request);
         }

@@ -15,16 +15,12 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class AuthMiddleware implements Middleware
 {
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next
-    ) : ResponseInterface
+    public function __invoke(ServerRequestInterface $request, callable $next) : ResponseInterface
     {
         $session = $request->getAttribute(SessionInterface::class);
 
         $request = $request->withAttribute('user', $session->get('user'));
 
-        return $next($request, $response);
+        return $next($request);
     }
 }

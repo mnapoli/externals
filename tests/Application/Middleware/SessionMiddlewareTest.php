@@ -6,7 +6,6 @@ namespace Externals\Test\Application\Middleware;
 use Externals\Application\Middleware\SessionMiddleware;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\ServerRequest;
 
@@ -23,7 +22,7 @@ class SessionMiddlewareTest extends \PHPUnit_Framework_TestCase
             return new TextResponse('Hello');
         };
 
-        $response = (new SessionMiddleware)->__invoke(new ServerRequest, new Response, $next);
+        $response = (new SessionMiddleware)->__invoke(new ServerRequest, $next);
 
         // Check that next was called
         $this->assertEquals('Hello', $response->getBody()->getContents());

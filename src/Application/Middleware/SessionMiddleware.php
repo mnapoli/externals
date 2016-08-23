@@ -16,16 +16,12 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class SessionMiddleware implements Middleware
 {
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next
-    ) : ResponseInterface
+    public function __invoke(ServerRequestInterface $request, callable $next) : ResponseInterface
     {
         $session = new Session;
 
         $request = $request->withAttribute(SessionInterface::class, $session);
 
-        return $next($request, $response);
+        return $next($request);
     }
 }

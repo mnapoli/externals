@@ -17,6 +17,8 @@ class Application extends \Stratify\Framework\Application
 
         $environment = getenv('ENV') ?? 'prod';
 
-        parent::__construct($modules, $environment);
+        $httpStack = require(__DIR__ . '/../../res/http.php');
+
+        parent::__construct($modules, $environment, $httpStack);
     }
 }
