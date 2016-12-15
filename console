@@ -16,7 +16,8 @@ require_once __DIR__ . '/.puli/GeneratedPuliFactory.php';
 $application = new Application;
 $cli = $application->cli();
 
-$cli->command('db [--force]', DbCommand::class);
+$cli->command('db [--force]', [DbCommand::class, 'setup']);
+$cli->command('db-purge [--force]', [DbCommand::class, 'purge']);
 
 $cli->command('sync [days]', function (int $days = null, EmailSynchronizer $synchronizer) {
     $synchronizer->synchronize($days ?? 1);

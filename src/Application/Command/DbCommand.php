@@ -29,7 +29,7 @@ class DbCommand
         $this->schemaDefinition = $schemaDefinition;
     }
 
-    public function __invoke(bool $force, OutputInterface $output)
+    public function setup(bool $force, OutputInterface $output)
     {
         $newSchema = new Schema();
         $this->schemaDefinition->define($newSchema);
@@ -54,5 +54,24 @@ class DbCommand
         } else {
             $output->writeln('<comment>Queries were successfully run against the database</comment>');
         }
+    }
+
+    public function purge(bool $force, OutputInterface $output)
+    {
+        $tables = $this->db->getSchemaManager()->listTableNames();
+        foreach ($tables as $table) {
+            $output->writeln("<info>Dropping table $table</info>");
+            if ($force) {
+                $this->db->getSchemaManager()->dropTable($table);
+            }
+        }
+
+        if (!$force) {
+            $output->writeln('<comment>No query was run, use the --force option to run the queries</comment>');
+        } else {
+            $output->writeln('<comment>Queries were successfully run against the database</comment>');
+        }
+
+        $this->setup($force, $output);
     }
 }
