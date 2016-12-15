@@ -8,6 +8,10 @@
         "bootstrap-file": "vendor/autoload.php"
     },
     "packages": {
+        "algolia/algoliasearch-client-php": {
+            "install-path": "vendor/algolia/algoliasearch-client-php",
+            "installer": "composer"
+        },
         "aura/router": {
             "install-path": "vendor/aura/router",
             "installer": "composer"

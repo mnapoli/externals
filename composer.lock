@@ -4,9 +4,60 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1de3fe1370fb0a17c8140181e8e0a1c0",
-    "content-hash": "8c36c0df0ae025227979dfab4d7b67a4",
+    "hash": "ec14e56d9129738f60473ed0ff077733",
+    "content-hash": "5424121aa15a2dbe27c84d0cc23c890a",
     "packages": [
+        {
+            "name": "algolia/algoliasearch-client-php",
+            "version": "1.12.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/algolia/algoliasearch-client-php.git",
+                "reference": "01dd56a09db7fe6a5609fadbd7ad69d41c131375"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/algolia/algoliasearch-client-php/zipball/01dd56a09db7fe6a5609fadbd7ad69d41c131375",
+                "reference": "01dd56a09db7fe6a5609fadbd7ad69d41c131375",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8 || ^5.0",
+                "satooshi/php-coveralls": "0.6.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "AlgoliaSearch": "src/",
+                    "AlgoliaSearch\\Tests": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Algolia Team",
+                    "email": "contact@algolia.com"
+                },
+                {
+                    "name": "Ryan T. Catlin",
+                    "email": "ryan.catlin@gmail.com"
+                },
+                {
+                    "name": "Jonathan H. Wage",
+                    "email": "jonwage@gmail.com"
+                }
+            ],
+            "description": "Algolia Search API Client for PHP",
+            "homepage": "https://github.com/algolia/algoliasearch-client-php",
+            "time": "2016-12-09 13:30:25"
+        },
         {
             "name": "aura/router",
             "version": "3.0.0",

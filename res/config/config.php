@@ -89,4 +89,7 @@ return [
         'redirectUri' => get('github.oauth.redirect_url'),
     ],
 
+    \AlgoliaSearch\Client::class => object()
+        ->constructor(get('algolia.app_id'), get('algolia.api_key')),
+
 ];

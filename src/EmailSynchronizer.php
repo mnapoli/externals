@@ -7,6 +7,7 @@ use Externals\Email\Email;
 use Externals\Email\EmailAddress;
 use Externals\Email\EmailContentParser;
 use Externals\Email\EmailRepository;
+use Externals\Email\EmailSearchIndex;
 use Externals\Email\EmailSubjectParser;
 use Externals\Thread\ThreadRepository;
 use Imapi\Client;
@@ -48,12 +49,18 @@ class EmailSynchronizer
      */
     private $logger;
 
+    /**
+     * @var EmailSearchIndex
+     */
+    private $searchIndex;
+
     public function __construct(
         Client $imapClient,
         ThreadRepository $threadRepository,
         EmailRepository $emailRepository,
         EmailSubjectParser $subjectParser,
         EmailContentParser $contentParser,
+        EmailSearchIndex $searchIndex,
         LoggerInterface $logger
     ) {
         $this->imapClient = $imapClient;
@@ -61,6 +68,7 @@ class EmailSynchronizer
         $this->emailRepository = $emailRepository;
         $this->subjectParser = $subjectParser;
         $this->contentParser = $contentParser;
+        $this->searchIndex = $searchIndex;
         $this->logger = $logger;
     }
 
@@ -113,6 +121,9 @@ class EmailSynchronizer
             $email->getInReplyTo()
         );
         $this->emailRepository->add($newEmail);
+
+        // Index in Algolia
+        $this->searchIndex->indexEmail($newEmail);
 
         $this->logger->info('New email: ' . $email->getSubject());
     }

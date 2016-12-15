@@ -15,4 +15,7 @@ return [
     'github.oauth.client_secret' => '',
     'github.oauth.redirect_url' => 'http://localhost:8000/login',
 
+    'algolia.app_id' => '',
+    'algolia.api_key' => '',
+
 ];
