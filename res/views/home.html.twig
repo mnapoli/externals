@@ -12,6 +12,34 @@
         </noscript>
     </div>
 
+    {# Search #}
+    <div id="search-form" class="row">
+        <div class="col-xs-10">
+            <input id="search-input" type="text" class="form-control input-lg" placeholder="Search...">
+        </div>
+        <div class="col-xs-2">
+            <a class="algolia" href="https://www.algolia.com"><img src="/images/algolia.png" alt="Search powered by Algolia"></a>
+        </div>
+    </div>
+    <div class="search-container">
+        <h3>Search results</h3>
+        <ul id="search-results" class="list-unstyled"></ul>
+    </div>
+    {% verbatim %}
+        <script id="search-result-template" type="text/html">
+            <li>
+                <a href="/thread/{{ threadId }}#email-{{ objectID }}">{{{ _highlightResult.subject.value }}}</a>
+                <span class="text-muted">
+                    by <strong>{{{ _highlightResult.fromName.value }}}</strong>
+                    {{#helpers.date}}{{/helpers.date}}
+                </span>
+            </li>
+        </script>
+        <script id="no-results-template" type="text/html">
+            <p>No results found for the search <em>"{{query}}"</em>.</p>
+        </script>
+    {% endverbatim %}
+
     <section id="threads">
 
         <table class="thread-list table table-striped table-hover">
@@ -29,6 +57,8 @@
 
     <script>
         $(function () {
+
+            // Pagination
             var page = 2;
             $('#show-more-threads').click(function () {
                 $.get('/threads/list?page=' + page, function (html) {
@@ -40,6 +70,42 @@
                 });
                 page++;
             });
+
+            var search = instantsearch({
+                appId: 'KSTITII7EC',
+                apiKey: 'badccd205e578e64657ae7f880959824',
+                indexName: 'emails',
+                searchFunction: function (helper) {
+                    var searchResults = $('.search-container');
+                    if (helper.state.query === '') {
+                        searchResults.hide();
+                        return;
+                    }
+                    helper.search();
+                    searchResults.show();
+                },
+            });
+            search.addWidget(
+                instantsearch.widgets.searchBox({
+                    container: '#search-input',
+                    placeholder: 'Search...'
+                })
+            );
+            search.addWidget(
+                instantsearch.widgets.hits({
+                    container: '#search-results',
+                    hitsPerPage: 10,
+                    templates: {
+                        item: $('#search-result-template').html(),
+                        empty: $('#no-results-template').html(),
+                    }
+                })
+            );
+            search.templatesConfig.helpers.date = function () {
+                return moment(this.date).fromNow();
+            };
+            search.start();
+
         });
     </script>
 {% endblock %}

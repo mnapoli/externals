@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="/vendor/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/vendor/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.css">
     <link rel="stylesheet/less" type="text/css" href="/css/style.less">
     <script src="/vendor/less/dist/less.min.js"></script>
 </head>
@@ -37,6 +38,9 @@
         <div class="container">
             <p>
                 Contribute to the project on GitHub: <a href="https://github.com/mnapoli/externals" target="_blank">mnapoli/externals</a>
+            </p>
+            <p>
+                Search graciously provided by <a href="https://www.algolia.com">Algolia</a>.
             </p>
             <p>
                 <strong>About data:</strong> if you login using GitHub, no personal data (or GitHub token) will be stored.<br>
@@ -82,6 +86,9 @@
         {% endif %}
 
         <script src="/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="/vendor/moment/min/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.js"></script>
     {% endblock %}
 </body>
 </html>

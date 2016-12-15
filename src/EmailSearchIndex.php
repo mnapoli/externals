@@ -6,9 +6,10 @@
  */
 declare(strict_types = 1);
 
-namespace Externals\Email;
+namespace Externals;
 
 use AlgoliaSearch\Client;
+use Externals\Email\Email;
 
 class EmailSearchIndex
 {
@@ -28,13 +29,21 @@ class EmailSearchIndex
 
         $index->addObject([
             'subject' => $email->getSubject(),
-            'content' => $email->getContent(),
-            'originalContent' => $email->getOriginalContent(),
+            'originalContent' => substr($email->getOriginalContent(), 0, 1024),
             'threadId' => $email->getThreadId(),
             'fromEmail' => $email->getFrom()->getEmail(),
             'fromName' => $email->getFrom()->getName(),
             'date' => $email->getDate()->format(\DateTime::ATOM),
             'timestamp' => $email->getDate()->getTimestamp(),
         ], $email->getId());
+    }
+
+    public function indexThread(int $id, string $subject)
+    {
+        $index = $this->searchClient->initIndex('threads');
+
+        $index->addObject([
+            'subject' => $subject,
+        ], $id);
     }
 }

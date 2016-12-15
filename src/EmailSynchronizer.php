@@ -7,7 +7,6 @@ use Externals\Email\Email;
 use Externals\Email\EmailAddress;
 use Externals\Email\EmailContentParser;
 use Externals\Email\EmailRepository;
-use Externals\Email\EmailSearchIndex;
 use Externals\Email\EmailSubjectParser;
 use Externals\Thread\ThreadRepository;
 use Imapi\Client;
@@ -103,6 +102,7 @@ class EmailSynchronizer
         if (!$threadId) {
             // New thread
             $threadId = $this->threadRepository->create($threadSubject);
+            $this->searchIndex->indexThread($threadId, $threadSubject);
         }
 
         $fromArray = $email->getFrom();

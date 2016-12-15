@@ -8,6 +8,7 @@
     "jquery": "~2.0",
     "bootstrap": "~3.1",
     "fontawesome": "*",
-    "less": "^2.7.1"
+    "less": "^2.7.1",
+    "moment": "^2.17.1"
   }
 }
