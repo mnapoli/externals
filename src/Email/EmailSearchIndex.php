@@ -34,6 +34,7 @@ class EmailSearchIndex
             'fromEmail' => $email->getFrom()->getEmail(),
             'fromName' => $email->getFrom()->getName(),
             'date' => $email->getDate()->format(\DateTime::ATOM),
+            'timestamp' => $email->getDate()->getTimestamp(),
         ], $email->getId());
     }
 }

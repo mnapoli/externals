@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 use Externals\Application\Application;
 use Externals\Application\Command\DbCommand;
+use Externals\Email\EmailSearchIndex;
 use Externals\EmailSynchronizer;
 use Externals\Email\EmailContentParser;
 use Externals\Email\EmailRepository;
@@ -28,6 +29,12 @@ $cli->command('reparse', function (EmailRepository $emailRepository, EmailConten
         $newContent = $contentParser->parse($email->getOriginalContent());
         $email->setContent($newContent);
         $emailRepository->updateContent($email);
+    }
+});
+
+$cli->command('reindex', function (EmailRepository $emailRepository, EmailSearchIndex $searchIndex) {
+    foreach ($emailRepository->findAll() as $email) {
+        $searchIndex->indexEmail($email);
     }
 });
 
