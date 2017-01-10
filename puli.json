@@ -20,6 +20,10 @@
             "install-path": "vendor/container-interop/container-interop",
             "installer": "composer"
         },
+        "dflydev/fig-cookies": {
+            "install-path": "vendor/dflydev/fig-cookies",
+            "installer": "composer"
+        },
         "doctrine/annotations": {
             "install-path": "vendor/doctrine/annotations",
             "installer": "composer"
@@ -81,6 +85,10 @@
             "install-path": "vendor/guzzlehttp/psr7",
             "installer": "composer"
         },
+        "http-interop/http-middleware": {
+            "install-path": "vendor/http-interop/http-middleware",
+            "installer": "composer"
+        },
         "ircmaxell/random-lib": {
             "install-path": "vendor/ircmaxell/random-lib",
             "installer": "composer"
@@ -91,6 +99,10 @@
         },
         "justinrainbow/json-schema": {
             "install-path": "vendor/justinrainbow/json-schema",
+            "installer": "composer"
+        },
+        "lcobucci/jwt": {
+            "install-path": "vendor/lcobucci/jwt",
             "installer": "composer"
         },
         "league/commonmark": {
@@ -277,6 +289,10 @@
             "install-path": "vendor/psr/log",
             "installer": "composer"
         },
+        "psr7-sessions/storageless": {
+            "install-path": "vendor/psr7-sessions/storageless",
+            "installer": "composer"
+        },
         "puli/composer-plugin": {
             "install-path": "vendor/puli/composer-plugin",
             "installer": "composer"
@@ -450,6 +466,14 @@
         },
         "zendframework/zend-diactoros": {
             "install-path": "vendor/zendframework/zend-diactoros",
+            "installer": "composer"
+        },
+        "zendframework/zend-escaper": {
+            "install-path": "vendor/zendframework/zend-escaper",
+            "installer": "composer"
+        },
+        "zendframework/zend-stratigility": {
+            "install-path": "vendor/zendframework/zend-stratigility",
             "installer": "composer"
         }
     }

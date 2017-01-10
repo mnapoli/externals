@@ -19,6 +19,7 @@ use League\OAuth2\Client\Provider\Github;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use PSR7Session\Http\SessionMiddleware;
 use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 
@@ -92,4 +93,8 @@ return [
     \AlgoliaSearch\Client::class => object()
         ->constructor(get('algolia.app_id'), get('algolia.api_key')),
 
+    SessionMiddleware::class => function (ContainerInterface $c) {
+        $config = $c->get('session');
+        return SessionMiddleware::fromSymmetricKeyDefaults($config['key'], $config['lifetime']);
+    },
 ];
