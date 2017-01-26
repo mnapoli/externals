@@ -9,7 +9,7 @@ use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GithubResourceOwner;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use PSR7Session\Http\SessionMiddleware;
 use Twig_Environment;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
@@ -45,7 +45,7 @@ class AuthController
     {
         newrelic_name_transaction('login');
 
-        $session = $request->getAttribute(SessionInterface::class);
+        $session = $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
 
         // If already logged in
         $user = $session->get('user');
@@ -94,7 +94,7 @@ class AuthController
     public function logout(ServerRequestInterface $request)
     {
         newrelic_name_transaction('logout');
-        $session = $request->getAttribute(SessionInterface::class);
+        $session = $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
         $session->remove('user');
         return new RedirectResponse('/');
     }

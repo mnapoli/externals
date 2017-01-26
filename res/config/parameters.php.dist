@@ -18,4 +18,8 @@ return [
     'algolia.app_id' => '',
     'algolia.api_key' => '',
 
+    'session' => [
+        'key' => '',
+        'lifetime' => 31536000,
+    ],
 ];

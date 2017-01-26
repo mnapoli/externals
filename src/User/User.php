@@ -6,7 +6,7 @@ namespace Externals\User;
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class User implements \Serializable
+class User implements \JsonSerializable
 {
     /**
      * @var int
@@ -46,26 +46,24 @@ class User implements \Serializable
     }
 
     /**
-     * @link http://php.net/manual/en/serializable.serialize.php
+     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
      * @return string
      */
-    public function serialize()
+    public function jsonSerialize()
     {
-        return serialize([
+        return [
             'id' => $this->id,
             'githubId' => $this->githubId,
             'name' => $this->name,
-        ]);
+        ];
     }
 
-    public function unserialize($serialized)
+    public static function fromData($data)
     {
-        $data = unserialize($serialized);
-        if (!$data) {
-            throw new \Exception('Unable to unserialize user');
+        if ($data === null) {
+            return null;
         }
-        $this->id = $data['id'];
-        $this->githubId = $data['githubId'];
-        $this->name = $data['name'];
+
+        return new self($data['id'], $data['githubId'], $data['name']);
     }
 }
