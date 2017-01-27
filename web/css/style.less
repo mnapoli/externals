@@ -265,13 +265,23 @@ article article article, article article article article article, article articl
 .thread-navigation {
     .navigation {
         position: fixed;
-        right: 3%;
-        top: 176px;
+        right: 2%;
+        bottom: 2%;
         text-align: center;
         color: #428bca;
-        font-size: 12px;
+        
+        font-size: 10px;
         button {
-            font-size: 50px;
+            font-size: 25px;
+        }
+        
+        @media (min-width: 768px) {
+            font-size: 12px;
+            button {
+                top: 176px;
+                bottom: auto;
+                font-size: 50px;
+            }
         }
     }
 }

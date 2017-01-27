@@ -47,10 +47,10 @@
     </div>
 
     {% if user is not empty %}
-        <div class="thread-navigation visible-lg container">
-            <div class="navigation">
-                go to next <br> unread email
-                <button id="next-unread" type="button" class="btn btn-link btn-block"><span class="fa fa-arrow-down"></span></button>
+        <div class="thread-navigation container">
+            <div class="navigation" id="next-unread">
+                next<br>unread email
+                <button type="button" class="btn btn-link btn-block"><span class="fa fa-arrow-down"></span></button>
             </div>
         </div>
     {% endif %}
