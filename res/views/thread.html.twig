@@ -73,7 +73,8 @@
             }).get();
             var i = 0;
             $('#next-unread').click(function() {
-                if ((i + 1) > unreadEmailIds.length) {
+                if ((i + 1) > unreadEmailIds.length) {                              
+                    $('.thread-navigation').remove();
                     return;
                 }
                 window.location.hash = '#' + unreadEmailIds[i];
