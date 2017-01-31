@@ -74,11 +74,15 @@
             var i = 0;
             $('#next-unread').click(function() {
                 if ((i + 1) > unreadEmailIds.length) {                              
-                    $('.thread-navigation').remove();
                     return;
                 }
                 window.location.hash = '#' + unreadEmailIds[i];
                 i++;
+
+                // hide navigation when no more unread messages left
+                if ((i + 1) > unreadEmailIds.length) {                              
+                    $('.thread-navigation').remove();
+                }
             });
             if (unreadEmailIds.length === 0) {
                 $('.thread-navigation').remove();
