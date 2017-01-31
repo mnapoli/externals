@@ -71,19 +71,31 @@
             var unreadEmailIds = $('article.unread').map(function() {
                 return this.id;
             }).get();
+
             var i = 0;
-            $('#next-unread').click(function() {
-                if ((i + 1) > unreadEmailIds.length) {                              
+            var nextUnread = function() {
+                if ((i + 1) > unreadEmailIds.length) {
                     return;
                 }
+
                 window.location.hash = '#' + unreadEmailIds[i];
                 i++;
-
+                
                 // hide navigation when no more unread messages left
                 if ((i + 1) > unreadEmailIds.length) {                              
                     $('.thread-navigation').remove();
                 }
+            };
+
+            $('#next-unread').click(nextUnread);
+            $( document ).keypress(function( event ) {
+                // 'n' shortcut/accesskey to jump to the next unread msg
+                // when typing occurs outside of input fields (like our search)
+                if ( event.target == document.body && event.which == 110) {
+                    nextUnread();
+                }
             });
+
             if (unreadEmailIds.length === 0) {
                 $('.thread-navigation').remove();
             }
