@@ -1,0 +1,3 @@
+database:
+    type: mysql:10.1
+    disk: 1024
