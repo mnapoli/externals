@@ -13,7 +13,7 @@ $ cp res/config/parameters.php.dist res/config/parameters.php
 # Configure database and IMAP settings
 
 $ ./console db --force
-$ ENV=dev php -S localhost:8000 -t web
+$ make preview
 
 # Browse to http://localhost:8000
 ```
