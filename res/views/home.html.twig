@@ -1,25 +1,22 @@
 {% extends '/app/views/layout.html.twig' %}
 
+{% block mainMenuLinks %}{% endblock %}
+
 {% block content %}
 
-    <div class="home-header">
+    <header class="home-header">
         <h1>#externals</h1>
-        <p>Opening PHP's #internals to the outside.</p>
+        <p>Opening PHP's <a href="http://news.php.net/php.internals">#internals</a> to the outside.</p>
         <noscript>
             Your browser either doesn't support javascript or it is disabled.
             This website does not work without javascript.
             Make sure to activate it or consider switching to a modern browser.
         </noscript>
-    </div>
+    </header>
 
     {# Search #}
-    <div id="search-form" class="row">
-        <div class="col-xs-9 col-sm-10 col-lg-11">
-            <input id="search-input" type="text" class="form-control input-sm" placeholder="Search...">
-        </div>
-        <div class="col-xs-3 col-sm-2 col-lg-1">
-            <a class="algolia" href="https://www.algolia.com"><img src="/images/search-by-algolia.svg" alt="Search powered by Algolia"></a>
-        </div>
+    <div id="search-form">
+        <input id="search-input" type="text" class="form-control input-lg" placeholder="Search with">
     </div>
     <div class="search-container">
         <h3>Search results</h3>
@@ -42,7 +39,7 @@
 
     <section id="threads">
 
-        <table class="thread-list table table-striped table-hover">
+        <table class="thread-list table table-hover">
             {% include '/app/views/threads/thread-list.html.twig' %}
         </table>
 

@@ -15,7 +15,9 @@
 <body>
     <header class="site-header">
         <div class="container">
-            <ul><li><a href="/">#externals</a></li></ul>
+            {% block mainMenuLinks %}
+                <ul><li><a href="/">#externals</a></li></ul>
+            {% endblock %}
             <div class="account">
                 <span class="fa fa-github"></span>
                 {% if user is defined and user is not empty %}

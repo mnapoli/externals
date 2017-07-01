@@ -1,26 +1,38 @@
 @screen-xs-max: 767px;
 
+@border-color: #e8e8e8;
+
 [v-cloak] {
     display: none;
 }
 
 body {
-    background-color: #FAFAFA;
+    background-color: #FDFEFF;
     font-family: 'Open Sans', sans-serif;
 }
 h1 {
     font-weight: 100;
+}
+a {
+    color: #7070a9;
+    &:hover, &:focus {
+        color: #99C;
+    }
 }
 
 .container {
     max-width: 1000px;
 }
 
+.table {
+    thead>tr>th, tbody>tr>th, tfoot>tr>th, thead>tr>td, tbody>tr>td, tfoot>tr>td {
+        border-top: 1px solid @border-color;
+    }
+}
+
 header.site-header {
     height: 40px;
     line-height: 40px;
-    background: #f5f5f5;
-    border-bottom: 1px solid rgba(0,0,0, .05);
     font-size: 12px;
     color: #999;
     ul {
@@ -51,24 +63,29 @@ header.site-header {
     }
 }
 .home-header {
-    position: relative;
-    text-shadow: 0 1px 0 rgba(0,0,0,.1);
-    padding: 20px 0 30px;
+    padding: 50px 0 30px;
     font-size: 24px;
-    text-align: left;
+    text-align: center;
     h1 {
         margin-top: 0;
-        color: dimgrey;
         font-weight: normal;
-        @media (min-width: 768px) {
-            font-size: 60px;
-            line-height: 1;
-        }
+        color: #78889F;
+        font-size: 24px;
     }
     p {
         margin-bottom: 0;
         font-weight: 300;
-        line-height: 1.4;
+        color: #252525;
+        padding: 10px 0 10px 0;
+        font-size: 25px;
+        @media (min-width: 768px) {
+            font-size: 45px;
+            line-height: 54px;
+            padding: 20px 0 30px 0;
+        }
+        a {
+            color: inherit;
+        }
     }
 }
 .main-container {
@@ -85,9 +102,17 @@ footer {
 
 #search-form {
     input {
-        padding-left: 43px;
-        padding-right: 43px;
-        border-radius: 23px;
+        padding: 20px 43px;
+        border-radius: 20px;
+        border-color: #dedede;
+        box-shadow: none;
+        &::placeholder {
+            color: black;
+            background-image: url("/images/search-by-algolia.svg");
+            background-position: 110px 50%;
+            background-repeat: no-repeat;
+            opacity: 0.3;
+        }
     }
     a.algolia {
         display: inline-block;
@@ -112,7 +137,7 @@ footer {
 }
 .search-container {
     background-color: white;
-    border: 1px solid #e6e6e6;
+    border: 1px solid @border-color;
     padding: 10px;
     margin-bottom: 10px;
     overflow: hidden;
@@ -142,6 +167,9 @@ footer {
     .unread .thread-subject {
         font-weight: bold;
     }
+    td {
+        padding: 12px 8px !important;
+    }
 }
 
 .thread {
@@ -149,7 +177,7 @@ footer {
 }
 article {
     background-color: white;
-    border: 1px solid #e6e6e6;
+    border: 1px solid @border-color;
     padding: 20px 0 20px 20px;
     margin: 20px 0 0;
     overflow: hidden;
@@ -163,7 +191,7 @@ article {
         background-color: #fdfbf0;
     }
     header {
-        border-bottom: 1px solid #e6e6e6;
+        border-bottom: 1px solid @border-color;
         padding: 5px 16px;
         margin: -20px 0 20px -20px;
         background-color: #f1f1f1;
