@@ -22,19 +22,37 @@ class EmailRepository
         $this->db = $db;
     }
 
+    public function getById(string $id) : Email
+    {
+        $row = $this->db->fetchAssoc('SELECT * FROM emails WHERE id = ?', [$id]);
+        if (!$row) {
+            throw new NotFound("Email $id was not found");
+        }
+        return $this->emailFromRow($row);
+    }
+
+    public function getByNumber(int $number) : Email
+    {
+        $row = $this->db->fetchAssoc('SELECT * FROM emails WHERE number = ?', [$number], ['integer']);
+        if (!$row) {
+            throw new NotFound("Email $number was not found");
+        }
+        return $this->emailFromRow($row);
+    }
+
     /**
      * Returns a threaded view of the emails.
      *
      * @return ThreadItem[]
      */
-    public function getThreadView(int $threadId, User $user = null) : array
+    public function getThreadView(Email $email, User $user = null) : array
     {
         $qb = $this->db->createQueryBuilder();
         $qb->select('emails.*')
             ->from('emails')
             ->where('emails.threadId = :threadId')
             ->orderBy('emails.date', 'ASC')
-            ->setParameter('threadId', $threadId);
+            ->setParameter('threadId', $email->getId());
 
         if ($user) {
             $qb->addSelect('IF(readStatus.userId, 1, 0) as wasRead')
@@ -71,12 +89,40 @@ class EmailRepository
         return $rootItems;
     }
 
+    public function findLatestThreads(int $page = 1, User $user = null) : array
+    {
+        $perPage = 20;
+        $offset = ($page - 1) * $perPage;
+
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('threads.number', 'threads.subject', 'COUNT(threadEmails.id) as emailCount', 'MAX(threadEmails.date) as lastUpdate')
+            ->from('emails', 'threads')
+            ->leftJoin('threads', 'emails', 'threadEmails', 'threads.id = threadEmails.threadId')
+            ->where('threads.threadId = threads.id')
+            ->groupBy('threads.id')
+            ->orderBy('lastUpdate', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($perPage);
+
+        if ($user) {
+            $qb->addSelect('readStatus.emailsRead as emailsRead')
+                ->leftJoin('threads', 'user_threads_read', 'readStatus', 'threads.id = readStatus.threadId AND readStatus.userId = :userId');
+            $qb->setParameter('userId', $user->getId());
+        } else {
+            $qb->addSelect('0 as emailsRead');
+        }
+
+        return $qb->execute()->fetchAll();
+    }
+
     /**
      * Returns the number of emails in a thread.
      */
-    public function getThreadCount(int $threadId) : int
+    public function getThreadSize(Email $email) : int
     {
-        return (int) $this->db->fetchColumn('SELECT COUNT(id) FROM emails WHERE threadId = ?', [$threadId]);
+        $numberOfEmails = (int) $this->db->fetchColumn('SELECT COUNT(id) FROM emails WHERE threadId = ?', [$email->getId()]);
+
+        return $numberOfEmails;
     }
 
     /**
@@ -92,8 +138,9 @@ class EmailRepository
         $this->db->insert('emails', [
             'id' => $email->getId(),
             'number' => $email->getNumber(),
+            'subject' => $email->getSubject(),
             'content' => $email->getContent(),
-            'originalContent' => $email->getOriginalContent(),
+            'source' => $email->getSource(),
             'threadId' => $email->getThreadId(),
             'date' => $email->getDate(),
             'fromEmail' => $email->getFrom()->getEmail(),
@@ -104,7 +151,8 @@ class EmailRepository
             'integer',
             'text',
             'text',
-            'integer',
+            'text',
+            'string',
             'datetime',
             'string',
             'string',
@@ -119,7 +167,7 @@ class EmailRepository
             throw new NotFound('Email not found');
         }
         $email = $this->emailFromRow($email);
-        return $email->getOriginalContent();
+        return $email->getSource();
     }
 
     public function getLastEmailNumber() : int
@@ -139,6 +187,11 @@ class EmailRepository
         return (int) $this->db->fetchColumn('SELECT COUNT(*) FROM emails');
     }
 
+    public function getThreadCount() : int
+    {
+        return (int) $this->db->fetchColumn('SELECT COUNT(*) FROM emails WHERE threadId = id');
+    }
+
     private function emailFromRow(array $row) : Email
     {
         $date = $row['date'];
@@ -149,9 +202,10 @@ class EmailRepository
         $email = new Email(
             $row['id'],
             (int) $row['number'],
+            $row['subject'],
             $row['content'],
-            $row['originalContent'],
-            (int) $row['threadId'],
+            $row['source'],
+            $row['threadId'],
             $date,
             new EmailAddress($row['fromEmail'], $row['fromName']),
             $row['inReplyTo']

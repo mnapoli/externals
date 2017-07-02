@@ -25,7 +25,7 @@
     {% verbatim %}
         <script id="search-result-template" type="text/html">
             <li>
-                <a href="/thread/{{ threadId }}#email-{{ objectID }}">{{{ _highlightResult.subject.value }}}</a>
+                <a href="/message/{{ objectID }}">{{{ _highlightResult.subject.value }}}</a>
                 <span class="text-muted">
                     by <strong>{{{ _highlightResult.fromName.value }}}</strong>
                     {{#helpers.date}}{{/helpers.date}}

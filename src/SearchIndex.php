@@ -36,6 +36,7 @@ class SearchIndex
         $index->addObject([
             'subject' => $threadSubject,
             'extract' => mb_substr(strip_tags($email->getContent()), 0, 1024),
+            'isThreadRoot' => $email->isThreadRoot(),
             'threadId' => $email->getThreadId(),
             'fromEmail' => $email->getFrom()->getEmail(),
             'fromName' => $email->getFrom()->getName(),

@@ -20,15 +20,22 @@ class Email
     /**
      * @var string
      */
-    private $content;
+    private $subject;
 
     /**
      * @var string
      */
-    private $originalContent;
+    private $content;
 
     /**
-     * @var int
+     * The raw source of the message.
+     *
+     * @var string
+     */
+    private $source;
+
+    /**
+     * @var string|null
      */
     private $threadId;
 
@@ -57,17 +64,19 @@ class Email
     public function __construct(
         string $id,
         int $number,
+        string $subject,
         string $content,
-        string $originalContent,
-        int $threadId,
+        string $source,
+        string $threadId = null,
         DateTimeInterface $date,
         EmailAddress $from,
         string $inReplyTo = null
     ) {
         $this->id = $id;
         $this->number = $number;
+        $this->subject = $subject;
         $this->content = $content;
-        $this->originalContent = $originalContent;
+        $this->source = $source;
         $this->threadId = $threadId;
         $this->date = $date;
         $this->from = $from;
@@ -90,6 +99,11 @@ class Email
         return $this->number;
     }
 
+    public function getSubject() : string
+    {
+        return $this->subject;
+    }
+
     public function getContent() : string
     {
         return $this->content;
@@ -100,12 +114,17 @@ class Email
         $this->content = $content;
     }
 
-    public function getOriginalContent() : string
+    public function getSource() : string
     {
-        return $this->originalContent;
+        return $this->source;
     }
 
-    public function getThreadId() : int
+    /**
+     * If null, then the message is the thread root.
+     *
+     * @return null|string
+     */
+    public function getThreadId()
     {
         return $this->threadId;
     }
@@ -136,5 +155,10 @@ class Email
     public function isRead(): bool
     {
         return $this->isRead;
+    }
+
+    public function isThreadRoot() : bool
+    {
+        return $this->getThreadId() === $this->getId();
     }
 }

@@ -8,7 +8,7 @@
             {% endif %}
         </td>
         <td>
-            <a class="thread-subject" href="thread/{{ thread.id }}">{{ thread.subject }}</a>
+            <a class="thread-subject" href="message/{{ thread.number }}">{{ thread.subject }}</a>
             <br class="visible-xs">
             <small class="text-muted">
                 {{ thread.lastUpdate|time_diff }}

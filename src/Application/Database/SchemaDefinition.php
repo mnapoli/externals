@@ -13,6 +13,7 @@ class SchemaDefinition
     public function define(Schema $schema)
     {
         // Threads table
+        // @deprecated Kept for keeping the old URLs
         $threadsTable = $schema->createTable('threads');
         $threadsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
         $threadsTable->addColumn('subject', 'text');
@@ -27,6 +28,7 @@ class SchemaDefinition
         $usersTable->addIndex(['githubId']);
 
         // Thread reading status table
+        // @deprecated To delete
         $userThreadsReadTable = $schema->createTable('user_threads_read');
         $userThreadsReadTable->addColumn('userId', 'integer', ['unsigned' => true]);
         $userThreadsReadTable->addColumn('threadId', 'integer', ['unsigned' => true]);
@@ -43,16 +45,17 @@ class SchemaDefinition
         $emailsTable = $schema->createTable('emails');
         $emailsTable->addColumn('id', 'string');
         $emailsTable->addColumn('number', 'integer', ['unsigned' => true]);
-        $emailsTable->addColumn('threadId', 'integer', ['unsigned' => true]);
+        $emailsTable->addColumn('subject', 'text');
+        $emailsTable->addColumn('threadId', 'string', ['notnull' => false]);
         $emailsTable->addColumn('date', 'datetime');
         $emailsTable->addColumn('content', 'text');
-        $emailsTable->addColumn('originalContent', 'text');
+        $emailsTable->addColumn('source', 'text');
         $emailsTable->addColumn('fromEmail', 'string', ['notnull' => false]);
         $emailsTable->addColumn('fromName', 'string', ['notnull' => false]);
         $emailsTable->addColumn('inReplyTo', 'string', ['notnull' => false]);
         $emailsTable->setPrimaryKey(['id']);
         $emailsTable->addUniqueIndex(['number']);
+        $emailsTable->addIndex(['threadId']);
         $emailsTable->addIndex(['inReplyTo']);
-        $emailsTable->addForeignKeyConstraint($threadsTable, ['threadId'], ['id']);
     }
 }
