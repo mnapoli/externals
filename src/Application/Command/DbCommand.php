@@ -74,4 +74,26 @@ class DbCommand
 
         $this->setup($force, $output);
     }
+
+    public function truncate(bool $force, OutputInterface $output)
+    {
+        $tables = $this->db->getSchemaManager()->listTableNames();
+
+        if ($force) $this->db->exec('SET FOREIGN_KEY_CHECKS=0');
+
+        try {
+            foreach ($tables as $table) {
+                $output->writeln("<info>Truncating table $table</info>");
+                if ($force) $this->db->exec("TRUNCATE TABLE $table");
+            }
+        } finally {
+            if ($force) $this->db->exec('SET FOREIGN_KEY_CHECKS=1');
+        }
+
+        if (!$force) {
+            $output->writeln('<comment>No query was run, use the --force option to run the queries</comment>');
+        } else {
+            $output->writeln('<comment>Queries were successfully run against the database</comment>');
+        }
+    }
 }
