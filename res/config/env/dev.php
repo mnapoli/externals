@@ -13,4 +13,6 @@ return [
         'strict_variables' => true,
     ],
 
+    'algolia.index_prefix' => 'dev_',
+
 ];

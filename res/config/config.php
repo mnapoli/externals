@@ -2,12 +2,13 @@
 declare(strict_types = 1);
 
 use function DI\add;
-use function DI\env;
 use function DI\get;
 use function DI\object;
 use function DI\string;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Externals\Application\Database\CustomMySQLPlatform;
+use Externals\SearchIndex;
 use Gravatar\Twig\GravatarExtension;
 use Imapi\Client;
 use Interop\Container\ContainerInterface;
@@ -38,6 +39,8 @@ return [
     Connection::class => function (ContainerInterface $c) {
         return DriverManager::getConnection([
             'url' => $c->get('db.url'),
+            'charset' => 'utf8mb4',
+            'platform' => new CustomMySQLPlatform,
         ]);
     },
 
@@ -90,8 +93,11 @@ return [
         'redirectUri' => get('github.oauth.redirect_url'),
     ],
 
+    'algolia.index_prefix' => '',
     \AlgoliaSearch\Client::class => object()
         ->constructor(get('algolia.app_id'), get('algolia.api_key')),
+    SearchIndex::class => object()
+        ->constructorParameter('indexPrefix', get('algolia.index_prefix')),
 
     SessionMiddleware::class => function (ContainerInterface $c) {
         $config = $c->get('session');
