@@ -11,13 +11,15 @@
 
         <header>
             <a href="#email-{{ email.id }}-body" role="button" data-toggle="collapse"><span class="fa fa-compress"></span></a>
-            <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro', s: 50}) }}"
-                 alt="{{ email.from.nameOrEmail }}" title="{{ email.from.nameOrEmail }}">
+            {% if email.from.email %}
+                <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro', s: 50}) }}"
+                     alt="{{ email.from.nameOrEmail }}" title="{{ email.from.nameOrEmail }}">
+            {% endif %}
             <span class="hidden-xs">Posted</span>
             <a class="email-date" href="#email-{{ email.id }}" title="{{ email.date|date }}">{{ email.date|time_diff }}</a>
             by <strong>{{ email.from.nameOrEmail }}</strong>
             <span class="view-source">
-                — <a href="/email/{{ email.id }}/source" target="_blank">view source</a>
+                — <a href="/email/{{ email.number }}/source" target="_blank">view source</a>
             </span>
             {% if not email.isRead %}
                 <div class="label label-primary">unread</div>

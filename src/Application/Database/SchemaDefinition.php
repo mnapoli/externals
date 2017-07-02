@@ -47,7 +47,7 @@ class SchemaDefinition
         $emailsTable->addColumn('date', 'datetime');
         $emailsTable->addColumn('content', 'text');
         $emailsTable->addColumn('originalContent', 'text');
-        $emailsTable->addColumn('fromEmail', 'string');
+        $emailsTable->addColumn('fromEmail', 'string', ['notnull' => false]);
         $emailsTable->addColumn('fromName', 'string', ['notnull' => false]);
         $emailsTable->addColumn('inReplyTo', 'string', ['notnull' => false]);
         $emailsTable->setPrimaryKey(['id']);

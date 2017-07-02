@@ -58,7 +58,12 @@ class EmailAddressParser
         $count = count($this->emails) ?: count($this->names);
 
         for ($i = 0; $i < $count; ++$i) {
-            $identities[] = new EmailAddress($this->emails[$i] ?? '', $this->names[$i] ?? null);
+            $email = $this->emails[$i] ?? null;
+            if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $email = null;
+            }
+
+            $identities[] = new EmailAddress($email, $this->names[$i] ?? null);
         }
 
         return $identities;
