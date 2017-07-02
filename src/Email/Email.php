@@ -13,9 +13,9 @@ class Email
     private $id;
 
     /**
-     * @var string
+     * @var int
      */
-    private $subject;
+    private $number;
 
     /**
      * @var string
@@ -43,12 +43,7 @@ class Email
     private $from;
 
     /**
-     * @var string|null
-     */
-    private $imapId;
-
-    /**
-     * ID ($imapId) of the message it replies to.
+     * ID of the email it replies to.
      *
      * @var string|null
      */
@@ -61,34 +56,38 @@ class Email
 
     public function __construct(
         string $id,
-        string $subject,
+        int $number,
         string $content,
         string $originalContent,
         int $threadId,
         DateTimeInterface $date,
         EmailAddress $from,
-        $imapId,
-        $inReplyTo
+        string $inReplyTo = null
     ) {
         $this->id = $id;
-        $this->subject = $subject;
+        $this->number = $number;
         $this->content = $content;
         $this->originalContent = $originalContent;
         $this->threadId = $threadId;
         $this->date = $date;
         $this->from = $from;
-        $this->imapId = $imapId;
         $this->inReplyTo = $inReplyTo;
     }
 
+    /**
+     * Unique NNTP message ID used in references.
+     */
     public function getId() : string
     {
         return $this->id;
     }
 
-    public function getSubject() : string
+    /**
+     * NNTP message number.
+     */
+    public function getNumber() : int
     {
-        return $this->subject;
+        return $this->number;
     }
 
     public function getContent() : string
@@ -119,14 +118,6 @@ class Email
     public function getFrom() : EmailAddress
     {
         return $this->from;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getImapId()
-    {
-        return $this->imapId;
     }
 
     /**

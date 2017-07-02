@@ -3,15 +3,20 @@ declare(strict_types = 1);
 
 namespace Externals;
 
+use DateTimeZone;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Externals\Email\Email;
 use Externals\Email\EmailAddress;
+use Externals\Email\EmailAddressParser;
 use Externals\Email\EmailContentParser;
 use Externals\Email\EmailRepository;
 use Externals\Email\EmailSubjectParser;
 use Externals\Thread\ThreadRepository;
-use Imapi\Client;
-use Imapi\Query\QueryBuilder;
+use PhpMimeMailParser\Parser;
 use Psr\Log\LoggerInterface;
+use Rvdv\Nntp\Client;
+use Rvdv\Nntp\Command\ArticleCommand;
+use Rvdv\Nntp\Connection\Connection;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
@@ -19,9 +24,10 @@ use Psr\Log\LoggerInterface;
 class EmailSynchronizer
 {
     /**
-     * @var Client
+     * Some articles that should never
+     * be attempted to be fetched.
      */
-    private $imapClient;
+    const BROKEN_MESSAGES = [992];
 
     /**
      * @var ThreadRepository
@@ -49,20 +55,18 @@ class EmailSynchronizer
     private $logger;
 
     /**
-     * @var EmailSearchIndex
+     * @var SearchIndex
      */
     private $searchIndex;
 
     public function __construct(
-        Client $imapClient,
         ThreadRepository $threadRepository,
         EmailRepository $emailRepository,
         EmailSubjectParser $subjectParser,
         EmailContentParser $contentParser,
-        EmailSearchIndex $searchIndex,
+        SearchIndex $searchIndex,
         LoggerInterface $logger
     ) {
-        $this->imapClient = $imapClient;
         $this->threadRepository = $threadRepository;
         $this->emailRepository = $emailRepository;
         $this->subjectParser = $subjectParser;
@@ -71,32 +75,55 @@ class EmailSynchronizer
         $this->logger = $logger;
     }
 
-    public function synchronize(int $days)
+    public function synchronize(int $maxNumberOfEmailsToSynchronize)
     {
-        $query = QueryBuilder::create('INBOX')
-            ->youngerThan(3600 * 24 * $days)
-            ->getQuery();
-        $emailIds = $this->imapClient->getEmailIds($query);
+        $client = new Client(new Connection('news.php.net', 119));
+        $client->connect();
 
-        $this->logger->info(sprintf('%d emails to synchronize over the last %d day(s)', count($emailIds), $days));
+        $group = $client->group('php.internals');
+        $numberOfLastEmailToSynchronize = (int) $group['last'];
+        $numberOfLastEmailSynchronized = $this->emailRepository->getLastEmailNumber();
 
-        foreach ($emailIds as $emailId) {
-            // Check if we have already received the email
-            if ($this->emailRepository->contains((string) $emailId)) {
-                $this->logger->debug('Skipping email ' . $emailId);
+        $this->logger->info(sprintf(
+            '%d emails will be synchronized',
+            min($numberOfLastEmailToSynchronize - $numberOfLastEmailSynchronized, $maxNumberOfEmailsToSynchronize)
+        ));
+
+        $count = 0;
+        for ($number = $numberOfLastEmailSynchronized + 1; $number <= $numberOfLastEmailToSynchronize; $number++) {
+            $count++;
+
+            if (in_array($number, self::BROKEN_MESSAGES)) {
+                $this->logger->warning("Skipping broken message $number");
                 continue;
             }
 
-            $this->fetchEmail((string) $emailId);
+            $rawContent = $client->sendCommand(new ArticleCommand($number));
+
+            $this->synchronizeEmail($number, $rawContent);
+
+            if ($count >= $maxNumberOfEmailsToSynchronize) break;
         }
+
+        $client->disconnect();
     }
 
-    public function fetchEmail(string $emailId)
+    public function synchronizeEmail(int $number, string $rawContent)
     {
-        $email = $this->imapClient->getEmailFromId($emailId);
+        // Check that the string is valid UTF-8, else we cannot store it in database or do anything with it
+        if (!mb_check_encoding($rawContent, 'UTF-8')) {
+            $this->logger->warning("Cannot synchronize message $number because it contains invalid UTF-8 characters");
+            return;
+        }
 
-        $threadSubject = $this->subjectParser->sanitize($email->getSubject());
-        $content = $this->contentParser->parse($email->getTextContent());
+        // For some reason, see https://github.com/madewithlove/why-cant-we-have-nice-things/blob/master/src/Services/Internals/ArticleParser.php
+        $rawContent = str_replace("=\n", " =\n", $rawContent);
+
+        $parser = new Parser;
+        $parser->setText($rawContent);
+
+        $threadSubject = $this->subjectParser->sanitize($parser->getHeader('subject'));
+        $content = $this->contentParser->parse($parser->getMessageBody());
 
         $threadId = $this->threadRepository->findBySubject($threadSubject);
         if (!$threadId) {
@@ -105,26 +132,67 @@ class EmailSynchronizer
             $this->searchIndex->indexThread($threadId, $threadSubject);
         }
 
-        $fromArray = $email->getFrom();
-        /** @var \Imapi\EmailAddress $from */
+        $emailAddressParser = new EmailAddressParser($parser->getHeader('from'));
+        $fromArray = $emailAddressParser->parse();
+        /** @var EmailAddress $from */
         $from = reset($fromArray);
 
+        // Reply to
+        $inReplyTo = $parser->getHeader('references') ?: null;
+        if ($inReplyTo) {
+            $inReplyTo = preg_split('/(?<=>)/', $inReplyTo);
+            $inReplyTo = array_filter(array_map('trim', $inReplyTo));
+            // Take the last item (the direct parent)
+            if (! empty($inReplyTo)) {
+                $inReplyTo = end($inReplyTo);
+            } else {
+                $inReplyTo = null;
+            }
+        }
+
+        $emailId = $parser->getHeader('message-id');
         $newEmail = new Email(
-            $email->getUid(),
-            $email->getSubject(),
+            $emailId,
+            $number,
             $content,
-            $email->getTextContent(),
+            $rawContent,
             $threadId,
-            $email->getDate(),
-            new EmailAddress($from->getEmail(), $from->getName()),
-            $email->getMessageId(),
-            $email->getInReplyTo()
+            $this->parseDateTime($parser),
+            $from,
+            $inReplyTo
         );
-        $this->emailRepository->add($newEmail);
+        try {
+            $this->emailRepository->add($newEmail);
+        } catch (UniqueConstraintViolationException $e) {
+            // For some reason the email ID was already used...
+            $this->logger->warning("Cannot synchronize message $number because the email ID $emailId already exists in database");
+            return;
+        }
 
         // Index in Algolia
-        $this->searchIndex->indexEmail($newEmail);
+        $this->searchIndex->indexEmail($newEmail, $threadSubject);
 
-        $this->logger->info('New email: ' . $email->getSubject());
+        $this->logger->info('New email: ' . $threadSubject);
+    }
+
+    /**
+     * @return \DateTimeInterface
+     */
+    private function parseDateTime(Parser $parser)
+    {
+        $timezones = [
+            'Eastern Daylight Time' => 'EDT',
+            'Eastern Standard Time' => 'EST',
+            'MET DST' => 'MET',
+        ];
+
+        // Try to change timezone to one PHP understands
+        $date = strtr($parser->getHeader('date'), $timezones);
+        $date = preg_replace('/(.+)\(.+\)$/', '$1', $date);
+
+        $date = new \DateTime($date);
+        $date->setTimezone(new DateTimeZone('UTC'));
+
+        return $date;
     }
 }

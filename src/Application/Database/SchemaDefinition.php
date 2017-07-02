@@ -12,21 +12,6 @@ class SchemaDefinition
 {
     public function define(Schema $schema)
     {
-        // Emails tables
-        $emailsTable = $schema->createTable('emails');
-        $emailsTable->addColumn('id', 'string');
-        $emailsTable->addColumn('subject', 'text');
-        $emailsTable->addColumn('threadId', 'integer', ['unsigned' => true]);
-        $emailsTable->addColumn('date', 'datetime');
-        $emailsTable->addColumn('content', 'text');
-        $emailsTable->addColumn('originalContent', 'text');
-        $emailsTable->addColumn('fromEmail', 'string');
-        $emailsTable->addColumn('fromName', 'string', ['notnull' => false]);
-        $emailsTable->addColumn('imapId', 'string', ['notnull' => false]);
-        $emailsTable->addColumn('inReplyTo', 'string', ['notnull' => false]);
-        $emailsTable->setPrimaryKey(['id']);
-        $emailsTable->addIndex(['threadId']);
-
         // Threads table
         $threadsTable = $schema->createTable('threads');
         $threadsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
@@ -34,24 +19,40 @@ class SchemaDefinition
         $threadsTable->setPrimaryKey(['id']);
 
         // Users table
-        $threadsTable = $schema->createTable('users');
-        $threadsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
-        $threadsTable->addColumn('githubId', 'string');
-        $threadsTable->addColumn('name', 'string');
-        $threadsTable->setPrimaryKey(['id']);
-        $threadsTable->addIndex(['githubId']);
+        $usersTable = $schema->createTable('users');
+        $usersTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
+        $usersTable->addColumn('githubId', 'string');
+        $usersTable->addColumn('name', 'string');
+        $usersTable->setPrimaryKey(['id']);
+        $usersTable->addIndex(['githubId']);
 
         // Thread reading status table
-        $threadsTable = $schema->createTable('user_threads_read');
-        $threadsTable->addColumn('userId', 'integer', ['unsigned' => true]);
-        $threadsTable->addColumn('threadId', 'integer', ['unsigned' => true]);
-        $threadsTable->addColumn('emailsRead', 'integer');
-        $threadsTable->setPrimaryKey(['userId', 'threadId']);
+        $userThreadsReadTable = $schema->createTable('user_threads_read');
+        $userThreadsReadTable->addColumn('userId', 'integer', ['unsigned' => true]);
+        $userThreadsReadTable->addColumn('threadId', 'integer', ['unsigned' => true]);
+        $userThreadsReadTable->addColumn('emailsRead', 'integer');
+        $userThreadsReadTable->setPrimaryKey(['userId', 'threadId']);
 
         // Email reading status table
-        $threadsTable = $schema->createTable('user_emails_read');
-        $threadsTable->addColumn('userId', 'integer', ['unsigned' => true]);
-        $threadsTable->addColumn('emailId', 'string');
-        $threadsTable->setPrimaryKey(['userId', 'emailId']);
+        $userEmailsReadTable = $schema->createTable('user_emails_read');
+        $userEmailsReadTable->addColumn('userId', 'integer', ['unsigned' => true]);
+        $userEmailsReadTable->addColumn('emailId', 'string');
+        $userEmailsReadTable->setPrimaryKey(['userId', 'emailId']);
+
+        // Emails tables
+        $emailsTable = $schema->createTable('emails');
+        $emailsTable->addColumn('id', 'string');
+        $emailsTable->addColumn('number', 'integer', ['unsigned' => true]);
+        $emailsTable->addColumn('threadId', 'integer', ['unsigned' => true]);
+        $emailsTable->addColumn('date', 'datetime');
+        $emailsTable->addColumn('content', 'text');
+        $emailsTable->addColumn('originalContent', 'text');
+        $emailsTable->addColumn('fromEmail', 'string');
+        $emailsTable->addColumn('fromName', 'string', ['notnull' => false]);
+        $emailsTable->addColumn('inReplyTo', 'string', ['notnull' => false]);
+        $emailsTable->setPrimaryKey(['id']);
+        $emailsTable->addUniqueIndex(['number']);
+        $emailsTable->addIndex(['inReplyTo']);
+        $emailsTable->addForeignKeyConstraint($threadsTable, ['threadId'], ['id']);
     }
 }

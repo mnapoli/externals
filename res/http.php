@@ -74,9 +74,9 @@ return pipe([
                 'user' => $user,
             ]);
         },
-        '/email/{id}/source' => function (string $id, EmailRepository $emailRepository) {
+        '/email/{number}/source' => function (int $number, EmailRepository $emailRepository) {
             newrelic_name_transaction('email_source');
-            return new TextResponse($emailRepository->getEmailSource($id));
+            return new TextResponse($emailRepository->getEmailSource($number));
         },
     ]),
 

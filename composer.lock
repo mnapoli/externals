@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "44eca7645d6ec2c1a912e5b9519dcf38",
+    "content-hash": "831a2a190ab0c087449e9968f0d01db2",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -3025,6 +3025,60 @@
             "time": "2016-03-22T18:20:19+00:00"
         },
         {
+            "name": "rvdv/nntp",
+            "version": "dev-preserve-empty-lines",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mnapoli/php-nntp.git",
+                "reference": "836341fb48d04b6e46684bce3bf73f4252749bb1"
+            },
+            "require": {
+                "php": "^5.5|^7.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "2.0.0-alpha",
+                "phpunit/phpunit": "^4.8",
+                "scrutinizer/ocular": "^1.1",
+                "sllh/php-cs-fixer-styleci-bridge": "^2.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Rvdv\\Nntp\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Rvdv\\Nntp\\Tests\\": "tests"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/phpunit --coverage-text; vendor/bin/php-cs-fixer fix -v --diff --dry-run;"
+                ],
+                "test:travis": [
+                    "vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Robin van der Vleuten",
+                    "email": "robin@webstronauts.co"
+                }
+            ],
+            "description": "Client for communicating with servers throught the Network News Transfer Protocol (NNTP) protocol.",
+            "homepage": "https://github.com/robinvdvleuten/php-nntp",
+            "time": "2017-07-02 13:09:34"
+        },
+        {
             "name": "seld/jsonlint",
             "version": "1.4.0",
             "source": {
@@ -3688,16 +3742,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.2.0",
+            "version": "v1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "dff51f72b0706335131b00a7f49606168c582594"
+                "reference": "f29dca382a6485c3cbe6379f0c61230167681937"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/dff51f72b0706335131b00a7f49606168c582594",
-                "reference": "dff51f72b0706335131b00a7f49606168c582594",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/f29dca382a6485c3cbe6379f0c61230167681937",
+                "reference": "f29dca382a6485c3cbe6379f0c61230167681937",
                 "shasum": ""
             },
             "require": {
@@ -3709,7 +3763,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.2-dev"
+                    "dev-master": "1.4-dev"
                 }
             },
             "autoload": {
@@ -3743,7 +3797,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-05-18T14:26:46+00:00"
+            "time": "2017-06-09T14:24:12+00:00"
         },
         {
             "name": "symfony/process",
@@ -5580,7 +5634,9 @@
     ],
     "aliases": [],
     "minimum-stability": "beta",
-    "stability-flags": [],
+    "stability-flags": {
+        "rvdv/nntp": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

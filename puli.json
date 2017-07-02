@@ -317,6 +317,10 @@
             "install-path": "vendor/ramsey/uuid",
             "installer": "composer"
         },
+        "rvdv/nntp": {
+            "install-path": "vendor/rvdv/nntp",
+            "installer": "composer"
+        },
         "sebastian/code-unit-reverse-lookup": {
             "install-path": "vendor/sebastian/code-unit-reverse-lookup",
             "installer": "composer",

@@ -22,11 +22,6 @@ class EmailRepository
         $this->db = $db;
     }
 
-    public function contains(string $emailId) : bool
-    {
-        return $this->db->fetchColumn('SELECT COUNT(id) FROM emails WHERE id = ?', [$emailId]) > 0;
-    }
-
     /**
      * Returns a threaded view of the emails.
      *
@@ -51,7 +46,7 @@ class EmailRepository
 
         /** @var Email[] $emails */
         $emails = array_map(
-            [$this, 'createEmail'],
+            [$this, 'emailFromRow'],
             $qb->execute()->fetchAll()
         );
 
@@ -59,8 +54,7 @@ class EmailRepository
         /** @var ThreadItem[] $indexedThreadItem */
         $indexedThreadItem = [];
         foreach ($emails as $email) {
-            $id = $email->getImapId() ?? $email->getId();
-            $indexedThreadItem[$id] = new ThreadItem($email);
+            $indexedThreadItem[$email->getId()] = new ThreadItem($email);
         }
 
         // Link each email to the one it replies to
@@ -90,44 +84,47 @@ class EmailRepository
      */
     public function findAll() : array
     {
-        return array_map([$this, 'createEmail'], $this->db->fetchAll('SELECT * FROM emails'));
+        return array_map([$this, 'emailFromRow'], $this->db->fetchAll('SELECT * FROM emails'));
     }
 
     public function add(Email $email)
     {
         $this->db->insert('emails', [
             'id' => $email->getId(),
-            'subject' => $email->getSubject(),
+            'number' => $email->getNumber(),
             'content' => $email->getContent(),
             'originalContent' => $email->getOriginalContent(),
             'threadId' => $email->getThreadId(),
             'date' => $email->getDate(),
             'fromEmail' => $email->getFrom()->getEmail(),
             'fromName' => $email->getFrom()->getName(),
-            'imapId' => $email->getImapId(),
             'inReplyTo' => $email->getInReplyTo(),
         ], [
             'string',
-            'text',
+            'integer',
             'text',
             'text',
             'integer',
             'datetime',
             'string',
             'string',
-            'string',
-            'string',
+            'integer',
         ]);
     }
 
-    public function getEmailSource(string $id) : string
+    public function getEmailSource(int $number) : string
     {
-        $email = $this->db->fetchAssoc('SELECT * FROM emails WHERE id = ?', [$id]);
+        $email = $this->db->fetchAssoc('SELECT * FROM emails WHERE `number` = ?', [$number]);
         if (!$email) {
             throw new NotFound('Email not found');
         }
-        $email = $this->createEmail($email);
+        $email = $this->emailFromRow($email);
         return $email->getOriginalContent();
+    }
+
+    public function getLastEmailNumber() : int
+    {
+        return (int) $this->db->fetchColumn('SELECT MAX(number) FROM emails');
     }
 
     public function updateContent(Email $email)
@@ -142,7 +139,7 @@ class EmailRepository
         return (int) $this->db->fetchColumn('SELECT COUNT(*) FROM emails');
     }
 
-    private function createEmail(array $row) : Email
+    private function emailFromRow(array $row) : Email
     {
         $date = $row['date'];
         if (is_string($date)) {
@@ -151,13 +148,12 @@ class EmailRepository
 
         $email = new Email(
             $row['id'],
-            $row['subject'],
+            (int) $row['number'],
             $row['content'],
             $row['originalContent'],
             (int) $row['threadId'],
             $date,
             new EmailAddress($row['fromEmail'], $row['fromName']),
-            $row['imapId'],
             $row['inReplyTo']
         );
 
