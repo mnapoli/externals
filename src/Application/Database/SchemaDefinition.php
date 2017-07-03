@@ -12,6 +12,23 @@ class SchemaDefinition
 {
     public function define(Schema $schema)
     {
+        // Emails tables
+        $emailsTable = $schema->createTable('emails');
+        $emailsTable->addColumn('id', 'string');
+        $emailsTable->addColumn('number', 'integer', ['unsigned' => true]);
+        $emailsTable->addColumn('subject', 'text');
+        $emailsTable->addColumn('threadId', 'string', ['notnull' => false]);
+        $emailsTable->addColumn('date', 'datetime');
+        $emailsTable->addColumn('content', 'text');
+        $emailsTable->addColumn('source', 'text');
+        $emailsTable->addColumn('fromEmail', 'string', ['notnull' => false]);
+        $emailsTable->addColumn('fromName', 'string', ['notnull' => false]);
+        $emailsTable->addColumn('inReplyTo', 'string', ['notnull' => false]);
+        $emailsTable->setPrimaryKey(['id']);
+        $emailsTable->addUniqueIndex(['number']);
+        $emailsTable->addIndex(['threadId']);
+        $emailsTable->addIndex(['inReplyTo']);
+
         // Threads table
         // @deprecated Kept for keeping the old URLs
         $threadsTable = $schema->createTable('threads');
@@ -40,22 +57,5 @@ class SchemaDefinition
         $userEmailsReadTable->addColumn('userId', 'integer', ['unsigned' => true]);
         $userEmailsReadTable->addColumn('emailId', 'string');
         $userEmailsReadTable->setPrimaryKey(['userId', 'emailId']);
-
-        // Emails tables
-        $emailsTable = $schema->createTable('emails');
-        $emailsTable->addColumn('id', 'string');
-        $emailsTable->addColumn('number', 'integer', ['unsigned' => true]);
-        $emailsTable->addColumn('subject', 'text');
-        $emailsTable->addColumn('threadId', 'string', ['notnull' => false]);
-        $emailsTable->addColumn('date', 'datetime');
-        $emailsTable->addColumn('content', 'text');
-        $emailsTable->addColumn('source', 'text');
-        $emailsTable->addColumn('fromEmail', 'string', ['notnull' => false]);
-        $emailsTable->addColumn('fromName', 'string', ['notnull' => false]);
-        $emailsTable->addColumn('inReplyTo', 'string', ['notnull' => false]);
-        $emailsTable->setPrimaryKey(['id']);
-        $emailsTable->addUniqueIndex(['number']);
-        $emailsTable->addIndex(['threadId']);
-        $emailsTable->addIndex(['inReplyTo']);
     }
 }

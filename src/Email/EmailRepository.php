@@ -192,6 +192,16 @@ class EmailRepository
         return (int) $this->db->fetchColumn('SELECT COUNT(*) FROM emails WHERE threadId = id');
     }
 
+    /**
+     * Find the latest thread that matches the given subject.
+     */
+    public function findBySubject(string $subject) : Email
+    {
+        $row = $this->db->fetchAssoc('SELECT * FROM emails WHERE subject = ? AND threadId = id ORDER BY date DESC LIMIT 1', [$subject]);
+        if (!$row) throw new NotFound('Email not found');
+        return $this->emailFromRow($row);
+    }
+
     private function emailFromRow(array $row) : Email
     {
         $date = $row['date'];

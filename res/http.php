@@ -1,6 +1,7 @@
 <?php
 declare(strict_types = 1);
 
+use Doctrine\DBAL\Connection;
 use Externals\Application\Controller\AuthController;
 use Externals\Application\Controller\NotFoundController;
 use Externals\Application\Middleware\AuthMiddleware;
@@ -97,6 +98,14 @@ return pipe([
         '/email/{number}/source' => function (int $number, EmailRepository $emailRepository) {
             newrelic_name_transaction('email_source');
             return new TextResponse($emailRepository->getEmailSource($number));
+        },
+
+        // Keep backward compatibility with old URLs (old threads)
+        '/thread/{id}' => function (int $id, EmailRepository $emailRepository, Connection $db) {
+            $threadSubject = $db->fetchColumn('SELECT `subject` FROM threads WHERE id = ?', [$id]);
+            $email = $emailRepository->findBySubject($threadSubject);
+            // Permanent redirection
+            return new RedirectResponse("/message/{$email->getNumber()}", 301);
         },
     ]),
 
