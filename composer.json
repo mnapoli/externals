@@ -33,7 +33,8 @@
         "wizacha/new-relic-polyfill": "^1.0",
         "algolia/algoliasearch-client-php": "^1.12",
         "rvdv/nntp": "dev-preserve-empty-lines@dev",
-        "zbateson/mail-mime-parser": "^0.4.3"
+        "zbateson/mail-mime-parser": "^0.4.3",
+        "vlucas/phpdotenv": "^2.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.4"

@@ -4,9 +4,9 @@
 
 ```bash
 $ composer install
-$ cp res/config/parameters.php.dist res/config/parameters.php
+$ cp .env.dist .env
 
-# Configure database and IMAP settings
+# Configure database and other settings in .env
 
 $ ./console db --force
 $ make preview

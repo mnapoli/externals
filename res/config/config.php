@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 
 use function DI\add;
+use function DI\env;
 use function DI\get;
 use function DI\object;
 use function DI\string;
@@ -10,7 +11,6 @@ use Doctrine\DBAL\DriverManager;
 use Externals\Application\Database\CustomMySQLPlatform;
 use Externals\SearchIndex;
 use Gravatar\Twig\GravatarExtension;
-use Imapi\Client;
 use Interop\Container\ContainerInterface;
 use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
@@ -30,12 +30,7 @@ return [
     'path.cache' => __DIR__ . '/../../var/cache',
     'path.logs' => __DIR__ . '/../../var/log',
 
-    Client::class => function (ContainerInterface $c) {
-        $config = $c->get('imap.config');
-        return Client::connect($config['host'], $config['user'], $config['password'], (string) $config['port'],
-            $config['security']);
-    },
-
+    'db.url' => env('DB_URL'),
     Connection::class => function (ContainerInterface $c) {
         return DriverManager::getConnection([
             'url' => $c->get('db.url'),
@@ -91,19 +86,20 @@ return [
     AbstractProvider::class => object(Github::class)
         ->constructor(get('oauth.github.config')),
     'oauth.github.config' => [
-        'clientId' => get('github.oauth.client_id'),
-        'clientSecret' => get('github.oauth.client_secret'),
-        'redirectUri' => get('github.oauth.redirect_url'),
+        'clientId' => env('GITHUB_OAUTH_CLIENT_ID'),
+        'clientSecret' => env('GITHUB_OAUTH_CLIENT_SECRET'),
+        'redirectUri' => env('GITHUB_OAUTH_REDIRECT_URL'),
     ],
 
-    'algolia.index_prefix' => '',
+    'algolia.index_prefix' => env('ALGOLIA_INDEX_PREFIX', 'dev_'),
     \AlgoliaSearch\Client::class => object()
-        ->constructor(get('algolia.app_id'), get('algolia.api_key')),
+        ->constructor(env('ALGOLIA_APP_ID'), env('ALGOLIA_API_KEY')),
     SearchIndex::class => object()
         ->constructorParameter('indexPrefix', get('algolia.index_prefix')),
 
+    'session.secret_key' => env('SESSION_SECRET_KEY'),
     SessionMiddleware::class => function (ContainerInterface $c) {
-        $config = $c->get('session');
-        return SessionMiddleware::fromSymmetricKeyDefaults($config['key'], $config['lifetime']);
+        $key = $c->get('session.secret_key');
+        return SessionMiddleware::fromSymmetricKeyDefaults($key, 31536000);
     },
 ];

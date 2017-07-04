@@ -8,7 +8,7 @@ use Externals\EmailSynchronizer;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/res/bootstrap.php';
 
 $application = new Application;
 $cli = $application->cli();

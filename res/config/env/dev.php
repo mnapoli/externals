@@ -23,17 +23,17 @@ return [
 
     // Allows using the session without HTTPS (for dev purposes)
     SessionMiddleware::class => function (ContainerInterface $c) {
-        $config = $c->get('session');
+        $key = (string) $c->get('session.secret_key');
         return new SessionMiddleware(
             new Sha256,
-            (string) $config['key'],
-            (string) $config['key'],
+            $key,
+            $key,
             SetCookie::create(SessionMiddleware::DEFAULT_COOKIE)
                 ->withSecure(false) // THIS IS THE SECURE FLAG WE SET TO FALSE
                 ->withHttpOnly(true)
                 ->withPath('/'),
             new Parser,
-            (int) $config['lifetime'],
+            31536000,
             new SystemCurrentTime
         );
     },
