@@ -10,9 +10,9 @@ class Application extends \Stratify\Framework\Application
     public function __construct()
     {
         $modules = [
-            'error-handler',
-            'twig',
-            'app',
+            'stratify/error-handler-module',
+            'stratify/twig-module',
+            'mnapoli/externals',
         ];
 
         $environment = getenv('ENV') ?? 'prod';

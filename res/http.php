@@ -32,7 +32,7 @@ return pipe([
         '/' => function (Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
             newrelic_name_transaction('home');
             $user = $request->getAttribute('user');
-            return $twig->render('/app/views/home.html.twig', [
+            return $twig->render('@app/home.html.twig', [
                 'threads' => $repository->findLatestThreads(1, $user),
                 'user' => $user,
             ]);
@@ -60,7 +60,7 @@ return pipe([
             if ($user instanceof User) {
                 $repository->markAsRead($email, $user);
             }
-            return $twig->render('/app/views/thread.html.twig', [
+            return $twig->render('@app/thread.html.twig', [
                 'subject' => $email->getSubject(),
                 'thread' => $threadView,
                 'threadId' => $number,
@@ -74,7 +74,7 @@ return pipe([
             $user = $request->getAttribute('user');
             $query = $request->getQueryParams();
             $page = (int) max(1, $query['page'] ?? 1);
-            return $twig->render('/app/views/threads/thread-list.html.twig', [
+            return $twig->render('@app/threads/thread-list.html.twig', [
                 'threads' => $repository->findLatestThreads($page, $user),
                 'user' => $user,
             ]);
@@ -86,7 +86,7 @@ return pipe([
         '/stats' => function (Twig_Environment $twig, EmailRepository $emailRepository, UserRepository $userRepository, ServerRequestInterface $request) {
             newrelic_name_transaction('stats');
             $user = $request->getAttribute('user');
-            return $twig->render('/app/views/stats.html.twig', [
+            return $twig->render('@app/stats.html.twig', [
                 'userCount' => $userRepository->getUserCount(),
                 'threadCount' => $emailRepository->getThreadCount(),
                 'emailCount' => $emailRepository->getEmailCount(),

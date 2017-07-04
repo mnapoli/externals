@@ -44,6 +44,9 @@ return [
         ]);
     },
 
+    'twig.paths' => [
+        'app' => __DIR__ . '/../views',
+    ],
     'twig.options' => [
         'cache' => string('{path.cache}/twig'),
         'auto_reload' => true,

@@ -1,4 +1,4 @@
-{% extends '/app/views/layout.html.twig' %}
+{% extends '@app/layout.html.twig' %}
 
 {% block mainMenuLinks %}{% endblock %}
 
@@ -40,7 +40,7 @@
     <section id="threads">
 
         <div class="thread-list">
-            {% include '/app/views/threads/thread-list.html.twig' %}
+            {% include '@app/threads/thread-list.html.twig' %}
         </div>
 
         <button id="show-more-threads" class="btn btn-default btn-block btn-lg">Show more</button>

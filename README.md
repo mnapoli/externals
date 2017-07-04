@@ -2,10 +2,6 @@
 
 ## Setup
 
-Externals requires [Puli](http://docs.puli.io/en/latest/) and expects it to be
-available on $PATH.  If you do not have it installed you may notice a
-"Plugin initialization failed" error.
-
 ```bash
 $ composer install
 $ cp res/config/parameters.php.dist res/config/parameters.php
