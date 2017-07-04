@@ -20,7 +20,7 @@ disk: 2048
 # The mounts that will be performed when the package is deployed.
 mounts:
     "/var/cache": "shared:files/cache"
-    "/var/logs": "shared:files/logs"
+    "/var/log": "shared:files/log"
 
 relationships:
     database: "database:mysql"
