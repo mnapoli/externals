@@ -163,12 +163,26 @@ footer {
 
 .thread-list {
     margin-top: 30px;
-    font-size: 1.2em;
-    .unread .thread-subject {
-        font-weight: bold;
-    }
-    td {
-        padding: 12px 8px !important;
+    .thread-item {
+        display: block;
+        padding: 14px 30px;
+        border-top: 1px solid #e7eaec;
+        .thread-subject {
+            display: block;
+            font-size: 17px;
+            margin-top: 5px;
+            margin-bottom: 2px;
+        }
+        &.unread .thread-subject {
+            font-weight: bold;
+        }
+        .thread-info {
+            color: #b4b6b8;
+            font-size: 12px;
+            span {
+                margin-right: 10px;
+            }
+        }
     }
 }
 
