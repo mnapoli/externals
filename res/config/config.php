@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 use function DI\add;
 use function DI\env;
+use function DI\factory;
 use function DI\get;
 use function DI\object;
 use function DI\string;
@@ -30,9 +31,9 @@ return [
     'path.cache' => __DIR__ . '/../../var/cache',
     'path.logs' => __DIR__ . '/../../var/log',
 
-    'version' => function () {
+    'version' => env('PLATFORM_TREE_ID', factory(function () {
         return trim(shell_exec('git rev-parse HEAD'));
-    },
+    })),
 
     'db.url' => env('DB_URL'),
     Connection::class => function (ContainerInterface $c) {
