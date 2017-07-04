@@ -11,11 +11,13 @@ use Externals\Email\EmailAddressParser;
 use Externals\Email\EmailContentParser;
 use Externals\Email\EmailRepository;
 use Externals\Email\EmailSubjectParser;
-use PhpMimeMailParser\Parser;
 use Psr\Log\LoggerInterface;
 use Rvdv\Nntp\Client;
 use Rvdv\Nntp\Command\ArticleCommand;
 use Rvdv\Nntp\Connection\Connection;
+use ZBateson\MailMimeParser\Header\DateHeader;
+use ZBateson\MailMimeParser\MailMimeParser;
+use ZBateson\MailMimeParser\Message;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
@@ -109,25 +111,28 @@ class EmailSynchronizer
         }
 
         // For some reason, see https://github.com/madewithlove/why-cant-we-have-nice-things/blob/master/src/Services/Internals/ArticleParser.php
-        $source = str_replace("=\n", " =\n", $source);
+        // Temporarily remove, we'll see if we really need this...
+//        $source = str_replace("=\n", " =\n", $source);
 
-        $parser = new Parser;
-        $parser->setText($source);
+        $mailParser = new MailMimeParser();
+        $parsedDocument = $mailParser->parse($source);
 
-        $subject = $this->subjectParser->sanitize($parser->getHeader('subject'));
-        $content = $this->contentParser->parse($parser->getMessageBody());
+        $subject = $this->subjectParser->sanitize($parsedDocument->getHeaderValue('subject'));
+        $content = $this->contentParser->parse($parsedDocument->getTextContent());
 
-        $emailAddressParser = new EmailAddressParser($parser->getHeader('from'));
+        // We don't use the special AddressHeader class because it doesn't seem to parse the
+        // person's name at all
+        $emailAddressParser = new EmailAddressParser($parsedDocument->getHeader('from')->getRawValue());
         $fromArray = $emailAddressParser->parse();
         /** @var EmailAddress $from */
         $from = reset($fromArray);
 
-        $emailId = $parser->getHeader('message-id');
+        $emailId = $parsedDocument->getHeaderValue('message-id');
 
         // Reply to
         $threadId = $emailId;
         $inReplyTo = null;
-        $references = $parser->getHeader('references') ?: null;
+        $references = $parsedDocument->getHeaderValue('references');
         if ($references) {
             $references = preg_split('/(?<=>)/', $references);
             $references = array_filter(array_map('trim', $references));
@@ -145,7 +150,7 @@ class EmailSynchronizer
             $content,
             $source,
             $threadId,
-            $this->parseDateTime($parser),
+            $this->parseDateTime($parsedDocument),
             $from,
             $inReplyTo
         );
@@ -163,22 +168,18 @@ class EmailSynchronizer
         $this->logger->info('New email: ' . $subject);
     }
 
-    /**
-     * @return \DateTimeInterface
-     */
-    private function parseDateTime(Parser $parser)
+    private function parseDateTime(Message $parsedDocument) : \DateTimeInterface
     {
-        $timezones = [
-            'Eastern Daylight Time' => 'EDT',
-            'Eastern Standard Time' => 'EST',
-            'MET DST' => 'MET',
-        ];
+        $dateHeader = $parsedDocument->getHeader('date');
 
-        // Try to change timezone to one PHP understands
-        $date = strtr($parser->getHeader('date'), $timezones);
-        $date = preg_replace('/(.+)\(.+\)$/', '$1', $date);
+        $date = null;
+        if ($dateHeader instanceof DateHeader) {
+            $date = $dateHeader->getDateTime();
+        }
+        // Some dates cannot be parsed using the standard format, for example "13 Mar 2003 12:44:07 -0500"
+        $date = $date ?: new \DateTime($dateHeader->getValue());
 
-        $date = new \DateTime($date);
+        // We store all the dates in UTC
         $date->setTimezone(new DateTimeZone('UTC'));
 
         return $date;

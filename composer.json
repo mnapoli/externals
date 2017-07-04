@@ -17,7 +17,6 @@
         "php-di/php-di": "^5.1",
         "stratify/framework": "~0.5.0",
         "mnapoli/silly": "^1.3",
-        "mnapoli/imapi": "~0.2.5",
         "doctrine/dbal": "^2.5",
         "stratify/twig-module": "~0.1.4",
         "twig/extensions": "^1.0",
@@ -33,7 +32,8 @@
         "league/oauth2-github": "^0.2.1",
         "wizacha/new-relic-polyfill": "^1.0",
         "algolia/algoliasearch-client-php": "^1.12",
-        "rvdv/nntp": "dev-preserve-empty-lines@dev"
+        "rvdv/nntp": "dev-preserve-empty-lines@dev",
+        "zbateson/mail-mime-parser": "^0.4.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.4"
@@ -44,9 +44,6 @@
             "url": "https://github.com/mnapoli/php-nntp.git"
         }
     ],
-    "config": {
-        "secure-http": false
-    },
     "minimum-stability": "beta",
     "prefer-stable": true
 }

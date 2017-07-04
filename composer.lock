@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "831a2a190ab0c087449e9968f0d01db2",
+    "content-hash": "401dc6bd1da1543505f0f31a3970807f",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -652,50 +652,6 @@
                 "parser"
             ],
             "time": "2014-09-09T13:34:57+00:00"
-        },
-        {
-            "name": "ezyang/htmlpurifier",
-            "version": "v4.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ezyang/htmlpurifier.git",
-                "reference": "d0c392f77d2f2a3dcf7fcb79e2a1e2b8804e75b2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/d0c392f77d2f2a3dcf7fcb79e2a1e2b8804e75b2",
-                "reference": "d0c392f77d2f2a3dcf7fcb79e2a1e2b8804e75b2",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "HTMLPurifier": "library/"
-                },
-                "files": [
-                    "library/HTMLPurifier.composer.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL"
-            ],
-            "authors": [
-                {
-                    "name": "Edward Z. Yang",
-                    "email": "admin@htmlpurifier.org",
-                    "homepage": "http://ezyang.com"
-                }
-            ],
-            "description": "Standards compliant HTML filter written in PHP",
-            "homepage": "http://htmlpurifier.org/",
-            "keywords": [
-                "html"
-            ],
-            "time": "2016-07-16T12:58:58+00:00"
         },
         {
             "name": "filp/whoops",
@@ -1546,42 +1502,6 @@
             "time": "2014-05-12T11:52:18+00:00"
         },
         {
-            "name": "mnapoli/imapi",
-            "version": "0.2.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mnapoli/imapi.git",
-                "reference": "96263f6ab5f95ae68b7b646640a9e6453cdb1bae"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mnapoli/imapi/zipball/96263f6ab5f95ae68b7b646640a9e6453cdb1bae",
-                "reference": "96263f6ab5f95ae68b7b646640a9e6453cdb1bae",
-                "shasum": ""
-            },
-            "require": {
-                "ezyang/htmlpurifier": "~4.7",
-                "pear-pear.horde.org/horde_imap_client": "~2.19",
-                "php": "~7.0",
-                "php-mime-mail-parser/php-mime-mail-parser": "~2.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~5.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Imapi\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "IMAP API",
-            "time": "2017-04-08T08:13:19+00:00"
-        },
-        {
             "name": "mnapoli/silly",
             "version": "1.4.0",
             "source": {
@@ -1750,515 +1670,6 @@
                 "random"
             ],
             "time": "2016-04-03T06:00:07+00:00"
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Crypt_Blowfish",
-            "version": "1.1.1",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Crypt_Blowfish-1.1.1.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "pear-pear.horde.org/horde_exception": "<3.0.0.0",
-                "pear-pear.horde.org/horde_support": "<3.0.0.0",
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_crypt_blowfish": "== 1.1.1.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "LGPL-2.1"
-            ],
-            "description": "Provides blowfish encryption/decryption for PHP string data."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Exception",
-            "version": "2.0.8",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Exception-2.0.8.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "pear-pear.horde.org/horde_translation": "<3.0.0.0",
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_exception": "== 2.0.8.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "LGPL-2.1"
-            ],
-            "description": "This class provides the default exception handlers for the Horde Application Framework."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Idna",
-            "version": "1.0.4",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Idna-1.0.4.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "pear-pear.horde.org/horde_exception": "<3.0.0.0",
-                "pear-pear.horde.org/horde_util": "<3.0.0.0",
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_idna": "== 1.0.4.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "BSD-2-Clause"
-            ],
-            "description": "Normalized access to various backends providing IDNA (Internationalized Domain Names in Applications) support."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Imap_Client",
-            "version": "2.29.6",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Imap_Client-2.29.6.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "ext-hash": "*",
-                "ext-json": "*",
-                "pear-pear.horde.org/horde_exception": "<3.0.0.0",
-                "pear-pear.horde.org/horde_mail": "<3.0.0.0",
-                "pear-pear.horde.org/horde_mime": "<3.0.0.0",
-                "pear-pear.horde.org/horde_secret": "<3.0.0.0",
-                "pear-pear.horde.org/horde_socket_client": "<3.0.0.0",
-                "pear-pear.horde.org/horde_stream": "<2.0.0.0",
-                "pear-pear.horde.org/horde_stream_filter": "<3.0.0.0",
-                "pear-pear.horde.org/horde_translation": "<3.0.0.0",
-                "pear-pear.horde.org/horde_util": "<3.0.0.0",
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_imap_client": "== 2.29.6.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "LGPL-2.1"
-            ],
-            "description": "Interface to access IMAP4rev1 (RFC 3501) mail servers. Also supports connections to POP3 (STD 53/RFC 1939)."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_ListHeaders",
-            "version": "1.2.3",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_ListHeaders-1.2.3.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "pear-pear.horde.org/horde_mail": "<3.0.0.0",
-                "pear-pear.horde.org/horde_translation": "<3.0.0.0",
-                "pear-pear.horde.org/horde_util": "<3.0.0.0",
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_listheaders": "== 1.2.3.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "LGPL-2.1"
-            ],
-            "description": "The Horde_ListHeaders library parses Mailing List Headers as defined in RFC 2369 & RFC 2919."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Mail",
-            "version": "2.6.3",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Mail-2.6.3.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "pear-pear.horde.org/horde_exception": "<3.0.0.0",
-                "pear-pear.horde.org/horde_idna": "<2.0.0.0",
-                "pear-pear.horde.org/horde_mime": "<3.0.0.0",
-                "pear-pear.horde.org/horde_stream_filter": "<3.0.0.0",
-                "pear-pear.horde.org/horde_translation": "<3.0.0.0",
-                "pear-pear.horde.org/horde_util": "<3.0.0.0",
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_mail": "== 2.6.3.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "BSD-2-Clause"
-            ],
-            "description": "Provides interfaces for sending e-mail messages and parsing e-mail addresses."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Mime",
-            "version": "2.9.4",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Mime-2.9.4.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "pear-pear.horde.org/horde_exception": "<3.0.0.0",
-                "pear-pear.horde.org/horde_listheaders": ">=1.2.0.0,<=2.0.0.0,!=3.0.0.0",
-                "pear-pear.horde.org/horde_mail": "<3.0.0.0",
-                "pear-pear.horde.org/horde_stream": "<2.0.0.0",
-                "pear-pear.horde.org/horde_stream_filter": "<3.0.0.0",
-                "pear-pear.horde.org/horde_support": "<3.0.0.0",
-                "pear-pear.horde.org/horde_text_flowed": "<3.0.0.0",
-                "pear-pear.horde.org/horde_translation": "<3.0.0.0",
-                "pear-pear.horde.org/horde_util": "<3.0.0.0",
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_mime": "== 2.9.4.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "LGPL-2.1"
-            ],
-            "description": "Provides methods for dealing with Multipurpose Internet Mail Extensions (MIME) features (RFC 2045/2046/2047)."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Secret",
-            "version": "2.0.6",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Secret-2.0.6.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "ext-hash": "*",
-                "pear-pear.horde.org/horde_crypt_blowfish": "<2.0.0.0",
-                "pear-pear.horde.org/horde_exception": "<3.0.0.0",
-                "pear-pear.horde.org/horde_support": "<3.0.0.0",
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_secret": "== 2.0.6.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "LGPL-2.1"
-            ],
-            "description": "An API for encrypting and decrypting small pieces of data with the use of a shared key."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Socket_Client",
-            "version": "2.1.1",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Socket_Client-2.1.1.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "pear-pear.horde.org/horde_exception": "<3.0.0.0",
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_socket_client": "== 2.1.1.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "LGPL-2.1"
-            ],
-            "description": "Provides abstract class for use in creating PHP network socket clients."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Stream",
-            "version": "1.6.3",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Stream-1.6.3.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "pear-pear.horde.org/horde_exception": "<3.0.0.0",
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_stream": "== 1.6.3.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "LGPL-2.1"
-            ],
-            "description": "An object-oriented interface to assist in creating and storing PHP stream resources, and to provide utility methods to access and manipulate the stream contents."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Stream_Filter",
-            "version": "2.0.4",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Stream_Filter-2.0.4.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_stream_filter": "== 2.0.4.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "LGPL-2.1"
-            ],
-            "description": "A collection of various stream filters."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Stream_Wrapper",
-            "version": "2.1.3",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Stream_Wrapper-2.1.3.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_stream_wrapper": "== 2.1.3.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "BSD-2-Clause"
-            ],
-            "description": "A collection of stream wrappers."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Support",
-            "version": "2.1.5",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Support-2.1.5.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "pear-pear.horde.org/horde_exception": "<3.0.0.0",
-                "pear-pear.horde.org/horde_stream_wrapper": "<3.0.0.0",
-                "pear-pear.horde.org/horde_util": "<3.0.0.0",
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_support": "== 2.1.5.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "BSD-2-Clause"
-            ],
-            "description": "Support classes not tied to Horde but is used by it. These classes can be used outside of Horde as well."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Text_Flowed",
-            "version": "2.0.3",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Text_Flowed-2.0.3.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "pear-pear.horde.org/horde_util": "<3.0.0.0",
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_text_flowed": "== 2.0.3.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "LGPL-2.1"
-            ],
-            "description": "The Horde_Text_Flowed:: class provides common methods for manipulating text using the encoding described in RFC 3676 ('flowed' text)."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Translation",
-            "version": "2.2.1",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Translation-2.2.1.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_translation": "== 2.2.1.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "LGPL-2.1"
-            ],
-            "description": "Translation wrappers."
-        },
-        {
-            "name": "pear-pear.horde.org/Horde_Util",
-            "version": "2.5.7",
-            "dist": {
-                "type": "file",
-                "url": "http://pear.horde.org/get/Horde_Util-2.5.7.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "ext-dom": "*",
-                "php": "<8.0.0.0"
-            },
-            "replace": {
-                "pear-horde/horde_util": "== 2.5.7.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "LGPL-2.1"
-            ],
-            "description": "These classes provide functionality useful for all kind of applications."
         },
         {
             "name": "php-di/invoker",
@@ -2444,86 +1855,6 @@
                 "reflection"
             ],
             "time": "2015-11-29T10:34:25+00:00"
-        },
-        {
-            "name": "php-mime-mail-parser/php-mime-mail-parser",
-            "version": "2.4.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-mime-mail-parser/php-mime-mail-parser.git",
-                "reference": "34f177f1a932e79327d336988065251b6ca2221a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-mime-mail-parser/php-mime-mail-parser/zipball/34f177f1a932e79327d336988065251b6ca2221a",
-                "reference": "34f177f1a932e79327d336988065251b6ca2221a",
-                "shasum": ""
-            },
-            "require": {
-                "ext-mailparse": "*",
-                "php": "^5.4.0 || ^7.0"
-            },
-            "replace": {
-                "exorus/php-mime-mail-parser": "*",
-                "messaged/php-mime-mail-parser": "*"
-            },
-            "require-dev": {
-                "phpunit/php-token-stream": "^1.3.0",
-                "phpunit/phpunit": "^4.0 || ^5.0",
-                "satooshi/php-coveralls": "0.*",
-                "squizlabs/php_codesniffer": "2.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "PhpMimeMailParser\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "bucabay",
-                    "email": "gabe@fijiwebdesign.com",
-                    "homepage": "http://www.fijiwebdesign.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "eXorus",
-                    "email": "exorus.spam@gmail.com",
-                    "homepage": "https://github.com/eXorus/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "M.Valinskis",
-                    "email": "M.Valins@gmail.com",
-                    "homepage": "https://code.google.com/p/php-mime-mail-parser",
-                    "role": "Developer"
-                },
-                {
-                    "name": "eugene.emmett.wood",
-                    "email": "gene_w@cementhorizon.com",
-                    "homepage": "https://code.google.com/p/php-mime-mail-parser",
-                    "role": "Developer"
-                },
-                {
-                    "name": "alknetso",
-                    "email": "alkne@gmail.com",
-                    "homepage": "https://code.google.com/p/php-mime-mail-parser",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Fully Tested Mailparse Extension Wrapper for PHP 5.4+",
-            "homepage": "https://github.com/php-mime-mail-parser/php-mime-mail-parser",
-            "keywords": [
-                "MimeMailParser",
-                "mail",
-                "mailparse",
-                "mime"
-            ],
-            "time": "2016-08-17T10:12:51+00:00"
         },
         {
             "name": "psr/http-message",
@@ -4234,6 +3565,57 @@
                 "polyfill"
             ],
             "time": "2016-06-06T16:41:50+00:00"
+        },
+        {
+            "name": "zbateson/mail-mime-parser",
+            "version": "0.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zbateson/MailMimeParser.git",
+                "reference": "c60636e6744c34508635393f196f214d65a827d6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zbateson/MailMimeParser/zipball/c60636e6744c34508635393f196f214d65a827d6",
+                "reference": "c60636e6744c34508635393f196f214d65a827d6",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "evert/phpdoc-md": "~0.1.1",
+                "phing/phing": "~2.15.0",
+                "phpdocumentor/phpdocumentor": "~2.8.0",
+                "phpunit/phpunit": "~4.5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ZBateson\\MailMimeParser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Zaahid Bateson",
+                    "email": "zbateson@users.noreply.github.com"
+                }
+            ],
+            "description": "MIME email message parser",
+            "homepage": "https://github.com/zbateson/MailMimeParser",
+            "keywords": [
+                "email",
+                "mail",
+                "mime",
+                "parser",
+                "php-imap"
+            ],
+            "time": "2017-04-05T21:50:13+00:00"
         },
         {
             "name": "zendframework/zend-diactoros",

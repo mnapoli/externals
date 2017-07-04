@@ -57,10 +57,6 @@
             "install-path": "vendor/doctrine/lexer",
             "installer": "composer"
         },
-        "ezyang/htmlpurifier": {
-            "install-path": "vendor/ezyang/htmlpurifier",
-            "installer": "composer"
-        },
         "filp/whoops": {
             "install-path": "vendor/filp/whoops",
             "installer": "composer"
@@ -121,10 +117,6 @@
             "install-path": "vendor/misd/linkify",
             "installer": "composer"
         },
-        "mnapoli/imapi": {
-            "install-path": "vendor/mnapoli/imapi",
-            "installer": "composer"
-        },
         "mnapoli/silly": {
             "install-path": "vendor/mnapoli/silly",
             "installer": "composer"
@@ -142,70 +134,6 @@
             "install-path": "vendor/paragonie/random_compat",
             "installer": "composer"
         },
-        "pear-pear.horde.org/horde_crypt_blowfish": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Crypt_Blowfish",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_exception": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Exception",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_idna": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Idna",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_imap_client": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Imap_Client",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_listheaders": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_ListHeaders",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_mail": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Mail",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_mime": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Mime",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_secret": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Secret",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_socket_client": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Socket_Client",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_stream": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Stream",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_stream_filter": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Stream_Filter",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_stream_wrapper": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Stream_Wrapper",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_support": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Support",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_text_flowed": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Text_Flowed",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_translation": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Translation",
-            "installer": "composer"
-        },
-        "pear-pear.horde.org/horde_util": {
-            "install-path": "vendor/pear-pear.horde.org/Horde_Util",
-            "installer": "composer"
-        },
         "php-di/invoker": {
             "install-path": "vendor/php-di/invoker",
             "installer": "composer"
@@ -220,10 +148,6 @@
         },
         "php-di/phpdoc-reader": {
             "install-path": "vendor/php-di/phpdoc-reader",
-            "installer": "composer"
-        },
-        "php-mime-mail-parser/php-mime-mail-parser": {
-            "install-path": "vendor/php-mime-mail-parser/php-mime-mail-parser",
             "installer": "composer"
         },
         "phpdocumentor/reflection-common": {
@@ -466,6 +390,10 @@
         },
         "wizacha/new-relic-polyfill": {
             "install-path": "vendor/wizacha/new-relic-polyfill",
+            "installer": "composer"
+        },
+        "zbateson/mail-mime-parser": {
+            "install-path": "vendor/zbateson/mail-mime-parser",
             "installer": "composer"
         },
         "zendframework/zend-diactoros": {
