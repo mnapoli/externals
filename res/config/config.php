@@ -30,7 +30,7 @@ return [
     'path.logs' => __DIR__ . '/../../var/log',
 
     'version' => function () {
-        return trim(system('git rev-parse HEAD'));
+        return trim(shell_exec('git rev-parse HEAD'));
     },
 
     Client::class => function (ContainerInterface $c) {
