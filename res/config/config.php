@@ -29,6 +29,10 @@ return [
     'path.cache' => __DIR__ . '/../../var/cache',
     'path.logs' => __DIR__ . '/../../var/log',
 
+    'version' => function () {
+        return trim(system('git rev-parse HEAD'));
+    },
+
     Client::class => function (ContainerInterface $c) {
         $config = $c->get('imap.config');
         return Client::connect($config['host'], $config['user'], $config['password'], (string) $config['port'],
@@ -47,6 +51,7 @@ return [
     ],
     'twig.globals' => [
         'debug' => get('debug'),
+        'version' => get('version'),
     ],
     'twig.extensions' => add([
         get(Twig_Extensions_Extension_Date::class),
