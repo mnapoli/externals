@@ -30,6 +30,10 @@ return [
     'path.cache' => __DIR__ . '/../../var/cache',
     'path.logs' => __DIR__ . '/../../var/log',
 
+    'version' => function () {
+        return trim(shell_exec('git rev-parse HEAD'));
+    },
+
     'db.url' => env('DB_URL'),
     Connection::class => function (ContainerInterface $c) {
         return DriverManager::getConnection([
@@ -48,6 +52,7 @@ return [
     ],
     'twig.globals' => [
         'debug' => get('debug'),
+        'version' => get('version'),
     ],
     'twig.extensions' => add([
         get(Twig_Extensions_Extension_Date::class),
