@@ -7,7 +7,6 @@ if (php_sapi_name() === 'cli-server' && is_file(__DIR__ . preg_replace('#(\?.*)$
 }
 
 require __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../.puli/GeneratedPuliFactory.php';
 
 $app = new Externals\Application\Application();
 $app->http()->run();

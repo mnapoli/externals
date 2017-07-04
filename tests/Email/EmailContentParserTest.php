@@ -6,8 +6,6 @@ namespace Externals\Test\Email;
 use Externals\Application\Application;
 use Externals\Email\EmailContentParser;
 
-require_once __DIR__ . '/../../.puli/GeneratedPuliFactory.php';
-
 class EmailContentParserTest extends \PHPUnit_Framework_TestCase
 {
     /**
