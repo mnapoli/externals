@@ -59,11 +59,16 @@ class DbCommand
     public function purge(bool $force, OutputInterface $output)
     {
         $tables = $this->db->getSchemaManager()->listTableNames();
-        foreach ($tables as $table) {
-            $output->writeln("<info>Dropping table $table</info>");
-            if ($force) {
-                $this->db->getSchemaManager()->dropTable($table);
+
+        if ($force) $this->db->exec('SET FOREIGN_KEY_CHECKS=0');
+
+        try {
+            foreach ($tables as $table) {
+                $output->writeln("<info>Dropping table $table</info>");
+                if ($force) $this->db->getSchemaManager()->dropTable($table);
             }
+        } finally {
+            if ($force) $this->db->exec('SET FOREIGN_KEY_CHECKS=1');
         }
 
         if (!$force) {
