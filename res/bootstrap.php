@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$dotenv = new Dotenv\Dotenv(__DIR__ . '/../');
-$dotenv->load();
+if (file_exists(__DIR__ . '/../.env')) {
+    $dotenv = new Dotenv\Dotenv(__DIR__ . '/../');
+    $dotenv->load();
+}
 
 // Platform.sh config
 $relationships = getenv('PLATFORM_RELATIONSHIPS');
