@@ -58,8 +58,7 @@ return pipe([
             // Get thread view **before** marking the thread as read
             $threadView = $repository->getThreadView($email, $user);
             if ($user instanceof User) {
-                // TODO
-                $threadRepository->markThreadRead($number, $user, $emailCount);
+                $repository->markAsRead($email, $user);
             }
             return $twig->render('/app/views/thread.html.twig', [
                 'subject' => $email->getSubject(),

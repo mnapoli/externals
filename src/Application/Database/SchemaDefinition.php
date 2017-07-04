@@ -18,7 +18,10 @@ class SchemaDefinition
         $emailsTable->addColumn('number', 'integer', ['unsigned' => true]);
         $emailsTable->addColumn('subject', 'text');
         $emailsTable->addColumn('threadId', 'string', ['notnull' => false]);
+        // This field can be computed at runtime but storing it allows for efficient (and clearer) SQL queries
+        $emailsTable->addColumn('isThreadRoot', 'boolean');
         $emailsTable->addColumn('date', 'datetime');
+        $emailsTable->addColumn('fetchDate', 'datetime');
         $emailsTable->addColumn('content', 'text');
         $emailsTable->addColumn('source', 'text');
         $emailsTable->addColumn('fromEmail', 'string', ['notnull' => false]);
@@ -26,8 +29,8 @@ class SchemaDefinition
         $emailsTable->addColumn('inReplyTo', 'string', ['notnull' => false]);
         $emailsTable->setPrimaryKey(['id']);
         $emailsTable->addUniqueIndex(['number']);
-        $emailsTable->addIndex(['threadId']);
-        $emailsTable->addIndex(['inReplyTo']);
+        $emailsTable->addIndex(['threadId']); // No foreign key because the email could not exist
+        $emailsTable->addIndex(['isThreadRoot']); // No foreign key because the email could not exist
 
         // Threads table
         // @deprecated Kept for keeping the old URLs
@@ -44,18 +47,17 @@ class SchemaDefinition
         $usersTable->setPrimaryKey(['id']);
         $usersTable->addIndex(['githubId']);
 
-        // Thread reading status table
-        // @deprecated To delete
-        $userThreadsReadTable = $schema->createTable('user_threads_read');
-        $userThreadsReadTable->addColumn('userId', 'integer', ['unsigned' => true]);
-        $userThreadsReadTable->addColumn('threadId', 'integer', ['unsigned' => true]);
-        $userThreadsReadTable->addColumn('emailsRead', 'integer');
-        $userThreadsReadTable->setPrimaryKey(['userId', 'threadId']);
-
         // Email reading status table
-        $userEmailsReadTable = $schema->createTable('user_emails_read');
-        $userEmailsReadTable->addColumn('userId', 'integer', ['unsigned' => true]);
-        $userEmailsReadTable->addColumn('emailId', 'string');
-        $userEmailsReadTable->setPrimaryKey(['userId', 'emailId']);
+        $readTable = $schema->createTable('user_emails_read');
+        $readTable->addColumn('userId', 'integer', ['unsigned' => true]);
+        $readTable->addColumn('emailId', 'string');
+        $readTable->addColumn('lastReadDate', 'datetime');
+        $readTable->setPrimaryKey(['userId', 'emailId']);
+        $readTable->addForeignKeyConstraint($usersTable, ['userId'], ['id'], [
+            'onDelete' => 'CASCADE',
+        ]);
+        $readTable->addForeignKeyConstraint($emailsTable, ['emailId'], ['id'], [
+            'onDelete' => 'CASCADE',
+        ]);
     }
 }
