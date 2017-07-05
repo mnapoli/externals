@@ -108,4 +108,7 @@ return [
         $key = $c->get('session.secret_key');
         return SessionMiddleware::fromSymmetricKeyDefaults($key, 31536000);
     },
+
+    'sentry.url' => env('SENTRY_URL', null),
+
 ];

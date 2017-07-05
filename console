@@ -2,17 +2,17 @@
 <?php
 declare(strict_types = 1);
 
-use Externals\Application\Application;
 use Externals\Application\Command\DbCommand;
 use Externals\EmailSynchronizer;
 use Psr\Container\ContainerInterface;
+use Stratify\Framework\Application;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-require_once __DIR__ . '/res/bootstrap.php';
+/** @var Application $application */
+$application = require __DIR__ . '/res/bootstrap.php';
 
-$application = new Application;
 $cli = $application->cli();
 
 $cli->command('db [--force]', [DbCommand::class, 'setup']);

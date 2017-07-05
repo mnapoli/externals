@@ -34,7 +34,8 @@
         "algolia/algoliasearch-client-php": "^1.12",
         "rvdv/nntp": "dev-preserve-empty-lines@dev",
         "zbateson/mail-mime-parser": "^0.4.3",
-        "vlucas/phpdotenv": "^2.4"
+        "vlucas/phpdotenv": "^2.4",
+        "sentry/sentry": "^1.7"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.4"
