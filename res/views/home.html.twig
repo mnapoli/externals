@@ -74,7 +74,7 @@
             var search = instantsearch({
                 appId: 'KSTITII7EC',
                 apiKey: 'badccd205e578e64657ae7f880959824',
-                indexName: 'emails',
+                indexName: '{{ algoliaIndex }}',
                 searchFunction: function (helper) {
                     var searchResults = $('.search-container');
                     if (helper.state.query === '') {

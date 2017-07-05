@@ -11,6 +11,7 @@ use Externals\Email\EmailRepository;
 use Externals\NotFound;
 use Externals\User\User;
 use Externals\User\UserRepository;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Stratify\ErrorHandlerModule\ErrorHandlerMiddleware;
 use function Stratify\Framework\pipe;
@@ -29,12 +30,13 @@ return pipe([
 
     router([
 
-        '/' => function (Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
+        '/' => function (Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request, ContainerInterface $container) {
             newrelic_name_transaction('home');
             $user = $request->getAttribute('user');
             return $twig->render('@app/home.html.twig', [
                 'threads' => $repository->findLatestThreads(1, $user),
                 'user' => $user,
+                'algoliaIndex' => $container->get('algolia.index_prefix') . 'emails',
             ]);
         },
 
