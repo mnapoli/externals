@@ -28,7 +28,14 @@ class EmailSynchronizer
      * Some articles that should never
      * be attempted to be fetched.
      */
-    const BROKEN_MESSAGES = [992];
+    const BROKEN_MESSAGES = [
+        992,
+        1023,
+        1024,
+        1025,
+        1026,
+        1027,
+    ];
 
     /**
      * @var EmailRepository
