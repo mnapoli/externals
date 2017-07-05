@@ -36,7 +36,7 @@ $modules = [
     'stratify/twig-module',
     'mnapoli/externals',
 ];
-$environment = getenv('ENV') ?? 'prod';
+$environment = getenv('ENV') ?: 'prod';
 $httpStack = require(__DIR__ . '/http.php');
 $application = new Application($modules, $environment, $httpStack);
 
