@@ -28,9 +28,9 @@ class SchemaDefinition
         $emailsTable->addColumn('fromName', 'string', ['notnull' => false]);
         $emailsTable->addColumn('inReplyTo', 'string', ['notnull' => false]);
         $emailsTable->setPrimaryKey(['id']);
-        $emailsTable->addUniqueIndex(['number']);
-        $emailsTable->addIndex(['threadId']); // No foreign key because the email could not exist
-        $emailsTable->addIndex(['isThreadRoot']); // No foreign key because the email could not exist
+        $emailsTable->addUniqueIndex(['number'], 'unique_number');
+        $emailsTable->addIndex(['threadId'], 'index_threadId'); // No foreign key because the email could not exist
+        $emailsTable->addIndex(['isThreadRoot'], 'index_isThreadRoot');
 
         // Threads table
         // @deprecated Kept for keeping the old URLs
