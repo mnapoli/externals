@@ -8,7 +8,7 @@ if (file_exists(__DIR__ . '/../.env')) {
     $dotenv->load();
 }
 
-// Platform.sh config
+// Platform.sh DB config
 $relationships = getenv('PLATFORM_RELATIONSHIPS');
 if ($relationships) {
     $relationships = json_decode(base64_decode($relationships), true);
