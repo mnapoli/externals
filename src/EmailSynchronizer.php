@@ -72,7 +72,7 @@ class EmailSynchronizer
         $this->logger = $logger;
     }
 
-    public function synchronize(int $maxNumberOfEmailsToSynchronize)
+    public function synchronize(int $maxNumberOfEmailsToSynchronize = null)
     {
         $client = new Client(new Connection('news.php.net', 119));
         $client->connect();
@@ -105,7 +105,7 @@ class EmailSynchronizer
 
             $this->synchronizeEmail($number, $rawContent);
 
-            if ($count >= $maxNumberOfEmailsToSynchronize) break;
+            if (($maxNumberOfEmailsToSynchronize) !== null && ($count >= $maxNumberOfEmailsToSynchronize)) break;
         }
 
         $client->disconnect();
