@@ -127,7 +127,7 @@ class EmailSynchronizer
         $parsedDocument = $mailParser->parse($source);
 
         $subject = $this->subjectParser->sanitize($parsedDocument->getHeaderValue('subject'));
-        $content = $this->contentParser->parse($parsedDocument->getTextContent());
+        $content = $this->contentParser->parse((string) $parsedDocument->getTextContent());
 
         // We don't use the special AddressHeader class because it doesn't seem to parse the
         // person's name at all
