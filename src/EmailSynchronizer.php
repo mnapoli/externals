@@ -15,6 +15,7 @@ use Psr\Log\LoggerInterface;
 use Rvdv\Nntp\Client;
 use Rvdv\Nntp\Command\ArticleCommand;
 use Rvdv\Nntp\Connection\Connection;
+use Rvdv\Nntp\Exception\UnknownHandlerException;
 use ZBateson\MailMimeParser\Header\DateHeader;
 use ZBateson\MailMimeParser\MailMimeParser;
 use ZBateson\MailMimeParser\Message;
@@ -30,11 +31,6 @@ class EmailSynchronizer
      */
     const BROKEN_MESSAGES = [
         992,
-        1023,
-        1024,
-        1025,
-        1026,
-        1027,
     ];
 
     /**
@@ -95,11 +91,17 @@ class EmailSynchronizer
             $count++;
 
             if (in_array($number, self::BROKEN_MESSAGES)) {
-                $this->logger->warning("Skipping broken message $number");
+                $this->logger->warning("Skipping blacklisted message $number");
                 continue;
             }
 
-            $rawContent = $client->sendCommand(new ArticleCommand($number));
+            try {
+                $rawContent = $client->sendCommand(new ArticleCommand($number));
+            } catch (UnknownHandlerException $e) {
+                // Some messages seem to trigger errors on the news server and we cannot fetch them
+                $this->logger->warning("Cannot fetch message $number, skipping");
+                continue;
+            }
 
             $this->synchronizeEmail($number, $rawContent);
 
