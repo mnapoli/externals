@@ -4,6 +4,10 @@ type: 'php:7.1'
 build:
     flavor: composer
 
+runtime:
+    extensions:
+        - newrelic
+
 dependencies:
     nodejs:
         bower: "^1.8"
