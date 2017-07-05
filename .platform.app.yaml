@@ -7,6 +7,11 @@ build:
 runtime:
     extensions:
         - newrelic
+        -
+            name: 'blackfire'
+            configuration:
+                server_id: '69b9589f-b986-4d85-af21-cb8cedd55389'
+                server_token: 'e8de86bb7a3c8d10975ba4143c31193cee56742718dc34296d513a94f7473125'
 
 dependencies:
     nodejs:
