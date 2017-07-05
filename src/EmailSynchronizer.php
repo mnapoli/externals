@@ -152,6 +152,12 @@ class EmailSynchronizer
             }
         }
 
+        $date = $this->parseDateTime($parsedDocument);
+        if (!$date) {
+            $this->logger->warning("Cannot synchronize message $number because it contains an invalid date");
+            return;
+        }
+
         $newEmail = new Email(
             $emailId,
             $number,
@@ -159,7 +165,7 @@ class EmailSynchronizer
             $content,
             $source,
             $threadId,
-            $this->parseDateTime($parsedDocument),
+            $date,
             $from,
             $inReplyTo
         );
@@ -177,7 +183,10 @@ class EmailSynchronizer
         $this->logger->info('New email: ' . $subject);
     }
 
-    private function parseDateTime(Message $parsedDocument) : \DateTimeInterface
+    /**
+     * @return \DateTimeInterface|null
+     */
+    private function parseDateTime(Message $parsedDocument)
     {
         $dateHeader = $parsedDocument->getHeader('date');
 
@@ -186,7 +195,12 @@ class EmailSynchronizer
             $date = $dateHeader->getDateTime();
         }
         // Some dates cannot be parsed using the standard format, for example "13 Mar 2003 12:44:07 -0500"
-        $date = $date ?: new \DateTime($dateHeader->getValue());
+        try {
+            $date = $date ?: new \DateTime($dateHeader->getValue());
+        } catch (\Exception $e) {
+            // Some dates cannot be parsed
+            return null;
+        }
 
         // We store all the dates in UTC
         $date->setTimezone(new DateTimeZone('UTC'));
