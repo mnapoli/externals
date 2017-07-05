@@ -63,8 +63,13 @@ header.site-header {
     }
 }
 .home-header {
-    padding: 50px 0 30px;
-    font-size: 24px;
+    padding: 30px 0 15px;
+    @media (min-width: 768px) {
+        padding: 40px 0 15px;
+    }
+    @media (min-width: 1025px) {
+        padding: 50px 0 30px;
+    }
     text-align: center;
     h1 {
         margin-top: 0;
@@ -79,6 +84,11 @@ header.site-header {
         padding: 10px 0 10px 0;
         font-size: 25px;
         @media (min-width: 768px) {
+            font-size: 35px;
+            line-height: 44px;
+            padding: 20px 0 30px 0;
+        }
+        @media (min-width: 1025px) {
             font-size: 45px;
             line-height: 54px;
             padding: 20px 0 30px 0;
@@ -147,7 +157,10 @@ footer {
     margin-top: 30px;
     .thread-item {
         display: block;
-        padding: 14px 30px;
+        padding: 14px 10px;
+        @media (min-width: 768px) {
+            padding: 14px 30px;
+        }
         border-top: 1px solid #e7eaec;
         .thread-subject {
             display: block;
