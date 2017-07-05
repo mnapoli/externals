@@ -163,7 +163,7 @@ class EmailSynchronizer
         }
 
         // Index in Algolia
-        $this->searchIndex->indexEmail($newEmail, $subject);
+        $this->searchIndex->indexEmail($newEmail);
 
         $this->logger->info('New email: ' . $subject);
     }
