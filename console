@@ -5,8 +5,10 @@ declare(strict_types = 1);
 use Externals\Application\Application;
 use Externals\Application\Command\DbCommand;
 use Externals\EmailSynchronizer;
+use Psr\Container\ContainerInterface;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 require_once __DIR__ . '/res/bootstrap.php';
 
@@ -19,6 +21,10 @@ $cli->command('db-truncate [--force]', [DbCommand::class, 'truncate']);
 
 $cli->command('sync [max]', function (int $max = null, EmailSynchronizer $synchronizer) {
     $synchronizer->synchronize($max);
+});
+
+$cli->command('container:get id', function (string $id, ContainerInterface $container, OutputInterface $output) {
+    var_dump($container->get($id));
 });
 
 $output = new ConsoleOutput();
