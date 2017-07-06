@@ -144,14 +144,6 @@ SQL;
         return $numberOfEmails;
     }
 
-    /**
-     * @return Email[]
-     */
-    public function findAll() : array
-    {
-        return array_map([$this, 'emailFromRow'], $this->db->fetchAll('SELECT * FROM emails'));
-    }
-
     public function add(Email $email)
     {
         $this->db->insert('emails', [
