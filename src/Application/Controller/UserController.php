@@ -17,7 +17,7 @@ use Zend\Diactoros\Response\RedirectResponse;
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class AuthController
+class UserController
 {
     /**
      * @var UserRepository

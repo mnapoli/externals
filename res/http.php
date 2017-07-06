@@ -2,7 +2,7 @@
 declare(strict_types = 1);
 
 use Doctrine\DBAL\Connection;
-use Externals\Application\Controller\AuthController;
+use Externals\Application\Controller\UserController;
 use Externals\Application\Controller\NotFoundController;
 use Externals\Application\Middleware\AuthMiddleware;
 use Externals\Application\Middleware\NotFoundMiddleware;
@@ -82,8 +82,8 @@ return pipe([
             ]);
         },
 
-        '/login' => [AuthController::class, 'login'],
-        '/logout' => [AuthController::class, 'logout'],
+        '/login' => [UserController::class, 'login'],
+        '/logout' => [UserController::class, 'logout'],
 
         '/stats' => function (Twig_Environment $twig, EmailRepository $emailRepository, UserRepository $userRepository, ServerRequestInterface $request) {
             newrelic_name_transaction('stats');
