@@ -31,6 +31,7 @@ class EmailSynchronizer
      */
     const BROKEN_MESSAGES = [
         992,
+        27418,
     ];
 
     /**
