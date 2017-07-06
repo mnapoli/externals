@@ -135,7 +135,12 @@ class EmailSynchronizer
 
         // We don't use the special AddressHeader class because it doesn't seem to parse the
         // person's name at all
-        $emailAddressParser = new EmailAddressParser($parsedDocument->getHeader('from')->getRawValue());
+        $fromHeader = $parsedDocument->getHeader('from');
+        if (!$fromHeader) {
+            $this->logger->warning("Cannot synchronize message $number because it contains no 'from' header");
+            return;
+        }
+        $emailAddressParser = new EmailAddressParser($fromHeader->getRawValue());
         $fromArray = $emailAddressParser->parse();
         /** @var EmailAddress $from */
         $from = reset($fromArray);
