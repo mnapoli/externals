@@ -32,12 +32,24 @@ class SchemaDefinition
         $emailsTable->addIndex(['threadId'], 'index_threadId'); // No foreign key because the email could not exist
         $emailsTable->addIndex(['isThreadRoot'], 'index_isThreadRoot');
 
+        // Threads tables
+        // Is like a materialized view, refreshed after emails are synchronized
+        $threadsTable = $schema->createTable('threads');
+        $threadsTable->addColumn('emailId', 'string');
+        $threadsTable->addColumn('lastUpdate', 'datetime');
+        $threadsTable->addColumn('emailCount', 'integer', ['unsigned' => true]);
+        $threadsTable->setPrimaryKey(['emailId']);
+        $threadsTable->addForeignKeyConstraint($emailsTable, ['emailId'], ['id'], [
+            'onDelete' => 'CASCADE',
+        ], 'foreign_emailId');
+        $threadsTable->addIndex(['lastUpdate'], 'index_lastUpdate');
+
         // Threads table
         // @deprecated Kept for keeping the old URLs
-        $threadsTable = $schema->createTable('threads');
-        $threadsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
-        $threadsTable->addColumn('subject', 'text');
-        $threadsTable->setPrimaryKey(['id']);
+        $oldThreadsTable = $schema->createTable('threads_old');
+        $oldThreadsTable->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
+        $oldThreadsTable->addColumn('subject', 'text');
+        $oldThreadsTable->setPrimaryKey(['id']);
 
         // Users table
         $usersTable = $schema->createTable('users');
@@ -45,7 +57,7 @@ class SchemaDefinition
         $usersTable->addColumn('githubId', 'string');
         $usersTable->addColumn('name', 'string');
         $usersTable->setPrimaryKey(['id']);
-        $usersTable->addIndex(['githubId']);
+        $usersTable->addIndex(['githubId'], 'index_githubId');
 
         // Email reading status table
         $readTable = $schema->createTable('user_emails_read');
@@ -55,9 +67,9 @@ class SchemaDefinition
         $readTable->setPrimaryKey(['userId', 'emailId']);
         $readTable->addForeignKeyConstraint($usersTable, ['userId'], ['id'], [
             'onDelete' => 'CASCADE',
-        ]);
+        ], 'foreign_userId');
         $readTable->addForeignKeyConstraint($emailsTable, ['emailId'], ['id'], [
             'onDelete' => 'CASCADE',
-        ]);
+        ], 'foreign_emailId');
     }
 }

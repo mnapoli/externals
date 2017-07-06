@@ -3,6 +3,7 @@
 declare(strict_types = 1);
 
 use Externals\Application\Command\DbCommand;
+use Externals\Email\EmailRepository;
 use Externals\EmailSynchronizer;
 use Psr\Container\ContainerInterface;
 use Stratify\Framework\Application;
@@ -23,7 +24,14 @@ $cli->command('sync [max]', function (int $max = null, EmailSynchronizer $synchr
     $synchronizer->synchronize($max);
 });
 
-$cli->command('container:get id', function (string $id, ContainerInterface $container, OutputInterface $output) {
+$cli->command('refresh-threads', function (EmailRepository $repository, OutputInterface $output) {
+    $start = microtime(true);
+    $repository->refreshThreads();
+    $time = microtime(true) - $start;
+    $output->writeln("<comment>Threads have been refreshed in $time seconds</comment>");
+});
+
+$cli->command('container:get id', function (string $id, ContainerInterface $container) {
     var_dump($container->get($id));
 });
 

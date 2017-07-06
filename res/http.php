@@ -103,7 +103,7 @@ return pipe([
 
         // Keep backward compatibility with old URLs (old threads)
         '/thread/{id}' => function (int $id, EmailRepository $emailRepository, Connection $db) {
-            $threadSubject = $db->fetchColumn('SELECT `subject` FROM threads WHERE id = ?', [$id]);
+            $threadSubject = $db->fetchColumn('SELECT `subject` FROM threads_old WHERE id = ?', [$id]);
             $email = $emailRepository->findBySubject($threadSubject);
             // Permanent redirection
             return new RedirectResponse("/message/{$email->getNumber()}", 301);

@@ -98,23 +98,17 @@ class EmailRepository
         if ($user) {
             $query = <<<SQL
 SELECT
-    threads.number,
-    threads.subject,
-    threads.date,
-    threads.fromName,
-    COUNT(threadEmails.id) as emailCount,
-    MAX(threadEmails.fetchDate) as lastUpdate,
-    IF(
-        readStatus.lastReadDate AND readStatus.lastReadDate >= MAX(threadEmails.fetchDate),
-        1,
-        0
-    ) as isRead
-FROM emails threads
-LEFT JOIN emails threadEmails ON threads.id = threadEmails.threadId
-LEFT JOIN user_emails_read readStatus ON threads.id = readStatus.emailId AND readStatus.userId = :userId
-WHERE threads.isThreadRoot = 1
-GROUP BY threads.id
-ORDER BY lastUpdate DESC
+    threadInfos.number,
+    threadInfos.subject,
+    threadInfos.date,
+    threadInfos.fromName,
+    threads.emailCount,
+    threads.lastUpdate,
+    IF(readStatus.lastReadDate AND readStatus.lastReadDate >= threads.lastUpdate, 1, 0) as isRead
+FROM threads
+LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
+LEFT JOIN user_emails_read readStatus ON threads.emailId = readStatus.emailId AND readStatus.userId = :userId
+ORDER BY threads.lastUpdate DESC
 LIMIT 20 OFFSET $offset
 SQL;
             $parameters = [
@@ -123,18 +117,16 @@ SQL;
         } else {
             $query = <<<SQL
 SELECT
-    threads.number,
-    threads.subject,
-    threads.date,
-    threads.fromName,
-    COUNT(threadEmails.id) as emailCount,
-    MAX(threadEmails.fetchDate) as lastUpdate,
+    threadInfos.number,
+    threadInfos.subject,
+    threadInfos.date,
+    threadInfos.fromName,
+    threads.emailCount,
+    threads.lastUpdate,
     0 as isRead
-FROM emails threads
-LEFT JOIN emails threadEmails ON threads.id = threadEmails.threadId
-WHERE threads.isThreadRoot = 1
-GROUP BY threads.id
-ORDER BY lastUpdate DESC
+FROM threads
+LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
+ORDER BY threads.lastUpdate DESC
 LIMIT 20 OFFSET $offset
 SQL;
         }
@@ -240,6 +232,20 @@ SQL;
             $email->getId(),
             $user->getId(),
         ]);
+    }
+
+    public function refreshThreads()
+    {
+        $this->db->executeQuery('TRUNCATE TABLE threads');
+        $query = <<<'SQL'
+INSERT INTO threads (emailId, lastUpdate, emailCount)
+  SELECT emails.id, MAX(threadEmails.fetchDate), COUNT(threadEmails.id)
+  FROM emails
+  LEFT JOIN emails threadEmails ON emails.id = threadEmails.threadId
+  WHERE emails.isThreadRoot = 1
+  GROUP BY emails.id
+SQL;
+        $this->db->executeQuery($query);
     }
 
     private function emailFromRow(array $row) : Email
