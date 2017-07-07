@@ -2,13 +2,17 @@
 
 ## Setup
 
+Copy the `.env.dist` file to `.env` and configure it.
+
+Install the application (will create the database and the tables):
+
 ```bash
-$ composer install
-$ cp .env.dist .env
+$ make install
+```
 
-# Configure database and other settings in .env
+Run the preview:
 
-$ ./console db --force
+```bash
 $ make preview
 
 # Browse to http://localhost:8000
