@@ -33,6 +33,7 @@ class EmailSynchronizer
         992,
         27418,
         69049,
+        69050,
     ];
 
     /**
