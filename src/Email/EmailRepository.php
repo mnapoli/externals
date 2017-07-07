@@ -228,9 +228,8 @@ SQL;
 
     public function refreshThreads()
     {
-        $this->db->executeQuery('TRUNCATE TABLE threads');
         $query = <<<'SQL'
-INSERT INTO threads (emailId, lastUpdate, emailCount)
+REPLACE INTO threads (emailId, lastUpdate, emailCount)
   SELECT emails.id, MAX(threadEmails.fetchDate), COUNT(threadEmails.id)
   FROM emails
   LEFT JOIN emails threadEmails ON emails.id = threadEmails.threadId
