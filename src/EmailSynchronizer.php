@@ -97,6 +97,8 @@ class EmailSynchronizer
                 continue;
             }
 
+            $this->logger->info("Synchronizing message $number");
+
             try {
                 $rawContent = $client->sendCommand(new ArticleCommand($number));
             } catch (UnknownHandlerException $e) {
