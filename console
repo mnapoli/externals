@@ -2,40 +2,37 @@
 <?php
 declare(strict_types = 1);
 
-use Externals\Application\Application;
 use Externals\Application\Command\DbCommand;
-use Externals\EmailSearchIndex;
-use Externals\EmailSynchronizer;
-use Externals\Email\EmailContentParser;
 use Externals\Email\EmailRepository;
+use Externals\EmailSynchronizer;
+use Psr\Container\ContainerInterface;
+use Stratify\Framework\Application;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
-require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/.puli/GeneratedPuliFactory.php';
+/** @var Application $application */
+$application = require __DIR__ . '/res/bootstrap.php';
 
-$application = new Application;
 $cli = $application->cli();
 
 $cli->command('db [--force]', [DbCommand::class, 'setup']);
 $cli->command('db-purge [--force]', [DbCommand::class, 'purge']);
+$cli->command('db-truncate [--force]', [DbCommand::class, 'truncate']);
 
-$cli->command('sync [days]', function (int $days = null, EmailSynchronizer $synchronizer) {
-    $synchronizer->synchronize($days ?? 1);
+$cli->command('sync [max]', function (int $max = null, EmailSynchronizer $synchronizer) {
+    $synchronizer->synchronize($max);
 });
 
-$cli->command('reparse', function (EmailRepository $emailRepository, EmailContentParser $contentParser) {
-    foreach ($emailRepository->findAll() as $email) {
-        $newContent = $contentParser->parse($email->getOriginalContent());
-        $email->setContent($newContent);
-        $emailRepository->updateContent($email);
-    }
+$cli->command('refresh-threads', function (EmailRepository $repository, OutputInterface $output) {
+    $start = microtime(true);
+    $repository->refreshThreads();
+    $time = microtime(true) - $start;
+    $output->writeln("<comment>Threads have been refreshed in $time seconds</comment>");
 });
 
-$cli->command('reindex', function (EmailRepository $emailRepository, EmailSearchIndex $searchIndex) {
-    foreach ($emailRepository->findAll() as $email) {
-        $searchIndex->indexEmail($email);
-    }
+$cli->command('container:get id', function (string $id, ContainerInterface $container) {
+    var_dump($container->get($id));
 });
 
 $output = new ConsoleOutput();

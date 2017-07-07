@@ -1,19 +1,22 @@
 <?php
 declare(strict_types = 1);
 
-use Externals\Application\Controller\AuthController;
+use Doctrine\DBAL\Connection;
+use Externals\Application\Controller\UserController;
 use Externals\Application\Controller\NotFoundController;
 use Externals\Application\Middleware\AuthMiddleware;
 use Externals\Application\Middleware\NotFoundMiddleware;
 use Externals\Application\Middleware\SessionMiddleware;
 use Externals\Email\EmailRepository;
-use Externals\Thread\ThreadRepository;
+use Externals\NotFound;
 use Externals\User\User;
 use Externals\User\UserRepository;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Stratify\ErrorHandlerModule\ErrorHandlerMiddleware;
 use function Stratify\Framework\pipe;
 use function Stratify\Framework\router;
+use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\Response\TextResponse;
 
 /**
@@ -26,57 +29,84 @@ return pipe([
     AuthMiddleware::class,
 
     router([
-        '/' => function (Twig_Environment $twig, ThreadRepository $threadRepository, ServerRequestInterface $request) {
+
+        '/' => function (Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request, ContainerInterface $container) {
             newrelic_name_transaction('home');
             $user = $request->getAttribute('user');
-            return $twig->render('/app/views/home.html.twig', [
-                'threads' => $threadRepository->findLatest(1, $user),
+            return $twig->render('@app/home.html.twig', [
+                'threads' => $repository->findLatestThreads(1, $user),
                 'user' => $user,
+                'algoliaIndex' => $container->get('algolia.index_prefix') . 'emails',
             ]);
         },
-        '/thread/{id}' => function (int $id, Twig_Environment $twig, ThreadRepository $threadRepository, EmailRepository $emailRepository, ServerRequestInterface $request) {
-            newrelic_name_transaction('thread');
-            newrelic_add_custom_parameter('thread', $id);
-            $user = $request->getAttribute('user');
-            $emailCount = $emailRepository->getThreadCount($id);
-            // Get thread view **before** marking the thread as read
-            $threadView = $emailRepository->getThreadView($id, $user);
-            if ($user instanceof User) {
-                $threadRepository->markThreadRead($id, $user, $emailCount);
+
+        '/message/{number}' => function (int $number, Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
+            newrelic_name_transaction('message');
+            newrelic_add_custom_parameter('message', $number);
+
+            $email = $repository->getByNumber($number);
+            if (!$email->isThreadRoot()) {
+                // The email is in a thread => redirect to the thread root
+                try {
+                    $thread = $repository->getById($email->getThreadId());
+                    return new RedirectResponse("/message/{$thread->getNumber()}#$number");
+                } catch (NotFound $e) {
+                    // We cannot find the root message
+                }
             }
-            return $twig->render('/app/views/thread.html.twig', [
-                'subject' => $threadRepository->getSubject($id),
+
+            $user = $request->getAttribute('user');
+            $emailCount = $repository->getThreadSize($email);
+            // Get thread view **before** marking the thread as read
+            $threadView = $repository->getThreadView($email, $user);
+            if ($user instanceof User) {
+                $repository->markAsRead($email, $user);
+            }
+            return $twig->render('@app/thread.html.twig', [
+                'subject' => $email->getSubject(),
                 'thread' => $threadView,
-                'threadId' => $id,
+                'threadId' => $number,
                 'emailCount' => $emailCount,
                 'user' => $user,
             ]);
         },
-        '/threads/list' => function (Twig_Environment $twig, ThreadRepository $threadRepository, ServerRequestInterface $request) {
+
+        '/threads/list' => function (Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
             newrelic_name_transaction('thread-list');
             $user = $request->getAttribute('user');
             $query = $request->getQueryParams();
             $page = (int) max(1, $query['page'] ?? 1);
-            return $twig->render('/app/views/threads/thread-list.html.twig', [
-                'threads' => $threadRepository->findLatest($page, $user),
+            return $twig->render('@app/threads/thread-list.html.twig', [
+                'threads' => $repository->findLatestThreads($page, $user),
                 'user' => $user,
             ]);
         },
-        '/login' => [AuthController::class, 'login'],
-        '/logout' => [AuthController::class, 'logout'],
-        '/stats' => function (Twig_Environment $twig, ThreadRepository $threadRepository, EmailRepository $emailRepository, UserRepository $userRepository, ServerRequestInterface $request) {
+
+        '/login' => [UserController::class, 'login'],
+        '/logout' => [UserController::class, 'logout'],
+
+        '/stats' => function (Twig_Environment $twig, EmailRepository $emailRepository, UserRepository $userRepository, ServerRequestInterface $request) {
             newrelic_name_transaction('stats');
             $user = $request->getAttribute('user');
-            return $twig->render('/app/views/stats.html.twig', [
+            return $twig->render('@app/stats.html.twig', [
                 'userCount' => $userRepository->getUserCount(),
-                'threadCount' => $threadRepository->getThreadCount(),
+                'threadCount' => $emailRepository->getThreadCount(),
                 'emailCount' => $emailRepository->getEmailCount(),
                 'user' => $user,
             ]);
         },
-        '/email/{id}/source' => function (string $id, EmailRepository $emailRepository) {
+
+        '/email/{number}/source' => function (int $number, EmailRepository $emailRepository) {
             newrelic_name_transaction('email_source');
-            return new TextResponse($emailRepository->getEmailSource($id));
+            return new TextResponse($emailRepository->getEmailSource($number));
+        },
+
+        // Keep backward compatibility with old URLs (old threads)
+        '/thread/{id}' => function (int $id, EmailRepository $emailRepository, Connection $db) {
+            $threadSubject = $db->fetchColumn('SELECT `subject` FROM threads_old WHERE id = ?', [$id]);
+            $email = $emailRepository->findBySubject($threadSubject);
+            // Permanent redirection
+            return new RedirectResponse("/message/{$email->getNumber()}", 301);
         },
     ]),
 

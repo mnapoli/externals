@@ -1,4 +1,4 @@
-{% extends '/app/views/layout.html.twig' %}
+{% extends '@app/layout.html.twig' %}
 
 {% import _self as macros %}
 
@@ -7,24 +7,26 @@
 {% macro threadItem(item) %}
     {% set email = item.email %}
 
-    <article id="email-{{ email.id }}" class="clearfix {% if not email.isRead %}unread{% endif %}">
+    <article id="{{ email.number }}" class="clearfix {% if not email.isRead %}unread{% endif %}">
 
         <header>
-            <a href="#email-{{ email.id }}-body" role="button" data-toggle="collapse"><span class="fa fa-compress"></span></a>
-            <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro', s: 50}) }}"
-                 alt="{{ email.from.nameOrEmail }}" title="{{ email.from.nameOrEmail }}">
+            <a href="#{{ email.number }}-body" role="button" data-toggle="collapse"><span class="fa fa-compress"></span></a>
+            {% if email.from.email %}
+                <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro', s: 50}) }}"
+                     alt="{{ email.from.nameOrEmail }}" title="{{ email.from.nameOrEmail }}">
+            {% endif %}
             <span class="hidden-xs">Posted</span>
-            <a class="email-date" href="#email-{{ email.id }}" title="{{ email.date|date }}">{{ email.date|time_diff }}</a>
+            <a class="email-date" href="#{{ email.number }}" title="{{ email.date|date }}">{{ email.date|time_diff }}</a>
             by <strong>{{ email.from.nameOrEmail }}</strong>
             <span class="view-source">
-                — <a href="/email/{{ email.id }}/source" target="_blank">view source</a>
+                — <a href="/email/{{ email.number }}/source" target="_blank">view source</a>
             </span>
             {% if not email.isRead %}
                 <div class="label label-primary">unread</div>
             {% endif %}
         </header>
 
-        <div id="email-{{ email.id }}-body" class="collapse in">
+        <div id="{{ email.number }}-body" class="collapse in">
             <div class="email-content">
                 {{ email.content|raw }}
             </div>

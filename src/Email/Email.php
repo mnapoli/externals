@@ -13,6 +13,11 @@ class Email
     private $id;
 
     /**
+     * @var int
+     */
+    private $number;
+
+    /**
      * @var string
      */
     private $subject;
@@ -23,12 +28,14 @@ class Email
     private $content;
 
     /**
+     * The raw source of the message.
+     *
      * @var string
      */
-    private $originalContent;
+    private $source;
 
     /**
-     * @var int
+     * @var string|null
      */
     private $threadId;
 
@@ -43,12 +50,7 @@ class Email
     private $from;
 
     /**
-     * @var string|null
-     */
-    private $imapId;
-
-    /**
-     * ID ($imapId) of the message it replies to.
+     * ID of the email it replies to.
      *
      * @var string|null
      */
@@ -61,29 +63,40 @@ class Email
 
     public function __construct(
         string $id,
+        int $number,
         string $subject,
         string $content,
-        string $originalContent,
-        int $threadId,
+        string $source,
+        string $threadId = null,
         DateTimeInterface $date,
         EmailAddress $from,
-        $imapId,
-        $inReplyTo
+        string $inReplyTo = null
     ) {
         $this->id = $id;
+        $this->number = $number;
         $this->subject = $subject;
         $this->content = $content;
-        $this->originalContent = $originalContent;
+        $this->source = $source;
         $this->threadId = $threadId;
         $this->date = $date;
         $this->from = $from;
-        $this->imapId = $imapId;
         $this->inReplyTo = $inReplyTo;
     }
 
+    /**
+     * Unique NNTP message ID used in references.
+     */
     public function getId() : string
     {
         return $this->id;
+    }
+
+    /**
+     * NNTP message number.
+     */
+    public function getNumber() : int
+    {
+        return $this->number;
     }
 
     public function getSubject() : string
@@ -101,12 +114,17 @@ class Email
         $this->content = $content;
     }
 
-    public function getOriginalContent() : string
+    public function getSource() : string
     {
-        return $this->originalContent;
+        return $this->source;
     }
 
-    public function getThreadId() : int
+    /**
+     * If null, then the message is the thread root.
+     *
+     * @return null|string
+     */
+    public function getThreadId()
     {
         return $this->threadId;
     }
@@ -119,14 +137,6 @@ class Email
     public function getFrom() : EmailAddress
     {
         return $this->from;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getImapId()
-    {
-        return $this->imapId;
     }
 
     /**
@@ -145,5 +155,10 @@ class Email
     public function isRead(): bool
     {
         return $this->isRead;
+    }
+
+    public function isThreadRoot() : bool
+    {
+        return $this->getThreadId() === $this->getId();
     }
 }

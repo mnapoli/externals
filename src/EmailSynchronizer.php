@@ -3,15 +3,22 @@ declare(strict_types = 1);
 
 namespace Externals;
 
+use DateTimeZone;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Externals\Email\Email;
 use Externals\Email\EmailAddress;
+use Externals\Email\EmailAddressParser;
 use Externals\Email\EmailContentParser;
 use Externals\Email\EmailRepository;
 use Externals\Email\EmailSubjectParser;
-use Externals\Thread\ThreadRepository;
-use Imapi\Client;
-use Imapi\Query\QueryBuilder;
 use Psr\Log\LoggerInterface;
+use Rvdv\Nntp\Client;
+use Rvdv\Nntp\Command\ArticleCommand;
+use Rvdv\Nntp\Connection\Connection;
+use Rvdv\Nntp\Exception\UnknownHandlerException;
+use ZBateson\MailMimeParser\Header\DateHeader;
+use ZBateson\MailMimeParser\MailMimeParser;
+use ZBateson\MailMimeParser\Message;
 
 /**
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
@@ -19,14 +26,13 @@ use Psr\Log\LoggerInterface;
 class EmailSynchronizer
 {
     /**
-     * @var Client
+     * Some articles that should never
+     * be attempted to be fetched.
      */
-    private $imapClient;
-
-    /**
-     * @var ThreadRepository
-     */
-    private $threadRepository;
+    const BROKEN_MESSAGES = [
+        992,
+        27418,
+    ];
 
     /**
      * @var EmailRepository
@@ -49,21 +55,17 @@ class EmailSynchronizer
     private $logger;
 
     /**
-     * @var EmailSearchIndex
+     * @var SearchIndex
      */
     private $searchIndex;
 
     public function __construct(
-        Client $imapClient,
-        ThreadRepository $threadRepository,
         EmailRepository $emailRepository,
         EmailSubjectParser $subjectParser,
         EmailContentParser $contentParser,
-        EmailSearchIndex $searchIndex,
+        SearchIndex $searchIndex,
         LoggerInterface $logger
     ) {
-        $this->imapClient = $imapClient;
-        $this->threadRepository = $threadRepository;
         $this->emailRepository = $emailRepository;
         $this->subjectParser = $subjectParser;
         $this->contentParser = $contentParser;
@@ -71,60 +73,147 @@ class EmailSynchronizer
         $this->logger = $logger;
     }
 
-    public function synchronize(int $days)
+    public function synchronize(int $maxNumberOfEmailsToSynchronize = null)
     {
-        $query = QueryBuilder::create('INBOX')
-            ->youngerThan(3600 * 24 * $days)
-            ->getQuery();
-        $emailIds = $this->imapClient->getEmailIds($query);
+        $client = new Client(new Connection('news.php.net', 119));
+        $client->connect();
 
-        $this->logger->info(sprintf('%d emails to synchronize over the last %d day(s)', count($emailIds), $days));
+        $group = $client->group('php.internals');
+        $numberOfLastEmailToSynchronize = (int) $group['last'];
+        $numberOfLastEmailSynchronized = $this->emailRepository->getLastEmailNumber();
 
-        foreach ($emailIds as $emailId) {
-            // Check if we have already received the email
-            if ($this->emailRepository->contains((string) $emailId)) {
-                $this->logger->debug('Skipping email ' . $emailId);
+        $this->logger->info(sprintf(
+            '%d emails will be synchronized',
+            min($numberOfLastEmailToSynchronize - $numberOfLastEmailSynchronized, $maxNumberOfEmailsToSynchronize)
+        ));
+
+        $count = 0;
+        for ($number = $numberOfLastEmailSynchronized + 1; $number <= $numberOfLastEmailToSynchronize; $number++) {
+            $count++;
+
+            if (in_array($number, self::BROKEN_MESSAGES)) {
+                $this->logger->warning("Skipping blacklisted message $number");
                 continue;
             }
 
-            $this->fetchEmail((string) $emailId);
+            try {
+                $rawContent = $client->sendCommand(new ArticleCommand($number));
+            } catch (UnknownHandlerException $e) {
+                // Some messages seem to trigger errors on the news server and we cannot fetch them
+                $this->logger->warning("Cannot fetch message $number, skipping");
+                continue;
+            }
+
+            $this->synchronizeEmail($number, $rawContent);
+
+            if (($maxNumberOfEmailsToSynchronize) !== null && ($count >= $maxNumberOfEmailsToSynchronize)) break;
         }
+
+        $client->disconnect();
+
+        // Refresh threads
+        $this->emailRepository->refreshThreads();
     }
 
-    public function fetchEmail(string $emailId)
+    public function synchronizeEmail(int $number, string $source)
     {
-        $email = $this->imapClient->getEmailFromId($emailId);
-
-        $threadSubject = $this->subjectParser->sanitize($email->getSubject());
-        $content = $this->contentParser->parse($email->getTextContent());
-
-        $threadId = $this->threadRepository->findBySubject($threadSubject);
-        if (!$threadId) {
-            // New thread
-            $threadId = $this->threadRepository->create($threadSubject);
-            $this->searchIndex->indexThread($threadId, $threadSubject);
+        // Check that the string is valid UTF-8, else we cannot store it in database or do anything with it
+        if (!mb_check_encoding($source, 'UTF-8')) {
+            $this->logger->warning("Cannot synchronize message $number because it contains invalid UTF-8 characters");
+            return;
         }
 
-        $fromArray = $email->getFrom();
-        /** @var \Imapi\EmailAddress $from */
+        // For some reason, see https://github.com/madewithlove/why-cant-we-have-nice-things/blob/master/src/Services/Internals/ArticleParser.php
+        // Temporarily remove, we'll see if we really need this...
+//        $source = str_replace("=\n", " =\n", $source);
+
+        $mailParser = new MailMimeParser();
+        $parsedDocument = $mailParser->parse($source);
+
+        $subject = $this->subjectParser->sanitize($parsedDocument->getHeaderValue('subject'));
+        $content = $this->contentParser->parse((string) $parsedDocument->getTextContent());
+
+        // We don't use the special AddressHeader class because it doesn't seem to parse the
+        // person's name at all
+        $fromHeader = $parsedDocument->getHeader('from');
+        if (!$fromHeader) {
+            $this->logger->warning("Cannot synchronize message $number because it contains no 'from' header");
+            return;
+        }
+        $emailAddressParser = new EmailAddressParser($fromHeader->getRawValue());
+        $fromArray = $emailAddressParser->parse();
+        /** @var EmailAddress $from */
         $from = reset($fromArray);
 
+        $emailId = $parsedDocument->getHeaderValue('message-id');
+
+        // Reply to
+        $threadId = $emailId;
+        $inReplyTo = null;
+        $references = $parsedDocument->getHeaderValue('references');
+        if ($references) {
+            $references = preg_split('/(?<=>)/', $references);
+            $references = array_filter(array_map('trim', $references));
+            // Take the last item (the direct parent)
+            if (! empty($references)) {
+                $threadId = reset($references);
+                $inReplyTo = end($references);
+            }
+        }
+
+        $date = $this->parseDateTime($parsedDocument);
+        if (!$date) {
+            $this->logger->warning("Cannot synchronize message $number because it contains an invalid date");
+            return;
+        }
+
         $newEmail = new Email(
-            $email->getUid(),
-            $email->getSubject(),
+            $emailId,
+            $number,
+            $subject,
             $content,
-            $email->getTextContent(),
+            $source,
             $threadId,
-            $email->getDate(),
-            new EmailAddress($from->getEmail(), $from->getName()),
-            $email->getMessageId(),
-            $email->getInReplyTo()
+            $date,
+            $from,
+            $inReplyTo
         );
-        $this->emailRepository->add($newEmail);
+        try {
+            $this->emailRepository->add($newEmail);
+        } catch (UniqueConstraintViolationException $e) {
+            // For some reason the email ID was already used...
+            $this->logger->warning("Cannot synchronize message $number because the email ID $emailId already exists in database");
+            return;
+        }
 
         // Index in Algolia
         $this->searchIndex->indexEmail($newEmail);
 
-        $this->logger->info('New email: ' . $email->getSubject());
+        $this->logger->info('New email: ' . $subject);
+    }
+
+    /**
+     * @return \DateTimeInterface|null
+     */
+    private function parseDateTime(Message $parsedDocument)
+    {
+        $dateHeader = $parsedDocument->getHeader('date');
+
+        $date = null;
+        if ($dateHeader instanceof DateHeader) {
+            $date = $dateHeader->getDateTime();
+        }
+        // Some dates cannot be parsed using the standard format, for example "13 Mar 2003 12:44:07 -0500"
+        try {
+            $date = $date ?: new \DateTime($dateHeader->getValue());
+        } catch (\Exception $e) {
+            // Some dates cannot be parsed
+            return null;
+        }
+
+        // We store all the dates in UTC
+        $date->setTimezone(new DateTimeZone('UTC'));
+
+        return $date;
     }
 }

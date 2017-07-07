@@ -1,4 +1,4 @@
-{% extends '/app/views/layout.html.twig' %}
+{% extends '@app/layout.html.twig' %}
 
 {% block mainMenuLinks %}{% endblock %}
 
@@ -28,7 +28,7 @@
     {% verbatim %}
         <script id="search-result-template" type="text/html">
             <li>
-                <a href="/thread/{{ threadId }}#email-{{ objectID }}">{{{ _highlightResult.subject.value }}}</a>
+                <a href="/message/{{ objectID }}">{{{ _highlightResult.subject.value }}}</a>
                 <span class="text-muted">
                     by <strong>{{{ _highlightResult.fromName.value }}}</strong>
                     {{#helpers.date}}{{/helpers.date}}
@@ -42,9 +42,9 @@
 
     <section id="threads">
 
-        <table class="thread-list table table-hover">
-            {% include '/app/views/threads/thread-list.html.twig' %}
-        </table>
+        <div class="thread-list">
+            {% include '@app/threads/thread-list.html.twig' %}
+        </div>
 
         <button id="show-more-threads" class="btn btn-default btn-block btn-lg">Show more</button>
 
@@ -74,7 +74,7 @@
             var search = instantsearch({
                 appId: 'KSTITII7EC',
                 apiKey: 'badccd205e578e64657ae7f880959824',
-                indexName: 'emails',
+                indexName: '{{ algoliaIndex }}',
                 searchFunction: function (helper) {
                     var searchResults = $('.search-container');
                     if (helper.state.query === '') {
