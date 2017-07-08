@@ -1,0 +1,20 @@
+{
+    "name": "externals",
+    "main": "gulpfile.js",
+    "dependencies": {
+        "gulp": "^3.9.1",
+        "jquery": "^3.2.1",
+        "bootstrap": "^3.3.7",
+        "font-awesome": "^4.7.0",
+        "moment": "^2.18.1"
+    },
+    "devDependencies": {
+        "gulp-clean": "^0.3.2",
+        "gulp-clean-css": "^3.3.1",
+        "gulp-concat": "^2.6.1",
+        "gulp-less": "~3.3.0",
+        "gulp-postcss": "^7.0.0",
+        "gulp-sourcemaps": "^2.6.0",
+        "gulp-uglify": "^3.0.0"
+    }
+}

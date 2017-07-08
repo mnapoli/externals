@@ -3,4 +3,9 @@ preview:
 
 install:
 	composer install
+	npm install
 	./console db --force
+	gulp
+
+assets:
+	gulp

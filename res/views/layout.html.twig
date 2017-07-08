@@ -6,11 +6,9 @@
 
     <title>{% block pageTitle %}#externals - Opening PHP's #internals to the outside{% endblock %}</title>
 
-    <link rel="stylesheet" href="/vendor/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/vendor/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/dist/css/main.min.css?v={{ version }}">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.css">
-    <link rel="stylesheet/less" type="text/css" href="/css/style.less?v={{ version }}">
-    <script src="/vendor/less/dist/less.min.js"></script>
 </head>
 <body>
     <header class="site-header">
@@ -53,28 +51,10 @@
     </footer>
 
     {% block scripts %}
-        <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/dist/js/main.min.js?v={{ version }}"></script>
 
-        {# Google fonts #}
-        <script>
-            WebFontConfig = {
-                google: { families: [ 'Open+Sans:400,400italic,700,300,300italic,700italic:latin' ] }
-            };
-            (function() {
-                var wf = document.createElement('script');
-                wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-                wf.type = 'text/javascript';
-                wf.async = 'true';
-                var s = document.getElementsByTagName('script')[0];
-                s.parentNode.insertBefore(wf, s);
-            })();
-        </script>
-
-        <script>
-            $(function () {
-                $('[data-toggle="tooltip"]').tooltip()
-            });
-        </script>
+        <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.js"></script>
 
         {% if not debug %}
             {# Google Analytics #}
@@ -87,11 +67,6 @@
                 ga('send', 'pageview');
             </script>
         {% endif %}
-
-        <script src="/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="/vendor/moment/min/moment.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.js"></script>
     {% endblock %}
 </body>
 </html>

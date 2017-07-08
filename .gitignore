@@ -1,5 +1,7 @@
 /.env
 /vendor/
 /web/vendor/
+/node_modules/
+/web/dist/
 /res/config/parameters.php
 /backups/

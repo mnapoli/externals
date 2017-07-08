@@ -15,13 +15,13 @@ runtime:
 
 dependencies:
     nodejs:
-        bower: "^1.8"
+        gulp: "^3.9"
 
 # The hooks that will be triggered when the package is deployed.
 hooks:
     # Build hooks can modify the application files on disk but not access any services like databases.
     build: |
-        bower install --production --allow-root
+        make assets
 
 # The size of the persistent disk of the application (in MB).
 disk: 512
