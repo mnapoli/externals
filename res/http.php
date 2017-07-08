@@ -85,6 +85,11 @@ return pipe([
         '/login' => [UserController::class, 'login'],
         '/logout' => [UserController::class, 'logout'],
 
+        '/news' => function (Twig_Environment $twig) {
+            newrelic_name_transaction('news');
+            return $twig->render('@app/news.html.twig');
+        },
+
         '/stats' => function (Twig_Environment $twig, EmailRepository $emailRepository, UserRepository $userRepository, ServerRequestInterface $request) {
             newrelic_name_transaction('stats');
             $user = $request->getAttribute('user');

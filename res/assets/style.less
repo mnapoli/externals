@@ -43,16 +43,25 @@ header.site-header {
         margin: 0;
         padding: 0;
         float: left;
-        li a {
-            display: inline-block;
-            height: 40px;
-            line-height: 40px;
-            padding: 0 10px;
-            text-decoration: none;
-            text-align: center;
-            color: #c5c5c5;
-            font-weight: 100;
-            font-size: 17px;
+        li {
+            float: left;
+            position: relative;
+            display: block;
+            &.brand a {
+                font-weight: 300;
+                font-size: 17px;
+            }
+            a {
+                display: inline-block;
+                height: 40px;
+                line-height: 40px;
+                padding: 0 15px 0 0;
+                color: #c5c5c5;
+                font-size: 13px;
+                @media (min-width: 768px) {
+                    padding-right: 30px;
+                }
+            }
         }
     }
     .account {
@@ -323,5 +332,20 @@ article article article, article article article article article, article articl
                 font-size: 50px;
             }
         }
+    }
+}
+
+.news {
+    h2 {
+        font-size: 28px;
+    }
+    p {
+        font-size: 15px;
+        line-height: 26px;
+        color: #5f5f5f;
+    }
+    .lead {
+        font-size: 17px;
+        line-height: 1.4;
     }
 }

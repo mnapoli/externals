@@ -13,9 +13,12 @@
 <body>
     <header class="site-header">
         <div class="container">
+            <ul>
             {% block mainMenuLinks %}
-                <ul><li><a href="/">#externals</a></li></ul>
+                <li class="brand"><a href="/">#externals</a></li>
             {% endblock %}
+                <li><a href="/news">What's new?</a></li>
+            </ul>
             <div class="account">
                 <span class="fa fa-github"></span>
                 {% if user is defined and user is not empty %}
@@ -40,8 +43,8 @@
                 Contribute to the project on GitHub: <a href="https://github.com/mnapoli/externals" target="_blank">mnapoli/externals</a>
             </p>
             <p>
-                Search graciously provided by <a href="https://www.algolia.com">Algolia</a>.
-                Hosted on <a href="https://m.do.co/c/1f59f177416b">Digital Ocean</a>.
+                Our awesome sponsors: <a href="https://platform.sh/">Platform.sh</a> for hosting and deployment,
+                <a href="https://www.algolia.com">Algolia</a> for search.
             </p>
             <p>
                 <strong>About data:</strong> if you login using GitHub, no personal data (or GitHub token) will be stored.<br>

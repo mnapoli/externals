@@ -1,0 +1,43 @@
+{% extends '@app/layout.html.twig' %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>What's new?</h1>
+    </div>
+
+    <div class="news">
+        <p class="lead">
+            Welcome on version 2 of externals.io. The application has been extensively rewritten in order to make the whole experience better.
+        </p>
+
+        <h2>Email synchronization</h2>
+
+        <p>
+            <strong>Emails are now fetched directly from PHP's news server</strong> through the NNTP protocol. Emails were previously fetched through IMAP from an email address subscribed to the mailing list. It worked, but needless to say that it was not a very good solution. Any incident with the email address or the database would mean a very hard recovery. With NNTP, we fetch messages from the source and the whole database can be reconstructed anytime if needs be.
+        </p>
+
+        <p>Another advantage is that <strong>working on a dev environment is easier</strong>: you don't need to setup an email and subscribe it to the mailing list. PHP's news server is public, you can run externals.io from your laptop easily.</p>
+
+        <p>Finally, and this is the most visible change, <strong>the whole history of PHP's #internals history is fetched and indexed</strong>. Message IDs are the same as <a href="http://news.php.net/php.internals">PHP's official mailing list reader</a>, which means that you can take any message there, extract the ID and find the same message formatted in a much better way on externals.io!</p>
+
+        <h2>Search PHP's history</h2>
+
+        <p>There are about 100,000 emails in PHP's #internals history. All of them are now indexed on externals.io, and <strong>all of them can be searched!</strong> Thanks to <a href="https://www.algolia.com/">Algolia</a>'s very generous offer, externals.io is now on a premium plan that allows everyone to search and explore those messages.</p>
+
+        <h2>More reliable deployment and hosting</h2>
+        
+        <p>Along with Algolia, I'm very happy to say that <a href="https://platform.sh/">Platform.sh</a> has offered to sponsor the hosting. Thanks to their awesome service, externals.io is hosted in a much more reliable, secure and practical way. On top of that, Platform.sh allows to <strong>deploy a mirror of production for each pull request!</strong> That will be of a very great help to test and review pull requests before merging them.</p>
+
+        <h2>A faster website</h2>
+
+        <p>Since deploying is now much easier, a lot of hacks have been removed resulting in faster rendering. Less files used to be compiled on the fly, nothing was optimized… This was long overdue but assets are now compiled and optimized. Several SQL queries have also been improved and everything should be a bit faster.</p>
+
+        <h2>Keeping track of what you've read</h2>
+
+        <p>Tracking what users have read have been reworked too. I'm very sorry to say that you "read" history has been dropped during the migration (the whole database structure has changed and porting it was too complex). However from now your read history is stored in a better way and will be much easier to port if there is ever the need.</p>
+
+        <p>The good news with this change: it will be easier to implement features like buttons to "mark thread as read" from the home page.</p>
+    </div>
+
+{% endblock %}
