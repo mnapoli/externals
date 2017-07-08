@@ -11,6 +11,7 @@ use Externals\Email\EmailAddressParser;
 use Externals\Email\EmailContentParser;
 use Externals\Email\EmailRepository;
 use Externals\Email\EmailSubjectParser;
+use Externals\Search\SearchIndex;
 use Psr\Log\LoggerInterface;
 use Rvdv\Nntp\Client;
 use Rvdv\Nntp\Command\ArticleCommand;

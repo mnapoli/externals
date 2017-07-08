@@ -10,7 +10,8 @@ use function DI\string;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Externals\Application\Database\CustomMySQLPlatform;
-use Externals\SearchIndex;
+use Externals\Search\AlgoliaSearchIndex;
+use Externals\Search\SearchIndex;
 use Gravatar\Twig\GravatarExtension;
 use Interop\Container\ContainerInterface;
 use League\CommonMark\DocParser;
@@ -100,12 +101,12 @@ return [
     'algolia.index_prefix' => env('ALGOLIA_INDEX_PREFIX', 'dev_'),
     \AlgoliaSearch\Client::class => object()
         ->constructor(env('ALGOLIA_APP_ID'), env('ALGOLIA_API_KEY')),
-    SearchIndex::class => object()
+    SearchIndex::class => object(AlgoliaSearchIndex::class)
         ->constructorParameter('indexPrefix', get('algolia.index_prefix')),
 
     'session.secret_key' => env('SESSION_SECRET_KEY'),
     SessionMiddleware::class => function (ContainerInterface $c) {
-        $key = $c->get('session.secret_key');
+        $key = (string) $c->get('session.secret_key');
         return SessionMiddleware::fromSymmetricKeyDefaults($key, 31536000);
     },
 

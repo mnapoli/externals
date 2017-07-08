@@ -1,17 +1,12 @@
 <?php
-/**
- * @author      Wizacha DevTeam <dev@wizacha.com>
- * @copyright   Copyright (c) Wizacha
- * @license     Proprietary
- */
 declare(strict_types = 1);
 
-namespace Externals;
+namespace Externals\Search;
 
 use AlgoliaSearch\Client;
 use Externals\Email\Email;
 
-class SearchIndex
+class AlgoliaSearchIndex implements SearchIndex
 {
     /**
      * @var Client
@@ -29,7 +24,7 @@ class SearchIndex
         $this->indexPrefix = $indexPrefix;
     }
 
-    public function indexEmail(Email $email)
+    public function indexEmail(Email $email) : void
     {
         $index = $this->searchClient->initIndex($this->indexPrefix . 'emails');
 

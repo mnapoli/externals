@@ -43,10 +43,9 @@ web:
             # The front-controller script which determines where to send
             # non-static requests.
             passthru: '/index.php'
-        # Allow uploaded files to be served, but do not run scripts.
-        # Missing files get mapped to the front controller above.
-#        '/files':
-#            root: 'web/files'
-#            scripts: false
-#            allow: true
-#            passthru: '/index.php'
+
+crons:
+    # Look for new emails every 5 minutes.
+    drush-queue:
+        spec: '*/5 * * * *'
+        cmd: './console sync'

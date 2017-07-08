@@ -31,12 +31,22 @@ if ($relationships) {
     }
 }
 
+// The environment of the app
+$branch = getenv('PLATFORM_BRANCH');
+if ($branch) {
+    // If we are on platform.sh, master is prod, the rest are staging
+    $environment = ($branch === 'master') ? 'prod' : 'staging';
+} else {
+    // Else we use the ENV variable, fallback to prod
+    $environment = getenv('ENV') ?: 'prod';
+}
+
+// Create the application
 $modules = [
     'stratify/error-handler-module',
     'stratify/twig-module',
     'mnapoli/externals',
 ];
-$environment = getenv('ENV') ?: 'prod';
 $httpStack = require(__DIR__ . '/http.php');
 $application = new Application($modules, $environment, $httpStack);
 
