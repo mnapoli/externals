@@ -20,8 +20,11 @@ $cli->command('db [--force]', [DbCommand::class, 'setup']);
 $cli->command('db-purge [--force]', [DbCommand::class, 'purge']);
 $cli->command('db-truncate [--force]', [DbCommand::class, 'truncate']);
 
-$cli->command('sync [max]', function (int $max = null, EmailSynchronizer $synchronizer) {
+$cli->command('sync [max]', function (int $max = null, EmailSynchronizer $synchronizer, OutputInterface $output) {
+    $start = microtime(true);
     $synchronizer->synchronize($max);
+    $time = microtime(true) - $start;
+    $output->writeln("<comment>Emails have been synchronized in $time seconds</comment>");
 });
 
 $cli->command('refresh-threads', function (EmailRepository $repository, OutputInterface $output) {
