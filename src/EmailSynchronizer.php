@@ -62,18 +62,25 @@ class EmailSynchronizer
      */
     private $searchIndex;
 
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    private $db;
+
     public function __construct(
         EmailRepository $emailRepository,
         EmailSubjectParser $subjectParser,
         EmailContentParser $contentParser,
         SearchIndex $searchIndex,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        \Doctrine\DBAL\Connection $db
     ) {
         $this->emailRepository = $emailRepository;
         $this->subjectParser = $subjectParser;
         $this->contentParser = $contentParser;
         $this->searchIndex = $searchIndex;
         $this->logger = $logger;
+        $this->db = $db;
     }
 
     public function synchronize(int $maxNumberOfEmailsToSynchronize = null)
@@ -183,18 +190,18 @@ class EmailSynchronizer
             $from,
             $inReplyTo
         );
-        try {
-            $this->emailRepository->add($newEmail);
-        } catch (UniqueConstraintViolationException $e) {
-            // For some reason the email ID was already used...
-            $this->logger->warning("Cannot synchronize message $number because the email ID $emailId already exists in database");
-            return;
-        }
 
-        // Index in Algolia
-        $this->searchIndex->indexEmail($newEmail);
-
-        $this->logger->info('New email: ' . $subject);
+        $this->db->transactional(function () use ($newEmail) {
+            try {
+                $this->emailRepository->add($newEmail);
+            } catch (UniqueConstraintViolationException $e) {
+                // For some reason the email ID was already used...
+                $this->logger->warning("Cannot synchronize message {$newEmail->getNumber()} because the email ID {$newEmail->getId()} already exists in database");
+                return;
+            }
+            // Index in Algolia
+            $this->searchIndex->indexEmail($newEmail);
+        });
     }
 
     /**
