@@ -178,6 +178,10 @@ footer {
         }
         border-top: 1px solid #e7eaec;
 
+        &.unpopular {
+            opacity: 0.5;
+        }
+
         .vote-actions {
             float: left;
             width: 30px;
@@ -186,11 +190,16 @@ footer {
             font-size: 13px;
             line-height: 17px;
             color: @color-text-grey;
+            font-weight: bold;
             a {
                 color: @primary-color-lighter;
                 &.active {
                     color: @secondary-color-light;
                 }
+            }
+            .vote-value.neutral {
+                opacity: 0.5;
+                font-weight: normal;
             }
         }
 

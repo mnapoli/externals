@@ -1,10 +1,10 @@
 {% for thread in threads %}
-    <div class="thread-item {% if not thread.isRead %}unread{% endif %}">
+    <div class="thread-item {% if not thread.isRead %}unread{% endif %} {% if thread.votes < -1 %}unpopular{% endif %}">
         <div class="vote-actions">
             <a class="vote-action upvote {{ (thread.userVote == 1) ? 'active' }}" href="#" data-email-id="{{ thread.number }}">
                 <i class="fa fa-chevron-up"> </i>
             </a>
-            <div class="vote vote-value">{{ thread.votes }}</div>
+            <div class="vote vote-value {% if thread.votes == 0 %}neutral{% endif %}">{{ thread.votes }}</div>
             <a class="vote-action downvote {{ (thread.userVote == -1) ? 'active' }}" href="#" data-email-id="{{ thread.number }}">
                 <i class="fa fa-chevron-down"> </i>
             </a>
