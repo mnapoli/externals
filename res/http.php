@@ -119,7 +119,7 @@ return pipe([
             }
             return new JsonResponse([
                 'newTotal' => $voting->vote($user->getId(), $number, $vote),
-                'newValue' => $voting->vote($user->getId(), $number, $vote),
+                'newValue' => $vote,
             ]);
         })->method('POST'),
 
