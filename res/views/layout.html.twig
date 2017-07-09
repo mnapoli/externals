@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="/dist/css/main.min.css?v={{ version }}">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.css">
+
+    {% if user %}
+        <script>
+            userId = {{ user.id }};
+        </script>
+    {% endif %}
 </head>
 <body>
     <header class="site-header">

@@ -11,11 +11,14 @@ use Externals\Email\EmailRepository;
 use Externals\NotFound;
 use Externals\User\User;
 use Externals\User\UserRepository;
+use Externals\Voting;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Stratify\ErrorHandlerModule\ErrorHandlerMiddleware;
 use function Stratify\Framework\pipe;
 use function Stratify\Framework\router;
+use function Stratify\Router\route;
+use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\Response\TextResponse;
 
@@ -102,6 +105,23 @@ return pipe([
                 'user' => $user,
             ]);
         },
+
+        '/votes/{number}' => route(function (int $number, Voting $voting, ServerRequestInterface $request) {
+            newrelic_name_transaction('api_vote');
+            /** @var User $user */
+            $user = $request->getAttribute('user');
+            if (!$user) {
+                return new TextResponse('You must be authenticated', 401);
+            }
+            $vote = (int) $request->getParsedBody()['value'] ?? 0;
+            if ($vote > 1 || $vote < -1) {
+                return new TextResponse('Invalid value', 400);
+            }
+            return new JsonResponse([
+                'newTotal' => $voting->vote($user->getId(), $number, $vote),
+                'newValue' => $voting->vote($user->getId(), $number, $vote),
+            ]);
+        })->method('POST'),
 
         '/email/{number}/source' => function (int $number, EmailRepository $emailRepository) {
             newrelic_name_transaction('email_source');

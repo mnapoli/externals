@@ -41,4 +41,9 @@ gulp.task('clean', function() {
     .pipe(clean());
 });
 
+gulp.task('watch', function () {
+    gulp.watch('./res/assets/**/*.js', ['js']);
+    gulp.watch('./res/assets/**/*.less', ['css']);
+});
+
 gulp.task('default', ['js', 'css', 'fonts']);

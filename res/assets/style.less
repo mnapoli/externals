@@ -3,6 +3,14 @@
 
 @screen-xs-max: 767px;
 
+@primary-color: #7070a9;
+@primary-color-light: #9C9CC7;
+@primary-color-lighter: #CBCBE3;
+@secondary-color: #C99959;
+@secondary-color-light: #F1C892;
+
+@color-text-grey: #b4b6b8;
+
 @border-color: #e8e8e8;
 
 [v-cloak] {
@@ -17,20 +25,14 @@ h1 {
     font-weight: 300;
 }
 a {
-    color: #7070a9;
+    color: @primary-color;
     &:hover, &:focus {
-        color: #99C;
+        color: @primary-color-light;
     }
 }
 
 .container {
     max-width: 1000px;
-}
-
-.table {
-    thead>tr>th, tbody>tr>th, tfoot>tr>th, thead>tr>td, tbody>tr>td, tfoot>tr>td {
-        border-top: 1px solid @border-color;
-    }
 }
 
 header.site-header {
@@ -175,6 +177,23 @@ footer {
             padding: 14px 30px;
         }
         border-top: 1px solid #e7eaec;
+
+        .vote-actions {
+            float: left;
+            width: 30px;
+            margin-right: 20px;
+            text-align: center;
+            font-size: 13px;
+            line-height: 17px;
+            color: @color-text-grey;
+            a {
+                color: @primary-color-lighter;
+                &.active {
+                    color: @secondary-color-light;
+                }
+            }
+        }
+
         .thread-subject {
             display: block;
             font-size: 17px;
@@ -185,7 +204,7 @@ footer {
             font-weight: bold;
         }
         .thread-info {
-            color: #b4b6b8;
+            color: @color-text-grey;
             font-size: 12px;
             span {
                 margin-right: 10px;

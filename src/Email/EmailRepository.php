@@ -98,13 +98,15 @@ class EmailRepository
         if ($user) {
             $query = <<<SQL
 SELECT
-    threadInfos.number,
+    threads.emailNumber as number,
     threadInfos.subject,
     threadInfos.date,
     threadInfos.fromName,
     threads.emailCount,
     threads.lastUpdate,
-    IF(readStatus.lastReadDate AND readStatus.lastReadDate >= threads.lastUpdate, 1, 0) as isRead
+    threads.votes,
+    IF(readStatus.lastReadDate AND readStatus.lastReadDate >= threads.lastUpdate, 1, 0) as isRead,
+    (SELECT votes.value FROM votes WHERE votes.emailNumber = threadInfos.number) as userVote
 FROM threads
 LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
 LEFT JOIN user_emails_read readStatus ON threads.emailId = readStatus.emailId AND readStatus.userId = :userId
@@ -117,12 +119,13 @@ SQL;
         } else {
             $query = <<<SQL
 SELECT
-    threadInfos.number,
+    threads.emailNumber as number,
     threadInfos.subject,
     threadInfos.date,
     threadInfos.fromName,
     threads.emailCount,
     threads.lastUpdate,
+    threads.votes,
     0 as isRead
 FROM threads
 LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
@@ -226,17 +229,39 @@ SQL;
         ]);
     }
 
+    /**
+     * Refresh the projection of all threads.
+     */
     public function refreshThreads()
     {
         $query = <<<'SQL'
-REPLACE INTO threads (emailId, lastUpdate, emailCount)
-  SELECT emails.id, MAX(threadEmails.fetchDate), COUNT(threadEmails.id)
+REPLACE INTO threads (emailId, emailNumber, lastUpdate, emailCount, votes)
+  SELECT emails.id, emails.number, MAX(threadEmails.fetchDate), COUNT(threadEmails.id),
+      COALESCE((SELECT SUM(votes.value) FROM votes WHERE votes.emailNumber = emails.number), 0)
   FROM emails
   LEFT JOIN emails threadEmails ON emails.id = threadEmails.threadId
   WHERE emails.isThreadRoot = 1
   GROUP BY emails.id
 SQL;
         $this->db->executeQuery($query);
+    }
+
+    /**
+     * Refresh the projection of a single thread.
+     */
+    public function refreshThread(int $threadNumber)
+    {
+        $query = <<<'SQL'
+REPLACE INTO threads (emailId, emailNumber, lastUpdate, emailCount, votes)
+  SELECT emails.id, emails.number, MAX(threadEmails.fetchDate), COUNT(threadEmails.id),
+      COALESCE((SELECT SUM(votes.value) FROM votes WHERE votes.emailNumber = emails.number), 0)
+  FROM emails
+  LEFT JOIN emails threadEmails ON emails.id = threadEmails.threadId
+  WHERE emails.isThreadRoot = 1
+    AND emails.number = ?
+  GROUP BY emails.id
+SQL;
+        $this->db->executeQuery($query, [$threadNumber]);
     }
 
     private function emailFromRow(array $row) : Email
