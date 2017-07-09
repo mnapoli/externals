@@ -106,7 +106,7 @@ SELECT
     threads.lastUpdate,
     threads.votes,
     IF(readStatus.lastReadDate AND readStatus.lastReadDate >= threads.lastUpdate, 1, 0) as isRead,
-    (SELECT votes.value FROM votes WHERE votes.emailNumber = threadInfos.number) as userVote
+    (SELECT votes.value FROM votes WHERE votes.emailNumber = threadInfos.number AND votes.userId = :userId) as userVote
 FROM threads
 LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
 LEFT JOIN user_emails_read readStatus ON threads.emailId = readStatus.emailId AND readStatus.userId = :userId
