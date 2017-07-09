@@ -126,7 +126,8 @@ SELECT
     threads.emailCount,
     threads.lastUpdate,
     threads.votes,
-    0 as isRead
+    0 as isRead,
+    NULL as userVote
 FROM threads
 LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
 ORDER BY threads.lastUpdate DESC

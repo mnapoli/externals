@@ -12,7 +12,7 @@ $(function () {
 });
 
 function vote($voteLink, value) {
-    if (!userId) {
+    if (typeof userId === 'undefined') {
         alert('You must log in to vote.');
         return;
     }
