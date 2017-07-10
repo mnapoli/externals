@@ -9,22 +9,31 @@
                 <i class="fa fa-chevron-down"> </i>
             </a>
         </div>
-        <a class="thread-subject" href="message/{{ thread.number }}">{{ thread.subject }}</a>
+        <a class="thread-subject" href="message/{{ thread.number }}">
+            {{ thread.subject }}
+        </a>
         <div class="thread-info">
+            {# Date #}
             <span>
                 <i class="fa fa-clock-o"></i>
                 {{ thread.date|time_diff }}
             </span>
+            {# Author #}
             {% if thread.fromName %}
                 <span>
                     <i class="fa fa-user"></i>
                     {{ thread.fromName }}
                 </span>
             {% endif %}
+            {# Number of responses #}
             {% if thread.emailCount > 1 %}
-                <span>
-                    <i class="fa fa-comment-o"></i>
-                    {{ thread.emailCount - 1 }} response{% if thread.emailCount > 2 %}s{% endif %}
+                <span class="{% if thread.emailCount > 2 %}many-responses{% endif %}">
+                    {% if thread.emailCount > 2 %}
+                        <i class="fa fa-comments-o"></i>
+                    {% else %}
+                        <i class="fa fa-comment-o"></i>
+                    {% endif %}
+                    {{ thread.emailCount - 1 }}
                 </span>
             {% endif %}
         </div>
