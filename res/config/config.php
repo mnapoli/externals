@@ -10,6 +10,7 @@ use function DI\string;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Externals\Application\Database\CustomMySQLPlatform;
+use Externals\Application\Middleware\MaintenanceMiddleware;
 use Externals\Search\AlgoliaSearchIndex;
 use Externals\Search\SearchIndex;
 use Gravatar\Twig\GravatarExtension;
@@ -28,6 +29,7 @@ use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 
 return [
 
+    'maintenance' => env('MAINTENANCE', false),
     'debug' => false,
     'path.cache' => __DIR__ . '/../../var/cache',
     'path.logs' => __DIR__ . '/../../var/log',
@@ -111,5 +113,8 @@ return [
     },
 
     'sentry.url' => env('SENTRY_URL', null),
+
+    MaintenanceMiddleware::class => object()
+        ->constructorParameter('maintenance', get('maintenance')),
 
 ];

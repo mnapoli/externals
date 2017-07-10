@@ -5,6 +5,7 @@ use Doctrine\DBAL\Connection;
 use Externals\Application\Controller\UserController;
 use Externals\Application\Controller\NotFoundController;
 use Externals\Application\Middleware\AuthMiddleware;
+use Externals\Application\Middleware\MaintenanceMiddleware;
 use Externals\Application\Middleware\NotFoundMiddleware;
 use Externals\Application\Middleware\SessionMiddleware;
 use Externals\Email\EmailRepository;
@@ -26,6 +27,7 @@ use Zend\Diactoros\Response\TextResponse;
  * HTTP stack.
  */
 return pipe([
+    MaintenanceMiddleware::class,
     ErrorHandlerMiddleware::class,
     NotFoundMiddleware::class,
     SessionMiddleware::class,

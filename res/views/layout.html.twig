@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.css">
 
-    {% if user %}
+    {% if user is defined and user is not empty %}
         <script>
             userId = {{ user.id }};
         </script>
