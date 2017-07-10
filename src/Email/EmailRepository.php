@@ -91,7 +91,18 @@ class EmailRepository
         return $rootItems;
     }
 
-    public function findLatestThreads(int $page = 1, User $user = null) : array
+    public function findLatestThreads(int $page = 1, ?User $user)
+    {
+        return $this->findThreads('', 'ORDER BY threads.lastUpdate DESC', $page, $user);
+    }
+
+    public function findTopThreads(int $page = 1, ?User $user)
+    {
+        $where = 'WHERE threads.votes > 0 AND threads.lastUpdate > DATE_SUB(NOW(), INTERVAL 1 MONTH)';
+        return $this->findThreads($where, 'ORDER BY threads.votes DESC, threads.lastUpdate DESC', $page, $user);
+    }
+
+    public function findThreads(string $where, string $orderBy, int $page, ?User $user) : array
     {
         $offset = ($page - 1) * 20;
 
@@ -110,7 +121,8 @@ SELECT
 FROM threads
 LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
 LEFT JOIN user_emails_read readStatus ON threads.emailId = readStatus.emailId AND readStatus.userId = :userId
-ORDER BY threads.lastUpdate DESC
+$where
+$orderBy
 LIMIT 20 OFFSET $offset
 SQL;
             $parameters = [
@@ -130,7 +142,8 @@ SELECT
     NULL as userVote
 FROM threads
 LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
-ORDER BY threads.lastUpdate DESC
+$where
+$orderBy
 LIMIT 20 OFFSET $offset
 SQL;
         }

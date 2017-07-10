@@ -88,6 +88,15 @@ return pipe([
         '/login' => [UserController::class, 'login'],
         '/logout' => [UserController::class, 'logout'],
 
+        '/top' => function (Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
+            newrelic_name_transaction('top');
+            $user = $request->getAttribute('user');
+            return $twig->render('@app/top.html.twig', [
+                'threads' => $repository->findTopThreads(1, $user),
+                'user' => $user,
+            ]);
+        },
+
         '/news' => function (Twig_Environment $twig, ServerRequestInterface $request) {
             newrelic_name_transaction('news');
             return $twig->render('@app/news.html.twig', [
