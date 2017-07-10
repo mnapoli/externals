@@ -36,8 +36,10 @@ class SchemaDefinition
         // Is like a materialized view, refreshed after emails are synchronized
         $threadsTable = $schema->createTable('threads');
         $threadsTable->addColumn('emailId', 'string');
+        $threadsTable->addColumn('emailNumber', 'integer', ['unsigned' => true]);
         $threadsTable->addColumn('lastUpdate', 'datetime');
         $threadsTable->addColumn('emailCount', 'integer', ['unsigned' => true]);
+        $threadsTable->addColumn('votes', 'integer', ['default' => 0]);
         $threadsTable->setPrimaryKey(['emailId']);
         $threadsTable->addForeignKeyConstraint($emailsTable, ['emailId'], ['id'], [
             'onDelete' => 'CASCADE',
@@ -71,5 +73,19 @@ class SchemaDefinition
         $readTable->addForeignKeyConstraint($emailsTable, ['emailId'], ['id'], [
             'onDelete' => 'CASCADE',
         ], 'foreign_emailId');
+
+        // Votes
+        $votesTable = $schema->createTable('votes');
+        $votesTable->addColumn('userId', 'integer', ['unsigned' => true]);
+        $votesTable->addColumn('emailNumber', 'integer', ['unsigned' => true]);
+        $votesTable->addColumn('value', 'integer');
+        $votesTable->addColumn('updatedAt', 'datetime');
+        $votesTable->setPrimaryKey(['userId', 'emailNumber']);
+        $votesTable->addForeignKeyConstraint($usersTable, ['userId'], ['id'], [
+            'onDelete' => 'CASCADE',
+        ], 'foreign_userId');
+        $votesTable->addForeignKeyConstraint($emailsTable, ['emailNumber'], ['number'], [
+            'onDelete' => 'CASCADE',
+        ], 'foreign_emailNumber');
     }
 }

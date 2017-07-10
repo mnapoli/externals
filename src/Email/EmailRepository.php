@@ -91,24 +91,38 @@ class EmailRepository
         return $rootItems;
     }
 
-    public function findLatestThreads(int $page = 1, User $user = null) : array
+    public function findLatestThreads(int $page = 1, ?User $user)
+    {
+        return $this->findThreads('', 'ORDER BY threads.lastUpdate DESC', $page, $user);
+    }
+
+    public function findTopThreads(int $page = 1, ?User $user)
+    {
+        $where = 'WHERE threads.votes > 0 AND threads.lastUpdate > DATE_SUB(NOW(), INTERVAL 1 MONTH)';
+        return $this->findThreads($where, 'ORDER BY threads.votes DESC, threads.lastUpdate DESC', $page, $user);
+    }
+
+    public function findThreads(string $where, string $orderBy, int $page, ?User $user) : array
     {
         $offset = ($page - 1) * 20;
 
         if ($user) {
             $query = <<<SQL
 SELECT
-    threadInfos.number,
+    threads.emailNumber as number,
     threadInfos.subject,
     threadInfos.date,
     threadInfos.fromName,
     threads.emailCount,
     threads.lastUpdate,
-    IF(readStatus.lastReadDate AND readStatus.lastReadDate >= threads.lastUpdate, 1, 0) as isRead
+    threads.votes,
+    IF(readStatus.lastReadDate AND readStatus.lastReadDate >= threads.lastUpdate, 1, 0) as isRead,
+    (SELECT votes.value FROM votes WHERE votes.emailNumber = threadInfos.number AND votes.userId = :userId) as userVote
 FROM threads
 LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
 LEFT JOIN user_emails_read readStatus ON threads.emailId = readStatus.emailId AND readStatus.userId = :userId
-ORDER BY threads.lastUpdate DESC
+$where
+$orderBy
 LIMIT 20 OFFSET $offset
 SQL;
             $parameters = [
@@ -117,16 +131,19 @@ SQL;
         } else {
             $query = <<<SQL
 SELECT
-    threadInfos.number,
+    threads.emailNumber as number,
     threadInfos.subject,
     threadInfos.date,
     threadInfos.fromName,
     threads.emailCount,
     threads.lastUpdate,
-    0 as isRead
+    threads.votes,
+    0 as isRead,
+    NULL as userVote
 FROM threads
 LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
-ORDER BY threads.lastUpdate DESC
+$where
+$orderBy
 LIMIT 20 OFFSET $offset
 SQL;
         }
@@ -226,17 +243,39 @@ SQL;
         ]);
     }
 
+    /**
+     * Refresh the projection of all threads.
+     */
     public function refreshThreads()
     {
         $query = <<<'SQL'
-REPLACE INTO threads (emailId, lastUpdate, emailCount)
-  SELECT emails.id, MAX(threadEmails.fetchDate), COUNT(threadEmails.id)
+REPLACE INTO threads (emailId, emailNumber, lastUpdate, emailCount, votes)
+  SELECT emails.id, emails.number, MAX(threadEmails.fetchDate), COUNT(threadEmails.id),
+      COALESCE((SELECT SUM(votes.value) FROM votes WHERE votes.emailNumber = emails.number), 0)
   FROM emails
   LEFT JOIN emails threadEmails ON emails.id = threadEmails.threadId
   WHERE emails.isThreadRoot = 1
   GROUP BY emails.id
 SQL;
         $this->db->executeQuery($query);
+    }
+
+    /**
+     * Refresh the projection of a single thread.
+     */
+    public function refreshThread(int $threadNumber)
+    {
+        $query = <<<'SQL'
+REPLACE INTO threads (emailId, emailNumber, lastUpdate, emailCount, votes)
+  SELECT emails.id, emails.number, MAX(threadEmails.fetchDate), COUNT(threadEmails.id),
+      COALESCE((SELECT SUM(votes.value) FROM votes WHERE votes.emailNumber = emails.number), 0)
+  FROM emails
+  LEFT JOIN emails threadEmails ON emails.id = threadEmails.threadId
+  WHERE emails.isThreadRoot = 1
+    AND emails.number = ?
+  GROUP BY emails.id
+SQL;
+        $this->db->executeQuery($query, [$threadNumber]);
     }
 
     private function emailFromRow(array $row) : Email

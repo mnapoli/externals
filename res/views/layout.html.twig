@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="/dist/css/main.min.css?v={{ version }}">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.css">
+
+    {% if user %}
+        <script>
+            userId = {{ user.id }};
+        </script>
+    {% endif %}
 </head>
 <body>
     <header class="site-header">
@@ -17,15 +23,17 @@
             {% block mainMenuLinks %}
                 <li class="brand"><a href="/">#externals</a></li>
             {% endblock %}
+                <li><a href="/top">Top</a></li>
                 <li><a href="/news">What's new?</a></li>
             </ul>
             <div class="account">
                 <span class="fa fa-github"></span>
                 {% if user is defined and user is not empty %}
-                    Welcome {{ user.name }}
+                    <span class="hidden-xs">Welcome</span>
+                    {{ user.name }}
                     (<a href="/logout" rel="nofollow">logout</a>)
                 {% else %}
-                    <a href="/login" rel="nofollow">Log in with GitHub</a>
+                    <a href="/login" rel="nofollow">Log in <span class="hidden-xs">with GitHub</span></a>
                     <span class="hidden-xs">to track unread emails</span>
                     <span class="fa fa-info-circle" data-toggle="tooltip" data-placement="bottom" title="No personal data is fetched or stored from GitHub, read more in the footer of the page."></span>
                 {% endif %}

@@ -1,21 +1,39 @@
 {% for thread in threads %}
-    <div class="thread-item {% if not thread.isRead %}unread{% endif %}">
-        <a class="thread-subject" href="message/{{ thread.number }}">{{ thread.subject }}</a>
+    <div class="thread-item {% if not thread.isRead and thread.userVote >= 0 %}unread{% endif %} {% if thread.votes < -1 %}unpopular{% endif %}">
+        <div class="vote-actions">
+            <a class="vote-action upvote {{ (thread.userVote == 1) ? 'active' }}" href="#" data-email-id="{{ thread.number }}">
+                <i class="fa fa-chevron-up"> </i>
+            </a>
+            <div class="vote vote-value {% if thread.votes == 0 %}neutral{% endif %}">{{ thread.votes }}</div>
+            <a class="vote-action downvote {{ (thread.userVote == -1) ? 'active' }}" href="#" data-email-id="{{ thread.number }}">
+                <i class="fa fa-chevron-down"> </i>
+            </a>
+        </div>
+        <a class="thread-subject" href="message/{{ thread.number }}">
+            {{ thread.subject }}
+        </a>
         <div class="thread-info">
+            {# Date #}
             <span title="thread creation date">
                 <i class="fa fa-clock-o"></i>
                 {{ thread.date|time_diff }}
             </span>
+            {# Author #}
             {% if thread.fromName %}
                 <span title="thread author">
                     <i class="fa fa-user"></i>
                     {{ thread.fromName }}
                 </span>
             {% endif %}
+            {# Number of responses #}
             {% if thread.emailCount > 1 %}
-                <span title="number of responses in this thread">
-                    <i class="fa fa-comment-o"></i>
-                    {{ thread.emailCount - 1 }} response{% if thread.emailCount > 2 %}s{% endif %}
+                <span title="number of responses in this thread" class="{% if thread.emailCount > 2 %}many-responses{% endif %}">
+                    {% if thread.emailCount > 2 %}
+                        <i class="fa fa-comments-o"></i>
+                    {% else %}
+                        <i class="fa fa-comment-o"></i>
+                    {% endif %}
+                    {{ thread.emailCount - 1 }}
                 </span>
             {% endif %}
         </div>

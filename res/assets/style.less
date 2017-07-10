@@ -3,6 +3,14 @@
 
 @screen-xs-max: 767px;
 
+@primary-color: #7070a9;
+@primary-color-light: #9C9CC7;
+@primary-color-lighter: #CBCBE3;
+@secondary-color: #C99959;
+@secondary-color-light: #F1C892;
+
+@color-text-grey: #b4b6b8;
+
 @border-color: #e8e8e8;
 
 [v-cloak] {
@@ -17,20 +25,14 @@ h1 {
     font-weight: 300;
 }
 a {
-    color: #7070a9;
+    color: @primary-color;
     &:hover, &:focus {
-        color: #99C;
+        color: @primary-color-light;
     }
 }
 
 .container {
     max-width: 1000px;
-}
-
-.table {
-    thead>tr>th, tbody>tr>th, tfoot>tr>th, thead>tr>td, tbody>tr>td, tfoot>tr>td {
-        border-top: 1px solid @border-color;
-    }
 }
 
 header.site-header {
@@ -168,27 +170,62 @@ footer {
 
 .thread-list {
     margin-top: 30px;
+    word-wrap: break-word;
     .thread-item {
         display: block;
+        position: relative;
         padding: 14px 10px;
         @media (min-width: 768px) {
             padding: 14px 30px;
         }
         border-top: 1px solid #e7eaec;
+
+        &.unpopular {
+            opacity: 0.5;
+        }
+
+        .vote-actions {
+            position: absolute;
+            width: 30px;
+            margin-right: 20px;
+            text-align: center;
+            font-size: 13px;
+            line-height: 17px;
+            color: @color-text-grey;
+            font-weight: bold;
+            a {
+                font-size: 16px;
+                color: @primary-color-lighter;
+                &.active {
+                    color: @secondary-color-light;
+                }
+            }
+            .vote-value.neutral {
+                font-size: 13px;
+                opacity: 0.5;
+                font-weight: normal;
+            }
+        }
+
         .thread-subject {
             display: block;
             font-size: 17px;
             margin-top: 5px;
             margin-bottom: 2px;
+            margin-left: 40px;
         }
         &.unread .thread-subject {
             font-weight: bold;
         }
         .thread-info {
-            color: #b4b6b8;
+            color: @color-text-grey;
             font-size: 12px;
+            margin-left: 40px;
             span {
                 margin-right: 10px;
+            }
+            .many-responses {
+                color: @secondary-color;
             }
         }
     }
