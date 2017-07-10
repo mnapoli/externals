@@ -14,20 +14,20 @@
         </a>
         <div class="thread-info">
             {# Date #}
-            <span>
+            <span title="thread creation date">
                 <i class="fa fa-clock-o"></i>
                 {{ thread.date|time_diff }}
             </span>
             {# Author #}
             {% if thread.fromName %}
-                <span>
+                <span title="thread author">
                     <i class="fa fa-user"></i>
                     {{ thread.fromName }}
                 </span>
             {% endif %}
             {# Number of responses #}
             {% if thread.emailCount > 1 %}
-                <span class="{% if thread.emailCount > 2 %}many-responses{% endif %}">
+                <span title="number of responses in this thread" class="{% if thread.emailCount > 2 %}many-responses{% endif %}">
                     {% if thread.emailCount > 2 %}
                         <i class="fa fa-comments-o"></i>
                     {% else %}
