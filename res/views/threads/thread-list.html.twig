@@ -2,18 +2,18 @@
     <div class="thread-item {% if not thread.isRead %}unread{% endif %}">
         <a class="thread-subject" href="message/{{ thread.number }}">{{ thread.subject }}</a>
         <div class="thread-info">
-            <span>
+            <span title="thread creation date">
                 <i class="fa fa-clock-o"></i>
                 {{ thread.date|time_diff }}
             </span>
             {% if thread.fromName %}
-                <span>
+                <span title="thread author">
                     <i class="fa fa-user"></i>
                     {{ thread.fromName }}
                 </span>
             {% endif %}
             {% if thread.emailCount > 1 %}
-                <span>
+                <span title="number of responses in this thread">
                     <i class="fa fa-comment-o"></i>
                     {{ thread.emailCount - 1 }} response{% if thread.emailCount > 2 %}s{% endif %}
                 </span>
