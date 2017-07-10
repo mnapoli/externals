@@ -13,7 +13,7 @@ $(function () {
 
 function vote($voteLink, value) {
     if (typeof userId === 'undefined') {
-        alert('You must log in to vote.');
+        alert('You must log in to vote. To log in, click the "log in" link in the top-right corner.');
         return;
     }
 
