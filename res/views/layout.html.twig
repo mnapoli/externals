@@ -28,10 +28,11 @@
             <div class="account">
                 <span class="fa fa-github"></span>
                 {% if user is defined and user is not empty %}
-                    Welcome {{ user.name }}
+                    <span class="hidden-xs">Welcome</span>
+                    {{ user.name }}
                     (<a href="/logout" rel="nofollow">logout</a>)
                 {% else %}
-                    <a href="/login" rel="nofollow">Log in with GitHub</a>
+                    <a href="/login" rel="nofollow">Log in <span class="hidden-xs">with GitHub</span></a>
                     <span class="hidden-xs">to track unread emails</span>
                     <span class="fa fa-info-circle" data-toggle="tooltip" data-placement="bottom" title="No personal data is fetched or stored from GitHub, read more in the footer of the page."></span>
                 {% endif %}
