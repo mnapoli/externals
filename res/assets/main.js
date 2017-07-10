@@ -5,10 +5,11 @@ $(function () {
         .on('click', '.upvote', function(e) {
             e.preventDefault();
             vote($(this), 1);
-        }).on('click', '.downvote', function(e) {
-        e.preventDefault();
-        vote($(this), -1);
-    });
+        })
+        .on('click', '.downvote', function(e) {
+            e.preventDefault();
+            vote($(this), -1);
+        });
 });
 
 function vote($voteLink, value) {
