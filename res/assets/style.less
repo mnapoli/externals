@@ -170,8 +170,10 @@ footer {
 
 .thread-list {
     margin-top: 30px;
+    word-wrap: break-word;
     .thread-item {
         display: block;
+        position: relative;
         padding: 14px 10px;
         @media (min-width: 768px) {
             padding: 14px 30px;
@@ -183,7 +185,7 @@ footer {
         }
 
         .vote-actions {
-            float: left;
+            position: absolute;
             width: 30px;
             margin-right: 20px;
             text-align: center;
@@ -208,6 +210,7 @@ footer {
             font-size: 17px;
             margin-top: 5px;
             margin-bottom: 2px;
+            margin-left: 40px;
         }
         &.unread .thread-subject {
             font-weight: bold;
@@ -215,6 +218,7 @@ footer {
         .thread-info {
             color: @color-text-grey;
             font-size: 12px;
+            margin-left: 40px;
             span {
                 margin-right: 10px;
             }
