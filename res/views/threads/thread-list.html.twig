@@ -27,8 +27,8 @@
             {% endif %}
             {# Number of responses #}
             {% if thread.emailCount > 1 %}
-                <span title="number of responses in this thread" class="{% if thread.emailCount > 2 %}many-responses{% endif %}">
-                    {% if thread.emailCount > 2 %}
+                <span title="number of responses in this thread" class="{% if thread.emailCount > 5 %}many-responses{% endif %}">
+                    {% if thread.emailCount > 5 %}
                         <i class="fa fa-comments-o"></i>
                     {% else %}
                         <i class="fa fa-comment-o"></i>
