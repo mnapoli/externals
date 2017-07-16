@@ -9,3 +9,8 @@ install:
 
 assets:
 	gulp
+
+cache:
+	rm var/cache/
+	# Will trigger the compilation of the container
+	./console list

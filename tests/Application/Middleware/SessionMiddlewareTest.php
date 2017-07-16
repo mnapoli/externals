@@ -4,13 +4,14 @@ declare(strict_types = 1);
 namespace Externals\Test\Application\Middleware;
 
 use Externals\Application\Middleware\SessionMiddleware;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use PSR7Session\Http\SessionMiddleware as Psr7Middleware;
 use PSR7Session\Session\SessionInterface;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\ServerRequest;
 
-class SessionMiddlewareTest extends \PHPUnit_Framework_TestCase
+class SessionMiddlewareTest extends TestCase
 {
     /**
      * @test
