@@ -2,9 +2,9 @@
 declare(strict_types = 1);
 
 use Dflydev\FigCookies\SetCookie;
-use Interop\Container\ContainerInterface;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Psr\Container\ContainerInterface;
 use PSR7Session\Http\SessionMiddleware;
 use PSR7Session\Time\SystemCurrentTime;
 use function DI\get;

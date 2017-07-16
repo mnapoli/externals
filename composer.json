@@ -14,10 +14,10 @@
     },
     "require": {
         "php": "^7.1",
-        "php-di/php-di": "^5.1",
-        "stratify/framework": "^0.6.0",
-        "stratify/twig-module": "~0.2.0",
-        "mnapoli/silly": "^1.5",
+        "php-di/php-di": "6.0.0-alpha4",
+        "stratify/framework": "~0.7.0",
+        "stratify/twig-module": "~0.3.0",
+        "mnapoli/silly": "^1.6",
         "doctrine/dbal": "^2.5",
         "twig/extensions": "^1.0",
         "misd/linkify": "^1.1",
@@ -38,7 +38,7 @@
         "sentry/sentry": "^1.7"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.4"
+        "phpunit/phpunit": "^6.0"
     },
     "repositories": [
         {

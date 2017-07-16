@@ -5,8 +5,9 @@ namespace Externals\Test\User;
 
 use Doctrine\DBAL\Connection;
 use Externals\User\UserRepository;
+use PHPUnit\Framework\TestCase;
 
-class UserRepositoryTest extends \PHPUnit_Framework_TestCase
+class UserRepositoryTest extends TestCase
 {
     /**
      * @test

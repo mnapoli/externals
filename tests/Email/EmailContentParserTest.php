@@ -3,10 +3,11 @@ declare(strict_types = 1);
 
 namespace Externals\Test\Email;
 
-use Externals\Application\Application;
 use Externals\Email\EmailContentParser;
+use PHPUnit\Framework\TestCase;
+use Stratify\Framework\Application;
 
-class EmailContentParserTest extends \PHPUnit_Framework_TestCase
+class EmailContentParserTest extends TestCase
 {
     /**
      * @var EmailContentParser
@@ -15,7 +16,14 @@ class EmailContentParserTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $container = (new Application)->getContainer();
+        $modules = [
+            'stratify/error-handler-module',
+            'stratify/twig-module',
+            'mnapoli/externals',
+        ];
+        $application = new Application($modules, 'test');
+
+        $container = $application->getContainer();
         $this->parser = $container->get(EmailContentParser::class);
     }
 

@@ -2,10 +2,11 @@
 declare(strict_types = 1);
 
 use function DI\add;
+use function DI\autowire;
+use function DI\create;
 use function DI\env;
 use function DI\factory;
 use function DI\get;
-use function DI\object;
 use function DI\string;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
@@ -14,7 +15,6 @@ use Externals\Application\Middleware\MaintenanceMiddleware;
 use Externals\Search\AlgoliaSearchIndex;
 use Externals\Search\SearchIndex;
 use Gravatar\Twig\GravatarExtension;
-use Interop\Container\ContainerInterface;
 use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
 use League\CommonMark\HtmlRenderer;
@@ -22,6 +22,7 @@ use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Github;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use PSR7Session\Http\SessionMiddleware;
 use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
@@ -63,15 +64,15 @@ return [
         get(GravatarExtension::class),
     ]),
 
-    LoggerInterface::class => object(Logger::class)
+    LoggerInterface::class => create(Logger::class)
         ->constructor('app', get('logger.handlers')),
     'logger.handlers' => [
         get(ConsoleHandler::class),
         get('logger.file_handler'),
     ],
-    ConsoleHandler::class => object()
+    ConsoleHandler::class => create()
         ->method('setFormatter', get(ConsoleFormatter::class)),
-    'logger.file_handler' => object(StreamHandler::class)
+    'logger.file_handler' => create(StreamHandler::class)
         ->constructor(string('{path.logs}/app.log'), Logger::INFO),
 
     DocParser::class => function (ContainerInterface $c) {
@@ -92,7 +93,7 @@ return [
         return $environment;
     },
 
-    AbstractProvider::class => object(Github::class)
+    AbstractProvider::class => create(Github::class)
         ->constructor(get('oauth.github.config')),
     'oauth.github.config' => [
         'clientId' => env('GITHUB_OAUTH_CLIENT_ID'),
@@ -101,9 +102,9 @@ return [
     ],
 
     'algolia.index_prefix' => env('ALGOLIA_INDEX_PREFIX', 'dev_'),
-    \AlgoliaSearch\Client::class => object()
+    \AlgoliaSearch\Client::class => create()
         ->constructor(env('ALGOLIA_APP_ID'), env('ALGOLIA_API_KEY')),
-    SearchIndex::class => object(AlgoliaSearchIndex::class)
+    SearchIndex::class => autowire(AlgoliaSearchIndex::class)
         ->constructorParameter('indexPrefix', get('algolia.index_prefix')),
 
     'session.secret_key' => env('SESSION_SECRET_KEY'),
@@ -114,7 +115,7 @@ return [
 
     'sentry.url' => env('SENTRY_URL', null),
 
-    MaintenanceMiddleware::class => object()
+    MaintenanceMiddleware::class => autowire()
         ->constructorParameter('maintenance', get('maintenance')),
 
 ];
