@@ -4,11 +4,6 @@ type: 'php:7.1'
 build:
     flavor: composer
 
-variables:
-    php:
-        opcache.max_accelerated_files: 10000
-        opcache.validate_timestamps: 0
-
 runtime:
     extensions:
         - newrelic
