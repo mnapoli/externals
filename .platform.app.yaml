@@ -4,6 +4,11 @@ type: 'php:7.1'
 build:
     flavor: composer
 
+variables:
+    php:
+        opcache.max_accelerated_files: 10000
+        opcache.validate_timestamps: 0
+
 runtime:
     extensions:
         - newrelic
@@ -21,12 +26,14 @@ dependencies:
 hooks:
     # Build hooks can modify the application files on disk but not access any services like databases.
     build: |
+        set -e
         npm install
         gulp
         # Optimize composer
         composer dump-autoload --classmap-authoritative
-        # Trigger the compilation of the container
-        ./console list
+    deploy: |
+        set -e
+        make cache
 
 # The size of the persistent disk of the application (in MB).
 disk: 512
