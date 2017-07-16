@@ -45,11 +45,8 @@ if ($branch) {
 // Create the application
 $application = new class($environment) extends Application
 {
-    private $environment;
-
     public function __construct(string $environment)
     {
-        $this->environment = $environment;
         $modules = [
             'stratify/error-handler-module',
             'stratify/twig-module',
@@ -62,8 +59,8 @@ $application = new class($environment) extends Application
 
     protected function configureContainerBuilder(ContainerBuilder $containerBuilder)
     {
-        if ($this->environment !== 'dev') {
-            $containerBuilder->enableCompilation(__DIR__ . '/../var/cache/' . $this->environment);
+        if ($this->getEnvironment() !== 'dev') {
+            $containerBuilder->enableCompilation(__DIR__ . '/../var/cache/' . $this->getEnvironment());
         }
     }
 };
