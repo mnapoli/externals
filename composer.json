@@ -15,7 +15,7 @@
     "require": {
         "php": "^7.1",
         "php-di/php-di": "6.0.0-alpha4",
-        "stratify/framework": "~0.7.0",
+        "stratify/framework": "~0.7.1",
         "stratify/twig-module": "~0.3.0",
         "mnapoli/silly": "^1.6",
         "doctrine/dbal": "^2.5",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b514806554f6b5cd37f837f4ea51a25f",
+    "content-hash": "773f53ee7f246794653d94abf1981d37",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -1689,16 +1689,16 @@
         },
         {
             "name": "php-di/kernel",
-            "version": "0.4.0",
+            "version": "0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-DI/Kernel.git",
-                "reference": "29fa29194e66d0857ce5928225a21e30678790fa"
+                "reference": "962c9dc6e6aa5d6f079f77012b08e1f1f4ae6989"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/Kernel/zipball/29fa29194e66d0857ce5928225a21e30678790fa",
-                "reference": "29fa29194e66d0857ce5928225a21e30678790fa",
+                "url": "https://api.github.com/repos/PHP-DI/Kernel/zipball/962c9dc6e6aa5d6f079f77012b08e1f1f4ae6989",
+                "reference": "962c9dc6e6aa5d6f079f77012b08e1f1f4ae6989",
                 "shasum": ""
             },
             "require": {
@@ -1726,7 +1726,7 @@
                 "kernel",
                 "php-di"
             ],
-            "time": "2017-07-16T13:05:42+00:00"
+            "time": "2017-07-16T13:45:37+00:00"
         },
         {
             "name": "php-di/php-di",
@@ -2187,22 +2187,22 @@
         },
         {
             "name": "stratify/framework",
-            "version": "0.7.0",
+            "version": "0.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stratifyphp/framework.git",
-                "reference": "59b2a17e6d5ac2df841086fd84542bf14c28c725"
+                "reference": "27b33b49b9e64340f26240b6fa5b2d85af2a2a41"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stratifyphp/framework/zipball/59b2a17e6d5ac2df841086fd84542bf14c28c725",
-                "reference": "59b2a17e6d5ac2df841086fd84542bf14c28c725",
+                "url": "https://api.github.com/repos/stratifyphp/framework/zipball/27b33b49b9e64340f26240b6fa5b2d85af2a2a41",
+                "reference": "27b33b49b9e64340f26240b6fa5b2d85af2a2a41",
                 "shasum": ""
             },
             "require": {
                 "mnapoli/silly": "^1.6",
                 "php": ">=7.0",
-                "php-di/kernel": "~0.4.0",
+                "php-di/kernel": "~0.4.1",
                 "php-di/php-di": "^6.0.0-alpha4",
                 "stratify/error-handler-module": "~0.4.0",
                 "stratify/http": "~0.4.0",
@@ -2226,7 +2226,7 @@
                 "MIT"
             ],
             "description": "Stratify framework package",
-            "time": "2017-07-16T13:14:43+00:00"
+            "time": "2017-07-16T14:05:58+00:00"
         },
         {
             "name": "stratify/http",

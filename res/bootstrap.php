@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use DI\ContainerBuilder;
 use Stratify\Framework\Application;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -42,13 +43,30 @@ if ($branch) {
 }
 
 // Create the application
-$modules = [
-    'stratify/error-handler-module',
-    'stratify/twig-module',
-    'mnapoli/externals',
-];
-$httpStack = require(__DIR__ . '/http.php');
-$application = new Application($modules, $environment, $httpStack);
+$application = new class($environment) extends Application
+{
+    private $environment;
+
+    public function __construct(string $environment)
+    {
+        $this->environment = $environment;
+        $modules = [
+            'stratify/error-handler-module',
+            'stratify/twig-module',
+            'mnapoli/externals',
+        ];
+        $httpStack = require(__DIR__ . '/http.php');
+
+        parent::__construct($modules, $environment, $httpStack);
+    }
+
+    protected function configureContainerBuilder(ContainerBuilder $containerBuilder)
+    {
+        if ($this->environment !== 'dev') {
+            $containerBuilder->enableCompilation(__DIR__ . '/../var/cache/' . $this->environment);
+        }
+    }
+};
 
 $sentryUrl = $application->getContainer()->get('sentry.url');
 if ($sentryUrl) {

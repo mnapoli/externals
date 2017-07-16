@@ -23,6 +23,8 @@ hooks:
     build: |
         npm install
         gulp
+        # Trigger the compilation of the container
+        ./console list
 
 # The size of the persistent disk of the application (in MB).
 disk: 512
