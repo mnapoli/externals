@@ -23,6 +23,8 @@ hooks:
     build: |
         npm install
         gulp
+        # Optimize composer
+        composer dump-autoload --classmap-authoritative
         # Trigger the compilation of the container
         ./console list
 
