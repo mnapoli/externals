@@ -140,12 +140,12 @@ return pipe([
         },
 
         // Keep backward compatibility with old URLs (old threads)
-        '/thread/{id}' => function (int $id, EmailRepository $emailRepository, Connection $db) {
+        '/thread/{id}' => route(function (int $id, EmailRepository $emailRepository, Connection $db) {
             $threadSubject = $db->fetchColumn('SELECT `subject` FROM threads_old WHERE id = ?', [$id]);
             $email = $emailRepository->findBySubject($threadSubject);
             // Permanent redirection
             return new RedirectResponse("/message/{$email->getNumber()}", 301);
-        },
+        })->pattern('id', '\d+'), // must be a number
     ]),
 
     NotFoundController::class,
