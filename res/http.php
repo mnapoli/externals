@@ -45,7 +45,7 @@ return pipe([
             ]);
         },
 
-        '/message/{number}' => function (int $number, Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
+        '/message/{number}' => route(function (int $number, Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
             newrelic_name_transaction('message');
             newrelic_add_custom_parameter('message', $number);
 
@@ -74,7 +74,7 @@ return pipe([
                 'emailCount' => $emailCount,
                 'user' => $user,
             ]);
-        },
+        })->pattern('number', '\d+'), // must be a number
 
         '/threads/list' => function (Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
             newrelic_name_transaction('thread-list');
