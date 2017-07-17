@@ -53,3 +53,8 @@ crons:
     sync:
         spec: '*/5 * * * *'
         cmd: './console sync'
+
+# Enable the event PHP extension, which provides a faster core event loop.
+runtime:
+    extensions:
+        - event
