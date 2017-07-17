@@ -36,7 +36,8 @@
         "zbateson/mail-mime-parser": "^0.4.3",
         "vlucas/phpdotenv": "^2.4",
         "sentry/sentry": "^1.7",
-        "react/http": "^0.7.2"
+        "react/http": "^0.7.2",
+        "blackfire/php-sdk": "^1.8"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0"

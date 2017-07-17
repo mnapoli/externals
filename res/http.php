@@ -6,6 +6,7 @@ use Externals\Application\Controller\UserController;
 use Externals\Application\Controller\NotFoundController;
 use Externals\Application\Middleware\AssetsMiddleware;
 use Externals\Application\Middleware\AuthMiddleware;
+use Externals\Application\Middleware\BlackfireMiddleware;
 use Externals\Application\Middleware\MaintenanceMiddleware;
 use Externals\Application\Middleware\NotFoundMiddleware;
 use Externals\Application\Middleware\SessionMiddleware;
@@ -28,6 +29,7 @@ use Zend\Diactoros\Response\TextResponse;
  * HTTP stack.
  */
 return pipe([
+    BlackfireMiddleware::class,
     MaintenanceMiddleware::class,
     ErrorHandlerMiddleware::class,
     AssetsMiddleware::class,

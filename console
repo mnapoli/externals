@@ -2,6 +2,7 @@
 <?php
 declare(strict_types = 1);
 
+use Blackfire\Bridge\ReactHttpServer;
 use Externals\Application\Command\DbCommand;
 use Externals\Email\EmailRepository;
 use Externals\EmailSynchronizer;
@@ -17,11 +18,19 @@ $application = require __DIR__ . '/res/bootstrap.php';
 
 $cli = $application->cli();
 
-$cli->command('serve', function (\Stratify\Http\Application $http, ContainerInterface $container) {
+$cli->command('serve', function (\Stratify\Http\Application $http, ContainerInterface $container, OutputInterface $output) {
     $loop = React\EventLoop\Factory::create();
 
     $server = new Server([$http, 'handle']);
     $server->listen(new React\Socket\Server($container->get('http.port'), $loop));
+    $server->on('error', function (Exception $e) use ($output) {
+        $output->writeln("<error>Error: {$e->getMessage()}</error>");
+        if ($e->getPrevious() !== null) {
+            $e = $e->getPrevious();
+            $output->writeln("<error>Caused by: {$e->getMessage()}</error>");
+        }
+        $output->writeln($e->getTraceAsString());
+    });
 
     $loop->run();
 });
