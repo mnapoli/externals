@@ -29,7 +29,7 @@ use Zend\Diactoros\Response\TextResponse;
  * HTTP stack.
  */
 return pipe([
-    BlackfireMiddleware::class,
+//    BlackfireMiddleware::class,
     MaintenanceMiddleware::class,
     ErrorHandlerMiddleware::class,
     AssetsMiddleware::class,
