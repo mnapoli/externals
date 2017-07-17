@@ -2,7 +2,6 @@
 <?php
 declare(strict_types = 1);
 
-use Blackfire\Bridge\ReactHttpServer;
 use Externals\Application\Command\DbCommand;
 use Externals\Email\EmailRepository;
 use Externals\EmailSynchronizer;
