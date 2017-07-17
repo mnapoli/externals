@@ -7,8 +7,6 @@ use Externals\Application\Command\DbCommand;
 use Externals\Email\EmailRepository;
 use Externals\EmailSynchronizer;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Server;
 use Stratify\Framework\Application;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
@@ -23,29 +21,7 @@ $cli = $application->cli();
 $cli->command('serve', function (\Stratify\Http\Application $http, ContainerInterface $container, OutputInterface $output) {
     $loop = React\EventLoop\Factory::create();
 
-    $server = new Server(function (ServerRequestInterface $request) use ($http) : ResponseInterface {
-        $query = $request->getHeaderLine('x-blackfire-query');
-
-        // Only enable when the X-Blackfire-Query header is present
-        if (! $query) {
-            return $http->handle($request);
-        }
-
-        $probe = new \BlackfireProbe($query);
-        if (! $probe->enable()) {
-            return $http->handle($request);
-        }
-
-        $response = $http->handle($request);
-
-        // Stop profiling once the request ends
-        $probe->close();
-
-        // Return the header
-        $header = explode(':', $probe->getResponseLine(), 2);
-
-        return $response->withHeader('x-' . $header[0], trim($header[1]));
-    });
+    $server = new Server([$http, 'handle']);
     $server->listen(new React\Socket\Server($container->get('http.port'), $loop));
     $server->on('error', function (Exception $e) use ($output) {
         $output->writeln("<error>Error: {$e->getMessage()}</error>");
