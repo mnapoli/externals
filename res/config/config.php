@@ -11,6 +11,7 @@ use function DI\string;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Externals\Application\Database\CustomMySQLPlatform;
+use Externals\Application\Middleware\AssetsMiddleware;
 use Externals\Application\Middleware\MaintenanceMiddleware;
 use Externals\Search\AlgoliaSearchIndex;
 use Externals\Search\SearchIndex;
@@ -34,6 +35,10 @@ return [
     'debug' => false,
     'path.cache' => __DIR__ . '/../../var/cache',
     'path.logs' => __DIR__ . '/../../var/log',
+    'path.public' => __DIR__ . '/../../web',
+
+    // Platform.sh defines this variable
+    'http.port' => env('PORT', 8000),
 
     'version' => env('PLATFORM_TREE_ID', factory(function () {
         return trim(shell_exec('git rev-parse HEAD'));
@@ -112,6 +117,9 @@ return [
         $key = (string) $c->get('session.secret_key');
         return SessionMiddleware::fromSymmetricKeyDefaults($key, 31536000);
     },
+
+    AssetsMiddleware::class => create()
+        ->constructor(get('path.public')),
 
     'sentry.url' => env('SENTRY_URL', null),
 

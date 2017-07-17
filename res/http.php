@@ -4,6 +4,7 @@ declare(strict_types = 1);
 use Doctrine\DBAL\Connection;
 use Externals\Application\Controller\UserController;
 use Externals\Application\Controller\NotFoundController;
+use Externals\Application\Middleware\AssetsMiddleware;
 use Externals\Application\Middleware\AuthMiddleware;
 use Externals\Application\Middleware\MaintenanceMiddleware;
 use Externals\Application\Middleware\NotFoundMiddleware;
@@ -29,6 +30,7 @@ use Zend\Diactoros\Response\TextResponse;
 return pipe([
     MaintenanceMiddleware::class,
     ErrorHandlerMiddleware::class,
+    AssetsMiddleware::class,
     NotFoundMiddleware::class,
     SessionMiddleware::class,
     AuthMiddleware::class,

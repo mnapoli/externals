@@ -6,6 +6,7 @@ use Externals\Application\Command\DbCommand;
 use Externals\Email\EmailRepository;
 use Externals\EmailSynchronizer;
 use Psr\Container\ContainerInterface;
+use React\Http\Server;
 use Stratify\Framework\Application;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -15,6 +16,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 $application = require __DIR__ . '/res/bootstrap.php';
 
 $cli = $application->cli();
+
+$cli->command('serve', function (\Stratify\Http\Application $http, ContainerInterface $container) {
+    $loop = React\EventLoop\Factory::create();
+
+    $server = new Server([$http, 'handle']);
+    $server->listen(new React\Socket\Server($container->get('http.port'), $loop));
+
+    $loop->run();
+});
 
 $cli->command('db [--force]', [DbCommand::class, 'setup']);
 $cli->command('db-purge [--force]', [DbCommand::class, 'purge']);
