@@ -105,7 +105,7 @@ return pipe([
             $query = $request->getQueryParams();
             $since = (int) ($query['since'] ?? 0);
             $rss = new RssBuilder($request);
-            $emails = $emailRepository->getRecent($since);
+            $emails = $emailRepository->findLatest($since);
             return $rss->build($emails);
         },
 

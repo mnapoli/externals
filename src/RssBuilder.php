@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Externals;
 
+use Externals\Email\Email;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -25,11 +26,10 @@ class RssBuilder
         $this->host = (string) $request->getUri()->withPath("");
     }
 
-
     /**
      * @param Email[] $emails
      */
-    public function build(array $emails): string
+    public function build(array $emails) : string
     {
         $this->dom = new \DomDocument('1.0', 'utf-8');
 
@@ -59,7 +59,6 @@ class RssBuilder
 
         return $this->dom->saveXML();
     }
-
 
     private function addTextNode($name, $value, \DomElement $parent)
     {

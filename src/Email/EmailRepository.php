@@ -164,17 +164,17 @@ SQL;
     /**
      * @return Email[]
      */
-    public function getRecent(int $since) : array
+    public function findLatest(int $since) : array
     {
         $qb = $this->db->createQueryBuilder();
         $qb->select('*')
             ->from('emails')
-            ->where('id > :since')
-            ->orderBy('id', 'ASC')
+            ->where('number > :since')
+            ->orderBy('number', 'ASC')
             ->setMaxResults(100)
             ->setParameter('since', $since);
 
-        return array_map([$this, 'createEmail'], $qb->execute()->fetchAll());
+        return array_map([$this, 'emailFromRow'], $qb->execute()->fetchAll());
     }
 
     public function add(Email $email)
