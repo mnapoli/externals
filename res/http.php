@@ -10,6 +10,7 @@ use Externals\Application\Middleware\NotFoundMiddleware;
 use Externals\Application\Middleware\SessionMiddleware;
 use Externals\Email\EmailRepository;
 use Externals\NotFound;
+use Externals\RssBuilder;
 use Externals\User\User;
 use Externals\User\UserRepository;
 use Externals\Voting;
@@ -97,6 +98,15 @@ return pipe([
                 'threads' => $repository->findTopThreads(1, $user),
                 'user' => $user,
             ]);
+        },
+
+        '/rss' => function (EmailRepository $emailRepository, ServerRequestInterface $request) {
+            newrelic_name_transaction('rss');
+            $query = $request->getQueryParams();
+            $since = (int) ($query['since'] ?? 0);
+            $rss = new RssBuilder($request);
+            $emails = $emailRepository->getRecent($since);
+            return $rss->build($emails);
         },
 
         '/news' => function (Twig_Environment $twig, ServerRequestInterface $request) {

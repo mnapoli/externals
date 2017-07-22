@@ -161,6 +161,22 @@ SQL;
         return $numberOfEmails;
     }
 
+    /**
+     * @return Email[]
+     */
+    public function getRecent(int $since) : array
+    {
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('*')
+            ->from('emails')
+            ->where('id > :since')
+            ->orderBy('id', 'ASC')
+            ->setMaxResults(100)
+            ->setParameter('since', $since);
+
+        return array_map([$this, 'createEmail'], $qb->execute()->fetchAll());
+    }
+
     public function add(Email $email)
     {
         $this->db->insert('emails', [
