@@ -64,7 +64,6 @@ class RssBuilder
     {
         $element = $this->dom->createElement($name);
 
-        $value = utf8_encode($value);
         $node = $this->dom->createTextNode($value);
         $element->appendChild($node);
 
