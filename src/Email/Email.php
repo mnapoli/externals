@@ -162,8 +162,8 @@ class Email
         return $this->getThreadId() === $this->getId();
     }
 
-    public function getUrl()
+    public function getUrl() : string
     {
-        return '/thread/' . $this->getThreadId() . '#email-' . $this->getId();
+        return '/' . $this->getId();
     }
 }
