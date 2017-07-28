@@ -124,7 +124,9 @@ class EmailSynchronizer
         $client->disconnect();
 
         // Refresh threads
-        $this->emailRepository->refreshThreads();
+        if ($count > 0) {
+            $this->emailRepository->refreshThreads();
+        }
     }
 
     public function synchronizeEmail(int $number, string $source)
