@@ -89,20 +89,47 @@ HTML;
     public function should_encode_html_entities()
     {
         $content = <<<'EMAIL'
-> and the test:
->
-> <?php
-> ini_set("pcntl.async_signals", "1");
+> and the test: <hello>
+
+<foo></foo> test
 
 We use 2/3 vote for "a feature affecting the language itself".
 EMAIL;
         $expected = <<<HTML
 <blockquote>
-<p>and the test:</p>
-&lt;?php
-ini_set("pcntl.async_signals", "1");
+<p>and the test: &lt;hello&gt;</p>
 </blockquote>
+<p>&lt;foo&gt;&lt;/foo&gt; test</p>
 <p>We use 2/3 vote for &quot;a feature affecting the language itself&quot;.</p>
+HTML;
+        $this->assertEquals($expected, trim($this->parser->parse($content)));
+    }
+
+    /**
+     * @test
+     */
+    public function should_support_php_opening_tag()
+    {
+        $content = <<<'EMAIL'
+one
+
+<?php
+echo $foo;
+
+two <? hehe
+
+> <?
+> ini_set();
+EMAIL;
+        $expected = <<<HTML
+<p>one</p>
+<p>&lt;?php <br>
+echo \$foo;</p>
+<p>two &lt;? hehe</p>
+<blockquote>
+<p>&lt;? <br>
+<code>ini_set()</code>;</p>
+</blockquote>
 HTML;
         $this->assertEquals($expected, trim($this->parser->parse($content)));
     }

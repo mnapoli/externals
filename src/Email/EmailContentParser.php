@@ -47,6 +47,10 @@ class EmailContentParser
 
     public function parse(string $content) : string
     {
+        // Fix for CommonMark (the standard) issue with <? characters
+        // @see https://github.com/mnapoli/externals/issues/15
+        $content = str_replace('<?', '&lt;?', $content);
+
         $content = $this->stripMailingListFooter($content);
         $content = rtrim($content, " \t\n\r\0\x0B->");
         $content = $this->stripTrailingUnindentedQuotation($content);
