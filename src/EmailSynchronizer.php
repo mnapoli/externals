@@ -135,10 +135,6 @@ class EmailSynchronizer
             return;
         }
 
-        // For some reason, see https://github.com/madewithlove/why-cant-we-have-nice-things/blob/master/src/Services/Internals/ArticleParser.php
-        // Temporarily remove, we'll see if we really need this...
-//        $source = str_replace("=\n", " =\n", $source);
-
         $mailParser = new MailMimeParser();
         $parsedDocument = $mailParser->parse($source);
 
