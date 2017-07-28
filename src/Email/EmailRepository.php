@@ -223,11 +223,11 @@ SQL;
         return (int) $this->db->fetchColumn('SELECT MAX(number) FROM emails');
     }
 
-    public function updateContent(Email $email)
+    public function updateContent(string $emailId, string $newContent) : void
     {
         $this->db->update('emails', [
-            'content' => $email->getContent(),
-        ], ['id' => $email->getId()], ['text']);
+            'content' => $newContent,
+        ], ['id' => $emailId]);
     }
 
     public function getEmailCount() : int

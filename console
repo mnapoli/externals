@@ -3,13 +3,16 @@
 declare(strict_types = 1);
 
 use Externals\Application\Command\DbCommand;
+use Externals\Email\EmailContentParser;
 use Externals\Email\EmailRepository;
 use Externals\EmailSynchronizer;
+use Externals\NotFound;
 use Psr\Container\ContainerInterface;
 use Stratify\Framework\Application;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use ZBateson\MailMimeParser\MailMimeParser;
 
 /** @var Application $application */
 $application = require __DIR__ . '/res/bootstrap.php';
@@ -32,6 +35,24 @@ $cli->command('refresh-threads', function (EmailRepository $repository, OutputIn
     $repository->refreshThreads();
     $time = microtime(true) - $start;
     $output->writeln("<comment>Threads have been refreshed in $time seconds</comment>");
+});
+
+$cli->command('reparse', function (EmailRepository $repository, EmailContentParser $parser, OutputInterface $output) {
+    $start = microtime(true);
+    $maxNumber = $repository->getLastEmailNumber();
+    for ($number = $maxNumber; $number > 0; $number--) { // from most recent to first
+        try {
+            $email = $repository->getByNumber($number);
+        } catch (NotFound $e) {
+            continue;
+        }
+        $parsedDocument = (new MailMimeParser)->parse($email->getSource());
+        $content = $parser->parse((string) $parsedDocument->getTextContent());
+        $repository->updateContent($email->getId(), $content);
+        $output->writeln("<info>Updated email {$number}</info>");
+    }
+    $time = microtime(true) - $start;
+    $output->writeln("<comment>Emails have been reparsed in $time seconds</comment>");
 });
 
 $cli->command('container:get id', function (string $id, ContainerInterface $container) {
