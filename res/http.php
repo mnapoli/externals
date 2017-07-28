@@ -4,8 +4,11 @@ declare(strict_types = 1);
 use Doctrine\DBAL\Connection;
 use Externals\Application\Controller\UserController;
 use Externals\Application\Controller\NotFoundController;
+use Externals\Application\Middleware\AssetsMiddleware;
 use Externals\Application\Middleware\AuthMiddleware;
+use Externals\Application\Middleware\BlackfireMiddleware;
 use Externals\Application\Middleware\MaintenanceMiddleware;
+use Externals\Application\Middleware\NewRelicMiddleware;
 use Externals\Application\Middleware\NotFoundMiddleware;
 use Externals\Application\Middleware\SessionMiddleware;
 use Externals\Email\EmailRepository;
@@ -28,8 +31,11 @@ use Zend\Diactoros\Response\TextResponse;
  * HTTP stack.
  */
 return pipe([
+    BlackfireMiddleware::class,
+    NewRelicMiddleware::class,
     MaintenanceMiddleware::class,
     ErrorHandlerMiddleware::class,
+    AssetsMiddleware::class,
     NotFoundMiddleware::class,
     SessionMiddleware::class,
     AuthMiddleware::class,
@@ -151,6 +157,7 @@ return pipe([
 
         // Keep backward compatibility with old URLs (old threads)
         '/thread/{id}' => route(function (int $id, EmailRepository $emailRepository, Connection $db) {
+            newrelic_name_transaction('thread_legacy');
             $threadSubject = $db->fetchColumn('SELECT `subject` FROM threads_old WHERE id = ?', [$id]);
             $email = $emailRepository->findBySubject($threadSubject);
             // Permanent redirection

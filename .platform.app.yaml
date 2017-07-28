@@ -6,6 +6,8 @@ build:
 
 runtime:
     extensions:
+        # Enable the event PHP extension, which provides a faster core event loop.
+        - event
         - newrelic
         -
             name: 'blackfire'
@@ -42,16 +44,14 @@ relationships:
     database: "database:mysql"
 
 web:
-    locations:
-        '/':
-            # The public directory of the application relative to its root.
-            root: 'web'
-            # The front-controller script which determines where to send
-            # non-static requests.
-            passthru: '/index.php'
+    commands:
+        start: ./console serve
+    upstream:
+        socket_family: tcp
+        protocol: http
 
 crons:
     # Look for new emails every 5 minutes.
-    drush-queue:
+    sync:
         spec: '*/5 * * * *'
         cmd: './console sync'
