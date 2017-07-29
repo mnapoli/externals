@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "773f53ee7f246794653d94abf1981d37",
+    "content-hash": "fbae11554e727bc7cebfc247c9c3acbf",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -2029,11 +2029,17 @@
         },
         {
             "name": "rvdv/nntp",
-            "version": "dev-preserve-empty-lines",
+            "version": "v0.9.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mnapoli/php-nntp.git",
-                "reference": "836341fb48d04b6e46684bce3bf73f4252749bb1"
+                "url": "https://github.com/robinvdvleuten/php-nntp.git",
+                "reference": "378e2f93a80dabcafdafc539df2b5450603d1f83"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/robinvdvleuten/php-nntp/zipball/378e2f93a80dabcafdafc539df2b5450603d1f83",
+                "reference": "378e2f93a80dabcafdafc539df2b5450603d1f83",
+                "shasum": ""
             },
             "require": {
                 "php": "^5.5|^7.0"
@@ -2055,19 +2061,7 @@
                     "Rvdv\\Nntp\\": "src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Rvdv\\Nntp\\Tests\\": "tests"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "vendor/bin/phpunit --coverage-text; vendor/bin/php-cs-fixer fix -v --diff --dry-run;"
-                ],
-                "test:travis": [
-                    "vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2079,7 +2073,7 @@
             ],
             "description": "Client for communicating with servers throught the Network News Transfer Protocol (NNTP) protocol.",
             "homepage": "https://github.com/robinvdvleuten/php-nntp",
-            "time": "2017-07-02 13:09:34"
+            "time": "2017-07-03T08:22:27+00:00"
         },
         {
             "name": "sentry/sentry",
@@ -4749,8 +4743,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "php-di/php-di": 15,
-        "rvdv/nntp": 20
+        "php-di/php-di": 15
     },
     "prefer-stable": false,
     "prefer-lowest": false,
