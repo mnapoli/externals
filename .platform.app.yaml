@@ -51,7 +51,7 @@ web:
             passthru: '/index.php'
         '/dist/js/main.min.js':
             expires: 365d
-        '/dist/js/main.min.css':
+        '/dist/css/main.min.css':
             expires: 365d
         '/dist/fonts/fontawesome-webfont.woff2':
             expires: 365d
