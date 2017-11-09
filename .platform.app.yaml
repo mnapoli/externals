@@ -49,6 +49,12 @@ web:
             # The front-controller script which determines where to send
             # non-static requests.
             passthru: '/index.php'
+        '/dist/js/main.min.js':
+            expires: 365d
+        '/dist/css/main.min.css':
+            expires: 365d
+        '/dist/fonts/fontawesome-webfont.woff2':
+            expires: 365d
 
 crons:
     # Look for new emails every 5 minutes.
