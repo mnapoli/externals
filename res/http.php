@@ -58,6 +58,7 @@ return pipe([
                     return new RedirectResponse("/message/{$thread->getNumber()}#$number");
                 } catch (NotFound $e) {
                     // We cannot find the root message
+                    // We will display the thread from this URL
                 }
             }
 
