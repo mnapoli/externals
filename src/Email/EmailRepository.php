@@ -54,7 +54,9 @@ class EmailRepository
             ->from('emails')
             ->where('emails.threadId = :threadId')
             ->orderBy('emails.date', 'ASC')
-            ->setParameter('threadId', $email->getId());
+            // We use getThreadId() instead of getId() because we may not always have the thread
+            // root here (sometimes we cannot find the thread root, yet we can still show the thread)
+            ->setParameter('threadId', $email->getThreadId());
 
         if ($user) {
             $qb->addSelect('IF(readStatus.lastReadDate > emails.fetchDate, 1, 0) as wasRead')
