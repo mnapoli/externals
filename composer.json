@@ -14,7 +14,7 @@
     },
     "require": {
         "php": "^7.1",
-        "php-di/php-di": "6.0.0-alpha4",
+        "php-di/php-di": "6.0.0-beta3",
         "stratify/framework": "~0.7.1",
         "stratify/twig-module": "~0.3.0",
         "mnapoli/silly": "^1.6",
