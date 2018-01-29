@@ -60,8 +60,10 @@ $application = new class($environment) extends Application
 
     protected function configureContainerBuilder(ContainerBuilder $containerBuilder)
     {
-        $containerBuilder->enableDefinitionCache();
-        if ($this->getEnvironment() !== 'dev' && SourceCache::isSupported()) {
+        if (SourceCache::isSupported()) {
+            $containerBuilder->enableDefinitionCache();
+        }
+        if ($this->getEnvironment() !== 'dev') {
             $containerBuilder->enableCompilation(__DIR__ . '/../var/cache/' . $this->getEnvironment());
         }
     }
