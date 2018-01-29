@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use DI\ContainerBuilder;
+use DI\Definition\Source\SourceCache;
 use Stratify\Framework\Application;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -60,7 +61,7 @@ $application = new class($environment) extends Application
     protected function configureContainerBuilder(ContainerBuilder $containerBuilder)
     {
         $containerBuilder->enableDefinitionCache();
-        if ($this->getEnvironment() !== 'dev') {
+        if ($this->getEnvironment() !== 'dev' && SourceCache::isSupported()) {
             $containerBuilder->enableCompilation(__DIR__ . '/../var/cache/' . $this->getEnvironment());
         }
     }
