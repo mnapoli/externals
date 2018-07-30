@@ -7,7 +7,6 @@ use DateTimeZone;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Externals\Email\Email;
 use Externals\Email\EmailAddress;
-use Externals\Email\EmailAddressParser;
 use Externals\Email\EmailContentParser;
 use Externals\Email\EmailRepository;
 use Externals\Email\EmailSubjectParser;
@@ -17,6 +16,7 @@ use Rvdv\Nntp\Client;
 use Rvdv\Nntp\Command\ArticleCommand;
 use Rvdv\Nntp\Connection\Connection;
 use Rvdv\Nntp\Exception\UnknownHandlerException;
+use ZBateson\MailMimeParser\Header\AddressHeader;
 use ZBateson\MailMimeParser\Header\DateHeader;
 use ZBateson\MailMimeParser\MailMimeParser;
 use ZBateson\MailMimeParser\Message;
@@ -143,17 +143,13 @@ class EmailSynchronizer
         $subject = $this->subjectParser->sanitize($parsedDocument->getHeaderValue('subject'));
         $content = $this->contentParser->parse((string) $parsedDocument->getTextContent());
 
-        // We don't use the special AddressHeader class because it doesn't seem to parse the
-        // person's name at all
         $fromHeader = $parsedDocument->getHeader('from');
         if (!$fromHeader) {
             $this->logger->warning("Cannot synchronize message $number because it contains no 'from' header");
             return;
         }
-        $emailAddressParser = new EmailAddressParser($fromHeader->getRawValue());
-        $fromArray = $emailAddressParser->parse();
         /** @var EmailAddress $from */
-        $from = reset($fromArray);
+        $from = $this->getFirstFilteredAddress($fromHeader);
 
         $emailId = $parsedDocument->getHeaderValue('message-id');
 
@@ -225,5 +221,34 @@ class EmailSynchronizer
         $date->setTimezone(new DateTimeZone('UTC'));
 
         return $date;
+    }
+
+    /**
+     * @return EmailAddress
+     */
+    private function getFirstFilteredAddress(AddressHeader $header)
+    {
+        $addresses = $header->getAddresses();
+        foreach ($addresses as $address) {
+            $email = $address->getEmail();
+            $email = preg_replace('/([. #]at[.# ])/', '@', $email);
+            $email = preg_replace('/([. #]dot[.# ])/', '.', $email);
+            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                // Special cases for that one guy who
+                // put his whole resume as name and other
+                // marvelous joys
+                $name = $address->getName();
+                if (
+                    mb_strpos($name, 'Watson Research') ||
+                    mb_strlen($name) <= 3 ||
+                    mb_strpos($name, '?') !== false ||
+                    mb_strpos($name, 'http') !== false
+                ) {
+                    $name = '';
+                }
+                return new EmailAddress($name, $email);
+            }
+        }
+        return null;
     }
 }
