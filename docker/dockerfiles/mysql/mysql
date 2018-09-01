@@ -1,0 +1,2 @@
+#!/bin/bash
+mysql --host=db --port=3306 -uroot -p$MYSQL_ROOT_PASSWORD --protocol=TCP $MYSQL_DATABASE -A
