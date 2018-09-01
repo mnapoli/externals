@@ -11,6 +11,7 @@ use Externals\Application\Middleware\SessionMiddleware;
 use Externals\Email\EmailRepository;
 use Externals\NotFound;
 use Externals\RssBuilder;
+use Externals\RssRfcBuilder;
 use Externals\User\User;
 use Externals\User\UserRepository;
 use Externals\Voting;
@@ -109,7 +110,12 @@ return pipe([
             $emails = $emailRepository->findLatest($since);
             return $rss->build($emails);
         },
-
+        '/rss-rfc' => function (EmailRepository $emailRepository, ServerRequestInterface $request) {
+            newrelic_name_transaction('rss-rfc');
+            $rss = new RssRfcBuilder($request);
+            $threads = $emailRepository->findThreads("where threadInfos.subject like '%RFC%'", 'order by threadInfos.date desc', 1, null);
+            return $rss->build($threads);
+        },
         '/news' => function (Twig_Environment $twig, ServerRequestInterface $request) {
             newrelic_name_transaction('news');
             return $twig->render('@app/news.html.twig', [
