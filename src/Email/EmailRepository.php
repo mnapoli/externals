@@ -109,7 +109,7 @@ class EmailRepository
         return $this->findThreads("where threadInfos.subject like '%RFC%'", 'order by threadInfos.date desc', 1, null);
     }
 
-    public function findThreads(string $where, string $orderBy, int $page, ?User $user) : array
+    private function findThreads(string $where, string $orderBy, int $page, ?User $user) : array
     {
         $offset = ($page - 1) * 20;
 
