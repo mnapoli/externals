@@ -113,8 +113,7 @@ return pipe([
         '/rss-rfc' => function (EmailRepository $emailRepository, ServerRequestInterface $request) {
             newrelic_name_transaction('rss-rfc');
             $rss = new RssRfcBuilder($request);
-            $threads = $emailRepository->findThreads("where threadInfos.subject like '%RFC%'", 'order by threadInfos.date desc', 1, null);
-            return $rss->build($threads);
+            return $rss->build($emailRepository->findLatestRfcThreads());
         },
         '/news' => function (Twig_Environment $twig, ServerRequestInterface $request) {
             newrelic_name_transaction('news');
