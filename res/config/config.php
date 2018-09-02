@@ -36,7 +36,14 @@ return [
     'path.logs' => __DIR__ . '/../../var/log',
 
     'version' => env('PLATFORM_TREE_ID', factory(function () {
-        return trim(shell_exec('git rev-parse HEAD'));
+        $rev = shell_exec('git rev-parse HEAD');
+
+        if (null !== $rev) {
+            return trim($rev);
+        }
+
+        return null;
+
     })),
 
     'db.url' => env('DB_URL'),
