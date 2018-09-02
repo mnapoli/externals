@@ -177,7 +177,7 @@ SQL;
         $qb->select('*')
             ->from('emails')
             ->where('number > :since')
-            ->orderBy('number', 'ASC')
+            ->orderBy('number', 'DESC')
             ->setMaxResults(100)
             ->setParameter('since', $since);
 
