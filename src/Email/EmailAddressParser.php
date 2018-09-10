@@ -43,8 +43,6 @@ class EmailAddressParser
         $emails = str_replace('(original)', '', $this->string);
         $emails = preg_replace('/[<>\(\)]/', '', $emails);
         $emails = str_replace(' . ', '.', $emails);
-        $emails = preg_replace('/([. #]at[.# ])/', '@', $emails);
-        $emails = preg_replace('/([. #]dot[.# ])/', '.', $emails);
 
         $names = $this->extractEmails($emails);
         $this->extractNames($names);
