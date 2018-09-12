@@ -56,11 +56,10 @@
     {{ parent() }}
 
     <script>
-        $(function () {
-
+        document.addEventListener("DOMContentLoaded", function() {
             // Pagination
             var page = 2;
-            $('#show-more-threads').click(function () {
+            document.querySelector('#show-more-threads').onclick = function () {
                 $.get('/threads/list?page=' + page, function (html) {
                     if (html === '') {
                         $('#show-more-threads').remove();
@@ -69,7 +68,7 @@
                     $('.thread-list').append(html);
                 });
                 page++;
-            });
+            };
 
             var search = instantsearch({
                 appId: 'KSTITII7EC',
