@@ -75,13 +75,18 @@
                 apiKey: 'badccd205e578e64657ae7f880959824',
                 indexName: '{{ algoliaIndex }}',
                 searchFunction: function (helper) {
-                    var searchResults = $('.search-container');
+                    var searchResults = document.querySelectorAll('.search-container');
                     if (helper.state.query === '') {
-                        searchResults.hide();
+                        [].forEach.call(searchResults, function(container) {
+                            container.style.display = 'none';
+                        });
                         return;
                     }
+                    
                     helper.search();
-                    searchResults.show();
+                    [].forEach.call(searchResults, function(container) {
+                        container.style.display = '';
+                    });
                 },
             });
             search.addWidget(
