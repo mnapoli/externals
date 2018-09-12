@@ -81,9 +81,6 @@
     {% block scripts %}
         <script src="/dist/js/main.min.js?v={{ version }}" async></script>
 
-        <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.js" async></script>
-
         {% if not debug %}
             {# Google Analytics #}
             <script>
