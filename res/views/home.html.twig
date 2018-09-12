@@ -57,20 +57,7 @@
     {{ parent() }}
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Pagination
-            var page = 2;
-            document.querySelector('#show-more-threads').onclick = function () {
-                $.get('/threads/list?page=' + page, function (html) {
-                    if (html === '') {
-                        $('#show-more-threads').remove();
-                        return;
-                    }
-                    $('.thread-list').append(html);
-                });
-                page++;
-            };
-
+        function init_search() {
             var search = instantsearch({
                 appId: 'KSTITII7EC',
                 apiKey: 'badccd205e578e64657ae7f880959824',
@@ -109,8 +96,25 @@
             search.templatesConfig.helpers.date = function () {
                 return moment(this.date).fromNow();
             };
-            search.start();
-
+            search.start();        
+        }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            // Pagination
+            var page = 2;
+            document.querySelector('#show-more-threads').onclick = function () {
+                $.get('/threads/list?page=' + page, function (html) {
+                    if (html === '') {
+                        $('#show-more-threads').remove();
+                        return;
+                    }
+                    $('.thread-list').append(html);
+                });
+                page++;
+            };
         });
     </script>
 {% endblock %}
+
+<script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+<script src="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.js" onload="init_search();" async></script>
