@@ -95,8 +95,8 @@
                     container: '#search-results',
                     hitsPerPage: 10,
                     templates: {
-                        item: $('#search-result-template').html(),
-                        empty: $('#no-results-template').html(),
+                        item: document.querySelector('#search-result-template').innerHTML,
+                        empty: document.querySelector('#no-results-template').innerHTML,
                     }
                 })
             );
