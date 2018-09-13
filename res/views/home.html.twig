@@ -22,7 +22,7 @@
         </p>
         <input id="search-input" type="text" class="form-control input-lg" placeholder="Search...">
     </div>
-    <div class="search-container">
+    <div id="search-container">
         <h3>Search results</h3>
         <ul id="search-results" class="list-unstyled"></ul>
     </div>
@@ -63,18 +63,14 @@
                 apiKey: 'badccd205e578e64657ae7f880959824',
                 indexName: '{{ algoliaIndex }}',
                 searchFunction: function (helper) {
-                    var searchResults = document.querySelectorAll('.search-container');
+                    var searchResult = document.querySelector('#search-container');
                     if (helper.state.query === '') {
-                        [].forEach.call(searchResults, function(container) {
-                            container.style.display = 'none';
-                        });
+                        searchResult.style.display = 'none';
                         return;
                     }
                     
                     helper.search();
-                    [].forEach.call(searchResults, function(container) {
-                        container.style.display = '';
-                    });
+                    searchResult.style.display = 'block';
                 },
             });
             search.addWidget(
