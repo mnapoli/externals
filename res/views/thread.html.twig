@@ -69,7 +69,7 @@
     {{ parent() }}
 
     <script>
-        $(function() {
+        document.addEventListener("DOMContentLoaded", function() {
             var unreadEmailIds = $('article.unread').map(function() {
                 return this.id;
             }).get();
