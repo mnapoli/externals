@@ -50,7 +50,7 @@ class RssBuilder
         foreach ($emails as $email) {
             $item = $this->dom->createElement('item');
             $this->addTextNode('title', $email->getSubject(), $item);
-            $this->addTextNode('link', $this->host . $email->getUrl(), $item);
+            $this->addTextNode('link', $this->host . '/message/' . $email->getNumber(), $item);
             $this->addTextNode('description', $email->getContent(), $item);
             $this->addTextNode('guid', $email->getId(), $item);
             $this->addTextNode('pubDate', $email->getDate()->format('r'), $item);
