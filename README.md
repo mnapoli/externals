@@ -32,7 +32,6 @@ To recompile the assets if you change them, run `make assets`. Assets are automa
 
 [![](http://i.imgur.com/gD7Let2.png)](http://externals.io/)
 
-
 ## Setup via docker
 
 * clone the repository
