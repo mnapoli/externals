@@ -7,7 +7,6 @@ build:
 runtime:
     extensions:
         - apcu
-        - newrelic
         -
             name: 'blackfire'
             configuration:
