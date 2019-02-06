@@ -1,6 +1,6 @@
 name: 'externals'
 
-type: 'php:7.1'
+type: 'php:7.3'
 build:
     flavor: composer
 
