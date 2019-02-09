@@ -1,6 +1,4 @@
 $(function () {
-    $('[data-toggle="tooltip"]').tooltip();
-
     $('body')
         .on('click', '.upvote', function(e) {
             e.preventDefault();
