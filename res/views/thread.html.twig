@@ -10,7 +10,7 @@
     <article id="{{ email.number }}" class="clearfix {% if not email.isRead %}unread{% endif %}">
 
         <header>
-            <a href="#{{ email.number }}-body" role="button" data-toggle="collapse"><span class="fa fa-compress"></span></a>
+            <a data-target="#{{ email.number }}-body" role="button" data-toggle="collapse"><span class="fa fa-compress"></span></a>
             {% if email.from.email %}
                 <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro', s: 50}) }}"
                      alt="{{ email.from.nameOrEmail }}" title="{{ email.from.nameOrEmail }}">
