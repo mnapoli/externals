@@ -39,28 +39,28 @@ function vote($voteLink, value) {
     });
 }
 
-// map our commands to the classList methods
-var fnmap = {
-    'toggle': 'toggle',
-    'show': 'add',
-    'hide': 'remove'
-};
 
-var collapse = function(selector, cmd) {
-    var targets = Array.from(document.querySelectorAll(selector));
-    targets.forEach(function(target) {
-        target.classList[fnmap[cmd]]('show');
-    });
-};
-
-// Grab all the trigger elements on the page
+// Handler that uses various data-* attributes to trigger
+// specific actions, mimicing bootstraps attributes
 var triggers = Array.from(document.querySelectorAll('[data-toggle="collapse"]'));
 
-// Listen for click events, but only on our triggers
-window.addEventListener('click', function(ev) {
+window.addEventListener('click', function (ev) {
     var elm = ev.target;
     if (triggers.includes(elm)) {
         var selector = elm.getAttribute('data-target');
         collapse(selector, 'toggle');
     }
 }, false);
+
+
+var fnmap = {
+    'toggle': 'toggle',
+    'show': 'add',
+    'hide': 'remove' };
+
+var collapse = function collapse(selector, cmd) {
+    var targets = Array.from(document.querySelectorAll(selector));
+    targets.forEach(function (target) {
+        target.classList[fnmap[cmd]]('show');
+    });
+};
