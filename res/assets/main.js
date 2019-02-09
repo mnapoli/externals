@@ -46,18 +46,18 @@ var fnmap = {
     'hide': 'remove'
 };
 
-var collapse = (selector, cmd) => {
+var collapse = function(selector, cmd) {
     var targets = Array.from(document.querySelectorAll(selector));
-    targets.forEach(target => {
+    targets.forEach(function(target) {
         target.classList[fnmap[cmd]]('show');
     });
-}
+};
 
 // Grab all the trigger elements on the page
 var triggers = Array.from(document.querySelectorAll('[data-toggle="collapse"]'));
 
 // Listen for click events, but only on our triggers
-window.addEventListener('click', (ev) => {
+window.addEventListener('click', function(ev) {
     var elm = ev.target;
     if (triggers.includes(elm)) {
         var selector = elm.getAttribute('data-target');
