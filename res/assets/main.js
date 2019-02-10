@@ -39,6 +39,17 @@ function vote($voteLink, value) {
     });
 }
 
+var fnmap = {
+    'toggle': 'toggle',
+    'show': 'add',
+    'hide': 'remove' };
+
+function collapse(selector, cmd) {
+    var targets = Array.from(document.querySelectorAll(selector));
+    targets.forEach(function (target) {
+        target.classList[fnmap[cmd]]('show');
+    });
+};
 
 // Handler that uses various data-* attributes to trigger
 // specific actions, mimicing bootstraps attributes
@@ -51,16 +62,3 @@ window.addEventListener('click', function (ev) {
         collapse(selector, 'toggle');
     }
 }, false);
-
-
-var fnmap = {
-    'toggle': 'toggle',
-    'show': 'add',
-    'hide': 'remove' };
-
-function collapse(selector, cmd) {
-    var targets = Array.from(document.querySelectorAll(selector));
-    targets.forEach(function (target) {
-        target.classList[fnmap[cmd]]('show');
-    });
-};
