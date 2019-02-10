@@ -27,12 +27,6 @@ gulp.task('css', function() {
     .pipe(gulp.dest('./web/dist'));
 });
 
-gulp.task('fonts', function () {
-    return gulp.src([
-        './node_modules/font-awesome/fonts/*.*',
-    ]).pipe(gulp.dest('./web/dist/fonts'));
-});
-
 gulp.task('clean', function() {
     return gulp.src([
         './web/dist',
@@ -46,4 +40,4 @@ gulp.task('watch', function () {
     gulp.watch('./res/assets/**/*.less', ['css']);
 });
 
-gulp.task('default', ['js', 'css', 'fonts']);
+gulp.task('default', ['js', 'css']);
