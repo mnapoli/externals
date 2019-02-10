@@ -45,7 +45,7 @@ var fnmap = {
     'hide': 'remove' };
 
 function collapse(selector, cmd) {
-    var targets = Array.from(document.querySelectorAll(selector));
+    var targets = Array.from(document.querySelectorAll(CSS.escape(selector)));
     targets.forEach(function (target) {
         target.classList[fnmap[cmd]]('show');
     });
@@ -58,7 +58,7 @@ var triggers = Array.from(document.querySelectorAll('[data-toggle="collapse"]'))
 window.addEventListener('click', function (ev) {
     var elm = ev.target;
     if (triggers.includes(elm)) {
-        var selector = elm.getAttribute('data-target');
+        var selector = elm.getAttribute('href');
         collapse(selector, 'toggle');
     }
 }, false);
