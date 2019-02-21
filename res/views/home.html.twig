@@ -62,6 +62,9 @@
                 appId: 'KSTITII7EC',
                 apiKey: 'badccd205e578e64657ae7f880959824',
                 indexName: '{{ algoliaIndex }}',
+                searchParameters: {
+                    hitsPerPage: 10,
+                },
                 searchFunction: function (helper) {
                     var searchResult = document.querySelector('#search-container');
                     if (helper.state.query === '') {
@@ -82,7 +85,6 @@
             search.addWidget(
                 instantsearch.widgets.hits({
                     container: '#search-results',
-                    hitsPerPage: 10,
                     templates: {
                         item: document.querySelector('#search-result-template').innerHTML,
                         empty: document.querySelector('#no-results-template').innerHTML,
@@ -111,6 +113,6 @@
         });
     </script>
 
-    <script src="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.js" onload="init_search();" async></script>
+    <script src="https://cdn.jsdelivr.net/instantsearch.js/2/instantsearch.min.js" onload="init_search();" async></script>
 
 {% endblock %}
