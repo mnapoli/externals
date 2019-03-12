@@ -42,7 +42,7 @@ return [
 
     })),
 
-    'assets.url' => 'assets.externals.io',
+    'assets.url' => 'https://assets.externals.io',
 
     'db.url' => env('DB_URL'),
     Connection::class => function (ContainerInterface $c) {
