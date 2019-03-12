@@ -43,7 +43,8 @@ vendor: composer.lock
 node_modules:
 	yarn install
 
-deploy: cache
+# https://5ydtmmlv0c.execute-api.eu-west-1.amazonaws.com/Prod/
+deploy: cache deploy-static-site
 	set -e
 	composer install --no-dev --classmap-authoritative
 	sam package \
@@ -56,3 +57,7 @@ deploy: cache
 		--template-file .stack.yaml \
 		--stack-name externals \
  		--capabilities CAPABILITY_IAM
+
+deploy-static-site:
+	# http://assets.externals.io.s3-website.eu-west-1.amazonaws.com/
+	aws s3 sync web/dist s3://assets.externals.io --delete --acl public-read
