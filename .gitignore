@@ -8,3 +8,4 @@
 /docker-compose.override.yml
 /data
 /composer.phar
+/.stack.yaml

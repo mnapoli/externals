@@ -12,36 +12,8 @@ if (file_exists(__DIR__ . '/../.env')) {
     $dotenv->load();
 }
 
-// Platform.sh DB config
-$relationships = getenv('PLATFORM_RELATIONSHIPS');
-if ($relationships) {
-    $relationships = json_decode(base64_decode($relationships), true);
-
-    foreach ($relationships['database'] as $endpoint) {
-        if (empty($endpoint['query']['is_master'])) {
-            continue;
-        }
-        $dbUrl = sprintf(
-            'mysql://%s:%s@%s:%s/%s',
-            $endpoint['username'],
-            $endpoint['password'],
-            $endpoint['host'],
-            $endpoint['port'],
-            $endpoint['path']
-        );
-        putenv("DB_URL=$dbUrl");
-    }
-}
-
 // The environment of the app
-$branch = getenv('PLATFORM_BRANCH');
-if ($branch) {
-    // If we are on platform.sh, master is prod, the rest are staging
-    $environment = ($branch === 'master') ? 'prod' : 'staging';
-} else {
-    // Else we use the ENV variable, fallback to prod
-    $environment = getenv('ENV') ?: 'prod';
-}
+$environment = getenv('LAMBDA_TASK_ROOT') ? 'prod' : 'dev';
 
 // Create the application
 $application = new class($environment) extends Application
