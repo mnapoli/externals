@@ -16,7 +16,7 @@ gulp.task('js', function() {
     ])
     .pipe(concat('js/main.min.js'))
     .pipe(uglify())
-    .pipe(gulp.dest('./web/dist'));
+    .pipe(gulp.dest('./web/assets'));
 });
 
 gulp.task('css', function() {
@@ -24,18 +24,18 @@ gulp.task('css', function() {
     .pipe(less())
     .pipe(concat('css/main.min.css'))
     .pipe(cleanCSS())
-    .pipe(gulp.dest('./web/dist'));
+    .pipe(gulp.dest('./web/assets'));
 });
 
 gulp.task('fonts', function () {
     return gulp.src([
         './node_modules/font-awesome/fonts/*.*',
-    ]).pipe(gulp.dest('./web/dist/fonts'));
+    ]).pipe(gulp.dest('./web/assets/fonts'));
 });
 
 gulp.task('clean', function() {
     return gulp.src([
-        './web/dist',
+        './web/assets',
     ],
     {read: false})
     .pipe(clean());

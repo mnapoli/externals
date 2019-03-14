@@ -13,7 +13,7 @@ return [
 
     'debug' => true,
 
-    'assets.url' => '/dist',
+    'assets.url' => '',
 
     'twig.options' => [
         'debug' => get('debug'),

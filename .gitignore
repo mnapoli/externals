@@ -2,7 +2,9 @@
 /vendor/
 /web/vendor/
 /node_modules/
-/web/dist/
+/web/assets/css/
+/web/assets/fonts/
+/web/assets/js/
 /res/config/parameters.php
 /backups/
 /docker-compose.override.yml

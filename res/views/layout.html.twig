@@ -17,16 +17,16 @@
     
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ assetsUrl }}/css/main.min.css?v={{ version }}">
+    <link rel="stylesheet" href="/assets/css/main.min.css?v={{ version }}">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ assetsUrl }}/images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" href="{{ assetsUrl }}/images/favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="{{ assetsUrl }}/images/favicon-16x16.png" sizes="16x16" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/assets/images/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/assets/images/favicon-16x16.png" sizes="16x16" />
 
     <meta name="og:title" content="{{ block('pageTitle') }}">
     <meta name="og:type" content="website">
     <meta name="og:url" content="https://externals.io/">
-    <meta name="og:image" content="{{ assetsUrl }}/images/apple-touch-icon.png">
+    <meta name="og:image" content="/assets/images/apple-touch-icon.png">
     <meta name="og:description" content="#externals - Opening PHP's #internals to the outside">
 
     <meta name="twitter:card" content="summary">
@@ -74,7 +74,7 @@
             <p class="platform_sh_widget">
                 Hosting sponsored by
                 <a title="platform.sh" href="http://platform.sh/?utm_campaign=sponsored_sites&utm_source=externals_io&utm_medium=referral">
-                    <img class="platformsh-logo" src="{{ assetsUrl }}/images/platform.svg" alt="platform.sh logo" style="padding: 0 3px 0 3px;height: 1.2em; vertical-align: text-top;"/></a>
+                    <img class="platformsh-logo" src="/assets/images/platform.svg" alt="platform.sh logo" style="padding: 0 3px 0 3px;height: 1.2em; vertical-align: text-top;"/></a>
                 (<a href="http://platform.sh/?utm_campaign=sponsored_sites&utm_source=externals_io&utm_medium=referral">Continuous Deployment Cloud Hosting</a>). Search sponsored by <a href="https://www.algolia.com">Algolia</a>.
             </p>
             <p>
@@ -85,7 +85,7 @@
     </footer>
 
     {% block scripts %}
-        <script src="{{ assetsUrl }}/js/main.min.js?v={{ version }}"></script>
+        <script src="/assets/js/main.min.js?v={{ version }}"></script>
 
         {% if not debug %}
             {# Google Analytics #}

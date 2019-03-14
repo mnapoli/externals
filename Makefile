@@ -59,5 +59,5 @@ deploy: cache deploy-static-site
  		--capabilities CAPABILITY_IAM
 
 deploy-static-site:
-	# http://assets.externals.io.s3-website.eu-west-1.amazonaws.com/
-	aws s3 sync web/dist s3://assets.externals.io --delete --acl public-read
+	# http://assets.externals.io.s3-website-eu-west-1.amazonaws.com/
+	aws s3 sync web/assets s3://assets.externals.io --delete --acl public-read
