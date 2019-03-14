@@ -62,6 +62,26 @@ Resources:
             Policies:
                 - AWSLambdaVPCAccessExecutionRole # Allows the lambda to access the VPC
 
+    # The S3 bucket that stores the assets
+    Assets:
+        Type: AWS::S3::Bucket
+        Properties:
+            BucketName: externals-assets
+            # Enables static website hosting
+            WebsiteConfiguration:
+                IndexDocument: index.html # Use index.html as the root file
+    # The policy that makes the bucket publicly readable (necessary for a public website)
+    AssetsBucketPolicy:
+        Type: AWS::S3::BucketPolicy
+        Properties:
+            Bucket: !Ref Assets
+            PolicyDocument:
+                Statement:
+                    -   Effect: 'Allow'
+                        Principal: '*' # everyone
+                        Action: 's3:GetObject' # to read
+                        Resource: !Sub '${Assets.Arn}/*' # things in the bucket
+
     # We use CloudFront in front of API Gateway to be able to redirect HTTP to HTTPS
     # because API Gateway does not listen at all to HTTP requests.
     WebsiteCDN:
@@ -82,7 +102,7 @@ Resources:
                     # The assets (S3)
                     -   Id: Assets
                         # Watch out, use s3-website URL (https://stackoverflow.com/questions/15309113/amazon-cloudfront-doesnt-respect-my-s3-website-buckets-index-html-rules#15528757)
-                        DomainName: !Sub 'assets.externals.io.s3-website-${AWS::Region}.amazonaws.com'
+                        DomainName: !Sub '${Assets}.s3-website-${AWS::Region}.amazonaws.com'
                         CustomOriginConfig:
                             OriginProtocolPolicy: 'http-only' # S3 websites only support HTTP
                 # The default behavior is to send everything to AWS Lambda
