@@ -2,6 +2,21 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: 'externals.io'
 
+Globals:
+    Function:
+        Environment:
+            Variables:
+                APP_ENV: prod
+                DB_URL: '{{resolve:ssm:/externals/db_url:1}}'
+                ALGOLIA_APP_ID: KSTITII7EC
+                ALGOLIA_API_KEY: '{{resolve:ssm:/externals/algolia_api_key:2}}'
+                ALGOLIA_INDEX_PREFIX: v2_
+                GITHUB_OAUTH_CLIENT_ID: b75b3226c86d801a95cd
+                GITHUB_OAUTH_CLIENT_SECRET: '{{resolve:ssm:/externals/github_oauth_client_secret:1}}'
+                GITHUB_OAUTH_REDIRECT_URL: 'https://v2.externals.io/login'
+                SENTRY_URL: '{{resolve:ssm:/externals/sentry_url:1}}'
+                SESSION_SECRET_KEY: '{{resolve:ssm:/externals/session_secret_key:1}}'
+
 Resources:
     Website:
         Type: AWS::Serverless::Function
@@ -14,7 +29,7 @@ Resources:
             MemorySize: 1024 # The memory size is related to the pricing and CPU power
             Runtime: provided
             Layers:
-                - 'arn:aws:lambda:eu-west-1:209497400698:layer:php-73-fpm:2'
+                - 'arn:aws:lambda:eu-west-1:209497400698:layer:php-73-fpm:3'
             Events:
                 # The function will match all HTTP URLs
                 HttpRoot:
@@ -49,9 +64,9 @@ Resources:
             Runtime: provided
             Layers:
                 # PHP runtime
-                - 'arn:aws:lambda:eu-west-1:209497400698:layer:php-73:2'
+                - 'arn:aws:lambda:eu-west-1:209497400698:layer:php-73:3'
                 # Console layer
-                - 'arn:aws:lambda:eu-west-1:209497400698:layer:console:2'
+                - 'arn:aws:lambda:eu-west-1:209497400698:layer:console:3'
             VpcConfig:
                 SecurityGroupIds:
                     - sg-09379891e319fda27

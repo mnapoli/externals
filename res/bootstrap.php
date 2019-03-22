@@ -7,13 +7,13 @@ use Stratify\Framework\Application;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-if (file_exists(__DIR__ . '/../.env')) {
+// The environment of the app
+$environment = getenv('APP_ENV') ?: 'dev';
+
+if ($environment === 'dev' && file_exists(__DIR__ . '/../.env')) {
     $dotenv = new Dotenv\Dotenv(__DIR__ . '/../');
     $dotenv->load();
 }
-
-// The environment of the app
-$environment = getenv('LAMBDA_TASK_ROOT') ? 'prod' : 'dev';
 
 // Create the application
 $application = new class($environment) extends Application

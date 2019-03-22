@@ -36,7 +36,7 @@
         "zbateson/mail-mime-parser": "^0.4.3",
         "vlucas/phpdotenv": "^2.4",
         "sentry/sentry": "^1.7",
-        "mnapoli/bref": "~0.3.5",
+        "mnapoli/bref": "~0.3.6",
         "bref/logger": "^0.1.0"
     },
     "require-dev": {
