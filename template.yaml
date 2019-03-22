@@ -154,14 +154,6 @@ Resources:
                         Compress: true # Serve files with gzip for browsers that support it (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/ServingCompressedFiles.html)
                 CustomErrorResponses:
                     # Do not cache HTTP errors
-                    -   ErrorCode: 400
-                        ErrorCachingMinTTL: 0
-                    -   ErrorCode: 403
-                        ErrorCachingMinTTL: 0
-                    -   ErrorCode: 404
-                        ErrorCachingMinTTL: 0
-                    -   ErrorCode: 405
-                        ErrorCachingMinTTL: 0
                     -   ErrorCode: 500
                         ErrorCachingMinTTL: 0
                     -   ErrorCode: 504
@@ -174,9 +166,3 @@ Resources:
                     AcmCertificateArn: arn:aws:acm:us-east-1:416566615250:certificate/807df63b-c1be-464b-8b8e-a1d3d2d661bb
                     # See https://docs.aws.amazon.com/fr_fr/cloudfront/latest/APIReference/API_ViewerCertificate.html
                     SslSupportMethod: 'sni-only'
-
-# Outputs show up in the CloudFormation dashboard
-Outputs:
-    DemoHttpApi:
-        Description: 'URL of our function in the *Prod* environment'
-        Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/'
