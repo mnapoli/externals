@@ -10,9 +10,11 @@ Globals:
                 DB_URL: '{{resolve:ssm:/externals/db_url:1}}'
                 ALGOLIA_APP_ID: KSTITII7EC
                 ALGOLIA_API_KEY: '{{resolve:ssm:/externals/algolia_api_key:2}}'
-                ALGOLIA_INDEX_PREFIX: v2_
-                GITHUB_OAUTH_CLIENT_ID: b75b3226c86d801a95cd
-                GITHUB_OAUTH_CLIENT_SECRET: '{{resolve:ssm:/externals/github_oauth_client_secret:1}}'
+#                ALGOLIA_INDEX_PREFIX: v2_ # prod
+                ALGOLIA_INDEX_PREFIX: dev_ # staging
+#                GITHUB_OAUTH_CLIENT_ID: b75b3226c86d801a95cd # prod
+                GITHUB_OAUTH_CLIENT_ID: 422ae3a54f6ebd43895b # staging
+                GITHUB_OAUTH_CLIENT_SECRET: '{{resolve:ssm:/externals/github_oauth_client_secret:2}}'
                 GITHUB_OAUTH_REDIRECT_URL: 'https://v2.externals.io/login'
                 SENTRY_URL: '{{resolve:ssm:/externals/sentry_url:1}}'
                 SESSION_SECRET_KEY: '{{resolve:ssm:/externals/session_secret_key:1}}'
