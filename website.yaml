@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CDN'
+
+Parameters:
+    ServerlessRestApi:
+        Type: String
+    AssetsBucketName:
+        Type: String
+    DomainName:
+        Type: String
+    CertificateArn:
+        Type: String
+    AssetsUrlPath:
+        Type: String
+        Default: 'assets/*'
+
+Resources:
+
+    # The S3 bucket that stores the assets
+    Assets:
+        Type: AWS::S3::Bucket
+        Description: 'Public bucket that serves website assets'
+        Properties:
+            BucketName: !Ref AssetsBucketName
+            # Enables static website hosting
+            WebsiteConfiguration:
+                IndexDocument: index.html # Use index.html as the root file
+    # The policy that makes the bucket publicly readable (necessary for a public website)
+    AssetsBucketPolicy:
+        Type: AWS::S3::BucketPolicy
+        Properties:
+            Bucket: !Ref Assets
+            PolicyDocument:
+                Statement:
+                    -   Effect: 'Allow'
+                        Principal: '*' # everyone
+                        Action: 's3:GetObject' # to read
+                        Resource: !Sub '${Assets.Arn}/*' # things in the bucket
+
+    # We use CloudFront in front of API Gateway to be able to redirect HTTP to HTTPS
+    # because API Gateway does not listen at all to HTTP requests.
+    WebsiteCDN:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+            DistributionConfig:
+                Enabled: true
+                # Cheapest option by default (https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_DistributionConfig.html)
+                PriceClass: PriceClass_100
+                # Origins are where CloudFront fetches content
+                Origins:
+                    # The website (AWS Lambda)
+                    -   Id: Website
+                        DomainName: !Sub '${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com'
+                        OriginPath: '/Prod'
+                        CustomOriginConfig:
+                            OriginProtocolPolicy: 'https-only' # API Gateway only supports HTTPS
+                    # The assets (S3)
+                    -   Id: Assets
+                        # Watch out, use s3-website URL (https://stackoverflow.com/questions/15309113/amazon-cloudfront-doesnt-respect-my-s3-website-buckets-index-html-rules#15528757)
+                        DomainName: !Sub '${Assets}.s3-website-${AWS::Region}.amazonaws.com'
+                        CustomOriginConfig:
+                            OriginProtocolPolicy: 'http-only' # S3 websites only support HTTP
+                # The default behavior is to send everything to AWS Lambda
+                DefaultCacheBehavior:
+                    AllowedMethods: [GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE]
+                    TargetOriginId: Website # the PHP application
+                    # Disable caching for the PHP application https://aws.amazon.com/premiumsupport/knowledge-center/prevent-cloudfront-from-caching-files/
+                    DefaultTTL: 0
+                    MinTTL: 0
+                    MaxTTL: 0
+                    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloudfront-distribution-forwardedvalues.html
+                    ForwardedValues:
+                        QueryString: true
+                        # We must *not* forward the `Host` header else it messes up API Gateway
+                        Headers:
+                            - 'Accept'
+                            - 'Accept-Language'
+                            - 'Origin'
+                            - 'Referer'
+                    ViewerProtocolPolicy: redirect-to-https
+                CacheBehaviors:
+                    # Assets will be served under the `/assets/` prefix
+                    -   PathPattern: !Ref AssetsUrlPath
+                        TargetOriginId: Assets # the static files on S3
+                        AllowedMethods: [GET, HEAD]
+                        ForwardedValues:
+                            # No need for all that with assets
+                            QueryString: 'false'
+                            Cookies:
+                                Forward: none
+                        ViewerProtocolPolicy: redirect-to-https
+                        Compress: true # Serve files with gzip for browsers that support it (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/ServingCompressedFiles.html)
+                CustomErrorResponses:
+                    # Do not cache HTTP errors
+                    -   ErrorCode: 500
+                        ErrorCachingMinTTL: 0
+                    -   ErrorCode: 504
+                        ErrorCachingMinTTL: 0
+                # Custom domain name
+                Aliases:
+                    - !Ref DomainName
+                ViewerCertificate:
+                    # ARN of the certificate created in ACM
+                    AcmCertificateArn: !Ref CertificateArn
+                    # See https://docs.aws.amazon.com/fr_fr/cloudfront/latest/APIReference/API_ViewerCertificate.html
+                    SslSupportMethod: 'sni-only'
