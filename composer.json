@@ -17,6 +17,7 @@
         "php-di/php-di": "6.0.0-beta3",
         "stratify/framework": "~0.7.1",
         "stratify/twig-module": "~0.3.0",
+        "twig/twig": "~1.35.0",
         "mnapoli/silly": "^1.6",
         "doctrine/dbal": "^2.5",
         "twig/extensions": "^1.0",

@@ -25,6 +25,12 @@ Resources:
             # Enables static website hosting
             WebsiteConfiguration:
                 IndexDocument: index.html # Use index.html as the root file
+            # Enables CORS (e.g. when a JS script loads files from S3)
+            CorsConfiguration:
+                CorsRules:
+                      -   AllowedHeaders: ["*"]
+                          AllowedMethods: [GET]
+                          AllowedOrigins: ["*"]
     # The policy that makes the bucket publicly readable (necessary for a public website)
     AssetsBucketPolicy:
         Type: AWS::S3::BucketPolicy
