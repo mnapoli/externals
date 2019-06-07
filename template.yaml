@@ -61,6 +61,23 @@ Resources:
                 # Console layer
                 - 'arn:aws:lambda:eu-west-1:209497400698:layer:console:6'
 
+    Updater:
+        Type: AWS::Serverless::Function
+        Properties:
+            FunctionName: 'externals-updater'
+            Description: 'externals.io updater'
+            Handler: updater.php
+            Timeout: 900 # in seconds
+            MemorySize: 1024 # The memory size is related to the pricing and CPU power
+            Runtime: provided
+            Layers:
+                - 'arn:aws:lambda:eu-west-1:209497400698:layer:php-73:6'
+            Events:
+                Cron:
+                    Type: Schedule
+                    Properties:
+                        Schedule: rate(1 hour)
+
     WebsiteSetup:
         Type: AWS::CloudFormation::Stack
         Properties:
