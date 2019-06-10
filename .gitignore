@@ -11,3 +11,4 @@
 /data
 /composer.phar
 /.stack.yaml
+/.serverless/

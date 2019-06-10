@@ -2663,6 +2663,11 @@ sequencify@~0.0.7:
   resolved "https://registry.yarnpkg.com/sequencify/-/sequencify-0.0.7.tgz#90cff19d02e07027fd767f5ead3e7b95d1e7380c"
   integrity sha1-kM/xnQLgcCf9dn9erT57ldHnOAw=
 
+serverless-pseudo-parameters@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/serverless-pseudo-parameters/-/serverless-pseudo-parameters-2.4.0.tgz#bf5ebe6948f60bbf69c7dc2cf4bd2a5ee7dc6761"
+  integrity sha512-lb9R62PUFdEAbbYH7pe1wzR7vtIpa8YI8OVcQ5LlLyE0+AxWG4bwEw33X5LE8+5oLwTy57Y/EevnxKnMeyiXxw==
+
 set-value@^0.4.3:
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/set-value/-/set-value-0.4.3.tgz#7db08f9d3d22dc7f78e53af3c3bf4666ecdfccf1"
