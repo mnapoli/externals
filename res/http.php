@@ -140,7 +140,7 @@ return pipe([
             if (!$user) {
                 return new TextResponse('You must be authenticated', 401);
             }
-            $vote = (int) $request->getParsedBody()['value'] ?? 0;
+            $vote = (int) ($request->getParsedBody()['value'] ?? 0);
             if ($vote > 1 || $vote < -1) {
                 return new TextResponse('Invalid value', 400);
             }
