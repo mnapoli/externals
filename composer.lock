@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6acca53b89e56bfb3cc46b9760b6efa3",
+    "content-hash": "e1d519a4bc338c8b3cb1f91b68185189",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -195,17 +195,76 @@
             "time": "2019-05-30T18:59:53+00:00"
         },
         {
-            "name": "bref/logger",
-            "version": "0.1.0",
+            "name": "bref/bref",
+            "version": "0.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/brefphp/logger.git",
-                "reference": "744e7094535650d2925f6e0b4cb018679aebf5f5"
+                "url": "https://github.com/brefphp/bref.git",
+                "reference": "0de7ded43431d1aa5fc041042b2a038e7030afa4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brefphp/logger/zipball/744e7094535650d2925f6e0b4cb018679aebf5f5",
-                "reference": "744e7094535650d2925f6e0b4cb018679aebf5f5",
+                "url": "https://api.github.com/repos/brefphp/bref/zipball/0de7ded43431d1aa5fc041042b2a038e7030afa4",
+                "reference": "0de7ded43431d1aa5fc041042b2a038e7030afa4",
+                "shasum": ""
+            },
+            "require": {
+                "aws/aws-sdk-php": "^3.44",
+                "ext-curl": "*",
+                "ext-json": "*",
+                "hollodotme/fast-cgi-client": "^2.7",
+                "mnapoli/silly": "^1.7",
+                "php": "^7.2.0",
+                "psr/http-message": "^1.0",
+                "symfony/filesystem": "^3.1|^4.0",
+                "symfony/process": "^3.3|^4.0"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^5.0",
+                "guzzlehttp/guzzle": "^6.3",
+                "phpstan/phpstan": "^0.11.5",
+                "phpunit/phpunit": "^6.5",
+                "zendframework/zend-diactoros": "^1.6|^2.0"
+            },
+            "bin": [
+                "bref"
+            ],
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "Bref\\": "src"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Bref is a framework to write and deploy serverless PHP applications on AWS Lambda.",
+            "homepage": "https://bref.sh",
+            "keywords": [
+                "aws",
+                "bref",
+                "faas",
+                "lambda",
+                "serverless"
+            ],
+            "time": "2019-06-14T08:58:10+00:00"
+        },
+        {
+            "name": "bref/logger",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brefphp/logger.git",
+                "reference": "837b2b7867c09d04d647a4042d86fa873e641c21"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brefphp/logger/zipball/837b2b7867c09d04d647a4042d86fa873e641c21",
+                "reference": "837b2b7867c09d04d647a4042d86fa873e641c21",
                 "shasum": ""
             },
             "require": {
@@ -238,7 +297,7 @@
                 "logger",
                 "psr-3"
             ],
-            "time": "2019-03-06T23:34:36+00:00"
+            "time": "2019-06-27T15:35:13+00:00"
         },
         {
             "name": "dflydev/fig-cookies",
@@ -1378,65 +1437,6 @@
                 "url"
             ],
             "time": "2017-08-17T08:33:35+00:00"
-        },
-        {
-            "name": "mnapoli/bref",
-            "version": "0.3.9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mnapoli/bref.git",
-                "reference": "5987c3a9a1b3127dc4d88b541172fcf481da880b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mnapoli/bref/zipball/5987c3a9a1b3127dc4d88b541172fcf481da880b",
-                "reference": "5987c3a9a1b3127dc4d88b541172fcf481da880b",
-                "shasum": ""
-            },
-            "require": {
-                "aws/aws-sdk-php": "^3.44",
-                "ext-curl": "*",
-                "ext-json": "*",
-                "hollodotme/fast-cgi-client": "^2.7",
-                "mnapoli/silly": "^1.7",
-                "php": "^7.2.0",
-                "psr/http-message": "^1.0",
-                "symfony/filesystem": "^3.1|^4.0",
-                "symfony/process": "^3.3|^4.0"
-            },
-            "require-dev": {
-                "doctrine/coding-standard": "^5.0",
-                "guzzlehttp/guzzle": "^6.3",
-                "phpstan/phpstan": "^0.11.5",
-                "phpunit/phpunit": "^6.5",
-                "zendframework/zend-diactoros": "^1.6|^2.0"
-            },
-            "bin": [
-                "bref"
-            ],
-            "type": "project",
-            "autoload": {
-                "psr-4": {
-                    "Bref\\": "src"
-                },
-                "files": [
-                    "src/functions.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Bref is a framework to write and deploy serverless PHP applications on AWS Lambda.",
-            "homepage": "https://bref.sh",
-            "keywords": [
-                "aws",
-                "bref",
-                "faas",
-                "lambda",
-                "serverless"
-            ],
-            "time": "2019-05-05T09:53:14+00:00"
         },
         {
             "name": "mnapoli/silly",
