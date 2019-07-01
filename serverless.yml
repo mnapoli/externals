@@ -10,18 +10,18 @@ provider:
         DB_URL: ${ssm:/externals/db_url}
         ALGOLIA_APP_ID: KSTITII7EC
         ALGOLIA_API_KEY: ${ssm:/externals/algolia_api_key}
-#       ALGOLIA_INDEX_PREFIX: v2_ # prod
-        ALGOLIA_INDEX_PREFIX: dev_ # staging
-#       GITHUB_OAUTH_CLIENT_ID: b75b3226c86d801a95cd # prod
-        GITHUB_OAUTH_CLIENT_ID: 422ae3a54f6ebd43895b # staging
+        ALGOLIA_INDEX_PREFIX: v2_ # prod
+#        ALGOLIA_INDEX_PREFIX: dev_ # staging
+        GITHUB_OAUTH_CLIENT_ID: b75b3226c86d801a95cd # prod
+#        GITHUB_OAUTH_CLIENT_ID: 422ae3a54f6ebd43895b # staging
         GITHUB_OAUTH_CLIENT_SECRET: ${ssm:/externals/github_oauth_client_secret}
-        GITHUB_OAUTH_REDIRECT_URL: 'https://v2.externals.io/login'
+        GITHUB_OAUTH_REDIRECT_URL: 'https://externals.io/login'
         SENTRY_URL: ${ssm:/externals/sentry_url}
         SESSION_SECRET_KEY: ${ssm:/externals/session_secret_key}
 
 package:
     exclude:
-        - '.git/**'
+        - 'backups/**'
         - 'node_modules/**'
         - 'tests/**'
         - 'var/**'
@@ -141,9 +141,10 @@ resources:
                             ErrorCachingMinTTL: 0
                     # Custom domain name
                     Aliases:
+                        - externals.io
                         - v3.externals.io
                     ViewerCertificate:
                         # ARN of the certificate created in ACM
-                        AcmCertificateArn: arn:aws:acm:us-east-1:416566615250:certificate/807df63b-c1be-464b-8b8e-a1d3d2d661bb
+                        AcmCertificateArn: arn:aws:acm:us-east-1:416566615250:certificate/0f28e63d-d3a9-4578-9f8b-14347bfe8326
                         # See https://docs.aws.amazon.com/fr_fr/cloudfront/latest/APIReference/API_ViewerCertificate.html
                         SslSupportMethod: 'sni-only'

@@ -8,7 +8,5 @@
 /res/config/parameters.php
 /backups/
 /docker-compose.override.yml
-/data
 /composer.phar
-/.stack.yaml
 /.serverless/
