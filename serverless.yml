@@ -33,7 +33,7 @@ functions:
         description: 'externals.io website'
         timeout: 30 # in seconds (API Gateway has a timeout of 30 seconds)
         layers:
-            - 'arn:aws:lambda:eu-west-1:209497400698:layer:php-73-fpm:6'
+            - 'arn:aws:lambda:eu-west-1:209497400698:layer:php-73-fpm:7'
         events:
             -   http: 'ANY /'
             -   http: 'ANY {proxy+}'
@@ -43,7 +43,7 @@ functions:
         description: 'externals.io updater'
         timeout: 900
         layers:
-            - 'arn:aws:lambda:eu-west-1:209497400698:layer:php-73:6'
+            - 'arn:aws:lambda:eu-west-1:209497400698:layer:php-73:7'
         events:
             -   schedule: rate(15 minutes)
 
@@ -120,6 +120,8 @@ resources:
                                 - 'Accept-Language'
                                 - 'Origin'
                                 - 'Referer'
+                            Cookies:
+                                Forward: all
                         ViewerProtocolPolicy: redirect-to-https
                     CacheBehaviors:
                         # Assets will be served under the `/assets/` prefix
