@@ -45,7 +45,7 @@ functions:
         layers:
             - 'arn:aws:lambda:eu-west-1:209497400698:layer:php-73:6'
         events:
-            -   schedule: rate(2 hours)
+            -   schedule: rate(15 minutes)
 
 plugins:
     - serverless-pseudo-parameters
