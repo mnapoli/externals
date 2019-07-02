@@ -24,7 +24,7 @@ package:
         - 'backups/**'
         - 'node_modules/**'
         - 'tests/**'
-        - 'var/**'
+        - 'var/log/**'
         - 'web/assets/**'
 
 functions:

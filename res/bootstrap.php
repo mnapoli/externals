@@ -36,7 +36,7 @@ $application = new class($environment) extends Application
             $containerBuilder->enableDefinitionCache();
         }
         if ($this->getEnvironment() !== 'dev') {
-//            $containerBuilder->enableCompilation(__DIR__ . '/../var/cache/' . $this->getEnvironment());
+            $containerBuilder->enableCompilation('/tmp/phpdi');
         }
     }
 };
