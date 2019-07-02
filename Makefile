@@ -43,7 +43,6 @@ vendor: composer.lock
 node_modules:
 	yarn install
 
-# https://5ydtmmlv0c.execute-api.eu-west-1.amazonaws.com/Prod/
 deploy: cache
 	set -e
 	composer install --no-dev --classmap-authoritative
@@ -51,5 +50,4 @@ deploy: cache
 	make deploy-static-site
 
 deploy-static-site:
-	# http://assets.externals.io.s3-website-eu-west-1.amazonaws.com/
 	aws s3 sync web s3://externals-assets-prod --delete
