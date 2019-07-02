@@ -38,6 +38,7 @@ functions:
             -   http: 'ANY /'
             -   http: 'ANY {proxy+}'
 
+    # This script fetches emails from the mailing list and updates our database
     updater:
         handler: updater.php
         description: 'externals.io updater'
@@ -48,6 +49,7 @@ functions:
             -   schedule: rate(15 minutes)
 
 plugins:
+    # This lets us use `#{Assets.Arn}` variables
     - serverless-pseudo-parameters
 
 resources:
