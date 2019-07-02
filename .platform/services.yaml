@@ -1,4 +1,0 @@
-database:
-    # We need 10.2 or above to support utf8mb4 with indexes on varchar(255)
-    type: mysql:10.2
-    disk: 2048
