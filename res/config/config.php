@@ -42,8 +42,6 @@ return [
 
     })),
 
-    'assets.url' => '',
-
     'db.url' => env('DB_URL'),
     Connection::class => function (ContainerInterface $c) {
         return DriverManager::getConnection([
@@ -66,7 +64,6 @@ return [
     'twig.globals' => [
         'debug' => get('debug'),
         'version' => get('version'),
-        'assetsUrl' => get('assets.url'),
     ],
     'twig.extensions' => add([
         get(Twig_Extensions_Extension_Date::class),

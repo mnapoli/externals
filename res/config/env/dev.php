@@ -13,8 +13,6 @@ return [
 
     'debug' => true,
 
-    'assets.url' => '',
-
     'twig.options' => [
         'debug' => get('debug'),
         'cache' => false,
