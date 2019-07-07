@@ -1,6 +1,7 @@
 <?php
 declare(strict_types = 1);
 
+use Bref\Logger\StderrLogger;
 use function DI\add;
 use function DI\autowire;
 use function DI\create;
@@ -20,22 +21,17 @@ use League\CommonMark\Environment;
 use League\CommonMark\HtmlRenderer;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Github;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use PSR7Session\Http\SessionMiddleware;
-use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
-use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 
 return [
 
     'maintenance' => env('MAINTENANCE', false),
     'debug' => false,
-    'path.cache' => __DIR__ . '/../../var/cache',
-    'path.logs' => __DIR__ . '/../../var/log',
+    'path.cache' => '/tmp/cache',
 
-    'version' => env('PLATFORM_TREE_ID', factory(function () {
+    'version' => env('EXTERNALS_APP_VERSION', factory(function () {
         $rev = shell_exec('git rev-parse HEAD');
 
         if (null !== $rev) {
@@ -43,7 +39,6 @@ return [
         }
 
         return null;
-
     })),
 
     'db.url' => env('DB_URL'),
@@ -52,6 +47,9 @@ return [
             'url' => $c->get('db.url'),
             'charset' => 'utf8mb4',
             'platform' => new CustomMySQLPlatform,
+            'driverOptions' => [
+                PDO::ATTR_TIMEOUT => 10,
+            ],
         ]);
     },
 
@@ -71,16 +69,7 @@ return [
         get(GravatarExtension::class),
     ]),
 
-    LoggerInterface::class => create(Logger::class)
-        ->constructor('app', get('logger.handlers')),
-    'logger.handlers' => [
-        get(ConsoleHandler::class),
-        get('logger.file_handler'),
-    ],
-    ConsoleHandler::class => create()
-        ->method('setFormatter', get(ConsoleFormatter::class)),
-    'logger.file_handler' => create(StreamHandler::class)
-        ->constructor(string('{path.logs}/app.log'), Logger::INFO),
+    LoggerInterface::class => create(StderrLogger::class),
 
     DocParser::class => function (ContainerInterface $c) {
         return new DocParser($c->get(Environment::class));

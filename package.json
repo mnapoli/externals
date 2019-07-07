@@ -2,11 +2,12 @@
     "name": "externals",
     "main": "gulpfile.js",
     "dependencies": {
-        "gulp": "^3.9.1",
-        "jquery": "^3.2.1",
         "bootstrap": "^3.3.7",
         "font-awesome": "^4.7.0",
-        "moment": "^2.18.1"
+        "gulp": "^3.9.1",
+        "jquery": "^3.2.1",
+        "moment": "^2.18.1",
+        "serverless-pseudo-parameters": "^2.4.0"
     },
     "devDependencies": {
         "gulp-clean": "^0.3.2",

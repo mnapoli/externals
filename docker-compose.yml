@@ -30,7 +30,6 @@ services:
         gid: "1001"
     user: localUser
     volumes:
-        - ./data/composer:/home/localUser/.composer
         - ./:/var/www/html
     links:
       - db

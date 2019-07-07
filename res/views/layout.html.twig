@@ -17,16 +17,16 @@
     
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
 
-    <link rel="stylesheet" href="/dist/css/main.min.css?v={{ version }}">
+    <link rel="stylesheet" href="/assets/css/main.min.css?v={{ version }}">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/assets/images/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/assets/images/favicon-16x16.png" sizes="16x16" />
 
     <meta name="og:title" content="{{ block('pageTitle') }}">
     <meta name="og:type" content="website">
     <meta name="og:url" content="https://externals.io/">
-    <meta name="og:image" content="/images/apple-touch-icon.png">
+    <meta name="og:image" content="/assets/images/apple-touch-icon.png">
     <meta name="og:description" content="#externals - Opening PHP's #internals to the outside">
 
     <meta name="twitter:card" content="summary">
@@ -69,23 +69,24 @@
 
     <footer>
         <div class="container">
-            <p>Contribute to the project on GitHub: <a href="https://github.com/mnapoli/externals" target="_blank">mnapoli/externals</a></p>
-            <p>Development sponsored by <a href="https://prettyci.com/" title="PHP CI for coding standards using CodeSniffer and php-cs-fixer">PrettyCI ❤</a>.</p>
-            <p class="platform_sh_widget">
-                Hosting sponsored by
-                <a title="platform.sh" href="http://platform.sh/?utm_campaign=sponsored_sites&utm_source=externals_io&utm_medium=referral">
-                    <img class="platformsh-logo" src="/images/platform.svg" alt="platform.sh logo" style="padding: 0 3px 0 3px;height: 1.2em; vertical-align: text-top;"/></a>
-                (<a href="http://platform.sh/?utm_campaign=sponsored_sites&utm_source=externals_io&utm_medium=referral">Continuous Deployment Cloud Hosting</a>). Search sponsored by <a href="https://www.algolia.com">Algolia</a>.
+            <p>Contribute to the project on GitHub: <a href="https://github.com/mnapoli/externals">mnapoli/externals</a></p>
+            <p>
+                Externals is a serverless application deployed with <a href="https://bref.sh/" title="Serverless PHP applications">Bref</a>
+                and sponsored by <a title="Serverless consulting company" href="https://null.tc/?utm_source=externals">null ❤</a>
             </p>
+            <p>Search sponsored by <a href="https://www.algolia.com">Algolia</a></p>
             <p>
                 <strong>About data:</strong> if you login using GitHub, no personal data (or GitHub token) will be stored.<br>
                 The only thing stored is your GitHub ID, username and which threads/emails you have already read.
+            </p>
+            <p>
+                Check out our product <a href="https://prettyci.com/?utm_source=externals" title="PHP CI for coding standards using CodeSniffer and php-cs-fixer">PrettyCI</a>.
             </p>
         </div>
     </footer>
 
     {% block scripts %}
-        <script src="/dist/js/main.min.js?v={{ version }}"></script>
+        <script src="/assets/js/main.min.js?v={{ version }}"></script>
 
         {% if not debug %}
             {# Google Analytics #}
