@@ -46,7 +46,7 @@ node_modules:
 deploy: cache
 	set -e
 	composer install --no-dev --classmap-authoritative
-	serverless deploy
+	export EXTERNALS_APP_VERSION=$$(date +%s) && serverless deploy
 	make deploy-static-site
 
 deploy-static-site:

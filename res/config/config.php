@@ -31,7 +31,7 @@ return [
     'debug' => false,
     'path.cache' => '/tmp/cache',
 
-    'version' => env('AWS_LAMBDA_FUNCTION_VERSION', factory(function () {
+    'version' => env('EXTERNALS_APP_VERSION', factory(function () {
         $rev = shell_exec('git rev-parse HEAD');
 
         if (null !== $rev) {
@@ -39,7 +39,6 @@ return [
         }
 
         return null;
-
     })),
 
     'db.url' => env('DB_URL'),
