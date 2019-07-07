@@ -1,5 +1,4 @@
 {
-    "name": "externals",
     "main": "gulpfile.js",
     "dependencies": {
         "bootstrap": "^3.3.7",
