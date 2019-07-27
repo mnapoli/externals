@@ -7,6 +7,5 @@
 /web/assets/js/
 /res/config/parameters.php
 /backups/
-/docker-compose.override.yml
 /composer.phar
 /.serverless/

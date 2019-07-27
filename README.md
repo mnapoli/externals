@@ -34,13 +34,7 @@ To recompile the assets if you change them, run `make assets`. Assets are automa
 
 ## Setup via docker
 
-* clone the repository
-* run a `make docker-up`
-* when the containers are all up and running execute a `make init` in another window
-
-You can customize the ports used in the `docker-compose.override.yml` file.
-
-Some commands are available : 
-
-* `./docker/bin/mysql` : access to the database
-* `./docker/bin/bash` : run a cli to execute some commands
+- clone the repository
+- run `docker-compose up`
+- run `docker-compose run cli php /var/task/console db --force` to initialize the database
+- when the containers are all up and running execute a `make init` in another window
