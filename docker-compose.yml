@@ -41,4 +41,4 @@ services:
             DB_URL: mysql://externals:externals@db/externals
         links:
             - db
-        command: 'false'
+        entrypoint: php
