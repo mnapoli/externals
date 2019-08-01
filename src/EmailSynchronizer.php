@@ -257,11 +257,13 @@ class EmailSynchronizer
             // We didn't find the thread, let's move on
             return null;
         }
-        // If the email is not a thread root then we return the thread root ID
+        // If getThreadId() is not null that means $email is inside a thread (but not the root)
         if ($email->getThreadId()) {
+            // Then we return the thread root ID
             return $email->getThreadId();
         }
 
+        // In the other case that means that $email is the thread root
         return $email->getId();
     }
 }
