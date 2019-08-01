@@ -211,7 +211,7 @@ SQL;
             'datetime',
             'string',
             'string',
-            'integer',
+            'string',
         ]);
     }
 
