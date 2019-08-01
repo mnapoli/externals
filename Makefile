@@ -47,7 +47,7 @@ deploy: cache
 	set -e
 	composer install --no-dev --classmap-authoritative
 	export EXTERNALS_APP_VERSION=$$(date +%s) && serverless deploy
-	make deploy-static-site
+	make deploy-assets
 
-deploy-static-site:
+deploy-assets:
 	aws s3 sync web s3://externals-assets-prod --delete
