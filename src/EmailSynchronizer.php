@@ -254,7 +254,7 @@ class EmailSynchronizer
         try {
             $email = $this->emailRepository->getById($inReplyTo);
         } catch (NotFound $e) {
-            // We did find the thread, let's move on
+            // We didn't find the thread, let's move on
             return null;
         }
         // If the email is not a thread root then we return the thread root ID
