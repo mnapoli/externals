@@ -157,18 +157,40 @@ class EmailSynchronizer
 
         $emailId = $parsedDocument->getHeaderValue('message-id');
 
-        // Reply to
-        $threadId = $emailId;
+        // Extract the message we're replying to from the "In-Reply-To" header
         $inReplyTo = null;
-        $references = $parsedDocument->getHeaderValue('references');
+        $inReplyToHeader = $parsedDocument->getHeaderValue('In-Reply-To');
+        if ($inReplyToHeader) {
+            $inReplyToHeader = preg_split('/(?<=>)/', $inReplyToHeader);
+            $inReplyToHeader = array_filter(array_map('trim', $inReplyToHeader));
+            // Take the first item
+            if (! empty($inReplyToHeader)) {
+                /** @var string $inReplyTo */
+                $inReplyTo = reset($inReplyToHeader);
+            }
+        }
+        // Extract the thread ID from the "references" header
+        $threadId = null;
+        $references = $parsedDocument->getHeaderValue('References');
         if ($references) {
             $references = preg_split('/(?<=>)/', $references);
             $references = array_filter(array_map('trim', $references));
-            // Take the last item (the direct parent)
             if (! empty($references)) {
                 $threadId = reset($references);
-                $inReplyTo = end($references);
+                if (!$inReplyTo) {
+                    // In old mails the `In-Reply-To` header didn't exist, instead it was at the end of the references
+                    // Example: https://externals.io/message/2536#2784
+                    $inReplyTo = end($references);
+                }
             }
+        }
+        // We know it is a reply to an email but we weren't able to find the thread ID: let's find it from our database
+        if ($threadId === null && $inReplyTo !== null) {
+            $threadId = $this->findEmailThreadId($inReplyTo);
+        }
+        // No thread ID: this is a new thread
+        if ($threadId === null) {
+            $threadId = $emailId;
         }
 
         $date = $this->parseDateTime($parsedDocument);
@@ -225,5 +247,21 @@ class EmailSynchronizer
         $date->setTimezone(new DateTimeZone('UTC'));
 
         return $date;
+    }
+
+    private function findEmailThreadId(string $inReplyTo): ?string
+    {
+        try {
+            $email = $this->emailRepository->getById($inReplyTo);
+        } catch (NotFound $e) {
+            // We did find the thread, let's move on
+            return null;
+        }
+        // If the email is not a thread root then we return the thread root ID
+        if ($email->getThreadId()) {
+            return $email->getThreadId();
+        }
+
+        return $email->getId();
     }
 }

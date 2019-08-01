@@ -1,12 +1,16 @@
 <?php
 declare(strict_types = 1);
 
+use Bref\Logger\StderrLogger;
 use Dflydev\FigCookies\SetCookie;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use PSR7Session\Http\SessionMiddleware;
 use PSR7Session\Time\SystemCurrentTime;
+use function DI\create;
 use function DI\get;
 
 return [
@@ -20,6 +24,9 @@ return [
     ],
 
     'algolia.index_prefix' => 'dev_',
+
+    LoggerInterface::class => create(StderrLogger::class)
+        ->constructor(LogLevel::INFO),
 
     // Allows using the session without HTTPS (for dev purposes)
     SessionMiddleware::class => function (ContainerInterface $c) {
