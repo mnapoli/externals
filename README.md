@@ -4,7 +4,7 @@
 
 Requirements (TODO: Vagrant box):
 
-- PHP 7.1 or above
+- PHP 7.3 or above
 - NPM
 - Gulp (install with `npm install gulp-cli -g`)
 - MySQL database
