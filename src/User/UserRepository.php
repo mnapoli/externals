@@ -1,19 +1,12 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\User;
 
 use Doctrine\DBAL\Connection;
-use Externals\NotFound;
 
-/**
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
- */
 class UserRepository
 {
-    /**
-     * @var Connection
-     */
+    /** @var Connection */
     private $db;
 
     public function __construct(Connection $db)
@@ -21,7 +14,7 @@ class UserRepository
         $this->db = $db;
     }
 
-    public function getOrCreate(string $githubId, string $name) : User
+    public function getOrCreate(string $githubId, string $name): User
     {
         $userData = $this->db->fetchAssoc('SELECT * FROM users WHERE githubId = ?', [$githubId]);
 
@@ -39,7 +32,7 @@ class UserRepository
         return new User($id, $githubId, $name);
     }
 
-    public function getUserCount() : int
+    public function getUserCount(): int
     {
         return (int) $this->db->fetchColumn('SELECT COUNT(*) FROM users');
     }

@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals;
 
@@ -21,50 +20,35 @@ use ZBateson\MailMimeParser\Header\DateHeader;
 use ZBateson\MailMimeParser\MailMimeParser;
 use ZBateson\MailMimeParser\Message;
 
-/**
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
- */
 class EmailSynchronizer
 {
     /**
      * Some articles that should never
      * be attempted to be fetched.
      */
-    const BROKEN_MESSAGES = [
+    public const BROKEN_MESSAGES = [
         992,
         27418,
         69049,
         69050,
     ];
 
-    /**
-     * @var EmailRepository
-     */
+    /** @var EmailRepository */
     private $emailRepository;
 
-    /**
-     * @var EmailSubjectParser
-     */
+    /** @var EmailSubjectParser */
     private $subjectParser;
 
-    /**
-     * @var EmailContentParser
-     */
+    /** @var EmailContentParser */
     private $contentParser;
 
-    /**
-     * @var LoggerInterface
-     */
+    /** @var LoggerInterface */
     private $logger;
 
-    /**
-     * @var SearchIndex
-     */
+    /** @var SearchIndex */
     private $searchIndex;
 
-    /**
-     * @var \Doctrine\DBAL\Connection
-     */
+    /** @var \Doctrine\DBAL\Connection */
     private $db;
 
     public function __construct(
@@ -83,7 +67,7 @@ class EmailSynchronizer
         $this->db = $db;
     }
 
-    public function synchronize(int $maxNumberOfEmailsToSynchronize = null)
+    public function synchronize(?int $maxNumberOfEmailsToSynchronize = null): void
     {
         $client = new Client(new Connection('news.php.net', 119));
         $client->connect();
@@ -118,7 +102,9 @@ class EmailSynchronizer
 
             $this->synchronizeEmail($number, $rawContent);
 
-            if (($maxNumberOfEmailsToSynchronize) !== null && ($count >= $maxNumberOfEmailsToSynchronize)) break;
+            if ($maxNumberOfEmailsToSynchronize !== null && ($count >= $maxNumberOfEmailsToSynchronize)) {
+                break;
+            }
         }
 
         $client->disconnect();
@@ -129,15 +115,15 @@ class EmailSynchronizer
         }
     }
 
-    public function synchronizeEmail(int $number, string $source)
+    public function synchronizeEmail(int $number, string $source): void
     {
         // Check that the string is valid UTF-8, else we cannot store it in database or do anything with it
-        if (!mb_check_encoding($source, 'UTF-8')) {
+        if (! mb_check_encoding($source, 'UTF-8')) {
             $this->logger->warning("Cannot synchronize message $number because it contains invalid UTF-8 characters");
             return;
         }
 
-        $mailParser = new MailMimeParser();
+        $mailParser = new MailMimeParser;
         $parsedDocument = $mailParser->parse($source);
 
         $subject = $this->subjectParser->sanitize($parsedDocument->getHeaderValue('subject'));
@@ -146,7 +132,7 @@ class EmailSynchronizer
         // We don't use the special AddressHeader class because it doesn't seem to parse the
         // person's name at all
         $fromHeader = $parsedDocument->getHeader('from');
-        if (!$fromHeader) {
+        if (! $fromHeader) {
             $this->logger->warning("Cannot synchronize message $number because it contains no 'from' header");
             return;
         }
@@ -177,7 +163,7 @@ class EmailSynchronizer
             $references = array_filter(array_map('trim', $references));
             if (! empty($references)) {
                 $threadId = reset($references);
-                if (!$inReplyTo) {
+                if (! $inReplyTo) {
                     // In old mails the `In-Reply-To` header didn't exist, instead it was at the end of the references
                     // Example: https://externals.io/message/2536#2784
                     $inReplyTo = end($references);
@@ -194,7 +180,7 @@ class EmailSynchronizer
         }
 
         $date = $this->parseDateTime($parsedDocument);
-        if (!$date) {
+        if (! $date) {
             $this->logger->warning("Cannot synchronize message $number because it contains an invalid date");
             return;
         }
@@ -211,7 +197,7 @@ class EmailSynchronizer
             $inReplyTo
         );
 
-        $this->db->transactional(function () use ($newEmail) {
+        $this->db->transactional(function () use ($newEmail): void {
             try {
                 $this->emailRepository->add($newEmail);
             } catch (UniqueConstraintViolationException $e) {
@@ -224,10 +210,7 @@ class EmailSynchronizer
         });
     }
 
-    /**
-     * @return \DateTimeInterface|null
-     */
-    private function parseDateTime(Message $parsedDocument)
+    private function parseDateTime(Message $parsedDocument): ?\DateTimeInterface
     {
         $dateHeader = $parsedDocument->getHeader('date');
 
@@ -238,7 +221,7 @@ class EmailSynchronizer
         // Some dates cannot be parsed using the standard format, for example "13 Mar 2003 12:44:07 -0500"
         try {
             $date = $date ?: new \DateTime($dateHeader->getValue());
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // Some dates cannot be parsed
             return null;
         }

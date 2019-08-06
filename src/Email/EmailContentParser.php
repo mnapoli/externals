@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\Email;
 
@@ -7,30 +6,20 @@ use League\CommonMark\DocParser;
 use League\CommonMark\HtmlRenderer;
 use Misd\Linkify\Linkify;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
-/**
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
- */
 class EmailContentParser
 {
-    /**
-     * @var Linkify
-     */
+    /** @var Linkify */
     private $linkify;
 
-    /**
-     * @var DocParser
-     */
+    /** @var DocParser */
     private $markdownParser;
 
-    /**
-     * @var HtmlRenderer
-     */
+    /** @var HtmlRenderer */
     private $htmlRenderer;
 
-    /**
-     * @var LoggerInterface
-     */
+    /** @var LoggerInterface */
     private $logger;
 
     public function __construct(
@@ -45,7 +34,7 @@ class EmailContentParser
         $this->logger = $logger;
     }
 
-    public function parse(string $content) : string
+    public function parse(string $content): string
     {
         // Fix for CommonMark (the standard) issue with <? characters
         // @see https://github.com/mnapoli/externals/issues/15
@@ -63,7 +52,7 @@ class EmailContentParser
 
         try {
             $content = $this->htmlRenderer->renderBlock($this->markdownParser->parse($content));
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->warning('Unable to parse email content as Markdown: ' . $e->getMessage(), [
                 'exception' => $e,
                 'text' => $content,
@@ -82,9 +71,9 @@ class EmailContentParser
         return $content;
     }
 
-    private function parsePhpFunctions(string $content) : string
+    private function parsePhpFunctions(string $content): string
     {
-        return preg_replace_callback('/\s([a-zA-Z0-9_]+)\(\)/', function ($matches) : string {
+        return preg_replace_callback('/\s([a-zA-Z0-9_]+)\(\)/', function ($matches): string {
             $function = $matches[1];
             if (function_exists($function)) {
                 return " `$function()`";
@@ -93,9 +82,9 @@ class EmailContentParser
         }, $content);
     }
 
-    private function parsePhpConstants(string $content) : string
+    private function parsePhpConstants(string $content): string
     {
-        return preg_replace_callback('/\s([A-Z_]+)\s/', function ($matches) : string {
+        return preg_replace_callback('/\s([A-Z_]+)\s/', function ($matches): string {
             $name = $matches[1];
             if (defined($name)) {
                 return " `$name` ";
@@ -104,7 +93,7 @@ class EmailContentParser
         }, $content);
     }
 
-    private function stripMailingListFooter(string $content)
+    private function stripMailingListFooter(string $content): string
     {
         $footer = [
             'PHP Internals - PHP Runtime Development Mailing List',
@@ -113,7 +102,7 @@ class EmailContentParser
         return str_replace($footer, '', $content);
     }
 
-    private function stripTrailingUnindentedQuotation(string $content) : string
+    private function stripTrailingUnindentedQuotation(string $content): string
     {
         return preg_replace('/
                 # At least 2 line breaks
@@ -126,7 +115,7 @@ class EmailContentParser
             /sx', '', $content);
     }
 
-    private function stripQuoteHeaders(string $content) : string
+    private function stripQuoteHeaders(string $content): string
     {
         return preg_replace('/^([> ]*)On .+, .+ wrote:\r?$/m', '$1', $content);
     }

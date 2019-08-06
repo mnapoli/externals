@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\Application\Middleware;
 
@@ -13,14 +12,10 @@ use Zend\Diactoros\Response\HtmlResponse;
  */
 class MaintenanceMiddleware implements Middleware
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $maintenance;
 
-    /**
-     * @var \Twig_Environment
-     */
+    /** @var \Twig_Environment */
     private $twig;
 
     public function __construct(bool $maintenance, \Twig_Environment $twig)
@@ -29,7 +24,7 @@ class MaintenanceMiddleware implements Middleware
         $this->twig = $twig;
     }
 
-    public function __invoke(ServerRequestInterface $request, callable $next) : ResponseInterface
+    public function __invoke(ServerRequestInterface $request, callable $next): ResponseInterface
     {
         if ($this->maintenance) {
             return new HtmlResponse($this->twig->render('@app/maintenance.html.twig'));

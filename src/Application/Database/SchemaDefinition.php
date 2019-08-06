@@ -1,16 +1,12 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\Application\Database;
 
 use Doctrine\DBAL\Schema\Schema;
 
-/**
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
- */
 class SchemaDefinition
 {
-    public function define(Schema $schema)
+    public function define(Schema $schema): void
     {
         // Emails tables
         $emailsTable = $schema->createTable('emails');

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Externals\Email;
 
@@ -9,44 +9,34 @@ namespace Externals\Email;
  */
 class EmailAddress
 {
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     private $email;
 
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     private $name;
 
-    public function __construct(string $email = null, string $name = null)
+    public function __construct(?string $email = null, ?string $name = null)
     {
         $this->email = $email;
         $this->name = $name;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function getNameOrEmail() : string
+    public function getNameOrEmail(): string
     {
         return $this->name ?: $this->email;
     }
 
-    public function __toString() : string
+    public function __toString(): string
     {
         if ($this->name === null) {
             return $this->email;

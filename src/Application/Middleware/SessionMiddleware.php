@@ -1,24 +1,19 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\Application\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Stratify\Http\Middleware\Middleware;
 use PSR7Session\Http\SessionMiddleware as Psr7Middleware;
+use Stratify\Http\Middleware\Middleware;
 use Zend\Diactoros\Response\EmptyResponse;
 
 /**
  * Creates and set a session object in the request.
- *
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
 class SessionMiddleware implements Middleware
 {
-    /**
-     * @var Psr7Middleware
-     */
+    /** @var Psr7Middleware */
     private $middleware;
 
     public function __construct(Psr7Middleware $middleware)
@@ -26,8 +21,8 @@ class SessionMiddleware implements Middleware
         $this->middleware = $middleware;
     }
 
-    public function __invoke(ServerRequestInterface $request, callable $next) : ResponseInterface
+    public function __invoke(ServerRequestInterface $request, callable $next): ResponseInterface
     {
-        return ($this->middleware)($request, new EmptyResponse(), $next);
+        return ($this->middleware)($request, new EmptyResponse, $next);
     }
 }

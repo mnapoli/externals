@@ -1,26 +1,16 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\User;
 
-/**
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
- */
 class User implements \JsonSerializable
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     private $id;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $githubId;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $name;
 
     public function __construct(int $id, string $githubId, string $name)
@@ -47,9 +37,8 @@ class User implements \JsonSerializable
 
     /**
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return string
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,
@@ -58,7 +47,7 @@ class User implements \JsonSerializable
         ];
     }
 
-    public static function fromData($data)
+    public static function fromData(?array $data): ?self
     {
         if ($data === null) {
             return null;

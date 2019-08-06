@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\Application\Controller;
 
@@ -8,30 +7,22 @@ use Externals\User\UserRepository;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GithubResourceOwner;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use PSR7Session\Http\SessionMiddleware;
 use Twig_Environment;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 
-/**
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
- */
 class UserController
 {
-    /**
-     * @var UserRepository
-     */
+    /** @var UserRepository */
     private $userRepository;
 
-    /**
-     * @var Twig_Environment
-     */
+    /** @var Twig_Environment */
     private $twig;
 
-    /**
-     * @var AbstractProvider
-     */
+    /** @var AbstractProvider */
     private $authProvider;
 
     public function __construct(UserRepository $userRepository, Twig_Environment $twig, AbstractProvider $authProvider)
@@ -41,7 +32,7 @@ class UserController
         $this->authProvider = $authProvider;
     }
 
-    public function login(ServerRequestInterface $request)
+    public function login(ServerRequestInterface $request): ResponseInterface
     {
         newrelic_name_transaction('login');
 
@@ -54,7 +45,7 @@ class UserController
         }
 
         $code = $request->getQueryParams()['code'] ?? null;
-        if (!$code) {
+        if (! $code) {
             // Get an authorization code from GitHub
             $redirectUrl = $this->authProvider->getAuthorizationUrl();
             $state = $this->authProvider->getState();
@@ -91,7 +82,7 @@ class UserController
         return new RedirectResponse('/');
     }
 
-    public function logout(ServerRequestInterface $request)
+    public function logout(ServerRequestInterface $request): RedirectResponse
     {
         newrelic_name_transaction('logout');
         $session = $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);

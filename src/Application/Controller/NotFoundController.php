@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\Application\Controller;
 
@@ -7,14 +6,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
-/**
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
- */
 class NotFoundController
 {
-    /**
-     * @var \Twig_Environment
-     */
+    /** @var \Twig_Environment */
     private $twig;
 
     public function __construct(\Twig_Environment $twig)
@@ -22,7 +16,7 @@ class NotFoundController
         $this->twig = $twig;
     }
 
-    public function __invoke(ServerRequestInterface $request) : ResponseInterface
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         newrelic_name_transaction('404');
         $response = new HtmlResponse($this->twig->render('@app/404.html.twig', [

@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\Test\Email;
 
@@ -9,9 +8,7 @@ use Stratify\Framework\Application;
 
 class EmailContentParserTest extends TestCase
 {
-    /**
-     * @var EmailContentParser
-     */
+    /** @var EmailContentParser */
     private $parser;
 
     public function setUp()

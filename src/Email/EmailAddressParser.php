@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Externals\Email;
 
@@ -8,25 +7,18 @@ namespace Externals\Email;
  * package wouldn't really make sense (it's a whole application) and it would require *a lot* of extra
  * Composer dependencies for nothing.
  *
- * @author Maxime Fabre https://github.com/Anahkiasen
  * @see https://github.com/madewithlove/why-cant-we-have-nice-things
  * @see https://github.com/madewithlove/why-cant-we-have-nice-things/blob/master/src/Services/IdentityExtractor.php
  */
 class EmailAddressParser
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $string;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $emails = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $names = [];
 
     public function __construct(string $string)
@@ -37,7 +29,7 @@ class EmailAddressParser
     /**
      * @return EmailAddress[]
      */
-    public function parse()
+    public function parse(): array
     {
         // Workaround some anti-bot measures
         $emails = str_replace('(original)', '', $this->string);
@@ -57,7 +49,7 @@ class EmailAddressParser
 
         for ($i = 0; $i < $count; ++$i) {
             $email = $this->emails[$i] ?? null;
-            if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if (! $email || ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $email = null;
             }
 
@@ -67,12 +59,7 @@ class EmailAddressParser
         return $identities;
     }
 
-    /**
-     * @param string $emails
-     *
-     * @return string
-     */
-    private function extractEmails($emails)
+    private function extractEmails(string $emails): string
     {
         // Try to split off emails
         $names = $emails;
@@ -90,18 +77,12 @@ class EmailAddressParser
         return $names;
     }
 
-    /**
-     * @return string
-     */
-    private function trimCharacters(string $string)
+    private function trimCharacters(string $string): string
     {
         return trim($string, ' /"=');
     }
 
-    /**
-     * @param string $names
-     */
-    private function extractNames($names)
+    private function extractNames(string $names): void
     {
         $names = preg_split('/(,|  |\n)/', $names);
         $names = array_filter($names);
@@ -112,8 +93,7 @@ class EmailAddressParser
             // Special cases for that one guy who
             // put his whole resume as name and other
             // marvelous joys
-            if (
-                mb_strpos($name, 'Watson Research') ||
+            if (mb_strpos($name, 'Watson Research') ||
                 mb_strlen($name) <= 3 ||
                 mb_strpos($name, '?') !== false ||
                 mb_strpos($name, 'http') !== false

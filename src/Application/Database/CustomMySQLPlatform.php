@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Externals\Application\Database;
 
@@ -14,7 +13,7 @@ use Doctrine\DBAL\Platforms\MySQL57Platform;
  */
 class CustomMySQLPlatform extends MySQL57Platform
 {
-    protected function _getCreateTableSQL($tableName, array $columns, array $options = array())
+    protected function _getCreateTableSQL($tableName, array $columns, array $options = []): array
     {
         // Charset
         if (! isset($options['charset'])) {

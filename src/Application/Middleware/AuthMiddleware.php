@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\Application\Middleware;
 
@@ -11,12 +10,10 @@ use Stratify\Http\Middleware\Middleware;
 
 /**
  * Set the user in the request.
- *
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
 class AuthMiddleware implements Middleware
 {
-    public function __invoke(ServerRequestInterface $request, callable $next) : ResponseInterface
+    public function __invoke(ServerRequestInterface $request, callable $next): ResponseInterface
     {
         $session = $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
 

@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\Search;
 
@@ -8,14 +7,10 @@ use Externals\Email\Email;
 
 class AlgoliaSearchIndex implements SearchIndex
 {
-    /**
-     * @var Client
-     */
+    /** @var Client */
     private $searchClient;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $indexPrefix;
 
     public function __construct(Client $searchClient, string $indexPrefix)
@@ -24,7 +19,7 @@ class AlgoliaSearchIndex implements SearchIndex
         $this->indexPrefix = $indexPrefix;
     }
 
-    public function indexEmail(Email $email) : void
+    public function indexEmail(Email $email): void
     {
         $index = $this->searchClient->initIndex($this->indexPrefix . 'emails');
 

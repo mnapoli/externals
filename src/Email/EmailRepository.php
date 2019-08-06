@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\Email;
 
@@ -9,14 +8,9 @@ use Doctrine\DBAL\Connection;
 use Externals\NotFound;
 use Externals\User\User;
 
-/**
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
- */
 class EmailRepository
 {
-    /**
-     * @var Connection
-     */
+    /** @var Connection */
     private $db;
 
     public function __construct(Connection $db)
@@ -24,19 +18,19 @@ class EmailRepository
         $this->db = $db;
     }
 
-    public function getById(string $id) : Email
+    public function getById(string $id): Email
     {
         $row = $this->db->fetchAssoc('SELECT * FROM emails WHERE id = ?', [$id]);
-        if (!$row) {
+        if (! $row) {
             throw new NotFound("Email $id was not found");
         }
         return $this->emailFromRow($row);
     }
 
-    public function getByNumber(int $number) : Email
+    public function getByNumber(int $number): Email
     {
         $row = $this->db->fetchAssoc('SELECT * FROM emails WHERE number = ?', [$number], ['integer']);
-        if (!$row) {
+        if (! $row) {
             throw new NotFound("Email $number was not found");
         }
         return $this->emailFromRow($row);
@@ -47,7 +41,7 @@ class EmailRepository
      *
      * @return ThreadItem[]
      */
-    public function getThreadView(Email $email, User $user = null) : array
+    public function getThreadView(Email $email, ?User $user = null): array
     {
         $qb = $this->db->createQueryBuilder();
         $qb->select('emails.*')
@@ -93,23 +87,23 @@ class EmailRepository
         return $rootItems;
     }
 
-    public function findLatestThreads(int $page = 1, ?User $user)
+    public function findLatestThreads(int $page, ?User $user): array
     {
         return $this->findThreads('', 'ORDER BY threads.lastUpdate DESC', $page, $user);
     }
 
-    public function findTopThreads(int $page = 1, ?User $user)
+    public function findTopThreads(int $page, ?User $user): array
     {
         $where = 'WHERE threads.votes > 0 AND threads.lastUpdate > DATE_SUB(NOW(), INTERVAL 1 MONTH)';
         return $this->findThreads($where, 'ORDER BY threads.votes DESC, threads.lastUpdate DESC', $page, $user);
     }
 
-    public function findLatestRfcThreads()
+    public function findLatestRfcThreads(): array
     {
         return $this->findThreads("where threadInfos.subject like '%RFC%'", 'order by threadInfos.date desc', 1, null);
     }
 
-    private function findThreads(string $where, string $orderBy, int $page, ?User $user) : array
+    private function findThreads(string $where, string $orderBy, int $page, ?User $user): array
     {
         $offset = ($page - 1) * 20;
 
@@ -161,17 +155,15 @@ SQL;
     /**
      * Returns the number of emails in a thread.
      */
-    public function getThreadSize(Email $email) : int
+    public function getThreadSize(Email $email): int
     {
-        $numberOfEmails = (int) $this->db->fetchColumn('SELECT COUNT(id) FROM emails WHERE threadId = ?', [$email->getId()]);
-
-        return $numberOfEmails;
+        return (int) $this->db->fetchColumn('SELECT COUNT(id) FROM emails WHERE threadId = ?', [$email->getId()]);
     }
 
     /**
      * @return Email[]
      */
-    public function findLatest(int $since) : array
+    public function findLatest(int $since): array
     {
         $qb = $this->db->createQueryBuilder();
         $qb->select('*')
@@ -184,7 +176,7 @@ SQL;
         return array_map([$this, 'emailFromRow'], $qb->execute()->fetchAll());
     }
 
-    public function add(Email $email)
+    public function add(Email $email): void
     {
         $this->db->insert('emails', [
             'id' => $email->getId(),
@@ -215,34 +207,34 @@ SQL;
         ]);
     }
 
-    public function getEmailSource(int $number) : string
+    public function getEmailSource(int $number): string
     {
         $email = $this->db->fetchAssoc('SELECT * FROM emails WHERE `number` = ?', [$number]);
-        if (!$email) {
+        if (! $email) {
             throw new NotFound('Email not found');
         }
         $email = $this->emailFromRow($email);
         return $email->getSource();
     }
 
-    public function getLastEmailNumber() : int
+    public function getLastEmailNumber(): int
     {
         return (int) $this->db->fetchColumn('SELECT MAX(number) FROM emails');
     }
 
-    public function updateContent(string $emailId, string $newContent) : void
+    public function updateContent(string $emailId, string $newContent): void
     {
         $this->db->update('emails', [
             'content' => $newContent,
         ], ['id' => $emailId]);
     }
 
-    public function getEmailCount() : int
+    public function getEmailCount(): int
     {
         return (int) $this->db->fetchColumn('SELECT COUNT(*) FROM emails');
     }
 
-    public function getThreadCount() : int
+    public function getThreadCount(): int
     {
         return (int) $this->db->fetchColumn('SELECT COUNT(*) FROM emails WHERE isThreadRoot = 1');
     }
@@ -250,14 +242,16 @@ SQL;
     /**
      * Find the latest thread that matches the given subject.
      */
-    public function findBySubject(string $subject) : Email
+    public function findBySubject(string $subject): Email
     {
         $row = $this->db->fetchAssoc('SELECT * FROM emails WHERE subject = ? AND isThreadRoot = 1 ORDER BY date DESC LIMIT 1', [$subject]);
-        if (!$row) throw new NotFound('Email not found');
+        if (! $row) {
+            throw new NotFound('Email not found');
+        }
         return $this->emailFromRow($row);
     }
 
-    public function markAsRead(Email $email, User $user)
+    public function markAsRead(Email $email, User $user): void
     {
         // Make sure to set the time in UTC using `UTC_TIMESTAMP()`
         $this->db->executeQuery('REPLACE INTO user_emails_read (emailId, userId, lastReadDate) VALUES (?, ?, UTC_TIMESTAMP())', [
@@ -269,7 +263,7 @@ SQL;
     /**
      * Refresh the projection of all threads.
      */
-    public function refreshThreads()
+    public function refreshThreads(): void
     {
         $query = <<<'SQL'
 REPLACE INTO threads (emailId, emailNumber, lastUpdate, emailCount, votes)
@@ -286,7 +280,7 @@ SQL;
     /**
      * Refresh the projection of a single thread.
      */
-    public function refreshThread(int $threadNumber)
+    public function refreshThread(int $threadNumber): void
     {
         $query = <<<'SQL'
 REPLACE INTO threads (emailId, emailNumber, lastUpdate, emailCount, votes)
@@ -301,7 +295,7 @@ SQL;
         $this->db->executeQuery($query, [$threadNumber]);
     }
 
-    private function emailFromRow(array $row) : Email
+    private function emailFromRow(array $row): Email
     {
         $date = $row['date'];
         if (is_string($date)) {

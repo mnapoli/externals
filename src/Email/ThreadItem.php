@@ -1,21 +1,13 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\Email;
 
-/**
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
- */
 class ThreadItem
 {
-    /**
-     * @var Email
-     */
+    /** @var Email */
     private $email;
 
-    /**
-     * @var ThreadItem[]
-     */
+    /** @var ThreadItem[] */
     private $replies = [];
 
     public function __construct(Email $email)
@@ -23,7 +15,7 @@ class ThreadItem
         $this->email = $email;
     }
 
-    public function getEmail() : Email
+    public function getEmail(): Email
     {
         return $this->email;
     }
@@ -31,12 +23,12 @@ class ThreadItem
     /**
      * @return ThreadItem[]
      */
-    public function getReplies() : array
+    public function getReplies(): array
     {
         return $this->replies;
     }
 
-    public function addReply(ThreadItem $item)
+    public function addReply(ThreadItem $item): void
     {
         $this->replies[] = $item;
     }

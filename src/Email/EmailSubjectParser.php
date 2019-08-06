@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Externals\Email;
 
@@ -7,7 +7,7 @@ namespace Externals\Email;
  */
 class EmailSubjectParser
 {
-    public function sanitize($subject) : string
+    public function sanitize(string $subject): string
     {
         $subject = trim(str_replace('[PHP-DEV]', '', $subject));
 

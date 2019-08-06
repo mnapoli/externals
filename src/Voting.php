@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals;
 
@@ -8,14 +7,10 @@ use Externals\Email\EmailRepository;
 
 class Voting
 {
-    /**
-     * @var Connection
-     */
+    /** @var Connection */
     private $db;
 
-    /**
-     * @var EmailRepository
-     */
+    /** @var EmailRepository */
     private $emailRepository;
 
     public function __construct(Connection $db, EmailRepository $emailRepository)
@@ -27,7 +22,7 @@ class Voting
     /**
      * @return int The new vote value for the email.
      */
-    public function vote(int $userId, int $emailNumber, int $value) : int
+    public function vote(int $userId, int $emailNumber, int $value): int
     {
         $this->db->executeQuery('REPLACE INTO votes (userId, emailNumber, value, updatedAt) VALUES (?, ?, ?, UTC_TIMESTAMP())', [
             $userId,

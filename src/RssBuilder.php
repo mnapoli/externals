@@ -1,37 +1,31 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals;
 
+use DomDocument;
+use DomElement;
 use Externals\Email\Email;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * @author Craig Duncan <git@duncanc.co.uk>
- */
 class RssBuilder
 {
-    /**
-     * @var string $host The base url to use for links.
-     */
+    /** @var string $host The base url to use for links. */
     private $host;
 
-    /**
-     * @var \DomDocument|null $dom The current xml document being built.
-     */
+    /** @var DomDocument|null $dom The current xml document being built. */
     private $dom;
 
     public function __construct(ServerRequestInterface $request)
     {
-        $this->host = (string) $request->getUri()->withPath("");
+        $this->host = (string) $request->getUri()->withPath('');
     }
 
     /**
      * @param Email[] $emails
      */
-    public function build(array $emails) : string
+    public function build(array $emails): string
     {
-        $this->dom = new \DomDocument('1.0', 'utf-8');
+        $this->dom = new DomDocument('1.0', 'utf-8');
 
         $rss = $this->dom->createElement('rss');
         $rss->setAttribute('xmlns:content', 'http://purl.org/rss/1.0/modules/content/');
@@ -40,7 +34,7 @@ class RssBuilder
         $this->dom->appendChild($rss);
 
         $channel = $this->dom->createElement('channel');
-        $this->addTextNode('title', "#externals", $channel);
+        $this->addTextNode('title', '#externals', $channel);
         $this->addTextNode('link', $this->host, $channel);
         $this->addTextNode('description', 'Opening PHP\'s #internals to the outside', $channel);
         $this->addTextNode('pubDate', date('r'), $channel);
@@ -60,7 +54,7 @@ class RssBuilder
         return $this->dom->saveXML();
     }
 
-    private function addTextNode($name, $value, \DomElement $parent)
+    private function addTextNode(string $name, string $value, DomElement $parent): void
     {
         $element = $this->dom->createElement($name);
 

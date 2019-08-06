@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset>
+    <arg name="basepath" value="."/>
+
+    <file>src</file>
+    <file>tests</file>
+
+    <exclude-pattern>*/src/Application/Database/CustomMySQLPlatform.php</exclude-pattern>
+
+    <rule ref="HardMode"/>
+</ruleset>

@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\Email;
 
@@ -7,24 +6,16 @@ use DateTimeInterface;
 
 class Email
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $id;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $number;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $subject;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $content;
 
     /**
@@ -34,19 +25,13 @@ class Email
      */
     private $source;
 
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     private $threadId;
 
-    /**
-     * @var DateTimeInterface
-     */
+    /** @var DateTimeInterface */
     private $date;
 
-    /**
-     * @var EmailAddress
-     */
+    /** @var EmailAddress */
     private $from;
 
     /**
@@ -56,9 +41,7 @@ class Email
      */
     private $inReplyTo;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $isRead = false;
 
     public function __construct(
@@ -67,10 +50,10 @@ class Email
         string $subject,
         string $content,
         string $source,
-        string $threadId = null,
+        ?string $threadId,
         DateTimeInterface $date,
         EmailAddress $from,
-        string $inReplyTo = null
+        ?string $inReplyTo = null
     ) {
         $this->id = $id;
         $this->number = $number;
@@ -86,7 +69,7 @@ class Email
     /**
      * Unique NNTP message ID used in references.
      */
-    public function getId() : string
+    public function getId(): string
     {
         return $this->id;
     }
@@ -94,60 +77,55 @@ class Email
     /**
      * NNTP message number.
      */
-    public function getNumber() : int
+    public function getNumber(): int
     {
         return $this->number;
     }
 
-    public function getSubject() : string
+    public function getSubject(): string
     {
         return $this->subject;
     }
 
-    public function getContent() : string
+    public function getContent(): string
     {
         return $this->content;
     }
 
-    public function setContent(string $content)
+    public function setContent(string $content): void
     {
         $this->content = $content;
     }
 
-    public function getSource() : string
+    public function getSource(): string
     {
         return $this->source;
     }
 
     /**
      * If null, then the message is the thread root.
-     *
-     * @return null|string
      */
-    public function getThreadId()
+    public function getThreadId(): ?string
     {
         return $this->threadId;
     }
 
-    public function getDate() : DateTimeInterface
+    public function getDate(): DateTimeInterface
     {
         return $this->date;
     }
 
-    public function getFrom() : EmailAddress
+    public function getFrom(): EmailAddress
     {
         return $this->from;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getInReplyTo()
+    public function getInReplyTo(): ?string
     {
         return $this->inReplyTo;
     }
 
-    public function markAsRead()
+    public function markAsRead(): void
     {
         $this->isRead = true;
     }
@@ -157,12 +135,12 @@ class Email
         return $this->isRead;
     }
 
-    public function isThreadRoot() : bool
+    public function isThreadRoot(): bool
     {
         return $this->getThreadId() === $this->getId();
     }
 
-    public function getUrl() : string
+    public function getUrl(): string
     {
         return '/' . $this->getId();
     }

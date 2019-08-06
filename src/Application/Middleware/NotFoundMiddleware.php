@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Externals\Application\Middleware;
 
@@ -9,14 +8,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Stratify\Http\Middleware\Middleware;
 
-/**
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
- */
 class NotFoundMiddleware implements Middleware
 {
-    /**
-     * @var NotFoundController
-     */
+    /** @var NotFoundController */
     private $controller;
 
     public function __construct(NotFoundController $controller)
@@ -24,7 +18,7 @@ class NotFoundMiddleware implements Middleware
         $this->controller = $controller;
     }
 
-    public function __invoke(ServerRequestInterface $request, callable $next) : ResponseInterface
+    public function __invoke(ServerRequestInterface $request, callable $next): ResponseInterface
     {
         try {
             return $next($request);
