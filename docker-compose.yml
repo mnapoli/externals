@@ -12,7 +12,7 @@ services:
             MYSQL_DATABASE: externals
 
     web:
-        image: bref/fpm-dev-gateway:dev
+        image: bref/fpm-dev-gateway
         ports:
             - '8000:80'
         volumes:
