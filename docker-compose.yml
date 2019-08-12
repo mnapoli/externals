@@ -23,7 +23,7 @@ services:
             HANDLER: web/index.php
             DOCUMENT_ROOT: web
     php:
-        image: bref/php-73-fpm-dev:dev
+        image: bref/php-73-fpm-dev
         volumes:
             - .:/var/task
         environment:
