@@ -1,36 +1,44 @@
 version: "2.1"
 
 services:
-  db:
-    build: ./docker/dockerfiles/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: externals
-      MYSQL_PASSWORD: externals
-      MYSQL_DATABASE: externals
-    volumes:
-      - ./data/mysql:/var/lib/mysql
+    db:
+        image: mysql:5.7
+        ports:
+            - '6306:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_USER: externals
+            MYSQL_PASSWORD: externals
+            MYSQL_DATABASE: externals
 
-  apachephp:
-    build:
-      context: ./docker/dockerfiles/apachephp
-      args:
-        uid: ${CURRENT_UID:-1001}
-        gid: "1001"
-    volumes:
-      - ./:/var/www/html
-    links:
-      - db
+    web:
+        image: bref/fpm-dev-gateway
+        ports:
+            - '8000:80'
+        volumes:
+            - .:/var/task
+        links:
+            - php
+        environment:
+            HANDLER: web/index.php
+            DOCUMENT_ROOT: web
+    php:
+        image: bref/php-73-fpm-dev
+        volumes:
+            - .:/var/task
+        environment:
+            ENV: dev
+            DB_URL: mysql://externals:externals@db/externals
+        links:
+            - db
 
-  cliphp:
-    build:
-      context: ./docker/dockerfiles/apachephp
-      args:
-        uid: ${CURRENT_UID:-1001}
-        gid: "1001"
-    user: localUser
-    volumes:
-        - ./:/var/www/html
-    links:
-      - db
-    command: "false"
+    cli:
+        image: bref/php-73
+        volumes:
+            - .:/var/task
+        environment:
+            ENV: dev
+            DB_URL: mysql://externals:externals@db/externals
+        links:
+            - db
+        entrypoint: php

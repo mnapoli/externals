@@ -31,15 +31,7 @@ return [
     'debug' => false,
     'path.cache' => '/tmp/cache',
 
-    'version' => env('EXTERNALS_APP_VERSION', factory(function () {
-        $rev = shell_exec('git rev-parse HEAD');
-
-        if (null !== $rev) {
-            return trim($rev);
-        }
-
-        return null;
-    })),
+    'version' => env('EXTERNALS_APP_VERSION', ''),
 
     'db.url' => env('DB_URL'),
     Connection::class => function (ContainerInterface $c) {

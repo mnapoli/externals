@@ -1,8 +1,0 @@
-version: "2.1"
-services:
-  db:
-    ports:
-      - "3606:3306"
-  apachephp:
-    ports:
-      - "9205:80"
