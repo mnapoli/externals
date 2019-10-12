@@ -5,7 +5,6 @@ namespace Externals;
 use DomDocument;
 use DomElement;
 use Externals\Email\Email;
-use Psr\Http\Message\ServerRequestInterface;
 
 class RssBuilder
 {
@@ -15,9 +14,9 @@ class RssBuilder
     /** @var DomDocument|null $dom The current xml document being built. */
     private $dom;
 
-    public function __construct(ServerRequestInterface $request)
+    public function __construct(string $host)
     {
-        $this->host = (string) $request->getUri()->withPath('');
+        $this->host = $host;
     }
 
     /**
