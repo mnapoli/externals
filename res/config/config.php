@@ -106,4 +106,5 @@ return [
     MaintenanceMiddleware::class => autowire()
         ->constructorParameter('maintenance', get('maintenance')),
 
+    'rss.host' => env('RSS_HOST', 'https://externals.io'),
 ];
