@@ -4,7 +4,6 @@ namespace Externals;
 
 use DomDocument;
 use DomElement;
-use Psr\Http\Message\ServerRequestInterface;
 
 class RssRfcBuilder
 {
@@ -14,9 +13,9 @@ class RssRfcBuilder
     /** @var DomDocument|null $dom The current xml document being built. */
     private $dom;
 
-    public function __construct(ServerRequestInterface $request)
+    public function __construct(string $host)
     {
-        $this->host = (string) $request->getUri()->withPath('');
+        $this->host = $host;
     }
 
     /**

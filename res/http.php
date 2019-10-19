@@ -102,17 +102,17 @@ return pipe([
             ]);
         },
 
-        '/rss' => function (EmailRepository $emailRepository, ServerRequestInterface $request) {
+        '/rss' => function (EmailRepository $emailRepository, ServerRequestInterface $request, ContainerInterface $container) {
             newrelic_name_transaction('rss');
             $query = $request->getQueryParams();
             $since = (int) ($query['since'] ?? 0);
-            $rss = new RssBuilder($request);
+            $rss = new RssBuilder($container->get('rss.host'));
             $emails = $emailRepository->findLatest($since);
             return $rss->build($emails);
         },
-        '/rss-rfc' => function (EmailRepository $emailRepository, ServerRequestInterface $request) {
+        '/rss-rfc' => function (EmailRepository $emailRepository, ServerRequestInterface $request, ContainerInterface $container) {
             newrelic_name_transaction('rss-rfc');
-            $rss = new RssRfcBuilder($request);
+            $rss = new RssRfcBuilder($container->get('rss.host'));
             return $rss->build($emailRepository->findLatestRfcThreads());
         },
         '/news' => function (Twig_Environment $twig, ServerRequestInterface $request) {
