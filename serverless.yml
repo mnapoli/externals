@@ -7,7 +7,7 @@ provider:
     region: eu-west-1
     environment:
         APP_ENV: prod
-        EXTERNALS_APP_VERSION: ${env:EXTERNALS_APP_VERSION}
+        EXTERNALS_APP_VERSION: ${env:SEED_BUILD_ID}
         DB_URL: ${ssm:/externals/db_url}
         ALGOLIA_APP_ID: KSTITII7EC
         ALGOLIA_API_KEY: ${ssm:/externals/algolia_api_key}

@@ -1,0 +1,8 @@
+before_compile:
+    - composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
+
+before_build:
+    - make cache
+
+after_deploy:
+    - if [ $SEED_STAGE_NAME = "prod" ]; then make deploy-assets; fi
