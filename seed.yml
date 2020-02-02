@@ -2,6 +2,7 @@ before_compile:
     - composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
 
 before_build:
+    - gulp
     - make cache
 
 after_deploy:
