@@ -1,6 +1,5 @@
 before_compile:
-    - docker run --rm -v $(PWD):/var/task --entrypoint php bref/php-74 console
-    - apt -y remove php
+    - apt -y remove php7.3
     - apt -y install software-properties-common
     - add-apt-repository ppa:ondrej/php
     - apt-get update
