@@ -1,4 +1,5 @@
 before_compile:
+    - apt -y remove php
     - apt -y install software-properties-common
     - add-apt-repository ppa:ondrej/php
     - apt-get update
