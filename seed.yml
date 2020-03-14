@@ -1,10 +1,11 @@
 before_compile:
-    - apt list --installed | grep php
-    - apt -y remove php-cli
+    - which php
+    - rm /usr/local/bin/php
     - apt -y install software-properties-common
     - add-apt-repository ppa:ondrej/php
     - apt-get update
     - apt -y install php7.4-cli
+    - which php
     - composer install --prefer-dist --optimize-autoloader --no-dev
 
 before_build:
