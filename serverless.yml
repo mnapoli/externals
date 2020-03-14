@@ -34,7 +34,7 @@ functions:
         description: 'externals.io website'
         timeout: 30 # in seconds (API Gateway has a timeout of 30 seconds)
         layers:
-            - 'arn:aws:lambda:eu-west-1:209497400698:layer:php-73-fpm:7'
+            - ${bref:layer.php-74-fpm}
         events:
             -   http: 'ANY /'
             -   http: 'ANY {proxy+}'
@@ -45,23 +45,42 @@ functions:
         description: 'externals.io updater'
         timeout: 900
         layers:
-            - 'arn:aws:lambda:eu-west-1:209497400698:layer:php-73:7'
+            - ${bref:layer.php-74}
         events:
-            -   schedule: rate(15 minutes)
+            -   schedule:
+                    rate: rate(15 minutes)
+                    # Only enabled in production
+                    enabled: ${self:custom.isProd}
 
 plugins:
+    - ./vendor/bref/bref
     # This lets us use `#{Assets.Arn}` variables
     - serverless-pseudo-parameters
 
+custom:
+    stage: ${opt:stage, self:provider.stage}
+    isProd: ${self:custom.isProdMap.${self:custom.stage}, self.enabled.other}
+    isProdMap:
+        prod: true
+        other: false
+
 resources:
+
+    Conditions:
+        IsProd:
+            Fn::Equals:
+                - ${self:custom.stage}
+                - prod
+
     Resources:
 
         # The S3 bucket that stores the assets
         Assets:
             Type: AWS::S3::Bucket
-            Description: 'Public bucket that serves website assets'
+            Description: 'Public bucket that serves externals.io assets'
+            Condition: IsProd
             Properties:
-                BucketName: 'externals-assets-${opt:stage, self:provider.stage}'
+                BucketName: 'externals-assets-${self:custom.stage}'
                 # Enables CORS (e.g. when a JS script loads files from S3)
                 CorsConfiguration:
                     CorsRules:
@@ -71,6 +90,7 @@ resources:
         # The policy that makes the bucket publicly readable (necessary for a public website)
         AssetsBucketPolicy:
             Type: AWS::S3::BucketPolicy
+            Condition: IsProd
             Properties:
                 Bucket: !Ref Assets
                 PolicyDocument:
@@ -84,6 +104,7 @@ resources:
         # because API Gateway does not listen at all to HTTP requests.
         CDN:
             Type: AWS::CloudFront::Distribution
+            Condition: IsProd
             Properties:
                 DistributionConfig:
                     Enabled: true

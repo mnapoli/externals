@@ -2,35 +2,24 @@
 
 namespace Externals\Email;
 
-use League\CommonMark\DocParser;
-use League\CommonMark\HtmlRenderer;
+use League\CommonMark\CommonMarkConverter;
 use Misd\Linkify\Linkify;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
 class EmailContentParser
 {
-    /** @var Linkify */
-    private $linkify;
-
-    /** @var DocParser */
-    private $markdownParser;
-
-    /** @var HtmlRenderer */
-    private $htmlRenderer;
-
-    /** @var LoggerInterface */
-    private $logger;
+    private Linkify $linkify;
+    private CommonMarkConverter $markdownParser;
+    private LoggerInterface $logger;
 
     public function __construct(
         Linkify $linkify,
-        DocParser $markdownParser,
-        HtmlRenderer $htmlRenderer,
+        CommonMarkConverter $markdownParser,
         LoggerInterface $logger
     ) {
         $this->linkify = $linkify;
         $this->markdownParser = $markdownParser;
-        $this->htmlRenderer = $htmlRenderer;
         $this->logger = $logger;
     }
 
@@ -51,7 +40,7 @@ class EmailContentParser
         $content = $this->parsePhpConstants($content);
 
         try {
-            $content = $this->htmlRenderer->renderBlock($this->markdownParser->parse($content));
+            $content = $this->markdownParser->convertToHtml($content);
         } catch (Throwable $e) {
             $this->logger->warning('Unable to parse email content as Markdown: ' . $e->getMessage(), [
                 'exception' => $e,

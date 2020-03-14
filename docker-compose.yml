@@ -23,9 +23,9 @@ services:
             HANDLER: web/index.php
             DOCUMENT_ROOT: web
     php:
-        image: bref/php-73-fpm-dev
+        image: bref/php-74-fpm-dev
         volumes:
-            - .:/var/task
+            - .:/var/task:ro
         environment:
             ENV: dev
             DB_URL: mysql://externals:externals@db/externals
@@ -33,7 +33,7 @@ services:
             - db
 
     cli:
-        image: bref/php-73
+        image: bref/php-74
         volumes:
             - .:/var/task
         environment:

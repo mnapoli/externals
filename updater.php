@@ -8,6 +8,4 @@ $application = require __DIR__ . '/res/bootstrap.php';
 
 $synchronizer = $application->getContainer()->get(EmailSynchronizer::class);
 
-lambda(function () use ($synchronizer) {
-    $synchronizer->synchronize();
-});
+return fn() => $synchronizer->synchronize();
