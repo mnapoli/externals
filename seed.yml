@@ -1,5 +1,9 @@
 before_compile:
-    - composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
+    - sudo apt -y install software-properties-common
+    - sudo add-apt-repository ppa:ondrej/php
+    - sudo apt-get update
+    - sudo apt -y install php7.4
+    - composer install --prefer-dist --optimize-autoloader --no-dev
 
 before_build:
     - npx gulp
