@@ -1,5 +1,5 @@
 before_compile:
-    - docker run --rm -v /tmp/seed/source:/var/task composer install --prefer-dist --optimize-autoloader --no-dev
+    - docker run --rm -v /tmp/seed/source:/app composer install --prefer-dist --optimize-autoloader --no-dev
     - docker run --rm -v /tmp/seed/source:/var/task --entrypoint php bref/php-74 console
 
 before_build:
