@@ -1,4 +1,5 @@
 before_compile:
+    - docker run --rm -v $(PWD):/var/task --entrypoint php bref/php-74 console
     - which php
     - rm /usr/local/bin/php
     - apt -y install software-properties-common
