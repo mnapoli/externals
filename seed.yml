@@ -1,7 +1,5 @@
 before_compile:
-    - ls -la /tmp/seed/source
-    - docker run --rm -v /tmp/seed/source:/var/task --entrypoint php bref/php-74 console
-    - which php
+    - php -v
     - rm /usr/local/bin/php
     - apt -y install software-properties-common
     - add-apt-repository ppa:ondrej/php
@@ -9,6 +7,7 @@ before_compile:
     - apt -y install php7.4-cli
     - which php
     - composer install --prefer-dist --optimize-autoloader --no-dev
+    - docker run --rm -v /tmp/seed/source:/var/task --entrypoint php bref/php-74 console
 
 before_build:
     - npx gulp
