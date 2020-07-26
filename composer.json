@@ -1,5 +1,6 @@
 {
     "name": "mnapoli/externals",
+    "description": "This is the project for externals.io",
     "license": "MIT",
     "type": "project",
     "autoload": {
