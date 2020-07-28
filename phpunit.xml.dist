@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<phpunit colors="true"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="./vendor/autoload.php"
          beStrictAboutOutputDuringTests="true"
-         beStrictAboutTestsThatDoNotTestAnything="true"
-         bootstrap="./vendor/autoload.php">
+         cacheResult="false"
+         colors="true"
+         failOnWarning="true"
+>
 
     <testsuites>
         <testsuite name="Test suite">

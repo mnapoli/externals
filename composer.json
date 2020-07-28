@@ -42,7 +42,7 @@
         "bref/logger": "^1.0.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.5",
+        "phpunit/phpunit": "^9.2.6",
         "mnapoli/hard-mode": "^0.1.1"
     }
 }
