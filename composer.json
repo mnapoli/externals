@@ -24,8 +24,6 @@
         "twig/extensions": "^1.5",
         "misd/linkify": "^1.1",
         "monolog/monolog": "^1.25",
-        "symfony/monolog-bridge": "^3.4",
-        "symfony/event-dispatcher": "^3.4",
         "psr7-sessions/storageless": "^2.0",
         "league/commonmark": "^0.14.0",
         "gravatarphp/gravatar": "^1.0",
