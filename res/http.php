@@ -150,7 +150,8 @@ return pipe([
             ]);
         })->method('POST'),
 
-        '/email/{number}/source' => function (int $number, EmailRepository $emailRepository) {
+        '/email/{number}/source' => function ($number, EmailRepository $emailRepository) {
+            $number = (int) $number;
             newrelic_name_transaction('email_source');
             return new TextResponse($emailRepository->getEmailSource($number));
         },
