@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8aadf9f3feb45ecab61cb2ed36f30fb7",
+    "content-hash": "fbb950128e8b96f41e4847e844de7144",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -113,16 +113,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.147.5",
+            "version": "3.147.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "8a2612f740f16e3ba8fa90dd9fb2ed5cc87c0689"
+                "reference": "da548c59c87b0a54d2cd1a43e5e149e56ca2569b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/8a2612f740f16e3ba8fa90dd9fb2ed5cc87c0689",
-                "reference": "8a2612f740f16e3ba8fa90dd9fb2ed5cc87c0689",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/da548c59c87b0a54d2cd1a43e5e149e56ca2569b",
+                "reference": "da548c59c87b0a54d2cd1a43e5e149e56ca2569b",
                 "shasum": ""
             },
             "require": {
@@ -194,7 +194,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2020-07-24T18:12:22+00:00"
+            "time": "2020-07-30T18:13:38+00:00"
         },
         {
             "name": "bref/bref",
@@ -668,26 +668,23 @@
         },
         {
             "name": "gravatarphp/gravatar",
-            "version": "v1.0.0",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gravatarphp/gravatar.git",
-                "reference": "21b760c50bcdddd8e65d3a4b3981b7ec9b3d44aa"
+                "reference": "54a5d48b4564ec9f1db8a498ad23d500ab83c063"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gravatarphp/gravatar/zipball/21b760c50bcdddd8e65d3a4b3981b7ec9b3d44aa",
-                "reference": "21b760c50bcdddd8e65d3a4b3981b7ec9b3d44aa",
+                "url": "https://api.github.com/repos/gravatarphp/gravatar/zipball/54a5d48b4564ec9f1db8a498ad23d500ab83c063",
+                "reference": "54a5d48b4564ec9f1db8a498ad23d500ab83c063",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4"
+                "php": "^7.1"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^1.11",
-                "henrikbjorn/phpspec-code-coverage": "^2.0",
-                "phpspec/phpspec": "^2.5",
-                "sllh/php-cs-fixer-styleci-bridge": "^2.0"
+                "phpspec/phpspec": "^5.1"
             },
             "type": "library",
             "extra": {
@@ -718,36 +715,34 @@
                 "image",
                 "profile"
             ],
-            "time": "2016-06-25T11:20:11+00:00"
+            "time": "2019-01-08T21:43:01+00:00"
         },
         {
             "name": "gravatarphp/twig-integration",
-            "version": "v1.0.0",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gravatarphp/twig-integration.git",
-                "reference": "5528f6cca7417812d896d47458fde82dd8975631"
+                "reference": "523623863e7de25eda78bf835c1e951082b40a85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gravatarphp/twig-integration/zipball/5528f6cca7417812d896d47458fde82dd8975631",
-                "reference": "5528f6cca7417812d896d47458fde82dd8975631",
+                "url": "https://api.github.com/repos/gravatarphp/twig-integration/zipball/523623863e7de25eda78bf835c1e951082b40a85",
+                "reference": "523623863e7de25eda78bf835c1e951082b40a85",
                 "shasum": ""
             },
             "require": {
-                "gravatarphp/gravatar": "^1.0",
-                "php": ">=5.4",
-                "twig/twig": "^1.18"
+                "gravatarphp/gravatar": "^2.0",
+                "php": ">=7.2",
+                "twig/twig": "^1.43 || ^2.13 || ^3.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^1.11",
-                "phpunit/phpunit": "^4.8 || ^5.0",
-                "sllh/php-cs-fixer-styleci-bridge": "^2.0"
+                "phpunit/phpunit": "^8.5.8 || ^9.2.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "dev-master": "2.0-dev"
                 }
             },
             "autoload": {
@@ -763,6 +758,10 @@
                 {
                     "name": "Márk Sági-Kazár",
                     "email": "mark.sagikazar@gmail.com"
+                },
+                {
+                    "name": "George Mponos",
+                    "email": "gmponos@gmail.com"
                 }
             ],
             "description": "Integrates Gravatar into Twig templating engine",
@@ -771,7 +770,17 @@
                 "gravatar",
                 "twig"
             ],
-            "time": "2016-06-25T11:49:08+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/gmponos",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/sagikazarmark",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-07-25T18:10:40+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -2655,20 +2664,20 @@
         },
         {
             "name": "symfony/contracts",
-            "version": "v1.1.8",
+            "version": "v1.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/contracts.git",
-                "reference": "f51bca9de06b7a25b19a4155da7bebad099a5def"
+                "reference": "8c4de0cf797f2eba4334a1d7a9b788c1b30a7579"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/contracts/zipball/f51bca9de06b7a25b19a4155da7bebad099a5def",
-                "reference": "f51bca9de06b7a25b19a4155da7bebad099a5def",
+                "url": "https://api.github.com/repos/symfony/contracts/zipball/8c4de0cf797f2eba4334a1d7a9b788c1b30a7579",
+                "reference": "8c4de0cf797f2eba4334a1d7a9b788c1b30a7579",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3",
+                "php": ">=7.1.3",
                 "psr/cache": "^1.0",
                 "psr/container": "^1.0"
             },
@@ -2728,7 +2737,21 @@
                 "interoperability",
                 "standards"
             ],
-            "time": "2019-11-07T12:44:51+00:00"
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-07-29T14:46:19+00:00"
         },
         {
             "name": "symfony/debug",
@@ -3957,31 +3980,30 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.35.4",
+            "version": "v1.43.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "7e081e98378a1e78c29cc9eba4aefa5d78a05d2a"
+                "reference": "597a03e85a60af6feee4f5127f3ef4279a1694c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/7e081e98378a1e78c29cc9eba4aefa5d78a05d2a",
-                "reference": "7e081e98378a1e78c29cc9eba4aefa5d78a05d2a",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/597a03e85a60af6feee4f5127f3ef4279a1694c3",
+                "reference": "597a03e85a60af6feee4f5127f3ef4279a1694c3",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3",
+                "php": ">=7.1.3",
                 "symfony/polyfill-ctype": "^1.8"
             },
             "require-dev": {
                 "psr/container": "^1.0",
-                "symfony/debug": "^2.7",
-                "symfony/phpunit-bridge": "^3.3"
+                "symfony/phpunit-bridge": "^4.4.9|^5.0.9"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.35-dev"
+                    "dev-master": "1.43-dev"
                 }
             },
             "autoload": {
@@ -4004,14 +4026,13 @@
                     "role": "Lead Developer"
                 },
                 {
+                    "name": "Twig Team",
+                    "role": "Contributors"
+                },
+                {
                     "name": "Armin Ronacher",
                     "email": "armin.ronacher@active-4.com",
                     "role": "Project Founder"
-                },
-                {
-                    "name": "Twig Team",
-                    "homepage": "https://twig.symfony.com/contributors",
-                    "role": "Contributors"
                 }
             ],
             "description": "Twig, the flexible, fast, and secure template language for PHP",
@@ -4019,7 +4040,29 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2018-07-13T07:12:17+00:00"
+            "funding": [
+                {
+                    "url": "https://certification.symfony.com/",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://live.symfony.com/",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://symfony.com/cloud/",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/twig/twig",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-07-05T13:00:49+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
