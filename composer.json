@@ -27,7 +27,7 @@
         "symfony/monolog-bridge": "^3.4",
         "symfony/event-dispatcher": "^3.4",
         "psr7-sessions/storageless": "^2.0",
-        "league/commonmark": "^0.14.0",
+        "league/commonmark": "^0.18.3",
         "gravatarphp/gravatar": "^1.0",
         "gravatarphp/twig-integration": "^1.0",
         "league/oauth2-client": "^2.5",
