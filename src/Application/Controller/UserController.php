@@ -58,7 +58,7 @@ class UserController
         $sessionOauthState = $session->get('oauth2state');
         if (empty($requestOauthState) || ($requestOauthState !== $sessionOauthState)) {
             $session->remove('oauth2state');
-            return new HtmlResponse($this->twig->render('@app/auth/login-error.html.twig', [
+            return new HtmlResponse($this->twig->render('auth/login-error.html.twig', [
                 'error' => 'Invalid state',
             ]), 400);
         }
@@ -71,7 +71,7 @@ class UserController
             /** @var GithubResourceOwner $userProfile */
             $userProfile = $this->authProvider->getResourceOwner($accessToken);
         } catch (IdentityProviderException $e) {
-            return new HtmlResponse($this->twig->render('@app/auth/login-error.html.twig', [
+            return new HtmlResponse($this->twig->render('auth/login-error.html.twig', [
                 'error' => $e->getMessage(),
             ]), 400);
         }

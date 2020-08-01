@@ -2,9 +2,12 @@
 declare(strict_types = 1);
 
 use Bref\Logger\StderrLogger;
+use Gravatar\Gravatar;
 use League\CommonMark\CommonMarkConverter;
 use League\CommonMark\EnvironmentInterface;
 use Psr\Log\LogLevel;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 use function DI\add;
 use function DI\autowire;
 use function DI\create;
@@ -43,21 +46,20 @@ return [
             ],
         ]),
 
-    'twig.paths' => [
-        'app' => __DIR__ . '/../views',
-    ],
-    'twig.options' => [
-        'cache' => string('{path.cache}/twig'),
-        'auto_reload' => true,
-    ],
-    'twig.globals' => [
-        'debug' => get('debug'),
-        'version' => get('version'),
-    ],
-    'twig.extensions' => add([
-        get(Twig_Extensions_Extension_Date::class),
-        get(GravatarExtension::class),
-    ]),
+    Environment::class => function (Container $c) {
+        $loader = new FilesystemLoader(__DIR__ . '/../views');
+        $twig = new Environment($loader, [
+            'cache' => $c->get('path.cache') . '/twig',
+            'auto_reload' => true,
+            'globals' => [
+                'debug' => $c->get('debug'),
+                'version' => $c->get('version'),
+            ]
+        ]);
+        $twig->addExtension(new Twig_Extensions_Extension_Date);
+        $twig->addExtension(new GravatarExtension(new Gravatar));
+        return $twig;
+    },
 
     LoggerInterface::class =>
         fn() => new StderrLogger(LogLevel::INFO),

@@ -40,7 +40,7 @@ return pipe([
         '/' => function (Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request, ContainerInterface $container) {
             newrelic_name_transaction('home');
             $user = $request->getAttribute('user');
-            return $twig->render('@app/home.html.twig', [
+            return $twig->render('home.html.twig', [
                 'threads' => $repository->findLatestThreads(1, $user),
                 'user' => $user,
                 'algoliaIndex' => $container->get('algolia.index_prefix') . 'emails',
@@ -70,7 +70,7 @@ return pipe([
             if ($user instanceof User) {
                 $repository->markAsRead($email, $user);
             }
-            return $twig->render('@app/thread.html.twig', [
+            return $twig->render('thread.html.twig', [
                 'subject' => $email->getSubject(),
                 'thread' => $threadView,
                 'threadId' => $number,
@@ -84,7 +84,7 @@ return pipe([
             $user = $request->getAttribute('user');
             $query = $request->getQueryParams();
             $page = (int) max(1, $query['page'] ?? 1);
-            return $twig->render('@app/threads/thread-list.html.twig', [
+            return $twig->render('threads/thread-list.html.twig', [
                 'threads' => $repository->findLatestThreads($page, $user),
                 'user' => $user,
             ]);
@@ -96,7 +96,7 @@ return pipe([
         '/top' => function (Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
             newrelic_name_transaction('top');
             $user = $request->getAttribute('user');
-            return $twig->render('@app/top.html.twig', [
+            return $twig->render('top.html.twig', [
                 'threads' => $repository->findTopThreads(1, $user),
                 'user' => $user,
             ]);
@@ -117,7 +117,7 @@ return pipe([
         },
         '/news' => function (Twig_Environment $twig, ServerRequestInterface $request) {
             newrelic_name_transaction('news');
-            return $twig->render('@app/news.html.twig', [
+            return $twig->render('news.html.twig', [
                 'user' => $request->getAttribute('user'),
             ]);
         },
@@ -125,7 +125,7 @@ return pipe([
         '/stats' => function (Twig_Environment $twig, EmailRepository $emailRepository, UserRepository $userRepository, ServerRequestInterface $request) {
             newrelic_name_transaction('stats');
             $user = $request->getAttribute('user');
-            return $twig->render('@app/stats.html.twig', [
+            return $twig->render('stats.html.twig', [
                 'userCount' => $userRepository->getUserCount(),
                 'threadCount' => $emailRepository->getThreadCount(),
                 'emailCount' => $emailRepository->getEmailCount(),

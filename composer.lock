@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b956616617a934a9e602207651a31e37",
+    "content-hash": "7bed83fb891144ed5fc36e05f9adde87",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -798,26 +798,23 @@
         },
         {
             "name": "gravatarphp/gravatar",
-            "version": "v1.0.0",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gravatarphp/gravatar.git",
-                "reference": "21b760c50bcdddd8e65d3a4b3981b7ec9b3d44aa"
+                "reference": "54a5d48b4564ec9f1db8a498ad23d500ab83c063"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gravatarphp/gravatar/zipball/21b760c50bcdddd8e65d3a4b3981b7ec9b3d44aa",
-                "reference": "21b760c50bcdddd8e65d3a4b3981b7ec9b3d44aa",
+                "url": "https://api.github.com/repos/gravatarphp/gravatar/zipball/54a5d48b4564ec9f1db8a498ad23d500ab83c063",
+                "reference": "54a5d48b4564ec9f1db8a498ad23d500ab83c063",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4"
+                "php": "^7.1"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^1.11",
-                "henrikbjorn/phpspec-code-coverage": "^2.0",
-                "phpspec/phpspec": "^2.5",
-                "sllh/php-cs-fixer-styleci-bridge": "^2.0"
+                "phpspec/phpspec": "^5.1"
             },
             "type": "library",
             "extra": {
@@ -848,36 +845,34 @@
                 "image",
                 "profile"
             ],
-            "time": "2016-06-25T11:20:11+00:00"
+            "time": "2019-01-08T21:43:01+00:00"
         },
         {
             "name": "gravatarphp/twig-integration",
-            "version": "v1.0.0",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gravatarphp/twig-integration.git",
-                "reference": "5528f6cca7417812d896d47458fde82dd8975631"
+                "reference": "523623863e7de25eda78bf835c1e951082b40a85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gravatarphp/twig-integration/zipball/5528f6cca7417812d896d47458fde82dd8975631",
-                "reference": "5528f6cca7417812d896d47458fde82dd8975631",
+                "url": "https://api.github.com/repos/gravatarphp/twig-integration/zipball/523623863e7de25eda78bf835c1e951082b40a85",
+                "reference": "523623863e7de25eda78bf835c1e951082b40a85",
                 "shasum": ""
             },
             "require": {
-                "gravatarphp/gravatar": "^1.0",
-                "php": ">=5.4",
-                "twig/twig": "^1.18"
+                "gravatarphp/gravatar": "^2.0",
+                "php": ">=7.2",
+                "twig/twig": "^1.43 || ^2.13 || ^3.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^1.11",
-                "phpunit/phpunit": "^4.8 || ^5.0",
-                "sllh/php-cs-fixer-styleci-bridge": "^2.0"
+                "phpunit/phpunit": "^8.5.8 || ^9.2.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "dev-master": "2.0-dev"
                 }
             },
             "autoload": {
@@ -893,6 +888,10 @@
                 {
                     "name": "Márk Sági-Kazár",
                     "email": "mark.sagikazar@gmail.com"
+                },
+                {
+                    "name": "George Mponos",
+                    "email": "gmponos@gmail.com"
                 }
             ],
             "description": "Integrates Gravatar into Twig templating engine",
@@ -901,7 +900,17 @@
                 "gravatar",
                 "twig"
             ],
-            "time": "2016-06-25T11:49:08+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/gmponos",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/sagikazarmark",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-07-25T18:10:40+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -2910,41 +2919,6 @@
             "time": "2017-07-16T12:58:45+00:00"
         },
         {
-            "name": "stratify/twig-module",
-            "version": "0.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stratifyphp/twig-module.git",
-                "reference": "80f7bb4f69dbc28fb4438130a48a5caa26511fe7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/stratifyphp/twig-module/zipball/80f7bb4f69dbc28fb4438130a48a5caa26511fe7",
-                "reference": "80f7bb4f69dbc28fb4438130a48a5caa26511fe7",
-                "shasum": ""
-            },
-            "require": {
-                "php-di/php-di": "^6.0.0-alpha4",
-                "stratify/router": "~0.5.0",
-                "twig/twig": "^1.21"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Stratify\\TwigModule\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Twig module for Stratify",
-            "time": "2017-07-16T13:20:15+00:00"
-        },
-        {
             "name": "symfony/console",
             "version": "v4.2.12",
             "source": {
@@ -4525,31 +4499,31 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.35.4",
+            "version": "v2.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "7e081e98378a1e78c29cc9eba4aefa5d78a05d2a"
+                "reference": "46a612ba1bbf6ee1c58acabacd868212ff8a2911"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/7e081e98378a1e78c29cc9eba4aefa5d78a05d2a",
-                "reference": "7e081e98378a1e78c29cc9eba4aefa5d78a05d2a",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/46a612ba1bbf6ee1c58acabacd868212ff8a2911",
+                "reference": "46a612ba1bbf6ee1c58acabacd868212ff8a2911",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3",
-                "symfony/polyfill-ctype": "^1.8"
+                "php": ">=7.1.3",
+                "symfony/polyfill-ctype": "^1.8",
+                "symfony/polyfill-mbstring": "^1.3"
             },
             "require-dev": {
                 "psr/container": "^1.0",
-                "symfony/debug": "^2.7",
-                "symfony/phpunit-bridge": "^3.3"
+                "symfony/phpunit-bridge": "^4.4.9|^5.0.9"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.35-dev"
+                    "dev-master": "2.13-dev"
                 }
             },
             "autoload": {
@@ -4572,14 +4546,13 @@
                     "role": "Lead Developer"
                 },
                 {
+                    "name": "Twig Team",
+                    "role": "Contributors"
+                },
+                {
                     "name": "Armin Ronacher",
                     "email": "armin.ronacher@active-4.com",
                     "role": "Project Founder"
-                },
-                {
-                    "name": "Twig Team",
-                    "homepage": "https://twig.symfony.com/contributors",
-                    "role": "Contributors"
                 }
             ],
             "description": "Twig, the flexible, fast, and secure template language for PHP",
@@ -4587,7 +4560,29 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2018-07-13T07:12:17+00:00"
+            "funding": [
+                {
+                    "url": "https://certification.symfony.com/",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://live.symfony.com/",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://symfony.com/cloud/",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/twig/twig",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-07-05T13:08:05+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

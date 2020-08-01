@@ -22,7 +22,6 @@ $application = new class($environment) extends Application
     {
         $modules = [
             'stratify/error-handler-module',
-            'stratify/twig-module',
             'mnapoli/externals',
         ];
         $httpStack = require(__DIR__ . '/http.php');

@@ -27,7 +27,7 @@ class MaintenanceMiddleware implements Middleware
     public function __invoke(ServerRequestInterface $request, callable $next): ResponseInterface
     {
         if ($this->maintenance) {
-            return new HtmlResponse($this->twig->render('@app/maintenance.html.twig'));
+            return new HtmlResponse($this->twig->render('maintenance.html.twig'));
         }
 
         return $next($request);

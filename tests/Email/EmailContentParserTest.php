@@ -15,7 +15,6 @@ class EmailContentParserTest extends TestCase
     {
         $modules = [
             'stratify/error-handler-module',
-            'stratify/twig-module',
             'mnapoli/externals',
         ];
         $application = new Application($modules, 'test');

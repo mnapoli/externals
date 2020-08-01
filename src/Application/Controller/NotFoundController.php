@@ -19,7 +19,7 @@ class NotFoundController
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         newrelic_name_transaction('404');
-        $response = new HtmlResponse($this->twig->render('@app/404.html.twig', [
+        $response = new HtmlResponse($this->twig->render('404.html.twig', [
             'user' => $request->getAttribute('user'),
         ]));
         return $response->withStatus(404);
