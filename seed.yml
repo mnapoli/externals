@@ -1,9 +1,10 @@
 before_compile:
-    - composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
+    - docker run --rm -v /tmp/seed/source:/app composer install --prefer-dist --optimize-autoloader --no-dev
+    - rm -rf /tmp/seed/source/var/cache/*
+    - docker run --rm -v /tmp/seed/source:/var/task --entrypoint php bref/php-74 console list
 
 before_build:
     - npx gulp
-    - make cache
 
 after_deploy:
     - if [ $SEED_STAGE_NAME = "prod" ]; then make deploy-assets; fi

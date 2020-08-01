@@ -14,8 +14,8 @@
         }
     },
     "require": {
-        "php": "^7.3",
-        "php-di/php-di": "6.0.0-beta3",
+        "php": "^7.4",
+        "php-di/php-di": "^6.0",
         "stratify/framework": "~0.7.1",
         "stratify/twig-module": "~0.3.0",
         "twig/twig": "~1.35.4",
@@ -27,7 +27,7 @@
         "symfony/monolog-bridge": "^3.4",
         "symfony/event-dispatcher": "^3.4",
         "psr7-sessions/storageless": "^2.0",
-        "league/commonmark": "^0.14.0",
+        "league/commonmark": "^1.3",
         "gravatarphp/gravatar": "^1.0",
         "gravatarphp/twig-integration": "^1.0",
         "league/oauth2-client": "^2.5",
@@ -38,7 +38,7 @@
         "zbateson/mail-mime-parser": "^0.4.13",
         "vlucas/phpdotenv": "^2.6",
         "sentry/sentry": "^1.11",
-        "bref/bref": "~0.4.0",
+        "bref/bref": "~0.5.28",
         "bref/logger": "^1.0.0"
     },
     "require-dev": {

@@ -2,11 +2,13 @@
 declare(strict_types = 1);
 
 use Bref\Logger\StderrLogger;
+use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\EnvironmentInterface;
+use Psr\Log\LogLevel;
 use function DI\add;
 use function DI\autowire;
 use function DI\create;
 use function DI\env;
-use function DI\factory;
 use function DI\get;
 use function DI\string;
 use Doctrine\DBAL\Connection;
@@ -16,12 +18,9 @@ use Externals\Application\Middleware\MaintenanceMiddleware;
 use Externals\Search\AlgoliaSearchIndex;
 use Externals\Search\SearchIndex;
 use Gravatar\Twig\GravatarExtension;
-use League\CommonMark\DocParser;
-use League\CommonMark\Environment;
-use League\CommonMark\HtmlRenderer;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Github;
-use Psr\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as Container;
 use Psr\Log\LoggerInterface;
 use PSR7Session\Http\SessionMiddleware;
 
@@ -34,16 +33,15 @@ return [
     'version' => env('EXTERNALS_APP_VERSION', ''),
 
     'db.url' => env('DB_URL'),
-    Connection::class => function (ContainerInterface $c) {
-        return DriverManager::getConnection([
+    Connection::class =>
+        fn(Container $c) => DriverManager::getConnection([
             'url' => $c->get('db.url'),
             'charset' => 'utf8mb4',
-            'platform' => new CustomMySQLPlatform,
+            'platform' => new CustomMySQLPlatform(),
             'driverOptions' => [
                 PDO::ATTR_TIMEOUT => 10,
             ],
-        ]);
-    },
+        ]),
 
     'twig.paths' => [
         'app' => __DIR__ . '/../views',
@@ -61,28 +59,20 @@ return [
         get(GravatarExtension::class),
     ]),
 
-    LoggerInterface::class => create(StderrLogger::class),
+    LoggerInterface::class =>
+        fn() => new StderrLogger(LogLevel::INFO),
 
-    DocParser::class => function (ContainerInterface $c) {
-        return new DocParser($c->get(Environment::class));
-    },
-    HtmlRenderer::class => function (ContainerInterface $c) {
-        return new HtmlRenderer($c->get(Environment::class));
-    },
-    Environment::class => function () {
-        $environment = Environment::createCommonMarkEnvironment();
-        $environment->mergeConfig([
+    CommonMarkConverter::class =>
+        fn() => new CommonMarkConverter([
             'renderer' => [
                 'soft_break' => " <br>\n",
             ],
-            'html_input' => Environment::HTML_INPUT_ESCAPE,
+            'html_input' => EnvironmentInterface::HTML_INPUT_ESCAPE,
             'allow_unsafe_links' => false,
-        ]);
-        return $environment;
-    },
+        ]),
 
-    AbstractProvider::class => create(Github::class)
-        ->constructor(get('oauth.github.config')),
+    AbstractProvider::class =>
+        fn(Container $c) => new Github($c->get('oauth.github.config')),
     'oauth.github.config' => [
         'clientId' => env('GITHUB_OAUTH_CLIENT_ID'),
         'clientSecret' => env('GITHUB_OAUTH_CLIENT_SECRET'),
@@ -96,10 +86,11 @@ return [
         ->constructorParameter('indexPrefix', get('algolia.index_prefix')),
 
     'session.secret_key' => env('SESSION_SECRET_KEY'),
-    SessionMiddleware::class => function (ContainerInterface $c) {
-        $key = (string) $c->get('session.secret_key');
-        return SessionMiddleware::fromSymmetricKeyDefaults($key, 31536000);
-    },
+    SessionMiddleware::class =>
+        fn (Container $c) => SessionMiddleware::fromSymmetricKeyDefaults(
+            (string) $c->get('session.secret_key'),
+            31536000
+        ),
 
     'sentry.url' => env('SENTRY_URL', null),
 

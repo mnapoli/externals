@@ -33,23 +33,12 @@ class EmailSynchronizer
         69050,
     ];
 
-    /** @var EmailRepository */
-    private $emailRepository;
-
-    /** @var EmailSubjectParser */
-    private $subjectParser;
-
-    /** @var EmailContentParser */
-    private $contentParser;
-
-    /** @var LoggerInterface */
-    private $logger;
-
-    /** @var SearchIndex */
-    private $searchIndex;
-
-    /** @var \Doctrine\DBAL\Connection */
-    private $db;
+    private EmailRepository $emailRepository;
+    private EmailSubjectParser $subjectParser;
+    private EmailContentParser $contentParser;
+    private LoggerInterface $logger;
+    private SearchIndex $searchIndex;
+    private \Doctrine\DBAL\Connection $db;
 
     public function __construct(
         EmailRepository $emailRepository,
