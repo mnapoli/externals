@@ -57,7 +57,7 @@ return [
             ]
         ]);
         $twig->addExtension(new Twig_Extensions_Extension_Date);
-        $twig->addExtension(new GravatarExtension(new Gravatar));
+        $twig->addExtension(new GravatarExtension(new Gravatar()));
         return $twig;
     },
 
