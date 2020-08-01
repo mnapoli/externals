@@ -37,7 +37,7 @@ return [
         fn(Container $c) => DriverManager::getConnection([
             'url' => $c->get('db.url'),
             'charset' => 'utf8mb4',
-            'platform' => new CustomMySQLPlatform,
+            'platform' => new CustomMySQLPlatform(),
             'driverOptions' => [
                 PDO::ATTR_TIMEOUT => 10,
             ],
