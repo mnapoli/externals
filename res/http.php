@@ -18,6 +18,7 @@ use Externals\Voting;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Stratify\ErrorHandlerModule\ErrorHandlerMiddleware;
+use Twig\Environment;
 use function Stratify\Framework\pipe;
 use function Stratify\Framework\router;
 use function Stratify\Router\route;
@@ -37,7 +38,7 @@ return pipe([
 
     router([
 
-        '/' => function (Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request, ContainerInterface $container) {
+        '/' => function (Environment $twig, EmailRepository $repository, ServerRequestInterface $request, ContainerInterface $container) {
             newrelic_name_transaction('home');
             $user = $request->getAttribute('user');
             return $twig->render('home.html.twig', [
@@ -47,7 +48,7 @@ return pipe([
             ]);
         },
 
-        '/message/{number}' => route(function (int $number, Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
+        '/message/{number}' => route(function (int $number, Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
             newrelic_name_transaction('message');
             newrelic_add_custom_parameter('message', $number);
 
@@ -79,7 +80,7 @@ return pipe([
             ]);
         })->pattern('number', '\d+'), // must be a number
 
-        '/threads/list' => function (Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
+        '/threads/list' => function (Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
             newrelic_name_transaction('thread-list');
             $user = $request->getAttribute('user');
             $query = $request->getQueryParams();
@@ -93,7 +94,7 @@ return pipe([
         '/login' => [UserController::class, 'login'],
         '/logout' => [UserController::class, 'logout'],
 
-        '/top' => function (Twig_Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
+        '/top' => function (Environment $twig, EmailRepository $repository, ServerRequestInterface $request) {
             newrelic_name_transaction('top');
             $user = $request->getAttribute('user');
             return $twig->render('top.html.twig', [
@@ -115,14 +116,14 @@ return pipe([
             $rss = new RssRfcBuilder($container->get('rss.host'));
             return $rss->build($emailRepository->findLatestRfcThreads());
         },
-        '/news' => function (Twig_Environment $twig, ServerRequestInterface $request) {
+        '/news' => function (Environment $twig, ServerRequestInterface $request) {
             newrelic_name_transaction('news');
             return $twig->render('news.html.twig', [
                 'user' => $request->getAttribute('user'),
             ]);
         },
 
-        '/stats' => function (Twig_Environment $twig, EmailRepository $emailRepository, UserRepository $userRepository, ServerRequestInterface $request) {
+        '/stats' => function (Environment $twig, EmailRepository $emailRepository, UserRepository $userRepository, ServerRequestInterface $request) {
             newrelic_name_transaction('stats');
             $user = $request->getAttribute('user');
             return $twig->render('stats.html.twig', [

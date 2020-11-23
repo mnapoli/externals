@@ -10,7 +10,7 @@ use League\OAuth2\Client\Provider\GithubResourceOwner;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use PSR7Session\Http\SessionMiddleware;
-use Twig_Environment;
+use Twig\Environment;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 
@@ -19,13 +19,13 @@ class UserController
     /** @var UserRepository */
     private $userRepository;
 
-    /** @var Twig_Environment */
+    /** @var Environment */
     private $twig;
 
     /** @var AbstractProvider */
     private $authProvider;
 
-    public function __construct(UserRepository $userRepository, Twig_Environment $twig, AbstractProvider $authProvider)
+    public function __construct(UserRepository $userRepository, Environment $twig, AbstractProvider $authProvider)
     {
         $this->userRepository = $userRepository;
         $this->twig = $twig;

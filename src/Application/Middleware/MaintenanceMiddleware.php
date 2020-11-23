@@ -5,6 +5,7 @@ namespace Externals\Application\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Stratify\Http\Middleware\Middleware;
+use Twig\Environment;
 use Zend\Diactoros\Response\HtmlResponse;
 
 /**
@@ -15,10 +16,10 @@ class MaintenanceMiddleware implements Middleware
     /** @var bool */
     private $maintenance;
 
-    /** @var \Twig_Environment */
+    /** @var Environment */
     private $twig;
 
-    public function __construct(bool $maintenance, \Twig_Environment $twig)
+    public function __construct(bool $maintenance, Environment $twig)
     {
         $this->maintenance = $maintenance;
         $this->twig = $twig;

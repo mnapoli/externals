@@ -4,14 +4,15 @@ namespace Externals\Application\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Twig\Environment;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class NotFoundController
 {
-    /** @var \Twig_Environment */
+    /** @var Environment */
     private $twig;
 
-    public function __construct(\Twig_Environment $twig)
+    public function __construct(Environment $twig)
     {
         $this->twig = $twig;
     }
