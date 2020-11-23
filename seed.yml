@@ -1,4 +1,5 @@
 before_compile:
+    - composer selfupdate --1
     - composer install --prefer-dist --optimize-autoloader --no-dev
     - rm -rf /tmp/seed/source/var/cache/*
     - ./console list
