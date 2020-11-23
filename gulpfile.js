@@ -46,4 +46,4 @@ gulp.task('watch', function () {
     gulp.watch('./res/assets/**/*.less', ['css']);
 });
 
-gulp.task('default', ['js', 'css', 'fonts']);
+gulp.task('default', gulp.series('js', 'css', 'fonts'));
