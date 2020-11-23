@@ -4,7 +4,7 @@
         "bootstrap": "^3.3.7",
         "font-awesome": "^4.7.0",
         "gulp": "^4.0",
-        "jquery": "^3.4.0",
+        "jquery": "^3.5.0",
         "moment": "^2.18.1",
         "serverless-pseudo-parameters": "^2.4.0"
     },
