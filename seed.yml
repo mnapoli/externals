@@ -1,7 +1,7 @@
 before_compile:
-    - docker run --rm -v /tmp/seed/source:/app composer:1 install --prefer-dist --optimize-autoloader --no-dev
+    - composer install --prefer-dist --optimize-autoloader --no-dev
     - rm -rf /tmp/seed/source/var/cache/*
-    - docker run --rm -v /tmp/seed/source:/var/task --entrypoint php bref/php-74 console list
+    - ./console list
 
 before_build:
     - npx gulp
