@@ -2,7 +2,7 @@ service: externals
 
 provider:
     name: aws
-    runtime: provided.al2
+    runtime: provided
     stage: prod
     region: eu-west-1
     environment:
