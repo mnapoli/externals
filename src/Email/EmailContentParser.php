@@ -3,22 +3,22 @@
 namespace Externals\Email;
 
 use League\CommonMark\CommonMarkConverter;
-use Misd\Linkify\Linkify;
 use Psr\Log\LoggerInterface;
 use Throwable;
+use VStelmakh\UrlHighlight\UrlHighlight;
 
 class EmailContentParser
 {
-    private Linkify $linkify;
+    private UrlHighlight $urlHighlight;
     private CommonMarkConverter $markdownParser;
     private LoggerInterface $logger;
 
     public function __construct(
-        Linkify $linkify,
+        UrlHighlight $urlHighlight,
         CommonMarkConverter $markdownParser,
         LoggerInterface $logger
     ) {
-        $this->linkify = $linkify;
+        $this->urlHighlight = $urlHighlight;
         $this->markdownParser = $markdownParser;
         $this->logger = $logger;
     }
@@ -50,12 +50,7 @@ class EmailContentParser
             $content = nl2br($content);
         }
 
-        $content = $this->linkify->process($content, [
-            'attr' => [
-                'rel' => 'nofollow',
-                'target' => '_blank',
-            ],
-        ]);
+        $content = $this->urlHighlight->highlightUrls($content);
 
         return $content;
     }
