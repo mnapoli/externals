@@ -1,0 +1,40 @@
+name: build
+
+on:
+    push:
+    pull_request:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '7.4'
+                    tools: composer:v1
+
+            -   name: Git checkout
+                uses: actions/checkout@v2
+
+            -   name: Validate composer.json and composer.lock
+                run: composer validate
+
+            -   name: Prepare Composer cache vars
+                id: composer
+                run: |
+                    echo "::set-output name=cache_dir::$(composer config cache-files-dir)"
+                    echo "::set-output name=cache_key::$(date +'%Y-%m-%d')-composer-"
+
+            -   name: Cache Composer dependencies
+                uses: actions/cache@v2
+                with:
+                    path: ${{ steps.composer.outputs.cache_dir }}
+                    key: ${{ steps.composer.outputs.cache_key }}${{ hashFiles('**/composer.json') }}
+                    restore-keys: ${{ steps.composer.outputs.cache_key }}
+
+            -   name: Update Composer dependencies
+                run: composer update --prefer-dist --no-progress --no-suggest --no-interaction
+
+            -   name: Run PHPUnit
+                run: vendor/bin/phpunit --colors=always
