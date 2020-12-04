@@ -85,14 +85,14 @@ functions:
             - httpApi: 'GET /rss-rfc'
     # Keep backward compatibility with old URLs (old threads)
     legacy-thread-redirect:
-        handler: Externals\Application\Controller\RssRfcController
+        handler: Externals\Application\Controller\LegacyThreadRedirectController
         events:
             - httpApi: 'GET /thread/{id}'
     # Catch-all to render a "Not found" page
-#    not-found:
-#        handler: Bref\Framework\Http\ThrowNotFound
-#        events:
-#            - httpApi: '*'
+    not-found:
+        handler: Bref\Framework\Http\ThrowNotFound
+        events:
+            - httpApi: '*'
 
     # This script fetches emails from the mailing list and updates our database
     updater:
