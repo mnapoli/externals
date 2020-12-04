@@ -7,16 +7,10 @@ use Externals\Email\EmailRepository;
 
 class Voting
 {
-    /** @var Connection */
-    private $db;
-
-    /** @var EmailRepository */
-    private $emailRepository;
-
-    public function __construct(Connection $db, EmailRepository $emailRepository)
-    {
-        $this->db = $db;
-        $this->emailRepository = $emailRepository;
+    public function __construct(
+        private Connection $db,
+        private EmailRepository $emailRepository
+    ) {
     }
 
     /**
@@ -32,7 +26,7 @@ class Voting
 
         $this->emailRepository->refreshThread($emailNumber);
 
-        return (int) $this->db->fetchColumn('SELECT COALESCE(SUM(votes.value), 0) FROM votes WHERE votes.emailNumber = ?', [
+        return (int) $this->db->fetchOne('SELECT COALESCE(SUM(votes.value), 0) FROM votes WHERE votes.emailNumber = ?', [
             $emailNumber,
         ]);
     }

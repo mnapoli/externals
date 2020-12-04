@@ -4,45 +4,23 @@ namespace Externals\Email;
 
 use DateTimeInterface;
 
+/**
+ * @psalm-immutable
+ */
 class Email
 {
-    /** @var string */
-    private $id;
-
-    /** @var int */
-    private $number;
-
-    /** @var string */
-    private $subject;
-
-    /** @var string */
-    private $content;
-
-    /**
-     * The raw source of the message.
-     *
-     * @var string
-     */
-    private $source;
-
-    /** @var string|null */
-    private $threadId;
-
-    /** @var DateTimeInterface */
-    private $date;
-
-    /** @var EmailAddress */
-    private $from;
-
-    /**
-     * ID of the email it replies to.
-     *
-     * @var string|null
-     */
-    private $inReplyTo;
-
-    /** @var bool */
-    private $isRead = false;
+    public string $id;
+    public int $number;
+    public string $subject;
+    public string $content;
+    /** The raw source of the message */
+    public string $source;
+    public ?string $threadId;
+    public DateTimeInterface $date;
+    public EmailAddress $from;
+    /** ID of the email it replies to */
+    public ?string $inReplyTo;
+    public bool $isRead = false;
 
     public function __construct(
         string $id,

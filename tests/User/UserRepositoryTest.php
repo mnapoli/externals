@@ -24,9 +24,9 @@ class UserRepositoryTest extends TestCase
 
         $user = $repository->getOrCreate('abc', 'joe');
 
-        $this->assertEquals(123, $user->getId());
-        $this->assertEquals('abc', $user->getGithubId());
-        $this->assertEquals('joe', $user->getName());
+        $this->assertEquals(123, $user->id);
+        $this->assertEquals('abc', $user->githubId);
+        $this->assertEquals('joe', $user->name);
     }
 
     /**
@@ -44,8 +44,8 @@ class UserRepositoryTest extends TestCase
 
         $user = $repository->getOrCreate('abc', 'joe');
 
-        $this->assertEquals(123, $user->getId());
-        $this->assertEquals('abc', $user->getGithubId());
-        $this->assertEquals('joe', $user->getName());
+        $this->assertEquals(123, $user->id);
+        $this->assertEquals('abc', $user->githubId);
+        $this->assertEquals('joe', $user->name);
     }
 }

@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Twig\Environment;
 
-class NotFoundController extends Controller
+class NewsController extends Controller
 {
     public function __construct(
         private Environment $twig,
@@ -16,8 +16,8 @@ class NotFoundController extends Controller
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->htmlResponse($this->twig->render('404.html.twig', [
+        return $this->htmlResponse($this->twig->render('news.html.twig', [
             'user' => $request->getAttribute('user'),
-        ]), 404);
+        ]));
     }
 }

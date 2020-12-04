@@ -2,9 +2,12 @@ service: externals
 
 provider:
     name: aws
-    runtime: provided.al2
-    stage: prod
     region: eu-west-1
+    stage: prod
+    runtime: provided.al2
+    layers:
+        - ${bref:layer.php-80}
+    timeout: 10
     environment:
         APP_ENV: prod
         EXTERNALS_APP_VERSION: ${env:SEED_BUILD_ID}
@@ -29,23 +32,70 @@ package:
         - 'web/assets/**'
 
 functions:
-    website:
-        handler: web/index.php
-        description: 'externals.io website'
-        timeout: 30 # in seconds (API Gateway has a timeout of 30 seconds)
-        layers:
-            - ${bref:layer.php-74-fpm}
+    home:
+        handler: Externals\Application\Controller\HomeController
         events:
-            -   http: 'ANY /'
-            -   http: 'ANY {proxy+}'
+            - httpApi: 'GET /'
+    thread:
+        handler: Externals\Application\Controller\ThreadController
+        events:
+            - httpApi: 'GET /message/{number}'
+    top:
+        handler: Externals\Application\Controller\TopController
+        events:
+            - httpApi: 'GET /top'
+    news:
+        handler: Externals\Application\Controller\NewsController
+        events:
+            - httpApi: 'GET /news'
+    login:
+        handler: Externals\Application\Controller\LoginController
+        events:
+            - httpApi: 'GET /login'
+    logout:
+        handler: Externals\Application\Controller\LogoutController
+        events:
+            - httpApi: 'GET /logout'
+    more-threads:
+        handler: Externals\Application\Controller\MoreThreadsController
+        events:
+            - httpApi: 'GET /threads/more'
+    email-source:
+        handler: Externals\Application\Controller\EmailSourceController
+        events:
+            - httpApi: 'GET /email/{number}/source'
+    stats:
+        handler: Externals\Application\Controller\StatsController
+        events:
+            - httpApi: 'GET /stats'
+    vote:
+        handler: Externals\Application\Controller\VoteController
+        events:
+            - httpApi: 'POST /votes/{number}'
+    rss:
+        handler: Externals\Application\Controller\RssController
+        events:
+            - httpApi: 'GET /rss'
+    rss-rfc:
+        handler: Externals\Application\Controller\RssRfcController
+        events:
+            - httpApi: 'GET /rss-rfc'
+    # Keep backward compatibility with old URLs (old threads)
+    legacy-thread-redirect:
+        handler: Externals\Application\Controller\RssRfcController
+        events:
+            - httpApi: 'GET /thread/{id}'
+    # Catch-all to render a "Not found" page
+#    not-found:
+#        handler: Bref\Framework\Http\ThrowNotFound
+#        events:
+#            - httpApi: '*'
 
     # This script fetches emails from the mailing list and updates our database
     updater:
         handler: updater.php
         description: 'externals.io updater'
         timeout: 900
-        layers:
-            - ${bref:layer.php-74}
         events:
             -   schedule:
                     rate: rate(15 minutes)
@@ -54,6 +104,7 @@ functions:
 
 plugins:
     - ./vendor/bref/bref
+    - ../../Javascript/serverless-offline/dist/main
     # This lets us use `#{Assets.Arn}` variables
     - serverless-pseudo-parameters
 

@@ -33,27 +33,14 @@ class EmailSynchronizer
         69050,
     ];
 
-    private EmailRepository $emailRepository;
-    private EmailSubjectParser $subjectParser;
-    private EmailContentParser $contentParser;
-    private LoggerInterface $logger;
-    private SearchIndex $searchIndex;
-    private \Doctrine\DBAL\Connection $db;
-
     public function __construct(
-        EmailRepository $emailRepository,
-        EmailSubjectParser $subjectParser,
-        EmailContentParser $contentParser,
-        SearchIndex $searchIndex,
-        LoggerInterface $logger,
-        \Doctrine\DBAL\Connection $db
+        private EmailRepository $emailRepository,
+        private EmailSubjectParser $subjectParser,
+        private EmailContentParser $contentParser,
+        private SearchIndex $searchIndex,
+        private LoggerInterface $logger,
+        private \Doctrine\DBAL\Connection $db
     ) {
-        $this->emailRepository = $emailRepository;
-        $this->subjectParser = $subjectParser;
-        $this->contentParser = $contentParser;
-        $this->searchIndex = $searchIndex;
-        $this->logger = $logger;
-        $this->db = $db;
     }
 
     public function synchronize(?int $maxNumberOfEmailsToSynchronize = null): void

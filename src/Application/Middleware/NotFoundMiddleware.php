@@ -2,28 +2,21 @@
 
 namespace Externals\Application\Middleware;
 
-use Externals\Application\Controller\NotFoundController;
+use Bref\Framework\Http\Exception\HttpNotFound;
 use Externals\NotFound;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Stratify\Http\Middleware\Middleware;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class NotFoundMiddleware implements Middleware
+class NotFoundMiddleware implements MiddlewareInterface
 {
-    /** @var NotFoundController */
-    private $controller;
-
-    public function __construct(NotFoundController $controller)
-    {
-        $this->controller = $controller;
-    }
-
-    public function __invoke(ServerRequestInterface $request, callable $next): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
-            return $next($request);
-        } catch (NotFound $e) {
-            return $this->controller->__invoke($request);
+            return $handler->handle($request);
+        } catch (NotFound) {
+            throw new HttpNotFound('Page not found');
         }
     }
 }

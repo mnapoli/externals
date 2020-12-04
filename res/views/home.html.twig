@@ -71,7 +71,7 @@
                         searchResult.style.display = 'none';
                         return;
                     }
-                    
+
                     helper.search();
                     searchResult.style.display = 'block';
                 },
@@ -96,14 +96,14 @@
             search.templatesConfig.helpers.date = function () {
                 return moment(this.date).fromNow();
             };
-            search.start();        
+            search.start();
         }
-        
+
         document.addEventListener("DOMContentLoaded", function() {
             // Pagination
             var page = 2;
             document.querySelector('#show-more-threads').onclick = function () {
-                $.get('/threads/list?page=' + page, function (html) {
+                $.get('/threads/more?page=' + page, function (html) {
                     if (html === '') {
                         $('#show-more-threads').remove();
                         return;

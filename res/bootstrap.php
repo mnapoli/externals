@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 use DI\ContainerBuilder;
 use DI\Definition\Source\SourceCache;
-use Stratify\Framework\Application;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -16,34 +15,26 @@ if ($environment === 'dev' && file_exists(__DIR__ . '/../.env')) {
 }
 
 // Create the application
-$application = new class($environment) extends Application
-{
-    public function __construct(string $environment)
-    {
-        $modules = [
-            'stratify/error-handler-module',
-            'mnapoli/externals',
-        ];
-        $httpStack = require(__DIR__ . '/http.php');
+$containerBuilder = new ContainerBuilder;
+$containerBuilder->useAttributes(true);
+$containerBuilder->addDefinitions(__DIR__ . '/config/config.php');
+$envConfig = __DIR__ . "/config/env/$environment.php";
+if (file_exists($envConfig)) {
+    $containerBuilder->addDefinitions($envConfig);
+}
 
-        parent::__construct($modules, $environment, $httpStack);
-    }
+if ($environment !== 'dev' && SourceCache::isSupported()) {
+    $containerBuilder->enableDefinitionCache();
+}
+if ($environment !== 'dev') {
+    $containerBuilder->enableCompilation('/tmp/phpdi');
+}
+$container = $containerBuilder->build();
 
-    protected function configureContainerBuilder(ContainerBuilder $containerBuilder)
-    {
-        if (SourceCache::isSupported()) {
-            $containerBuilder->enableDefinitionCache();
-        }
-        if ($this->getEnvironment() !== 'dev') {
-            $containerBuilder->enableCompilation('/tmp/phpdi');
-        }
-    }
-};
-
-$sentryUrl = $application->getContainer()->get('sentry.url');
+$sentryUrl = $container->get('sentry.url');
 if ($sentryUrl) {
     $sentry = new Raven_Client($sentryUrl);
     $sentry->install();
 }
 
-return $application;
+return $container;

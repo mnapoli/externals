@@ -9,3 +9,4 @@
 /backups/
 /composer.phar
 /.serverless/
+/.serverless-offline/

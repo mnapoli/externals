@@ -3,21 +3,21 @@
 namespace Externals\Application\Controller;
 
 use Bref\Framework\Controller;
+use Externals\Email\EmailRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Twig\Environment;
 
-class NotFoundController extends Controller
+class EmailSourceController extends Controller
 {
     public function __construct(
-        private Environment $twig,
+        private EmailRepository $repository,
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->htmlResponse($this->twig->render('404.html.twig', [
-            'user' => $request->getAttribute('user'),
-        ]), 404);
+        $number = (int) $request->getAttribute('number');
+
+        return $this->textResponse($this->repository->getEmailSource($number));
     }
 }

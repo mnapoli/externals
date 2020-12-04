@@ -3,6 +3,7 @@
 namespace Externals\Email;
 
 use DateTime;
+use DateTimeImmutable;
 use DateTimeZone;
 use Doctrine\DBAL\Connection;
 use Externals\NotFound;
@@ -10,17 +11,14 @@ use Externals\User\User;
 
 class EmailRepository
 {
-    /** @var Connection */
-    private $db;
-
-    public function __construct(Connection $db)
-    {
-        $this->db = $db;
+    public function __construct(
+        private Connection $db
+    ) {
     }
 
     public function getById(string $id): Email
     {
-        $row = $this->db->fetchAssoc('SELECT * FROM emails WHERE id = ?', [$id]);
+        $row = $this->db->fetchAssociative('SELECT * FROM emails WHERE id = ?', [$id]);
         if (! $row) {
             throw new NotFound("Email $id was not found");
         }
@@ -29,7 +27,7 @@ class EmailRepository
 
     public function getByNumber(int $number): Email
     {
-        $row = $this->db->fetchAssoc('SELECT * FROM emails WHERE number = ?', [$number], ['integer']);
+        $row = $this->db->fetchAssociative('SELECT * FROM emails WHERE number = ?', [$number], ['integer']);
         if (! $row) {
             throw new NotFound("Email $number was not found");
         }
@@ -55,7 +53,7 @@ class EmailRepository
         if ($user) {
             $qb->addSelect('IF(readStatus.lastReadDate > emails.fetchDate, 1, 0) as wasRead')
                 ->leftJoin('emails', 'user_emails_read', 'readStatus', 'readStatus.emailId = :threadId AND readStatus.userId = :userId');
-            $qb->setParameter('userId', $user->getId());
+            $qb->setParameter('userId', $user->id);
         } else {
             $qb->addSelect('0 as wasRead');
         }
@@ -63,7 +61,7 @@ class EmailRepository
         /** @var Email[] $emails */
         $emails = array_map(
             [$this, 'emailFromRow'],
-            $qb->execute()->fetchAll()
+            $qb->execute()->fetchAllAssociative()
         );
 
         // Index by ID
@@ -127,7 +125,7 @@ $orderBy
 LIMIT 20 OFFSET $offset
 SQL;
             $parameters = [
-                'userId' => (int) $user->getId(),
+                'userId' => $user->id,
             ];
         } else {
             $query = <<<SQL
@@ -149,7 +147,7 @@ LIMIT 20 OFFSET $offset
 SQL;
         }
 
-        return $this->db->fetchAll($query, $parameters ?? []);
+        return $this->db->fetchAllAssociative($query, $parameters ?? []);
     }
 
     /**
@@ -157,7 +155,7 @@ SQL;
      */
     public function getThreadSize(Email $email): int
     {
-        return (int) $this->db->fetchColumn('SELECT COUNT(id) FROM emails WHERE threadId = ?', [$email->getId()]);
+        return (int) $this->db->fetchAllAssociative('SELECT COUNT(id) FROM emails WHERE threadId = ?', [$email->getId()]);
     }
 
     /**
@@ -173,7 +171,7 @@ SQL;
             ->setMaxResults(100)
             ->setParameter('since', $since);
 
-        return array_map([$this, 'emailFromRow'], $qb->execute()->fetchAll());
+        return array_map([$this, 'emailFromRow'], $qb->execute()->fetchAllAssociative());
     }
 
     public function add(Email $email): void
@@ -209,7 +207,7 @@ SQL;
 
     public function getEmailSource(int $number): string
     {
-        $email = $this->db->fetchAssoc('SELECT * FROM emails WHERE `number` = ?', [$number]);
+        $email = $this->db->fetchAssociative('SELECT * FROM emails WHERE `number` = ?', [$number]);
         if (! $email) {
             throw new NotFound('Email not found');
         }
@@ -219,7 +217,7 @@ SQL;
 
     public function getLastEmailNumber(): int
     {
-        return (int) $this->db->fetchColumn('SELECT MAX(number) FROM emails');
+        return (int) $this->db->fetchOne('SELECT MAX(number) FROM emails');
     }
 
     public function updateContent(string $emailId, string $newContent): void
@@ -231,12 +229,12 @@ SQL;
 
     public function getEmailCount(): int
     {
-        return (int) $this->db->fetchColumn('SELECT COUNT(*) FROM emails');
+        return (int) $this->db->fetchOne('SELECT COUNT(*) FROM emails');
     }
 
     public function getThreadCount(): int
     {
-        return (int) $this->db->fetchColumn('SELECT COUNT(*) FROM emails WHERE isThreadRoot = 1');
+        return (int) $this->db->fetchOne('SELECT COUNT(*) FROM emails WHERE isThreadRoot = 1');
     }
 
     /**
@@ -244,7 +242,7 @@ SQL;
      */
     public function findBySubject(string $subject): Email
     {
-        $row = $this->db->fetchAssoc('SELECT * FROM emails WHERE subject = ? AND isThreadRoot = 1 ORDER BY date DESC LIMIT 1', [$subject]);
+        $row = $this->db->fetchAssociative('SELECT * FROM emails WHERE subject = ? AND isThreadRoot = 1 ORDER BY date DESC LIMIT 1', [$subject]);
         if (! $row) {
             throw new NotFound('Email not found');
         }
@@ -256,7 +254,7 @@ SQL;
         // Make sure to set the time in UTC using `UTC_TIMESTAMP()`
         $this->db->executeQuery('REPLACE INTO user_emails_read (emailId, userId, lastReadDate) VALUES (?, ?, UTC_TIMESTAMP())', [
             $email->getId(),
-            $user->getId(),
+            $user->id,
         ]);
     }
 
@@ -299,7 +297,7 @@ SQL;
     {
         $date = $row['date'];
         if (is_string($date)) {
-            $date = new \DateTimeImmutable($date);
+            $date = new DateTimeImmutable($date);
         }
 
         $email = new Email(

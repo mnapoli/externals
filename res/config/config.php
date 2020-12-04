@@ -2,22 +2,22 @@
 declare(strict_types = 1);
 
 use Bref\Logger\StderrLogger;
+use Externals\RssBuilder;
+use Externals\RssRfcBuilder;
 use Gravatar\Gravatar;
 use League\CommonMark\CommonMarkConverter;
 use League\CommonMark\EnvironmentInterface;
 use Psr\Log\LogLevel;
+use PSR7Sessions\Storageless\Http\SessionMiddleware;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use function DI\add;
 use function DI\autowire;
 use function DI\create;
 use function DI\env;
 use function DI\get;
-use function DI\string;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Externals\Application\Database\CustomMySQLPlatform;
-use Externals\Application\Middleware\MaintenanceMiddleware;
 use Externals\Search\AlgoliaSearchIndex;
 use Externals\Search\SearchIndex;
 use Gravatar\Twig\GravatarExtension;
@@ -25,7 +25,6 @@ use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Github;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Log\LoggerInterface;
-use PSR7Session\Http\SessionMiddleware;
 
 return [
 
@@ -96,8 +95,13 @@ return [
 
     'sentry.url' => env('SENTRY_URL', null),
 
-    MaintenanceMiddleware::class => autowire()
-        ->constructorParameter('maintenance', get('maintenance')),
-
     'rss.host' => env('RSS_HOST', 'https://externals.io'),
+    RssBuilder::class => create()
+        ->constructor(get('rss.host')),
+    RssRfcBuilder::class => create()
+        ->constructor(get('rss.host')),
+
+    'http.middlewares' => [
+        SessionMiddleware::class,
+    ],
 ];

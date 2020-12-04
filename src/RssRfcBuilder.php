@@ -7,11 +7,11 @@ use DomElement;
 
 class RssRfcBuilder
 {
-    /** @var string $host The base url to use for links. */
-    private $host;
+    /** The base url to use for links. */
+    private string $host;
 
-    /** @var DomDocument|null $dom The current xml document being built. */
-    private $dom;
+    /** The current xml document being built. */
+    private ?DomDocument $dom;
 
     public function __construct(string $host)
     {
