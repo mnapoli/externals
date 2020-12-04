@@ -112,7 +112,7 @@ plugins:
 
 custom:
     stage: ${opt:stage, self:provider.stage}
-    isProd: ${self:custom.isProdMap.${self:custom.stage}, self.enabled.other}
+    isProd: ${self:custom.isProdMap.${self:custom.stage}, self.custom.isProdMap.other}
     isProdMap:
         prod: true
         other: false
