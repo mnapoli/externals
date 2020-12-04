@@ -1,5 +1,7 @@
 service: externals
 
+frameworkVersion: '2.3'
+
 provider:
     name: aws
     region: eu-west-1
