@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 
 use Bref\Logger\StderrLogger;
+use Externals\Application\Middleware\NotFoundMiddleware;
 use Externals\RssBuilder;
 use Externals\RssRfcBuilder;
 use Gravatar\Gravatar;
@@ -102,6 +103,7 @@ return [
         ->constructor(get('rss.host')),
 
     'http.middlewares' => [
+        NotFoundMiddleware::class,
         SessionMiddleware::class,
     ],
 ];

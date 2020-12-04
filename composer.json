@@ -21,6 +21,7 @@
         "php": "^8.0",
         "ext-dom": "*",
         "ext-json": "*",
+        "ext-pdo": "*",
         "php-di/php-di": "^7.0.0-beta2",
         "twig/twig": "^2.0",
         "mnapoli/silly": "^1.7",
