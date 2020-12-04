@@ -1,11 +1,11 @@
 before_compile:
-    - composer selfupdate --1
     - composer install --prefer-dist --optimize-autoloader --no-dev
     - rm -rf /tmp/seed/source/var/cache/*
+    # Trigger cache compilation
     - ./console list
 
 before_build:
-    - npx gulp
+    - if [ $SEED_STAGE_NAME = "prod" ]; then npx gulp
 
 after_deploy:
     - if [ $SEED_STAGE_NAME = "prod" ]; then make deploy-assets; fi
