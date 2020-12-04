@@ -160,12 +160,13 @@ resources:
                     Enabled: true
                     # Cheapest option by default (https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_DistributionConfig.html)
                     PriceClass: PriceClass_100
+                    # Enable http2 transfer for better performances
+                    HttpVersion: http2
                     # Origins are where CloudFront fetches content
                     Origins:
                         # The website (AWS Lambda)
                         -   Id: Website
-                            DomainName: '#{ApiGatewayRestApi}.execute-api.#{AWS::Region}.amazonaws.com'
-                            OriginPath: '/prod'
+                            DomainName: !Join ['.', [!Ref HttpApi, 'execute-api', !Ref AWS::Region, 'amazonaws.com']]
                             CustomOriginConfig:
                                 OriginProtocolPolicy: 'https-only' # API Gateway only supports HTTPS
                         # The assets (S3)
@@ -184,14 +185,16 @@ resources:
                         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloudfront-distribution-forwardedvalues.html
                         ForwardedValues:
                             QueryString: true
+                            Cookies:
+                                Forward: all # Forward cookies to use them in PHP
                             # We must *not* forward the `Host` header else it messes up API Gateway
                             Headers:
                                 - 'Accept'
+                                - 'Accept-Encoding'
                                 - 'Accept-Language'
+                                - 'Authorization'
                                 - 'Origin'
                                 - 'Referer'
-                            Cookies:
-                                Forward: all
                         ViewerProtocolPolicy: redirect-to-https
                     CacheBehaviors:
                         # Assets will be served under the `/assets/` prefix
@@ -206,7 +209,7 @@ resources:
                             ViewerProtocolPolicy: redirect-to-https
                             Compress: true # Serve files with gzip for browsers that support it (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/ServingCompressedFiles.html)
                     CustomErrorResponses:
-                        # Do not cache HTTP errors
+                        # Force CloudFront to not cache HTTP errors
                         -   ErrorCode: 500
                             ErrorCachingMinTTL: 0
                         -   ErrorCode: 504
