@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 
 use Bref\Logger\StderrLogger;
+use Externals\Application\Middleware\AuthMiddleware;
 use Externals\Application\Middleware\NotFoundMiddleware;
 use Externals\RssBuilder;
 use Externals\RssRfcBuilder;
@@ -34,7 +35,7 @@ return [
     'path.cache' => '/tmp/cache',
 
     'version' => env('EXTERNALS_APP_VERSION', ''),
-    'assetsBaseUrl' => env('ASSETS_BASE_URL', ''),
+    'assetsBaseUrl' => 'https://externals.io',
 
     'db.url' => env('DB_URL'),
     Connection::class =>
@@ -105,5 +106,6 @@ return [
     'http.middlewares' => [
         NotFoundMiddleware::class,
         SessionMiddleware::class,
+        AuthMiddleware::class,
     ],
 ];

@@ -15,8 +15,6 @@ use Psr\Http\Message\ServerRequestInterface;
  * HTTP stack.
  */
 return pipe([
-    NotFoundMiddleware::class,
-    AuthMiddleware::class,
 
     NotFoundController::class,
 ]);

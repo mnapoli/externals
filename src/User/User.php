@@ -28,9 +28,9 @@ class User implements JsonSerializable
         ];
     }
 
-    public static function fromData(?array $data): ?self
+    public static function fromData(mixed $data): ?self
     {
-        if ($data === null) {
+        if (! is_array($data)) {
             return null;
         }
 

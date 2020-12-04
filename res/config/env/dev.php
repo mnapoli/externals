@@ -3,19 +3,21 @@ declare(strict_types = 1);
 
 use Bref\Logger\StderrLogger;
 use Dflydev\FigCookies\SetCookie;
+use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use PSR7Session\Http\SessionMiddleware;
-use PSR7Session\Time\SystemCurrentTime;
+use PSR7Sessions\Storageless\Http\SessionMiddleware;
 use function DI\create;
 use function DI\get;
 
 return [
 
     'debug' => true,
+
+    'assetsBaseUrl' => '',
 
     'twig.options' => [
         'debug' => get('debug'),
@@ -41,7 +43,7 @@ return [
                 ->withPath('/'),
             new Parser,
             31536000,
-            new SystemCurrentTime
+            SystemClock::fromUTC(),
         );
     },
 
