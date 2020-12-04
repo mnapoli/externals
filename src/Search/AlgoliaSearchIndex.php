@@ -3,20 +3,15 @@
 namespace Externals\Search;
 
 use AlgoliaSearch\Client;
+use DateTime;
 use Externals\Email\Email;
 
 class AlgoliaSearchIndex implements SearchIndex
 {
-    /** @var Client */
-    private $searchClient;
-
-    /** @var string */
-    private $indexPrefix;
-
-    public function __construct(Client $searchClient, string $indexPrefix)
-    {
-        $this->searchClient = $searchClient;
-        $this->indexPrefix = $indexPrefix;
+    public function __construct(
+        private Client $searchClient,
+        private string $indexPrefix,
+    ) {
     }
 
     public function indexEmail(Email $email): void
@@ -30,8 +25,8 @@ class AlgoliaSearchIndex implements SearchIndex
             'threadId' => $email->getThreadId(),
             'fromEmail' => $email->getFrom()->getEmail(),
             'fromName' => $email->getFrom()->getName(),
-            'date' => $email->getDate()->format(\DateTime::ATOM),
+            'date' => $email->getDate()->format(DateTime::ATOM),
             'timestamp' => $email->getDate()->getTimestamp(),
-        ], $email->getNumber());
+        ], (string) $email->getNumber());
     }
 }
