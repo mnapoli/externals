@@ -5,7 +5,8 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Externals\\": "src/"
+            "Externals\\": "src/",
+            "Bref\\Framework\\": "bref-framework/"
         },
         "files": [
             "init.php"
@@ -39,7 +40,6 @@
         "sentry/sentry": "^1.11",
         "bref/bref": "^1.0.2",
         "bref/logger": "^1.0",
-        "bref/framework": "dev-master",
         "psr/http-server-handler": "^1.0",
         "psr/http-message": "^1.0",
         "psr/http-server-middleware": "^1.0"
@@ -52,14 +52,5 @@
     },
     "config": {
         "sort-packages": true
-    },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../../PHP/bref-framework",
-            "options": {
-                "symlink": true
-            }
-        }
-    ]
+    }
 }
