@@ -6,8 +6,8 @@ use Bref\Framework\Controller;
 use Externals\User\UserRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use PSR7Session\Http\SessionMiddleware;
-use PSR7Session\Session\SessionInterface;
+use PSR7Sessions\Storageless\Http\SessionMiddleware;
+use PSR7Sessions\Storageless\Session\SessionInterface;
 use Twig\Environment;
 
 class LogoutController extends Controller
