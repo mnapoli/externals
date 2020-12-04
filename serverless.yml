@@ -104,7 +104,6 @@ functions:
 
 plugins:
     - ./vendor/bref/bref
-    - ../../Javascript/serverless-offline/dist/main
     # This lets us use `#{Assets.Arn}` variables
     - serverless-pseudo-parameters
 
