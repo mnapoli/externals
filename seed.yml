@@ -2,7 +2,7 @@ before_compile:
     - composer install --optimize-autoloader --no-dev --ignore-platform-reqs
     - rm -rf /tmp/seed/source/var/cache/*
     # Trigger cache compilation
-    - ./console list
+#    - ./console list
 
 before_build:
     - if [ $SEED_STAGE_NAME = "prod" ]; then npx gulp
