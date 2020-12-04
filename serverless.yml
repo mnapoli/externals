@@ -24,6 +24,7 @@ provider:
         GITHUB_OAUTH_REDIRECT_URL: 'https://externals.io/login'
         SENTRY_URL: ${ssm:/externals/sentry_url}
         SESSION_SECRET_KEY: ${ssm:/externals/session_secret_key}
+        ASSETS_BASE_URL: 'https://externals.io'
 
 package:
     exclude:

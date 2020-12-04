@@ -33,6 +33,7 @@ return [
     'path.cache' => '/tmp/cache',
 
     'version' => env('EXTERNALS_APP_VERSION', ''),
+    'assetsBaseUrl' => env('ASSETS_BASE_URL', ''),
 
     'db.url' => env('DB_URL'),
     Connection::class =>
@@ -53,6 +54,7 @@ return [
         ]);
         $twig->addGlobal('debug', $c->get('debug'));
         $twig->addGlobal('version', $c->get('version'));
+        $twig->addGlobal('assetsBaseUrl', $c->get('assetsBaseUrl'));
         $twig->addExtension(new Twig_Extensions_Extension_Date);
         $twig->addExtension(new GravatarExtension(new Gravatar()));
         return $twig;
