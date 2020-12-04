@@ -50,11 +50,9 @@ return [
         $twig = new Environment($loader, [
             'cache' => $c->get('path.cache') . '/twig',
             'auto_reload' => true,
-            'globals' => [
-                'debug' => $c->get('debug'),
-                'version' => $c->get('version'),
-            ]
         ]);
+        $twig->addGlobal('debug', $c->get('debug'));
+        $twig->addGlobal('version', $c->get('version'));
         $twig->addExtension(new Twig_Extensions_Extension_Date);
         $twig->addExtension(new GravatarExtension(new Gravatar()));
         return $twig;
