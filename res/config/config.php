@@ -48,7 +48,7 @@ return [
             'charset' => 'utf8mb4',
             'platform' => new CustomMySQLPlatform(),
             'driverOptions' => [
-                PDO::ATTR_TIMEOUT => 10,
+                PDO::ATTR_TIMEOUT => 5,
             ],
         ]),
 
