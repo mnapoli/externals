@@ -11,7 +11,7 @@ class LiftPlugin {
     setEnvironmentVariables() {
         this.serverless.service.provider.environment = this.serverless.service.provider.environment || {};
 
-        const json = child_process.execSync('lift-dev variables');
+        const json = child_process.execSync('lift variables');
         const variables = JSON.parse(json.toString());
 
         Object.keys(variables).map(name => {
@@ -26,7 +26,7 @@ class LiftPlugin {
     setPermissions() {
         this.serverless.service.provider.iamRoleStatements = this.serverless.service.provider.iamRoleStatements || [];
 
-        const json = child_process.execSync('lift-dev permissions');
+        const json = child_process.execSync('lift permissions');
         const permissions = JSON.parse(json.toString());
 
         this.serverless.service.provider.iamRoleStatements.push(...permissions);
