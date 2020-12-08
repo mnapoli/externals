@@ -15,7 +15,7 @@ class UserRepositoryTest extends TestCase
     {
         $db = $this->createMock(Connection::class);
         $repository = new UserRepository($db);
-        $db->method('fetchAssoc')
+        $db->method('fetchAssociative')
             ->willReturn([
                 'id' => 123,
                 'githubId' => 'abc',

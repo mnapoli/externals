@@ -1,5 +1,5 @@
 preview:
-	ENV=dev php -S localhost:8000 -t web
+	ENV=dev php8 -S localhost:8000 -t web local.php
 
 install:
 	set -e

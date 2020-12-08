@@ -12,18 +12,11 @@ namespace Externals\Email;
  */
 class EmailAddressParser
 {
-    /** @var string */
-    private $string;
-
-    /** @var array */
-    private $emails = [];
-
-    /** @var array */
-    private $names = [];
-
-    public function __construct(string $string)
-    {
-        $this->string = $string;
+    public function __construct(
+        private string $string,
+        private array $emails = [],
+        private array $names = [],
+    ) {
     }
 
     /**
@@ -95,8 +88,8 @@ class EmailAddressParser
             // marvelous joys
             if (mb_strpos($name, 'Watson Research') ||
                 mb_strlen($name) <= 3 ||
-                mb_strpos($name, '?') !== false ||
-                mb_strpos($name, 'http') !== false
+                str_contains($name, '?') ||
+                str_contains($name, 'http')
             ) {
                 continue;
             }

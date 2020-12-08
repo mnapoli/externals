@@ -37,10 +37,14 @@ return [
     'version' => env('EXTERNALS_APP_VERSION', ''),
     'assetsBaseUrl' => 'https://externals.io',
 
-    'db.url' => env('DB_URL'),
     Connection::class =>
         fn(Container $c) => DriverManager::getConnection([
-            'url' => $c->get('db.url'),
+            'dbname' => getenv('DATABASE_NAME'),
+            'user' => getenv('DATABASE_USER'),
+            'password' => getenv('DATABASE_PASSWORD'),
+            'host' => getenv('DATABASE_HOST'),
+            'port' => getenv('DATABASE_PORT'),
+            'driver' => 'pdo_mysql',
             'charset' => 'utf8mb4',
             'platform' => new CustomMySQLPlatform(),
             'driverOptions' => [

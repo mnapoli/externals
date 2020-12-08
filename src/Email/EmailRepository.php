@@ -67,8 +67,8 @@ class EmailRepository
         // Index by ID
         /** @var ThreadItem[] $indexedThreadItem */
         $indexedThreadItem = [];
-        foreach ($emails as $email) {
-            $indexedThreadItem[$email->getId()] = new ThreadItem($email);
+        foreach ($emails as $threadEmail) {
+            $indexedThreadItem[$threadEmail->getId()] = new ThreadItem($threadEmail);
         }
 
         // Link each email to the one it replies to
@@ -107,44 +107,44 @@ class EmailRepository
 
         if ($user) {
             $query = <<<SQL
-SELECT
-    threads.emailNumber as number,
-    threadInfos.subject,
-    threadInfos.date,
-    threadInfos.fromName,
-    threads.emailCount,
-    threads.lastUpdate,
-    threads.votes,
-    IF(readStatus.lastReadDate AND readStatus.lastReadDate >= threads.lastUpdate, 1, 0) as isRead,
-    (SELECT votes.value FROM votes WHERE votes.emailNumber = threadInfos.number AND votes.userId = :userId) as userVote
-FROM threads
-LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
-LEFT JOIN user_emails_read readStatus ON threads.emailId = readStatus.emailId AND readStatus.userId = :userId
-$where
-$orderBy
-LIMIT 20 OFFSET $offset
-SQL;
+            SELECT
+                threads.emailNumber as number,
+                threadInfos.subject,
+                threadInfos.date,
+                threadInfos.fromName,
+                threads.emailCount,
+                threads.lastUpdate,
+                threads.votes,
+                IF(readStatus.lastReadDate AND readStatus.lastReadDate >= threads.lastUpdate, 1, 0) as isRead,
+                (SELECT votes.value FROM votes WHERE votes.emailNumber = threadInfos.number AND votes.userId = :userId) as userVote
+            FROM threads
+            LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
+            LEFT JOIN user_emails_read readStatus ON threads.emailId = readStatus.emailId AND readStatus.userId = :userId
+            $where
+            $orderBy
+            LIMIT 20 OFFSET $offset
+            SQL;
             $parameters = [
                 'userId' => $user->id,
             ];
         } else {
             $query = <<<SQL
-SELECT
-    threads.emailNumber as number,
-    threadInfos.subject,
-    threadInfos.date,
-    threadInfos.fromName,
-    threads.emailCount,
-    threads.lastUpdate,
-    threads.votes,
-    0 as isRead,
-    NULL as userVote
-FROM threads
-LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
-$where
-$orderBy
-LIMIT 20 OFFSET $offset
-SQL;
+            SELECT
+                threads.emailNumber as number,
+                threadInfos.subject,
+                threadInfos.date,
+                threadInfos.fromName,
+                threads.emailCount,
+                threads.lastUpdate,
+                threads.votes,
+                0 as isRead,
+                NULL as userVote
+            FROM threads
+            LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
+            $where
+            $orderBy
+            LIMIT 20 OFFSET $offset
+            SQL;
         }
 
         return $this->db->fetchAllAssociative($query, $parameters ?? []);
@@ -264,14 +264,14 @@ SQL;
     public function refreshThreads(): void
     {
         $query = <<<'SQL'
-REPLACE INTO threads (emailId, emailNumber, lastUpdate, emailCount, votes)
-  SELECT emails.id, emails.number, MAX(threadEmails.fetchDate), COUNT(threadEmails.id),
-      COALESCE((SELECT SUM(votes.value) FROM votes WHERE votes.emailNumber = emails.number), 0)
-  FROM emails
-  LEFT JOIN emails threadEmails ON emails.id = threadEmails.threadId
-  WHERE emails.isThreadRoot = 1
-  GROUP BY emails.id
-SQL;
+        REPLACE INTO threads (emailId, emailNumber, lastUpdate, emailCount, votes)
+          SELECT emails.id, emails.number, MAX(threadEmails.fetchDate), COUNT(threadEmails.id),
+              COALESCE((SELECT SUM(votes.value) FROM votes WHERE votes.emailNumber = emails.number), 0)
+          FROM emails
+          LEFT JOIN emails threadEmails ON emails.id = threadEmails.threadId
+          WHERE emails.isThreadRoot = 1
+          GROUP BY emails.id
+        SQL;
         $this->db->executeQuery($query);
     }
 
@@ -281,15 +281,15 @@ SQL;
     public function refreshThread(int $threadNumber): void
     {
         $query = <<<'SQL'
-REPLACE INTO threads (emailId, emailNumber, lastUpdate, emailCount, votes)
-  SELECT emails.id, emails.number, MAX(threadEmails.fetchDate), COUNT(threadEmails.id),
-      COALESCE((SELECT SUM(votes.value) FROM votes WHERE votes.emailNumber = emails.number), 0)
-  FROM emails
-  LEFT JOIN emails threadEmails ON emails.id = threadEmails.threadId
-  WHERE emails.isThreadRoot = 1
-    AND emails.number = ?
-  GROUP BY emails.id
-SQL;
+        REPLACE INTO threads (emailId, emailNumber, lastUpdate, emailCount, votes)
+          SELECT emails.id, emails.number, MAX(threadEmails.fetchDate), COUNT(threadEmails.id),
+              COALESCE((SELECT SUM(votes.value) FROM votes WHERE votes.emailNumber = emails.number), 0)
+          FROM emails
+          LEFT JOIN emails threadEmails ON emails.id = threadEmails.threadId
+          WHERE emails.isThreadRoot = 1
+            AND emails.number = ?
+          GROUP BY emails.id
+        SQL;
         $this->db->executeQuery($query, [$threadNumber]);
     }
 

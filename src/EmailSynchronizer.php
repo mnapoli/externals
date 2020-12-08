@@ -2,10 +2,11 @@
 
 namespace Externals;
 
+use DateTime;
+use DateTimeInterface;
 use DateTimeZone;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Externals\Email\Email;
-use Externals\Email\EmailAddress;
 use Externals\Email\EmailAddressParser;
 use Externals\Email\EmailContentParser;
 use Externals\Email\EmailRepository;
@@ -16,6 +17,7 @@ use Rvdv\Nntp\Client;
 use Rvdv\Nntp\Command\ArticleCommand;
 use Rvdv\Nntp\Connection\Connection;
 use Rvdv\Nntp\Exception\UnknownHandlerException;
+use Throwable;
 use ZBateson\MailMimeParser\Header\DateHeader;
 use ZBateson\MailMimeParser\MailMimeParser;
 use ZBateson\MailMimeParser\Message;
@@ -69,8 +71,8 @@ class EmailSynchronizer
             $this->logger->info("Synchronizing message $number");
 
             try {
-                $rawContent = $client->sendCommand(new ArticleCommand($number));
-            } catch (UnknownHandlerException $e) {
+                $rawContent = $client->sendCommand(new ArticleCommand((string) $number));
+            } catch (UnknownHandlerException) {
                 // Some messages seem to trigger errors on the news server and we cannot fetch them
                 $this->logger->warning("Cannot fetch message $number, skipping");
                 continue;
@@ -114,7 +116,6 @@ class EmailSynchronizer
         }
         $emailAddressParser = new EmailAddressParser($fromHeader->getRawValue());
         $fromArray = $emailAddressParser->parse();
-        /** @var EmailAddress $from */
         $from = reset($fromArray);
 
         $emailId = $parsedDocument->getHeaderValue('message-id');
@@ -176,7 +177,7 @@ class EmailSynchronizer
         $this->db->transactional(function () use ($newEmail): void {
             try {
                 $this->emailRepository->add($newEmail);
-            } catch (UniqueConstraintViolationException $e) {
+            } catch (UniqueConstraintViolationException) {
                 // For some reason the email ID was already used...
                 $this->logger->warning("Cannot synchronize message {$newEmail->getNumber()} because the email ID {$newEmail->getId()} already exists in database");
                 return;
@@ -186,18 +187,19 @@ class EmailSynchronizer
         });
     }
 
-    private function parseDateTime(Message $parsedDocument): ?\DateTimeInterface
+    private function parseDateTime(Message $parsedDocument): ?DateTimeInterface
     {
         $dateHeader = $parsedDocument->getHeader('date');
 
         $date = null;
         if ($dateHeader instanceof DateHeader) {
             $date = $dateHeader->getDateTime();
+            assert($date instanceof DateTime);
         }
         // Some dates cannot be parsed using the standard format, for example "13 Mar 2003 12:44:07 -0500"
         try {
-            $date = $date ?: new \DateTime($dateHeader->getValue());
-        } catch (\Throwable $e) {
+            $date = $date ?: new DateTime($dateHeader->getValue());
+        } catch (Throwable) {
             // Some dates cannot be parsed
             return null;
         }
@@ -212,7 +214,7 @@ class EmailSynchronizer
     {
         try {
             $email = $this->emailRepository->getById($inReplyTo);
-        } catch (NotFound $e) {
+        } catch (NotFound) {
             // We didn't find the thread, let's move on
             return null;
         }
