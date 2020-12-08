@@ -1,4 +1,5 @@
 before_compile:
+    - npm i -g @mnapoli/lift
     - composer install --optimize-autoloader --no-dev --ignore-platform-reqs
     - rm -rf /tmp/seed/source/var/cache/*
     # Trigger cache compilation
