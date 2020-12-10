@@ -4,8 +4,17 @@ class LiftPlugin {
     constructor(serverless, options) {
         this.serverless = serverless;
 
-        // this.setEnvironmentVariables();
-        // this.setPermissions();
+        this.setVpc();
+        this.setEnvironmentVariables();
+        this.setPermissions();
+    }
+
+    setVpc() {
+        const json = child_process.execSync('lift vpc');
+        const details = JSON.parse(json.toString());
+        if (details.securityGroupIds && details.subnetIds) {
+            this.serverless.service.provider.vpc = details;
+        }
     }
 
     setEnvironmentVariables() {
