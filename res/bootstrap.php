@@ -4,6 +4,8 @@ declare(strict_types=1);
 use DI\ContainerBuilder;
 use DI\Definition\Source\SourceCache;
 
+ini_set('default_socket_timeout', '5');
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // The environment of the app
