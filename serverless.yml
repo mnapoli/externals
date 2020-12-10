@@ -1,5 +1,4 @@
 service: externals
-
 frameworkVersion: '2.3'
 
 provider:
