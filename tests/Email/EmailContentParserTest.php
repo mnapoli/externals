@@ -11,7 +11,7 @@ class EmailContentParserTest extends TestCase
     /** @var EmailContentParser */
     private $parser;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $modules = [
             'stratify/error-handler-module',
