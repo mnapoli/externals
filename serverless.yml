@@ -104,6 +104,12 @@ functions:
                     # Only enabled in production
                     enabled: ${self:custom.isProd}
 
+    console:
+        handler: console
+        timeout: 900
+        layers:
+            - ${bref:layer.console}
+
 plugins:
     - ./vendor/bref/bref
     # This lets us use `#{Assets.Arn}` variables
