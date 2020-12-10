@@ -1,27 +1,30 @@
-const child_process = require('child_process');
+const Lift = require('@mnapoli/lift');
 
 class LiftPlugin {
     constructor(serverless, options) {
         this.serverless = serverless;
+        this.lift = Lift;
 
-        this.setVpc();
-        this.setEnvironmentVariables();
-        this.setPermissions();
+        this.setVpc()
+            .then(() => {
+                return this.setEnvironmentVariables();
+            })
+            .then(() => {
+                return this.setPermissions();
+            });
     }
 
-    setVpc() {
-        const json = child_process.execSync('lift vpc');
-        const details = JSON.parse(json.toString());
+    async setVpc() {
+        const details = await this.lift.Vpc.getOutput();
         if (details.securityGroupIds && details.subnetIds) {
             this.serverless.service.provider.vpc = details;
         }
     }
 
-    setEnvironmentVariables() {
+    async setEnvironmentVariables() {
         this.serverless.service.provider.environment = this.serverless.service.provider.environment || {};
 
-        const json = child_process.execSync('lift variables');
-        const variables = JSON.parse(json.toString());
+        const variables = await this.lift.Variables.getOutput();
 
         Object.keys(variables).map(name => {
             if (name in this.serverless.service.provider.environment) {
@@ -32,11 +35,10 @@ class LiftPlugin {
         });
     }
 
-    setPermissions() {
+    async setPermissions() {
         this.serverless.service.provider.iamRoleStatements = this.serverless.service.provider.iamRoleStatements || [];
 
-        const json = child_process.execSync('lift permissions');
-        const permissions = JSON.parse(json.toString());
+        const permissions = await this.lift.Permissions.getOutput();
 
         this.serverless.service.provider.iamRoleStatements.push(...permissions);
     }
