@@ -108,6 +108,7 @@ functions:
         handler: console
         timeout: 900
         layers:
+            - ${bref:layer.php-80}
             - ${bref:layer.console}
 
 plugins:
