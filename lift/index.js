@@ -4,8 +4,8 @@ class LiftPlugin {
     constructor(serverless, options) {
         this.serverless = serverless;
 
-        this.setEnvironmentVariables();
-        this.setPermissions();
+        // this.setEnvironmentVariables();
+        // this.setPermissions();
     }
 
     setEnvironmentVariables() {
