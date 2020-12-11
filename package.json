@@ -8,7 +8,7 @@
         "moment": "^2.18.1"
     },
     "devDependencies": {
-        "@mnapoli/lift": "^0.2.4",
+        "@mnapoli/lift": "^0.2.5",
         "gulp-clean": "^0.3.2",
         "gulp-clean-css": "^3.3.1",
         "gulp-concat": "^2.6.1",
