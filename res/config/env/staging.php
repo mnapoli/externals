@@ -7,6 +7,8 @@ use Externals\Search\SearchIndex;
 
 return [
 
+    'sentry.url' => null,
+
     // Disable indexing in Algolia
     SearchIndex::class => create(ReadOnlySearchIndex::class),
 
