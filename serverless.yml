@@ -8,7 +8,7 @@ provider:
     runtime: provided.al2
     layers:
         - ${bref:layer.php-80}
-    timeout: 10
+    timeout: 28
     environment:
         APP_ENV: prod
         EXTERNALS_APP_VERSION: ${env:SEED_BUILD_ID}
