@@ -115,7 +115,7 @@ plugins:
     - ./vendor/bref/bref
     # This lets us use `#{Assets.Arn}` variables
     - serverless-pseudo-parameters
-    - ./lift
+    - '@mnapoli/lift/plugin'
 
 custom:
     stage: ${opt:stage, self:provider.stage}
