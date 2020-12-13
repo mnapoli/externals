@@ -8,6 +8,8 @@ use League\CommonMark\EnvironmentInterface;
 use Psr\Log\LogLevel;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use VStelmakh\UrlHighlight\Highlighter\HtmlHighlighter;
+use VStelmakh\UrlHighlight\UrlHighlight;
 use function DI\add;
 use function DI\autowire;
 use function DI\create;
@@ -100,4 +102,15 @@ return [
         ->constructorParameter('maintenance', get('maintenance')),
 
     'rss.host' => env('RSS_HOST', 'https://externals.io'),
+
+    UrlHighlight::class => function (Container $c) {
+        $highlighter = new HtmlHighlighter(
+            'http',
+            [
+                'rel' => 'nofollow',
+                'target' => '_blank'
+            ]
+        );
+        return new UrlHighlight(null, $highlighter);
+    },
 ];

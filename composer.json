@@ -21,7 +21,7 @@
         "mnapoli/silly": "^1.7",
         "doctrine/dbal": "^2.10",
         "twig/extensions": "^1.5",
-        "misd/linkify": "^1.1",
+        "vstelmakh/url-highlight": "^3.0",
         "monolog/monolog": "^1.25",
         "symfony/monolog-bridge": "^3.4",
         "psr7-sessions/storageless": "^2.0",
