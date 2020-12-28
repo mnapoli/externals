@@ -28,7 +28,7 @@ class VoteController extends Controller
         if ($vote > 1 || $vote < -1) {
             return $this->jsonResponse('Invalid value', 400);
         }
-        $number = $request->getAttribute('number');
+        $number = (int) $request->getAttribute('number');
 
         return $this->jsonResponse([
             'newTotal' => $this->voting->vote($user->id, $number, $vote),
