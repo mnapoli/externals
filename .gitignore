@@ -10,3 +10,4 @@
 /composer.phar
 /.serverless/
 /.serverless-offline/
+/.cache/

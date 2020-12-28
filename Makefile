@@ -30,16 +30,7 @@ vendors: vendor node_modules
 vendor: composer.lock
 	composer install
 
-node_modules:
+node_modules: package.json package-lock.json
 	npm install
-
-deploy: cache
-	set -e
-	composer install --no-dev --classmap-authoritative
-	export EXTERNALS_APP_VERSION=$$(date +%s) && serverless deploy
-	make deploy-assets
-
-deploy-assets:
-	aws s3 sync web s3://externals-assets-prod --delete
 
 .PHONY: assets
