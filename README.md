@@ -4,9 +4,9 @@
 
 Requirements (TODO: Vagrant box):
 
-- PHP 7.3 or above
+- PHP 8.0
 - NPM
-- Gulp (install with `npm install gulp-cli -g`)
+- Parcel
 - MySQL database
 - Algolia account (TODO: make it optional in dev environment)
 

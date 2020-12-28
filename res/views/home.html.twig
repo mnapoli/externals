@@ -4,9 +4,8 @@
 
 {% block content %}
 
-    <header class="home-header">
-        <h1>#externals</h1>
-        <p>Opening PHP's <a href="http://news.php.net/php.internals">#internals</a> to the outside.</p>
+    <header class="sm:text-lg text-gray-400 font-light py-4 sm:py-8">
+        <p>Opening PHP's <a class="underline" href="http://news.php.net/php.internals">#internals</a> mailing list to the outside.</p>
         <noscript>
             Your browser either doesn't support javascript or it is disabled.
             This website does not work without javascript.
@@ -16,23 +15,22 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.css">
     {# Search #}
-    <div id="search-form">
-        <p class="algolia">
-            Search with <a href="https://www.algolia.com/" target="_blank"><img src="{{ assetsBaseUrl }}/assets/images/search-by-algolia.svg" alt="Algolia"></a>
-        </p>
-        <input id="search-input" type="text" class="form-control input-lg" placeholder="Search...">
+    <div class="mb-4 relative">
+        <input id="search-input" type="text" placeholder="Search..."
+               class="w-full px-4 py-2 transition border-b border-transparent focus:border-red-400">
+        <a class="absolute right-0 top-0 mt-4" href="https://www.algolia.com/" target="_blank"><img class="w-10 text-gray-500 opacity-75" src="{{ assetsBaseUrl }}/assets/images/algolia.svg" alt="Algolia"></a>
     </div>
-    <div id="search-container">
-        <h3>Search results</h3>
+    <div id="search-container" class="px-6 py-4 bg-white rounded-lg border border-gray-50 shadow-lg">
+        <h3 class="font-bold text-lg mb-4">Search results</h3>
         <ul id="search-results" class="list-unstyled"></ul>
     </div>
     {% verbatim %}
         <script id="search-result-template" type="text/html">
-            <li>
+            <li class="my-3">
                 <a href="/message/{{ objectID }}">{{{ _highlightResult.subject.value }}}</a>
-                <span class="text-muted">
+                <span class="text-gray-400 text-sm float-right">
                     by <strong>{{{ _highlightResult.fromName.value }}}</strong>
-                    {{#helpers.date}}{{/helpers.date}}
+                    on {{#helpers.date}}{{/helpers.date}}
                 </span>
             </li>
         </script>
@@ -47,7 +45,10 @@
             {% include 'threads/thread-list.html.twig' %}
         </div>
 
-        <button id="show-more-threads" class="btn btn-default btn-block btn-lg">Show more</button>
+        <button id="show-more-threads" type="button" title="Load more threads"
+                class="block w-full text-center text-sm my-12 py-1 text-gray-500 text-4xl font-bold border border-gray-50 shadow rounded-md hover:shadow-lg active:shadow-inner transition-shadow duration-300">
+            &centerdot; &centerdot; &centerdot;
+        </button>
 
     </section>
 
@@ -94,7 +95,7 @@
                 })
             );
             search.templatesConfig.helpers.date = function () {
-                return moment(this.date).fromNow();
+                return new Date(this.date).toLocaleDateString();
             };
             search.start();
         }

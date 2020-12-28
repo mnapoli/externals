@@ -112,6 +112,7 @@ class EmailRepository
                 threadInfos.subject,
                 threadInfos.date,
                 threadInfos.fromName,
+                threadInfos.fromEmail,
                 threads.emailCount,
                 threads.lastUpdate,
                 threads.votes,

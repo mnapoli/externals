@@ -5,7 +5,7 @@ before_compile:
 #    - ./console list
 
 before_build:
-    - if [ $SEED_STAGE_NAME = "prod" ]; then npx gulp; fi
+    - if [ $SEED_STAGE_NAME = "prod" ]; then make assets; fi
 
 after_deploy:
     - if [ $SEED_STAGE_NAME = "prod" ]; then make deploy-assets; fi

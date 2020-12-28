@@ -1,0 +1,71 @@
+@tailwind base;
+
+/* https://stackoverflow.com/questions/71074/how-to-remove-firefoxs-dotted-outline-on-buttons-as-well-as-links */
+:focus {outline:none;}
+::-moz-focus-inner {border:0;}
+
+.vote-action.active {
+    @apply text-red-400;
+}
+
+article:target {
+    background-color: #fdfbf0;
+}
+.email-content p, .email-content ol, .email-content ul, .email-content pre, .email-content blockquote {
+    @apply mt-2 mb-3;
+}
+.email-content ol, .email-content ul {
+    @apply ml-4 list-outside;
+}
+.email-content ul {
+    @apply list-disc;
+}
+.email-content ol {
+    @apply list-decimal;
+}
+.email-content li {
+    @apply pl-2 my-1;
+}
+.email-content a {
+    @apply text-red-600;
+}
+.email-content code {
+    @apply text-xs text-red-700 bg-red-50 p-1 rounded;
+}
+.email-content pre {
+    @apply bg-gray-100 border p-2 rounded;
+}
+.email-content pre>code {
+    @apply text-sm text-gray-700 bg-transparent;
+}
+.email-content blockquote {
+    @apply text-sm text-gray-600 italic px-3;
+}
+/* Collapse last blockquote of an email */
+.email-content > blockquote:last-child {
+    visibility: hidden;
+    height: 1em;
+    position: relative;
+}
+.email-content > blockquote:last-child:after {
+     content: '…';
+     visibility: visible;
+     position: absolute;
+     top: 0;
+     left: 0;
+}
+/* Hide nested blockquotes */
+article blockquote blockquote {
+    @apply hidden;
+}
+
+/* Article nesting :p */
+article article, article article article article, article article article article article article {
+    @apply bg-gray-50;
+}
+article article article, article article article article article, article article article article article article article {
+    @apply bg-white;
+}
+
+@tailwind components;
+@tailwind utilities;

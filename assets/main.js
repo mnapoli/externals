@@ -1,6 +1,7 @@
-$(function () {
-    $('[data-toggle="tooltip"]').tooltip();
+var jquery = require('jquery');
+window.$ = window.jQuery = jquery;
 
+$(function () {
     $('body')
         .on('click', '.upvote', function(e) {
             e.preventDefault();

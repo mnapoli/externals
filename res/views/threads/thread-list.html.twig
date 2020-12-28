@@ -1,41 +1,37 @@
 {% for thread in threads %}
-    <div class="thread-item {% if not thread.isRead and thread.userVote >= 0 %}unread{% endif %} {% if thread.votes < -1 %}unpopular{% endif %}">
-        <div class="vote-actions">
-            <a class="vote-action upvote {{ (thread.userVote == 1) ? 'active' }}" href="#" data-email-id="{{ thread.number }}" title="Upvote">
-                <i class="fa fa-chevron-up"> </i>
+    <div class="my-4 sm:my-8 flex items-center group {% if thread.votes < -1 %}opacity-25{% endif %}">
+        <div class="mr-8 text-sm text-gray-300 text-center vote-actions">
+            <a class="vote-action upvote text-2xl font-bold leading-none {{ (thread.userVote == 1) ? 'active' }}"
+               href="#" data-email-id="{{ thread.number }}" title="Upvote">
+                &blacktriangle;
             </a>
-            <div class="vote vote-value {% if thread.votes == 0 %}neutral{% endif %}">{{ thread.votes }}</div>
-            <a class="vote-action downvote {{ (thread.userVote == -1) ? 'active' }}" href="#" data-email-id="{{ thread.number }}" title="Downvote">
-                <i class="fa fa-chevron-down"> </i>
+            <div class="vote vote-value leading-none {% if thread.votes > 0 %}text-gray-500{% endif %}">{{ thread.votes }}</div>
+            <a class="vote-action downvote text-2xl font-bold leading-none {{ (thread.userVote == -1) ? 'active' }}"
+               href="#" data-email-id="{{ thread.number }}" title="Downvote">
+                &blacktriangledown;
             </a>
         </div>
-        <a class="thread-subject" href="message/{{ thread.number }}">
-            {{ thread.subject }}
-        </a>
-        <div class="thread-info">
-            {# Date #}
-            <span title="thread creation date">
-                <i class="fa fa-clock-o"></i>
+        <div class="flex-grow">
+            <a class="block text-gray-800 sm:text-xl mb-1 {% if user and not thread.isRead and thread.userVote >= 0 %}font-bold{% endif %}" href="message/{{ thread.number }}">
+                {{ thread.subject }}
+            </a>
+            <div class="text-gray-400 text-xs sm:text-sm">
+                {# Date #}
                 {{ thread.date|time_diff }}
-            </span>
-            {# Author #}
-            {% if thread.fromName %}
-                <span title="thread author">
-                    <i class="fa fa-user"></i>
-                    {{ thread.fromName }}
-                </span>
-            {% endif %}
-            {# Number of responses #}
-            {% if thread.emailCount > 1 %}
-                <span title="number of responses in this thread" class="{% if thread.emailCount > 5 %}many-responses{% endif %}">
-                    {% if thread.emailCount > 5 %}
-                        <i class="fa fa-comments-o"></i>
-                    {% else %}
-                        <i class="fa fa-comment-o"></i>
-                    {% endif %}
-                    {{ thread.emailCount - 1 }}
-                </span>
-            {% endif %}
+                {# Author #}
+                {% if thread.fromName %}
+                    by {{ thread.fromName }}
+                {% endif %}
+            </div>
         </div>
+        {# Number of responses #}
+        {% if thread.emailCount > 1 %}
+            <a href="message/{{ thread.number }}"
+               class="bg-gradient-to-r from-white to-gray-50 text-gray-300 group-hover:to-red-50 group-hover:text-red-400 transition-colors rounded-r-lg px-4 py-3 relative hidden sm:block">
+                <svg href="message/{{ thread.number }}" class="w-10 h-10 text-current"
+                     xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path d='M431 320.6c-1-3.6 1.2-8.6 3.3-12.2a33.68 33.68 0 012.1-3.1A162 162 0 00464 215c.3-92.2-77.5-167-173.7-167-83.9 0-153.9 57.1-170.3 132.9a160.7 160.7 0 00-3.7 34.2c0 92.3 74.8 169.1 171 169.1 15.3 0 35.9-4.6 47.2-7.7s22.5-7.2 25.4-8.3a26.44 26.44 0 019.3-1.7 26 26 0 0110.1 2l56.7 20.1a13.52 13.52 0 003.9 1 8 8 0 008-8 12.85 12.85 0 00-.5-2.7z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32'/><path d='M66.46 232a146.23 146.23 0 006.39 152.67c2.31 3.49 3.61 6.19 3.21 8s-11.93 61.87-11.93 61.87a8 8 0 002.71 7.68A8.17 8.17 0 0072 464a7.26 7.26 0 002.91-.6l56.21-22a15.7 15.7 0 0112 .2c18.94 7.38 39.88 12 60.83 12A159.21 159.21 0 00284 432.11' fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32'/></svg>
+                <span class="absolute inset-0 text-center mt-4 ml-1 text-sm">{{ thread.emailCount }}</span>
+            </a>
+        {% endif %}
     </div>
 {% endfor %}

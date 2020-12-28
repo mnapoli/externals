@@ -7,32 +7,38 @@
 {% macro threadItem(item) %}
     {% set email = item.email %}
 
-    <article id="{{ email.number }}" class="clearfix {% if not email.isRead %}unread{% endif %}">
+    <article id="{{ email.number }}"
+             class="mb-6 overflow-hidden {% if not email.isRead %}unread{% endif %}">
 
-        <header>
-            <a href="#{{ email.number }}-body" role="button" data-toggle="collapse"><span class="fa fa-compress"></span></a>
+        <header class="text-xs sm:text-sm text-gray-300 bg-gray-600 rounded-tl py-1 px-2">
+            <button data-target="#{{ email.number }}-body" type="button" class="thread-collapse-button mr-2">
+                <svg class="w-4 h-4 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </button>
             {% if email.from.email %}
-                <img class="avatar" src="{{ email.from.email|gravatar_avatar({d: 'retro', s: 50}) }}"
+                <img class="hidden sm:block float-right mr-2 rounded-full border border-gray-100 shadow-lg w-16 h-16 text-white bg-white" src="https://unavatar.now.sh/{{ email.from.email }}"
                      alt="{{ email.from.nameOrEmail }}" title="{{ email.from.nameOrEmail }}">
             {% endif %}
-            <span class="hidden-xs">Posted</span>
-            <a class="email-date" href="#{{ email.number }}" title="{{ email.date|date }}">{{ email.date|time_diff }}</a>
+            <a class="underline" href="#{{ email.number }}" title="{{ email.date|date }}">{{ email.date|time_diff }}</a>
             by <strong>{{ email.from.nameOrEmail }}</strong>
-            <span class="view-source">
+            <span class="text-xs text-gray-500">
                 — <a href="/email/{{ email.number }}/source" target="_blank">view source</a>
             </span>
             {% if not email.isRead %}
-                <div class="label label-primary">unread</div>
+                <div class="ml-4 inline-block bg-blue-100 rounded px-2 py-1 leading-none text-xs text-blue-600">unread</div>
             {% endif %}
         </header>
 
-        <div id="{{ email.number }}-body" class="collapse in">
-            <div class="email-content">
+        <div id="{{ email.number }}-body" class="border-l border-gray-200 pl-2 sm:px-4 pt-1 pb-1">
+            <div class="email-content overflow-hidden text-sm sm:text-base mb-6">
                 {{ email.content|raw }}
             </div>
-            {% for reply in item.replies %}
-                {{ _self.threadItem(reply) }}
-            {% endfor %}
+            <div class="sm:ml-4 md:ml-6">
+                {% for reply in item.replies %}
+                    {{ _self.threadItem(reply) }}
+                {% endfor %}
+            </div>
         </div>
 
     </article>
@@ -41,27 +47,23 @@
 
 {% block content %}
 
-    <div class="page-header">
-        <h1>
-            <a href="/"><span class="fa fa-caret-left"></span></a>
-            {{ subject }}
-        </h1>
-    </div>
+    <h1 class="text-lg sm:text-3xl font-light mb-8 sm:mb-12">
+        <a href="/" title="Back" class="mr-1 text-gray-600">
+            <svg class="w-6 inline-block -mt-1" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path d='M321.94 98L158.82 237.78a24 24 0 000 36.44L321.94 414c15.57 13.34 39.62 2.28 39.62-18.22v-279.6c0-20.5-24.05-31.56-39.62-18.18z' fill="currentColor"/></svg>
+        </a>
+        {{ subject }}
+    </h1>
 
     {% if user is not empty %}
-        <div class="thread-navigation container">
-            <div class="navigation" id="next-unread" title="press 'n' to jump to the next unread email">
-                (n)ext<br>unread email
-                <button type="button" class="btn btn-link btn-block"><span class="fa fa-arrow-down"></span></button>
-            </div>
-        </div>
+        <button class="thread-navigation hidden lg:block fixed animate-pulse right-0 top-0 bg-white shadow-lg rounded-md px-4 py-2 mt-20 mr-5 bg-blue-50 text-blue-500 text-center text-sm transition-shadow hover:shadow-xl"
+             id="next-unread" type="button" title="press 'n' to jump to the next unread email">
+            (n)ext unread email
+        </button>
     {% endif %}
 
-    <section class="thread">
-        {% for item in thread %}
-            {{ macros.threadItem(item) }}
-        {% endfor %}
-    </section>
+    {% for item in thread %}
+        {{ macros.threadItem(item) }}
+    {% endfor %}
 
 {% endblock %}
 
@@ -70,6 +72,12 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // Collapse email
+            $('.thread-collapse-button').click(function() {
+                const target = $(this).data('target');
+                $(target).toggle();
+            });
+
             var unreadEmailIds = $('article.unread').map(function() {
                 return this.id;
             }).get();
@@ -82,15 +90,15 @@
 
                 window.location.hash = '#' + unreadEmailIds[i];
                 i++;
-                
+
                 // hide navigation when no more unread messages left
-                if ((i + 1) > unreadEmailIds.length) {                              
+                if ((i + 1) > unreadEmailIds.length) {
                     $('.thread-navigation').remove();
                 }
             };
 
             $('#next-unread').click(nextUnread);
-            $( document ).keypress(function( event ) {
+            $(document).keypress(function(event) {
                 // 'n' shortcut/accesskey to jump to the next unread msg
                 // when typing occurs outside of input fields (like our search)
                 if ( event.target == document.body && event.which == 110) {
@@ -100,8 +108,6 @@
 
             if (unreadEmailIds.length === 0) {
                 $('.thread-navigation').remove();
-            } else {
-                $('#next-unread').show();
             }
         });
     </script>

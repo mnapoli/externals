@@ -1,16 +1,23 @@
 preview:
-	ENV=dev php8 -S localhost:8000 -t web local.php
+	ENV=dev XDEBUG_MODE=debug php -S localhost:8000 -t web vendor/bin/bref-dev-server
 
 install:
 	set -e
 	composer install
 	npm install
 	./console db --force
-	gulp
+	make assets
 	make cache
 
 assets:
-	gulp
+	npx tailwindcss-cli@latest build ./assets/styles.css -o ./web/assets/css/main.min.css
+	parcel build assets/main.js --out-dir=web/assets/js
+	rm web/assets/js/main.js.map
+
+assets-prod:
+	NODE_ENV=production npx tailwindcss-cli@latest build ./assets/styles.css -o ./web/assets/css/main.min.css
+	parcel build assets/main.js --out-dir=web/assets/js
+	rm web/assets/js/main.js.map
 
 cache:
 	set -e
@@ -18,17 +25,13 @@ cache:
 	# Will trigger the compilation of the container
 	./console list
 
-init:
-	docker-compose run --rm cliphp make vendors
-	docker-compose run --rm cliphp ./node_modules/gulp/bin/gulp.js
-
 vendors: vendor node_modules
 
 vendor: composer.lock
 	composer install
 
 node_modules:
-	yarn install
+	npm install
 
 deploy: cache
 	set -e
@@ -38,3 +41,5 @@ deploy: cache
 
 deploy-assets:
 	aws s3 sync web s3://externals-assets-prod --delete
+
+.PHONY: assets
