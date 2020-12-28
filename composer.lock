@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1d870b213ed907894cb5884a90746cd0",
+    "content-hash": "b79f724c2efedc4994c5abd0297b7fcc",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -4355,7 +4355,7 @@
         },
         {
             "name": "bref/dev-server",
-            "version": "dev-master",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brefphp/dev-server.git",
@@ -4383,7 +4383,6 @@
                 "phpunit/phpunit": "^9.0",
                 "vimeo/psalm": "^4.3"
             },
-            "default-branch": true,
             "bin": [
                 "bin/bref-dev-server"
             ],
@@ -4403,7 +4402,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brefphp/dev-server/issues",
-                "source": "https://github.com/brefphp/dev-server/tree/master"
+                "source": "https://github.com/brefphp/dev-server/tree/0.1.0"
             },
             "funding": [
                 {
@@ -7420,8 +7419,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "php-di/php-di": 10,
-        "bref/dev-server": 20
+        "php-di/php-di": 10
     },
     "prefer-stable": false,
     "prefer-lowest": false,

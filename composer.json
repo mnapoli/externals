@@ -46,7 +46,7 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "bref/dev-server": "dev-master",
+        "bref/dev-server": "^0.1",
         "mnapoli/hard-mode": "^0.3",
         "phpunit/phpunit": "^9.2.6",
         "vimeo/psalm": "^4.2"
