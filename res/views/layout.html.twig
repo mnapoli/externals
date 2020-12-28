@@ -38,7 +38,7 @@
 
     <nav class="bg-white text-gray-600 font-light w-full">
         <div class="container max-w-4xl flex items-center">
-            <a class="block px-2 py-3" href="/"><img src="/assets/images/logo.svg" alt="externals" class="w-10 sm:w-20"></a>
+            <a class="block px-2 py-3" href="/"><img src="{{ assetsBaseUrl }}/assets/images/logo.svg" alt="externals" class="w-10 sm:w-20"></a>
             <div class="flex-grow flex items-center text-sm sm:text-base">
                 <a class="block px-2 sm:px-4 py-2 sm:py-3" href="/">Latest</a>
                 <a class="block px-2 sm:px-4 py-2 sm:py-3" href="/top">Top</a>
@@ -83,7 +83,7 @@
     </footer>
 
     {% block scripts %}
-        <script src="{{ assetsBaseUrl }}/assets/js/main.min.js?v={{ version }}"></script>
+        <script src="{{ assetsBaseUrl }}/assets/js/main.js?v={{ version }}"></script>
 
         {% if not debug %}
             {# Google Analytics #}
