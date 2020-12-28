@@ -4,6 +4,9 @@ declare(strict_types=1);
 use DI\ContainerBuilder;
 use DI\Definition\Source\SourceCache;
 
+// Waiting for an update of https://github.com/lcobucci/jwt
+error_reporting(E_ALL ^ E_USER_DEPRECATED);
+
 ini_set('mysql.connect_timeout','5');
 
 require_once __DIR__ . '/../vendor/autoload.php';

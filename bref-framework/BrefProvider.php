@@ -5,14 +5,13 @@ namespace Bref\Framework;
 use Bref\Framework\Http\MiddlewarePipe;
 use Bref\Framework\Middleware\BodyParser;
 use Bref\Framework\Middleware\NotFoundMiddleware;
-use DI\Container;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class BrefProvider implements ContainerInterface
 {
     public function __construct(
-        private Container $container
+        private ContainerInterface $container
     ) {
     }
 

@@ -37,8 +37,10 @@ return [
             new Sha256,
             $key,
             $key,
-            SetCookie::create(SessionMiddleware::DEFAULT_COOKIE)
-                ->withSecure(false) // THIS IS THE SECURE FLAG WE SET TO FALSE
+            // Override the default `__Secure-slsession` which only works on HTTPS
+            SetCookie::create('slsession')
+                // Disable mandatory HTTPS
+                ->withSecure(false)
                 ->withHttpOnly(true)
                 ->withPath('/'),
             new Parser,

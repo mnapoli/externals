@@ -12,4 +12,9 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
+
+    <issueHandlers>
+        <InternalClass errorLevel="suppress" />
+        <InternalMethod errorLevel="suppress" />
+    </issueHandlers>
 </psalm>
