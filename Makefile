@@ -11,12 +11,12 @@ install:
 
 assets:
 	npx tailwindcss-cli@latest build ./assets/styles.css -o ./web/assets/css/main.min.css
-	parcel build assets/main.js --out-dir=web/assets/js
+	npx parcel build assets/main.js --out-dir=web/assets/js
 	rm web/assets/js/main.js.map
 
 assets-prod:
 	NODE_ENV=production npx tailwindcss-cli@latest build ./assets/styles.css -o ./web/assets/css/main.min.css
-	parcel build assets/main.js --out-dir=web/assets/js
+	npx parcel build assets/main.js --out-dir=web/assets/js
 	rm web/assets/js/main.js.map
 
 cache:
