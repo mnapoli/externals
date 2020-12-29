@@ -9,7 +9,7 @@ class EmailContentParserTest extends TestCase
 {
     private EmailContentParser $parser;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $container = require __DIR__ . '/../../res/bootstrap.php';
         $this->parser = $container->get(EmailContentParser::class);

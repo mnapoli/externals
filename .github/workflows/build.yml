@@ -1,0 +1,27 @@
+name: build
+
+on:
+    push:
+    pull_request:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '7.4'
+                    tools: composer:v1
+
+            -   name: Git checkout
+                uses: actions/checkout@v2
+
+            -   name: Validate composer.json and composer.lock
+                run: composer validate
+
+            -   name: Install Composer dependencies
+                uses: ramsey/composer-install@v1
+
+            -   name: Run PHPUnit
+                run: vendor/bin/phpunit --colors=always

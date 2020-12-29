@@ -12,6 +12,8 @@ use Psr\Log\LogLevel;
 use PSR7Sessions\Storageless\Http\SessionMiddleware;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use VStelmakh\UrlHighlight\Highlighter\HtmlHighlighter;
+use VStelmakh\UrlHighlight\UrlHighlight;
 use function DI\autowire;
 use function DI\create;
 use function DI\env;
@@ -109,4 +111,15 @@ return [
         SessionMiddleware::class,
         AuthMiddleware::class,
     ],
+
+    UrlHighlight::class => function (Container $c) {
+        $highlighter = new HtmlHighlighter(
+            'http',
+            [
+                'rel' => 'nofollow',
+                'target' => '_blank'
+            ]
+        );
+        return new UrlHighlight(null, $highlighter);
+    },
 ];
