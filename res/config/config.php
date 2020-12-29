@@ -6,7 +6,6 @@ use Externals\Application\Middleware\AuthMiddleware;
 use Externals\Application\Middleware\NotFoundMiddleware;
 use Externals\RssBuilder;
 use Externals\RssRfcBuilder;
-use Gravatar\Gravatar;
 use League\CommonMark\CommonMarkConverter;
 use League\CommonMark\EnvironmentInterface;
 use Psr\Log\LogLevel;
@@ -22,7 +21,6 @@ use Doctrine\DBAL\DriverManager;
 use Externals\Application\Database\CustomMySQLPlatform;
 use Externals\Search\AlgoliaSearchIndex;
 use Externals\Search\SearchIndex;
-use Gravatar\Twig\GravatarExtension;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Github;
 use Psr\Container\ContainerInterface as Container;
@@ -62,7 +60,6 @@ return [
         $twig->addGlobal('version', $c->get('version'));
         $twig->addGlobal('assetsBaseUrl', $c->get('assetsBaseUrl'));
         $twig->addExtension(new Twig_Extensions_Extension_Date);
-        $twig->addExtension(new GravatarExtension(new Gravatar()));
         return $twig;
     },
 

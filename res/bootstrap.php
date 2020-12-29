@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use DI\ContainerBuilder;
 use DI\Definition\Source\SourceCache;
+use Dotenv\Dotenv;
 
 // Waiting for an update of https://github.com/lcobucci/jwt
 error_reporting(E_ALL ^ E_USER_DEPRECATED);
@@ -15,8 +16,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $environment = getenv('APP_ENV') ?: 'dev';
 
 if ($environment === 'dev' && file_exists(__DIR__ . '/../.env')) {
-    $dotenv = new Dotenv\Dotenv(__DIR__ . '/../');
-    $dotenv->load();
+    Dotenv::createUnsafeImmutable(__DIR__ . '/../')->load();
 }
 
 // Create the application
@@ -38,8 +38,7 @@ $container = $containerBuilder->build();
 
 $sentryUrl = $container->get('sentry.url');
 if ($sentryUrl) {
-    $sentry = new Raven_Client($sentryUrl);
-    $sentry->install();
+    \Sentry\init(['dsn' => $sentryUrl]);
 }
 
 return $container;
