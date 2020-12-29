@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "44ad1040dbcc070d67153495e4d1cec1",
+    "content-hash": "c29f2b2117df175e63dc861d7224d493",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -1668,55 +1668,6 @@
                 "source": "https://github.com/thephpleague/oauth2-github/tree/master"
             },
             "time": "2017-01-26T01:14:51+00:00"
-        },
-        {
-            "name": "misd/linkify",
-            "version": "v1.1.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/misd-service-development/php-linkify.git",
-                "reference": "3481b148806a23b4001712de645247a1a4dcc10a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/misd-service-development/php-linkify/zipball/3481b148806a23b4001712de645247a1a4dcc10a",
-                "reference": "3481b148806a23b4001712de645247a1a4dcc10a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.0 || ^5.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Misd\\Linkify\\": "src/Misd/Linkify"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Converts URLs and email addresses in text into HTML links",
-            "homepage": "https://github.com/misd-service-development/php-linkify",
-            "keywords": [
-                "convert",
-                "email address",
-                "link",
-                "url"
-            ],
-            "support": {
-                "issues": "https://github.com/misd-service-development/php-linkify/issues",
-                "source": "https://github.com/misd-service-development/php-linkify/tree/v1.1.4"
-            },
-            "time": "2017-08-17T08:33:35+00:00"
         },
         {
             "name": "mnapoli/silly",
@@ -4227,6 +4178,82 @@
             "time": "2020-10-23T14:02:19+00:00"
         },
         {
+            "name": "symfony/polyfill-php72",
+            "version": "v1.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php72.git",
+                "reference": "cede45fcdfabdd6043b3592e83678e42ec69e930"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/cede45fcdfabdd6043b3592e83678e42ec69e930",
+                "reference": "cede45fcdfabdd6043b3592e83678e42ec69e930",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.20-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php72\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 7.2+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php72/tree/v1.20.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-10-23T14:02:19+00:00"
+        },
+        {
             "name": "symfony/polyfill-php73",
             "version": "v1.20.0",
             "source": {
@@ -4984,6 +5011,64 @@
                 }
             ],
             "time": "2020-09-14T15:57:31+00:00"
+        },
+        {
+            "name": "vstelmakh/url-highlight",
+            "version": "v3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vstelmakh/url-highlight.git",
+                "reference": "294fe9bfb36e3cacd6d93b378400ad8becefa10a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vstelmakh/url-highlight/zipball/294fe9bfb36e3cacd6d93b378400ad8becefa10a",
+                "reference": "294fe9bfb36e3cacd6d93b378400ad8becefa10a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": "^7.1 || ^8",
+                "symfony/polyfill-php72": "^1.10"
+            },
+            "require-dev": {
+                "phpbench/phpbench": "^0.16 || ^0.17",
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^7.5.3 || ^8 || ^9",
+                "squizlabs/php_codesniffer": "^3.5",
+                "vstelmakh/covelyzer": "^0.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "VStelmakh\\UrlHighlight\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Volodymyr Stelmakh",
+                    "homepage": "https://github.com/vstelmakh"
+                }
+            ],
+            "description": "Library to parse urls from string input",
+            "homepage": "https://github.com/vstelmakh/url-highlight",
+            "keywords": [
+                "clickable",
+                "extract",
+                "html",
+                "parser",
+                "url"
+            ],
+            "support": {
+                "issues": "https://github.com/vstelmakh/url-highlight/issues",
+                "source": "https://github.com/vstelmakh/url-highlight/tree/v3.0.0"
+            },
+            "time": "2020-11-05T21:10:03+00:00"
         },
         {
             "name": "zbateson/mail-mime-parser",

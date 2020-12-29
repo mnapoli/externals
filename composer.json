@@ -28,7 +28,6 @@
         "doctrine/dbal": "^3.0",
         "twig/extensions": "^1.5",
         "vstelmakh/url-highlight": "^3.0",
-        "misd/linkify": "^1.1",
         "psr7-sessions/storageless": "^7.0",
         "league/commonmark": "^1.3",
         "league/oauth2-client": "^2.5",
