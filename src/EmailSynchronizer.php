@@ -54,10 +54,12 @@ class EmailSynchronizer
         $numberOfLastEmailToSynchronize = (int) $group['last'];
         $numberOfLastEmailSynchronized = $this->emailRepository->getLastEmailNumber();
 
-        $this->logger->info(sprintf(
-            '%d emails will be synchronized',
-            min($numberOfLastEmailToSynchronize - $numberOfLastEmailSynchronized, $maxNumberOfEmailsToSynchronize)
-        ));
+        if ($maxNumberOfEmailsToSynchronize !== null) {
+            $this->logger->info(sprintf(
+                '%d emails will be synchronized',
+                min($numberOfLastEmailToSynchronize - $numberOfLastEmailSynchronized, $maxNumberOfEmailsToSynchronize)
+            ));
+        }
 
         $count = 0;
         for ($number = $numberOfLastEmailSynchronized + 1; $number <= $numberOfLastEmailToSynchronize; $number++) {

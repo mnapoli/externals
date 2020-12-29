@@ -36,7 +36,7 @@
         "league/oauth2-github": "^2.0",
         "algolia/algoliasearch-client-php": "^1.28",
         "rvdv/nntp": "^0.9.2",
-        "zbateson/mail-mime-parser": "^0.4.13",
+        "zbateson/mail-mime-parser": "^1.0",
         "vlucas/phpdotenv": "^2.6",
         "sentry/sentry": "^1.11",
         "bref/bref": "^1.0.2",

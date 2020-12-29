@@ -63,7 +63,9 @@ class EmailAddressParser
             // throw it away
             $email = $this->trimCharacters($email);
             $email = filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : null;
-            $names = str_replace($email, '', $names);
+            if ($email) {
+                $names = str_replace($email, '', $names);
+            }
             $this->emails[$key] = $email;
         }
 
