@@ -33,6 +33,10 @@
             userId = {{ user.id }};
         </script>
     {% endif %}
+
+    {% if noIndex %}
+        <meta name="robots" content="noindex">
+    {% endif %}
 </head>
 <body class="antialiased">
 

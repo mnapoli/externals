@@ -7,6 +7,7 @@ use Externals\Search\SearchIndex;
 
 return [
 
+    'google.noindex' => true,
     'sentry.url' => null,
 
     // Assets will not be proxied by Cloudfront, instead we use the direct S3 URL

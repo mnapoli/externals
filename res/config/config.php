@@ -32,6 +32,7 @@ return [
 
     'maintenance' => env('MAINTENANCE', false),
     'debug' => false,
+    'google.noindex' => false,
     'path.cache' => '/tmp/cache',
 
     'version' => env('EXTERNALS_APP_VERSION', ''),
@@ -58,6 +59,7 @@ return [
             'cache' => $c->get('path.cache') . '/twig',
             'auto_reload' => true,
         ]);
+        $twig->addGlobal('noIndex', $c->get('google.noindex'));
         $twig->addGlobal('debug', $c->get('debug'));
         $twig->addGlobal('version', $c->get('version'));
         $twig->addGlobal('assetsBaseUrl', $c->get('assetsBaseUrl'));
