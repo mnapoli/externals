@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c29f2b2117df175e63dc861d7224d493",
+    "content-hash": "c6f7a6bf0f74588f2e071d7eeed9b60f",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -5437,27 +5437,30 @@
         },
         {
             "name": "bref/dev-server",
-            "version": "0.1.0",
+            "version": "0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brefphp/dev-server.git",
-                "reference": "3e418429bb26b38d718e680bc6e3809d69a54fa1"
+                "reference": "ccf0a5088e18b6d3d36c02ff396c0e5be211df73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brefphp/dev-server/zipball/3e418429bb26b38d718e680bc6e3809d69a54fa1",
-                "reference": "3e418429bb26b38d718e680bc6e3809d69a54fa1",
+                "url": "https://api.github.com/repos/brefphp/dev-server/zipball/ccf0a5088e18b6d3d36c02ff396c0e5be211df73",
+                "reference": "ccf0a5088e18b6d3d36c02ff396c0e5be211df73",
                 "shasum": ""
             },
             "require": {
                 "bref/bref": "^1.0",
-                "filp/whoops": "^2.9",
+                "filp/whoops": "^2.5",
+                "mnapoli/silly": "^1.5",
                 "nyholm/psr7": "^1.0",
                 "nyholm/psr7-server": "^1.0",
                 "php": ">=8.0",
                 "psr/http-message": "^1.0",
                 "psr/http-server-handler": "^1.0",
                 "psr/http-server-middleware": "^1.0",
+                "symfony/console": "^4.0|^5.0",
+                "symfony/process": "^4.0|^5.0",
                 "symfony/yaml": "^4.0|^5.0"
             },
             "require-dev": {
@@ -5484,7 +5487,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brefphp/dev-server/issues",
-                "source": "https://github.com/brefphp/dev-server/tree/0.1.0"
+                "source": "https://github.com/brefphp/dev-server/tree/0.2.1"
             },
             "funding": [
                 {
@@ -5492,7 +5495,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-12-26T19:04:58+00:00"
+            "time": "2020-12-30T09:33:11+00:00"
         },
         {
             "name": "composer/semver",
