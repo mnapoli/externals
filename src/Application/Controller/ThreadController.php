@@ -35,7 +35,6 @@ class ThreadController extends Controller
         }
 
         $user = $request->getAttribute('user');
-        $emailCount = $this->repository->getThreadSize($email);
         // Get thread view **before** marking the thread as read
         $threadView = $this->repository->getThreadView($email, $user);
         if ($user instanceof User) {
@@ -46,7 +45,6 @@ class ThreadController extends Controller
             'subject' => $email->getSubject(),
             'thread' => $threadView,
             'threadId' => $number,
-            'emailCount' => $emailCount,
             'user' => $user,
         ]));
     }

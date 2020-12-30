@@ -24,9 +24,13 @@ class HomeController extends Controller
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $user = $request->getAttribute('user');
+        $page = (int) $this->queryParameter($request, 'page', 1);
+        $perPage = 20;
 
         return $this->htmlResponse($this->twig->render('home.html.twig', [
-            'threads' => $this->repository->findLatestThreads(1, $user),
+            'threads' => $this->repository->findLatestThreads($page, $user),
+            'page' => $page,
+            'pageCount' => ceil($this->repository->getThreadCount() / $perPage),
             'user' => $user,
             'algoliaIndex' => $this->algoliaIndexPrefix . 'emails',
         ]));

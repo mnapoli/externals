@@ -61,10 +61,6 @@ functions:
         handler: Externals\Application\Controller\LogoutController
         events:
             - httpApi: 'GET /logout'
-    more-threads:
-        handler: Externals\Application\Controller\MoreThreadsController
-        events:
-            - httpApi: 'GET /threads/more'
     email-source:
         handler: Externals\Application\Controller\EmailSourceController
         events:

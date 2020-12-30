@@ -45,10 +45,40 @@
             {% include 'threads/thread-list.html.twig' %}
         </div>
 
-        <button id="show-more-threads" type="button" title="Load more threads"
-                class="block w-full text-center text-sm my-12 py-1 text-gray-500 text-4xl font-bold border border-gray-50 shadow rounded-md hover:shadow-lg active:shadow-inner transition-shadow duration-300">
-            &centerdot; &centerdot; &centerdot;
-        </button>
+        <div class="my-12 border-t flex justify-center">
+            {% if page > 1 %}
+                <a class="block w-10 py-4 text-center text-gray-400 hover:text-gray-800" href="/" style="margin-top: 1px">
+                    1
+                </a>
+            {% endif %}
+            {% if page > 5 %}
+                <div class="block w-10 py-4 text-center text-gray-400" style="margin-top: 1px">
+                    ...
+                </div>
+            {% endif %}
+            {% if page > 2 %}
+                {% for i in range(max(page - 3, 2), page - 1) %}
+                    <a class="block w-10 py-4 text-center text-gray-400 hover:text-gray-800" href="/?page={{ i }}" style="margin-top: 1px">
+                        {{ i }}
+                    </a>
+                {% endfor %}
+            {% endif %}
+            <div class="w-10 py-4 text-center border-t-2 border-red-200 text-red-400" style="margin-top: -1px">
+                {{ page }}
+            </div>
+            {% if page < pageCount %}
+                {% for i in range(page + 1, min(page + 4, pageCount)) %}
+                    <a class="block w-10 py-4 text-center text-gray-400 hover:text-gray-800" href="/?page={{ i }}" style="margin-top: 1px">
+                        {{ i }}
+                    </a>
+                {% endfor %}
+            {% endif %}
+            {% if page + 4 < pageCount %}
+                <div class="block w-10 py-4 text-center text-gray-400" style="margin-top: 1px">
+                    ...
+                </div>
+            {% endif %}
+        </div>
 
     </section>
 
@@ -99,21 +129,6 @@
             };
             search.start();
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            // Pagination
-            var page = 2;
-            document.querySelector('#show-more-threads').onclick = function () {
-                $.get('/threads/more?page=' + page, function (html) {
-                    if (html === '') {
-                        $('#show-more-threads').remove();
-                        return;
-                    }
-                    $('.thread-list').append(html);
-                });
-                page++;
-            };
-        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/instantsearch.js/2/instantsearch.min.js" onload="init_search();" async></script>

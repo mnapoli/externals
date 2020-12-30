@@ -152,14 +152,6 @@ class EmailRepository
     }
 
     /**
-     * Returns the number of emails in a thread.
-     */
-    public function getThreadSize(Email $email): int
-    {
-        return (int) $this->db->fetchAllAssociative('SELECT COUNT(id) FROM emails WHERE threadId = ?', [$email->getId()]);
-    }
-
-    /**
      * @return Email[]
      */
     public function findLatest(int $since): array
