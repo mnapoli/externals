@@ -87,7 +87,7 @@ functions:
             - httpApi: 'GET /thread/{id}'
     # Catch-all to render a "Not found" page
     not-found:
-        handler: Bref\Framework\Http\ThrowNotFound
+        handler: Bref\Micro\Http\ThrowNotFound
         events:
             - httpApi: '*'
 

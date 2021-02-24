@@ -2,7 +2,7 @@
 
 namespace Externals\Application\Controller;
 
-use Bref\Framework\Controller;
+use Bref\Micro\Controller;
 use Externals\User\User;
 use Externals\Voting;
 use Psr\Http\Message\ResponseInterface;

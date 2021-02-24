@@ -2,10 +2,9 @@
 
 namespace Externals\Application\Controller;
 
-use Bref\Framework\Controller;
+use Bref\Micro\Controller;
 use DI\Attribute\Inject;
 use Externals\Email\EmailRepository;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Twig\Environment;

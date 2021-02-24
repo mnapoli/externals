@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c6f7a6bf0f74588f2e071d7eeed9b60f",
+    "content-hash": "9d947cd3b4a90e736b0fb1d10edbfc80",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -192,16 +192,16 @@
         },
         {
             "name": "bref/bref",
-            "version": "1.0.2",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brefphp/bref.git",
-                "reference": "1e3dc380ebc682d27d91d209c0c418fff01b32de"
+                "reference": "028207eb9591e0e4fdc6f31a3b32ed101fe38c1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brefphp/bref/zipball/1e3dc380ebc682d27d91d209c0c418fff01b32de",
-                "reference": "1e3dc380ebc682d27d91d209c0c418fff01b32de",
+                "url": "https://api.github.com/repos/brefphp/bref/zipball/028207eb9591e0e4fdc6f31a3b32ed101fe38c1d",
+                "reference": "028207eb9591e0e4fdc6f31a3b32ed101fe38c1d",
                 "shasum": ""
             },
             "require": {
@@ -252,7 +252,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brefphp/bref/issues",
-                "source": "https://github.com/brefphp/bref/tree/1.0.2"
+                "source": "https://github.com/brefphp/bref/tree/1.2.0"
             },
             "funding": [
                 {
@@ -264,7 +264,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-11-30T15:56:20+00:00"
+            "time": "2021-02-04T14:31:08+00:00"
         },
         {
             "name": "bref/logger",
@@ -321,6 +321,56 @@
                 }
             ],
             "time": "2020-09-25T15:35:03+00:00"
+        },
+        {
+            "name": "bref/micro",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brefphp/micro.git",
+                "reference": "388f7624b2f8aecce8cb4fb6ff17c4915dfd4aca"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brefphp/micro/zipball/388f7624b2f8aecce8cb4fb6ff17c4915dfd4aca",
+                "reference": "388f7624b2f8aecce8cb4fb6ff17c4915dfd4aca",
+                "shasum": ""
+            },
+            "require": {
+                "bref/bref": "^1.0",
+                "ext-json": "*",
+                "php": ">=8.0",
+                "psr/container": "^1.0",
+                "psr/http-message": "^1.0",
+                "psr/http-server-handler": "^1.0",
+                "psr/http-server-middleware": "^1.0"
+            },
+            "require-dev": {
+                "vimeo/psalm": "^4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Bref\\Micro\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Serverless micro framework",
+            "keywords": [
+                "aws lambda",
+                "bref",
+                "faas",
+                "micro-framework",
+                "serverless"
+            ],
+            "support": {
+                "issues": "https://github.com/brefphp/micro/issues",
+                "source": "https://github.com/brefphp/micro/tree/0.1.0"
+            },
+            "time": "2020-12-29T18:40:54+00:00"
         },
         {
             "name": "clue/stream-filter",

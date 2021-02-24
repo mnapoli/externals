@@ -2,7 +2,7 @@
 
 namespace Externals\Application\Controller;
 
-use Bref\Framework\Controller;
+use Bref\Micro\Controller;
 use Doctrine\DBAL\Connection;
 use Externals\Email\EmailRepository;
 use Externals\NotFound;

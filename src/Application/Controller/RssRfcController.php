@@ -2,7 +2,7 @@
 
 namespace Externals\Application\Controller;
 
-use Bref\Framework\Controller;
+use Bref\Micro\Controller;
 use Externals\Email\EmailRepository;
 use Externals\RssRfcBuilder;
 use Nyholm\Psr7\Response;

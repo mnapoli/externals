@@ -2,7 +2,7 @@
 
 namespace Externals\Application\Middleware;
 
-use Bref\Framework\Http\Exception\HttpNotFound;
+use Bref\Micro\Http\Exception\HttpNotFound;
 use Externals\NotFound;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
