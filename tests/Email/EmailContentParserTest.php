@@ -11,7 +11,7 @@ class EmailContentParserTest extends TestCase
 
     protected function setUp(): void
     {
-        $container = require __DIR__ . '/../../res/bootstrap.php';
+        $container = require __DIR__ . '/../../config/bootstrap.php';
         $this->parser = $container->get(EmailContentParser::class);
     }
 

@@ -22,8 +22,8 @@ if ($environment === 'dev' && file_exists(__DIR__ . '/../.env')) {
 // Create the application
 $containerBuilder = new ContainerBuilder;
 $containerBuilder->useAttributes(true);
-$containerBuilder->addDefinitions(__DIR__ . '/config/config.php');
-$envConfig = __DIR__ . "/config/env/$environment.php";
+$containerBuilder->addDefinitions(__DIR__ . '/config.php');
+$envConfig = __DIR__ . "/env/$environment.php";
 if (file_exists($envConfig)) {
     $containerBuilder->addDefinitions($envConfig);
 }

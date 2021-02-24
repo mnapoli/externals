@@ -4,7 +4,7 @@ use Externals\EmailSynchronizer;
 use Psr\Container\ContainerInterface;
 
 /** @var ContainerInterface $container */
-$container = require __DIR__ . '/res/bootstrap.php';
+$container = require __DIR__ . '/config/bootstrap.php';
 
 $synchronizer = $container->get(EmailSynchronizer::class);
 

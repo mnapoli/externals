@@ -1,6 +1,7 @@
 module.exports = {
     purge: [
-        './res/**/*.twig',
+        './views/*.twig',
+        './views/**/*.twig',
         './assets/*.css',
     ],
     darkMode: false, // or 'media' or 'class'
