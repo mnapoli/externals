@@ -1,5 +1,5 @@
 preview:
-	ENV=dev XDEBUG_MODE=debug php -S localhost:8000 -t web vendor/bin/bref-dev-server
+	ENV=dev XDEBUG_MODE=debug vendor/bin/bref-dev-server --assets=web
 
 install:
 	set -e
