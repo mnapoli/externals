@@ -124,6 +124,12 @@ custom:
     isProdMap:
         prod: true
         other: false
+    lift:
+        use: externals
+        s3:
+            assets:
+                public: true
+                cors: true
 
 resources:
 
@@ -134,30 +140,6 @@ resources:
                 - prod
 
     Resources:
-
-        # The S3 bucket that stores the assets
-        Assets:
-            Type: AWS::S3::Bucket
-            Description: 'Public bucket that serves externals.io assets'
-            Properties:
-                BucketName: 'externals-assets-${self:custom.stage}'
-                # Enables CORS (e.g. when a JS script loads files from S3)
-                CorsConfiguration:
-                    CorsRules:
-                        -   AllowedHeaders: ['*']
-                            AllowedMethods: [GET]
-                            AllowedOrigins: ['*']
-        # The policy that makes the bucket publicly readable (necessary for a public website)
-        AssetsBucketPolicy:
-            Type: AWS::S3::BucketPolicy
-            Properties:
-                Bucket: !Ref Assets
-                PolicyDocument:
-                    Statement:
-                        -   Effect: Allow
-                            Principal: '*' # everyone
-                            Action: 's3:GetObject' # to read
-                            Resource: '#{Assets.Arn}/*' # things in the bucket
 
         # We use CloudFront in front of API Gateway to be able to redirect HTTP to HTTPS
         # because API Gateway does not listen at all to HTTP requests.
