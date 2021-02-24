@@ -24,9 +24,9 @@ provider:
         GITHUB_OAUTH_REDIRECT_URL: 'https://externals.io/login'
         SENTRY_URL: ${ssm:/externals/sentry_url}
         SESSION_SECRET_KEY: ${ssm:/externals/session_secret_key}
-        ASSETS_BUCKET_DOMAIN: !GetAtt Assets.DomainName
+        ASSETS_BUCKET_DOMAIN: externals-${self:custom.stage}-assets
         # See https://bref.sh/docs/environment/performances.html#bref-for-event-driven-functions
-        BREF_LOOP_MAX: 100
+        BREF_LOOP_MAX: '100'
 
 package:
     exclude:
@@ -98,7 +98,7 @@ functions:
         description: 'externals.io updater'
         timeout: 900
         environment:
-            BREF_LOOP_MAX: 1
+            BREF_LOOP_MAX: '1'
         events:
             -   schedule:
                     rate: rate(15 minutes)
