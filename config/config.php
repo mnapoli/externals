@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 use Bref\Logger\StderrLogger;
 use Externals\Application\Middleware\AuthMiddleware;
+use Externals\Application\Middleware\MaintenanceMiddleware;
 use Externals\Application\Middleware\NotFoundMiddleware;
 use Externals\RssBuilder;
 use Externals\RssRfcBuilder;
@@ -30,7 +31,7 @@ use Psr\Log\LoggerInterface;
 
 return [
 
-    'maintenance' => env('MAINTENANCE', false),
+    'maintenance' => (bool) getenv('MAINTENANCE'),
     'debug' => false,
     'google.noindex' => false,
     'path.cache' => '/tmp/cache',
@@ -99,6 +100,8 @@ return [
             (string) $c->get('session.secret_key'),
             31536000
         ),
+    MaintenanceMiddleware::class => autowire()
+        ->constructorParameter('maintenance', get('maintenance')),
 
     'sentry.url' => env('SENTRY_URL', null),
 
@@ -110,6 +113,7 @@ return [
 
     'http.middlewares' => [
         NotFoundMiddleware::class,
+        MaintenanceMiddleware::class,
         SessionMiddleware::class,
         AuthMiddleware::class,
     ],
