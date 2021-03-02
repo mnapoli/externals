@@ -12,7 +12,7 @@ provider:
     environment:
         APP_ENV: prod
         EXTERNALS_APP_VERSION: ${env:SEED_BUILD_ID}
-        DATABASE_NAME: 'externals'
+        DATABASE_NAME: 'externals-prod'
         DATABASE_USER: ${ssm:/externals/db/user}
         DATABASE_PASSWORD: ${ssm:/externals/db/password}
         ALGOLIA_APP_ID: KSTITII7EC
