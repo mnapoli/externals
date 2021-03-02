@@ -124,7 +124,7 @@ custom:
         prod: true
         other: false
     lift:
-        use: externals
+        use: shared
         s3:
             assets:
                 public: true
