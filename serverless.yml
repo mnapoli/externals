@@ -193,8 +193,8 @@ resources:
                             TargetOriginId: Assets # the static files on S3
                             AllowedMethods: [GET, HEAD]
                             ForwardedValues:
-                                # No need for all that with assets
-                                QueryString: 'false'
+                                # We use the query string to bust the cache
+                                QueryString: 'true'
                                 Cookies:
                                     Forward: none
                             ViewerProtocolPolicy: redirect-to-https
