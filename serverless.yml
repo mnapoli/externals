@@ -29,11 +29,13 @@ provider:
 
 package:
     exclude:
+        - '.github/**'
+        - 'assets/**'
         - 'backups/**'
         - 'node_modules/**'
         - 'tests/**'
         - 'var/log/**'
-        - 'web/assets/**'
+        - 'web/**'
 
 functions:
     home:
