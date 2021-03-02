@@ -1,5 +1,5 @@
 before_compile:
-    - npm install -g parcel-bundler
+    - npm install -g parcel-bundler@1.12.4
     - composer install --optimize-autoloader --no-dev --ignore-platform-reqs
     - rm -rf /tmp/seed/source/var/cache/*
     # Trigger cache compilation
