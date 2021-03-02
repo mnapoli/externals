@@ -162,7 +162,7 @@ resources:
                                 OriginProtocolPolicy: 'https-only' # API Gateway only supports HTTPS
                         # The assets (S3)
                         -   Id: Assets
-                            DomainName: 'externals-prod-assets.s3.amazonaws.com'
+                            DomainName: 'externals-prod-assets.s3-eu-west-1.amazonaws.com'
                             CustomOriginConfig:
                                 OriginProtocolPolicy: 'http-only' # S3 websites only support HTTP
                     # The default behavior is to send everything to AWS Lambda
