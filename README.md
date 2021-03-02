@@ -2,11 +2,10 @@
 
 ## Setup
 
-Requirements (TODO: Vagrant box):
+Requirements:
 
 - PHP 8.0
 - NPM
-- Parcel
 - MySQL database
 - Algolia account (TODO: make it optional in dev environment)
 
