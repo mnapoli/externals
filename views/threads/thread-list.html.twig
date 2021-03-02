@@ -1,6 +1,6 @@
 {% for thread in threads %}
     <div class="my-4 sm:my-8 flex items-center group {% if thread.votes < -1 %}opacity-25{% endif %}">
-        <div class="mr-8 text-sm text-gray-300 text-center vote-actions">
+        <div class="mr-4 sm:mr-8 text-sm text-gray-300 text-center vote-actions">
             <a class="vote-action upvote text-2xl font-bold leading-none {{ (thread.userVote == 1) ? 'active' }}"
                href="#" data-email-id="{{ thread.number }}" title="Upvote">
                 &blacktriangle;
@@ -12,7 +12,7 @@
             </a>
         </div>
         <div class="flex-grow">
-            <a class="block text-gray-800 sm:text-xl mb-1 {% if user and not thread.isRead and thread.userVote >= 0 %}font-bold{% endif %}" href="message/{{ thread.number }}">
+            <a class="block text-gray-800 sm:text-lg mb-1 {% if user and not thread.isRead and thread.userVote >= 0 %}font-bold{% endif %}" href="message/{{ thread.number }}">
                 {{ thread.subject }}
             </a>
             <div class="text-gray-400 text-xs sm:text-sm">
