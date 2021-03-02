@@ -1,16 +1,21 @@
 preview:
-	ENV=dev php -S localhost:8000 -t web
+	ENV=dev XDEBUG_MODE=debug vendor/bin/bref-dev-server --assets=web
 
 install:
 	set -e
 	composer install
 	npm install
 	./console db --force
-	gulp
+	make assets
 	make cache
 
 assets:
-	gulp
+	npx tailwindcss-cli@latest build ./assets/styles.css -o ./web/assets/css/main.min.css
+	npx esbuild assets/main.js --bundle --outfile=web/assets/js/main.js
+
+assets-prod:
+	NODE_ENV=production npx tailwindcss-cli@latest build ./assets/styles.css -o ./web/assets/css/main.min.css
+	npx esbuild assets/main.js --bundle --outfile=web/assets/js/main.js
 
 cache:
 	set -e
@@ -18,23 +23,12 @@ cache:
 	# Will trigger the compilation of the container
 	./console list
 
-init:
-	docker-compose run --rm cliphp make vendors
-	docker-compose run --rm cliphp ./node_modules/gulp/bin/gulp.js
-
 vendors: vendor node_modules
 
 vendor: composer.lock
 	composer install
 
-node_modules:
-	yarn install
+node_modules: package.json package-lock.json
+	npm install
 
-deploy: cache
-	set -e
-	composer install --no-dev --classmap-authoritative
-	export EXTERNALS_APP_VERSION=$$(date +%s) && serverless deploy
-	make deploy-assets
-
-deploy-assets:
-	aws s3 sync web s3://externals-assets-prod --delete
+.PHONY: assets

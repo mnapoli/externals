@@ -5,7 +5,9 @@
 /web/assets/css/
 /web/assets/fonts/
 /web/assets/js/
-/res/config/parameters.php
+/config/parameters.php
 /backups/
 /composer.phar
 /.serverless/
+/.serverless-offline/
+/.cache/

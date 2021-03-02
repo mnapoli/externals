@@ -6,17 +6,14 @@ use Doctrine\DBAL\Connection;
 
 class UserRepository
 {
-    /** @var Connection */
-    private $db;
-
-    public function __construct(Connection $db)
-    {
-        $this->db = $db;
+    public function __construct(
+        private Connection $db,
+    ) {
     }
 
     public function getOrCreate(string $githubId, string $name): User
     {
-        $userData = $this->db->fetchAssoc('SELECT * FROM users WHERE githubId = ?', [$githubId]);
+        $userData = $this->db->fetchAssociative('SELECT * FROM users WHERE githubId = ?', [$githubId]);
 
         if ($userData) {
             return new User((int) $userData['id'], $githubId, (string) $userData['name']);
@@ -34,6 +31,6 @@ class UserRepository
 
     public function getUserCount(): int
     {
-        return (int) $this->db->fetchColumn('SELECT COUNT(*) FROM users');
+        return (int) $this->db->fetchOne('SELECT COUNT(*) FROM users');
     }
 }

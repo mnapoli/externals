@@ -8,22 +8,21 @@ use Externals\Email\EmailRepository;
 use Externals\EmailSynchronizer;
 use Externals\NotFound;
 use Psr\Container\ContainerInterface;
-use Stratify\Framework\Application;
-use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
-use Symfony\Component\Console\Output\ConsoleOutput;
+use Silly\Application;
 use Symfony\Component\Console\Output\OutputInterface;
 use ZBateson\MailMimeParser\MailMimeParser;
 
-/** @var Application $application */
-$application = require __DIR__ . '/res/bootstrap.php';
+/** @var ContainerInterface $container */
+$container = require __DIR__ . '/config/bootstrap.php';
 
-$cli = $application->cli();
+$cli = new Application();
+$cli->useContainer($container, true, true);
 
 $cli->command('db [--force]', [DbCommand::class, 'setup']);
 $cli->command('db-purge [--force]', [DbCommand::class, 'purge']);
 $cli->command('db-truncate [--force]', [DbCommand::class, 'truncate']);
 
-$cli->command('sync [max]', function (int $max = null, EmailSynchronizer $synchronizer, OutputInterface $output) {
+$cli->command('sync [max]', function (EmailSynchronizer $synchronizer, OutputInterface $output, int $max = null) {
     $start = microtime(true);
     $synchronizer->synchronize($max);
     $time = microtime(true) - $start;
@@ -43,7 +42,7 @@ $cli->command('reparse', function (EmailRepository $repository, EmailContentPars
     for ($number = $maxNumber; $number > 0; $number--) { // from most recent to first
         try {
             $email = $repository->getByNumber($number);
-        } catch (NotFound $e) {
+        } catch (NotFound) {
             continue;
         }
         $parsedDocument = (new MailMimeParser)->parse($email->getSource());
@@ -59,6 +58,4 @@ $cli->command('container:get id', function (string $id, ContainerInterface $cont
     var_dump($container->get($id));
 });
 
-$output = new ConsoleOutput();
-$application->getContainer()->get(ConsoleHandler::class)->setOutput($output);
-$cli->run(null, $output);
+$cli->run();

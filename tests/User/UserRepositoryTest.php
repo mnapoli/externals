@@ -15,7 +15,7 @@ class UserRepositoryTest extends TestCase
     {
         $db = $this->createMock(Connection::class);
         $repository = new UserRepository($db);
-        $db->method('fetchAssoc')
+        $db->method('fetchAssociative')
             ->willReturn([
                 'id' => 123,
                 'githubId' => 'abc',
@@ -24,9 +24,9 @@ class UserRepositoryTest extends TestCase
 
         $user = $repository->getOrCreate('abc', 'joe');
 
-        $this->assertEquals(123, $user->getId());
-        $this->assertEquals('abc', $user->getGithubId());
-        $this->assertEquals('joe', $user->getName());
+        $this->assertEquals(123, $user->id);
+        $this->assertEquals('abc', $user->githubId);
+        $this->assertEquals('joe', $user->name);
     }
 
     /**
@@ -44,8 +44,8 @@ class UserRepositoryTest extends TestCase
 
         $user = $repository->getOrCreate('abc', 'joe');
 
-        $this->assertEquals(123, $user->getId());
-        $this->assertEquals('abc', $user->getGithubId());
-        $this->assertEquals('joe', $user->getName());
+        $this->assertEquals(123, $user->id);
+        $this->assertEquals('abc', $user->githubId);
+        $this->assertEquals('joe', $user->name);
     }
 }

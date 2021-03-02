@@ -9,16 +9,10 @@ namespace Externals\Email;
  */
 class EmailAddress
 {
-    /** @var string|null */
-    private $email;
-
-    /** @var string|null */
-    private $name;
-
-    public function __construct(?string $email = null, ?string $name = null)
-    {
-        $this->email = $email;
-        $this->name = $name;
+    public function __construct(
+        private ?string $email = null,
+        private ?string $name = null,
+    ) {
     }
 
     public function getEmail(): ?string

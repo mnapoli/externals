@@ -2,35 +2,33 @@
 
 namespace Externals\Application\Middleware;
 
+use DI\Attribute\Inject;
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Stratify\Http\Middleware\Middleware;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Twig\Environment;
-use Zend\Diactoros\Response\HtmlResponse;
 
 /**
  * Displays a "Maintenance" page.
  */
-class MaintenanceMiddleware implements Middleware
+class MaintenanceMiddleware implements MiddlewareInterface
 {
-    /** @var bool */
-    private $maintenance;
-
-    /** @var Environment */
-    private $twig;
-
-    public function __construct(bool $maintenance, Environment $twig)
-    {
-        $this->maintenance = $maintenance;
-        $this->twig = $twig;
+    public function __construct(
+        private bool $maintenance,
+        private Environment $twig,
+    ) {
     }
 
-    public function __invoke(ServerRequestInterface $request, callable $next): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($this->maintenance) {
-            return new HtmlResponse($this->twig->render('maintenance.html.twig'));
+            return new Response(200, [
+                'Content-Type' => 'text/html',
+            ], $this->twig->render('maintenance.html.twig'));
         }
 
-        return $next($request);
+        return $handler->handle($request);
     }
 }

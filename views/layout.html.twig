@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="alternate" type="application/rss+xml" href="/rss" title="Latest emails"/>
+    <link rel="alternate" type="application/rss+xml" href="/rss-rfc" title="Latest RFC Threads"/>
+
+    <title>{% block pageTitle %}#externals - Opening PHP's #internals to the outside{% endblock %}</title>
+
+    <meta name="google-site-verification" content="hTdWskuVWUMoQAWfM3WcbBH16xhAxqzOyjfJbQmRor0" />
+
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://www.google-analytics.com">
+
+    <link rel="stylesheet" href="{{ assetsBaseUrl }}/assets/css/main.min.css?v={{ version }}">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ assetsBaseUrl }}/assets/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="{{ assetsBaseUrl }}/assets/images/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="{{ assetsBaseUrl }}/assets/images/favicon-16x16.png" sizes="16x16" />
+
+    <meta name="og:title" content="{{ block('pageTitle') }}">
+    <meta name="og:type" content="website">
+    <meta name="og:url" content="https://externals.io/">
+    <meta name="og:image" content="{{ assetsBaseUrl }}/assets/images/apple-touch-icon.png">
+    <meta name="og:description" content="#externals - Opening PHP's #internals to the outside">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@phpexternals">
+
+    {% if user is defined and user is not empty %}
+        <script>
+            userId = {{ user.id }};
+        </script>
+    {% endif %}
+
+    {% if noIndex %}
+        <meta name="robots" content="noindex">
+    {% endif %}
+
+    <script async defer data-domain="externals.io" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="antialiased">
+
+    <nav class="bg-white text-gray-600 font-light w-full shadow">
+        <div class="container max-w-4xl flex items-center">
+            <a class="block px-1 py-3 mr-4" href="/"><img src="{{ assetsBaseUrl }}/assets/images/logo.svg" alt="externals" class="w-10 sm:w-16"></a>
+            <div class="flex-grow flex items-center text-sm sm:text-base">
+                <a class="block px-2 sm:px-4 py-2 sm:py-3" href="/">Latest</a>
+                <a class="block px-2 sm:px-4 py-2 sm:py-3" href="/top">Top</a>
+            </div>
+            <div class="text-sm">
+                {% if user is defined and user is not empty %}
+                    <img class="w-5 h-5 bg-white inline-block rounded-full mr-1" src="https://github.com/{{ user.name }}.png?size=40">
+                    {{ user.name }}
+                    <a href="/logout" rel="nofollow" title="Logout">
+                        <svg class="w-4 h-4 inline" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><title>Log Out</title><path d='M304 336v40a40 40 0 01-40 40H104a40 40 0 01-40-40V136a40 40 0 0140-40h152c22.09 0 48 17.91 48 40v40M368 336l80-80-80-80M176 256h256' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                    </a>
+                {% else %}
+                    <svg class="w-4 h-4 inline -mt-0.5 fill-current text-gray-400"
+                         xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path d='M256 32C132.3 32 32 134.9 32 261.7c0 101.5 64.2 187.5 153.2 217.9a17.56 17.56 0 003.8.4c8.3 0 11.5-6.1 11.5-11.4 0-5.5-.2-19.9-.3-39.1a102.4 102.4 0 01-22.6 2.7c-43.1 0-52.9-33.5-52.9-33.5-10.2-26.5-24.9-33.6-24.9-33.6-19.5-13.7-.1-14.1 1.4-14.1h.1c22.5 2 34.3 23.8 34.3 23.8 11.2 19.6 26.2 25.1 39.6 25.1a63 63 0 0025.6-6c2-14.8 7.8-24.9 14.2-30.7-49.7-5.8-102-25.5-102-113.5 0-25.1 8.7-45.6 23-61.6-2.3-5.8-10-29.2 2.2-60.8a18.64 18.64 0 015-.5c8.1 0 26.4 3.1 56.6 24.1a208.21 208.21 0 01112.2 0c30.2-21 48.5-24.1 56.6-24.1a18.64 18.64 0 015 .5c12.2 31.6 4.5 55 2.2 60.8 14.3 16.1 23 36.6 23 61.6 0 88.2-52.4 107.6-102.3 113.3 8 7.1 15.2 21.1 15.2 42.5 0 30.7-.3 55.5-.3 63 0 5.4 3.1 11.5 11.4 11.5a19.35 19.35 0 004-.4C415.9 449.2 480 363.1 480 261.7 480 134.9 379.7 32 256 32z'/></svg>
+                    <a href="/login" class="text-red-500" rel="nofollow">Log in <span class="hidden sm:inline">with GitHub</span></a>
+                    <span class="hidden sm:inline">to track unread emails</span>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container max-w-4xl mt-4 sm:mt-8">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="bg-gray-700 text-gray-400 py-8 mt-8 text-xs sm:text-sm">
+        <div class="container max-w-4xl">
+            <p class="mb-2">Contribute to the project on GitHub: <a class="underline" href="https://github.com/mnapoli/externals">mnapoli/externals</a></p>
+            <p class="mb-2">
+                Externals is a serverless application deployed with <a class="underline" href="https://bref.sh/" title="Serverless PHP applications">Bref</a>
+                and sponsored by <a class="underline" title="Serverless consulting company" href="https://null.tc/?utm_source=externals">null ❤</a>
+            </p>
+            <p class="mb-2">Search sponsored by <a class="underline" href="https://www.algolia.com">Algolia</a></p>
+            <p class="mb-2">
+                <strong>About data:</strong> if you login using GitHub, no personal data (or GitHub token) will be stored.<br>
+                The only thing stored is your GitHub ID, username and which threads/emails you have already read.
+            </p>
+            <p>
+                Oh and if you're interested, check out my <a class="underline" href="https://serverless-visually-explained.com/?utm_source=externals" title="Serverless online course">Serverless Visually Explained</a> course.
+            </p>
+        </div>
+    </footer>
+
+    {% block scripts %}
+        <script src="{{ assetsBaseUrl }}/assets/js/main.js?v={{ version }}"></script>
+
+        {% if not debug %}
+            {# Google Analytics #}
+            <script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+                ga('create', 'UA-15584647-16', 'auto');
+                ga('send', 'pageview');
+            </script>
+        {% endif %}
+
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,136 @@
+{% extends 'layout.html.twig' %}
+
+{% block mainMenuLinks %}{% endblock %}
+
+{% block content %}
+
+    <header class="sm:text-lg text-gray-500 font-light py-4 sm:py-8">
+        <p>Opening PHP's <a class="underline" href="http://news.php.net/php.internals">#internals</a> mailing list to the outside.</p>
+        <noscript>
+            Your browser either doesn't support javascript or it is disabled.
+            This website does not work without javascript.
+            Make sure to activate it or consider switching to a modern browser.
+        </noscript>
+    </header>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.css">
+    {# Search #}
+    <div class="mb-4 relative">
+        <input id="search-input" type="text" placeholder="Search..."
+               class="w-full px-4 py-2 transition border-b border-transparent border-gray-200 focus:border-red-400">
+        <a class="absolute right-0 top-0 mt-4" href="https://www.algolia.com/" target="_blank"><img class="w-10 text-gray-500 opacity-50" src="{{ assetsBaseUrl }}/assets/images/algolia.svg" alt="Algolia"></a>
+    </div>
+    <div id="search-container" class="px-6 py-4 bg-white rounded-lg border border-gray-50 shadow-lg">
+        <h3 class="font-bold text-lg mb-4">Search results</h3>
+        <ul id="search-results" class="list-unstyled"></ul>
+    </div>
+    {% verbatim %}
+        <script id="search-result-template" type="text/html">
+            <li class="my-3">
+                <a href="/message/{{ objectID }}">{{{ _highlightResult.subject.value }}}</a>
+                <span class="text-gray-400 text-sm float-right">
+                    by <strong>{{{ _highlightResult.fromName.value }}}</strong>
+                    on {{#helpers.date}}{{/helpers.date}}
+                </span>
+            </li>
+        </script>
+        <script id="no-results-template" type="text/html">
+            <p>No results found for the search <em>"{{query}}"</em>.</p>
+        </script>
+    {% endverbatim %}
+
+    <section id="threads">
+
+        <div class="thread-list">
+            {% include 'threads/thread-list.html.twig' %}
+        </div>
+
+        <div class="my-12 border-t flex justify-center">
+            {% if page > 1 %}
+                <a class="block w-10 py-4 text-center text-gray-400 hover:text-gray-800" href="/" style="margin-top: 1px">
+                    1
+                </a>
+            {% endif %}
+            {% if page > 5 %}
+                <div class="block w-10 py-4 text-center text-gray-400" style="margin-top: 1px">
+                    ...
+                </div>
+            {% endif %}
+            {% if page > 2 %}
+                {% for i in range(max(page - 3, 2), page - 1) %}
+                    <a class="block w-10 py-4 text-center text-gray-400 hover:text-gray-800" href="/?page={{ i }}" style="margin-top: 1px">
+                        {{ i }}
+                    </a>
+                {% endfor %}
+            {% endif %}
+            <div class="w-10 py-4 text-center border-t-2 border-red-200 text-red-400" style="margin-top: -1px">
+                {{ page }}
+            </div>
+            {% if page < pageCount %}
+                {% for i in range(page + 1, min(page + 4, pageCount)) %}
+                    <a class="block w-10 py-4 text-center text-gray-400 hover:text-gray-800" href="/?page={{ i }}" style="margin-top: 1px">
+                        {{ i }}
+                    </a>
+                {% endfor %}
+            {% endif %}
+            {% if page + 4 < pageCount %}
+                <div class="block w-10 py-4 text-center text-gray-400" style="margin-top: 1px">
+                    ...
+                </div>
+            {% endif %}
+        </div>
+
+    </section>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+
+    <script>
+        function init_search() {
+            var search = instantsearch({
+                appId: 'KSTITII7EC',
+                apiKey: 'badccd205e578e64657ae7f880959824',
+                indexName: '{{ algoliaIndex }}',
+                searchParameters: {
+                    hitsPerPage: 10,
+                },
+                searchFunction: function (helper) {
+                    var searchResult = document.querySelector('#search-container');
+                    if (helper.state.query === '') {
+                        searchResult.style.display = 'none';
+                        return;
+                    }
+
+                    helper.search();
+                    searchResult.style.display = 'block';
+                },
+            });
+            search.addWidget(
+                instantsearch.widgets.searchBox({
+                    container: '#search-input',
+                    placeholder: 'Search...',
+                    reset: false,
+                    magnifier: false
+                })
+            );
+            search.addWidget(
+                instantsearch.widgets.hits({
+                    container: '#search-results',
+                    templates: {
+                        item: document.querySelector('#search-result-template').innerHTML,
+                        empty: document.querySelector('#no-results-template').innerHTML,
+                    }
+                })
+            );
+            search.templatesConfig.helpers.date = function () {
+                return new Date(this.date).toLocaleDateString();
+            };
+            search.start();
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/instantsearch.js/2/instantsearch.min.js" onload="init_search();" async></script>
+
+{% endblock %}

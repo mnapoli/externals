@@ -4,11 +4,10 @@ namespace Externals\Email;
 
 class ThreadItem
 {
-    /** @var Email */
-    private $email;
+    private Email $email;
 
     /** @var ThreadItem[] */
-    private $replies = [];
+    private array $replies = [];
 
     public function __construct(Email $email)
     {

@@ -2,27 +2,22 @@
 
 namespace Externals\Application\Controller;
 
+use Bref\Micro\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Twig\Environment;
-use Zend\Diactoros\Response\HtmlResponse;
 
-class NotFoundController
+class NotFoundController extends Controller
 {
-    /** @var Environment */
-    private $twig;
-
-    public function __construct(Environment $twig)
-    {
-        $this->twig = $twig;
+    public function __construct(
+        private Environment $twig,
+    ) {
     }
 
-    public function __invoke(ServerRequestInterface $request): ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        newrelic_name_transaction('404');
-        $response = new HtmlResponse($this->twig->render('404.html.twig', [
+        return $this->htmlResponse($this->twig->render('404.html.twig', [
             'user' => $request->getAttribute('user'),
-        ]));
-        return $response->withStatus(404);
+        ]), 404);
     }
 }

@@ -1,14 +1,11 @@
 # Externals.io
 
-[![Build status](https://github.com/mnapoli/externals/workflows/build/badge.svg?branch=master)](https://github.com/mnapoli/externals/actions)
-
 ## Setup
 
-Requirements (TODO: Vagrant box):
+Requirements:
 
-- PHP 7.4 or above
+- PHP 8.0
 - NPM
-- Gulp (install with `npm install gulp-cli -g`)
 - MySQL database
 - Algolia account (TODO: make it optional in dev environment)
 

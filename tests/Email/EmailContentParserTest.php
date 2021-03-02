@@ -4,22 +4,14 @@ namespace Externals\Test\Email;
 
 use Externals\Email\EmailContentParser;
 use PHPUnit\Framework\TestCase;
-use Stratify\Framework\Application;
 
 class EmailContentParserTest extends TestCase
 {
-    /** @var EmailContentParser */
-    private $parser;
+    private EmailContentParser $parser;
 
     protected function setUp(): void
     {
-        $modules = [
-            'stratify/error-handler-module',
-            'mnapoli/externals',
-        ];
-        $application = new Application($modules, 'test');
-
-        $container = $application->getContainer();
+        $container = require __DIR__ . '/../../config/bootstrap.php';
         $this->parser = $container->get(EmailContentParser::class);
     }
 
@@ -29,20 +21,20 @@ class EmailContentParserTest extends TestCase
     public function should_parse_markdown()
     {
         $content = <<<MARKDOWN
-This is a paragraph.
-
-    echo 'code';
-
-> Take that!
-MARKDOWN;
+        This is a paragraph.
+        
+            echo 'code';
+        
+        > Take that!
+        MARKDOWN;
         $expected = <<<HTML
-<p>This is a paragraph.</p>
-<pre><code>echo 'code';
-</code></pre>
-<blockquote>
-<p>Take that!</p>
-</blockquote>
-HTML;
+        <p>This is a paragraph.</p>
+        <pre><code>echo 'code';
+        </code></pre>
+        <blockquote>
+        <p>Take that!</p>
+        </blockquote>
+        HTML;
         $this->assertEquals($expected, trim($this->parser->parse($content)));
     }
 
@@ -64,18 +56,18 @@ HTML;
     public function should_keep_line_breaks()
     {
         $content = <<<MARKDOWN
-This is a paragraph
-that spans on 2 lines:
-
-echo 'code';
-echo 'another code;
-MARKDOWN;
+        This is a paragraph
+        that spans on 2 lines:
+        
+        echo 'code';
+        echo 'another code;
+        MARKDOWN;
         $expected = <<<HTML
-<p>This is a paragraph <br>
-that spans on 2 lines:</p>
-<p>echo 'code'; <br>
-echo 'another code;</p>
-HTML;
+        <p>This is a paragraph <br>
+        that spans on 2 lines:</p>
+        <p>echo 'code'; <br>
+        echo 'another code;</p>
+        HTML;
         $this->assertEquals($expected, trim($this->parser->parse($content)));
     }
 
@@ -85,19 +77,19 @@ HTML;
     public function should_encode_html_entities()
     {
         $content = <<<'EMAIL'
-> and the test: <hello>
-
-<foo></foo> test
-
-We use 2/3 vote for "a feature affecting the language itself".
-EMAIL;
+        > and the test: <hello>
+        
+        <foo></foo> test
+        
+        We use 2/3 vote for "a feature affecting the language itself".
+        EMAIL;
         $expected = <<<HTML
-<blockquote>
-<p>and the test: &lt;hello&gt;</p>
-</blockquote>
-<p>&lt;foo&gt;&lt;/foo&gt; test</p>
-<p>We use 2/3 vote for &quot;a feature affecting the language itself&quot;.</p>
-HTML;
+        <blockquote>
+        <p>and the test: &lt;hello&gt;</p>
+        </blockquote>
+        <p>&lt;foo&gt;&lt;/foo&gt; test</p>
+        <p>We use 2/3 vote for &quot;a feature affecting the language itself&quot;.</p>
+        HTML;
         $this->assertEquals($expected, trim($this->parser->parse($content)));
     }
 
@@ -107,26 +99,26 @@ HTML;
     public function should_support_php_opening_tag()
     {
         $content = <<<'EMAIL'
-one
-
-<?php
-echo $foo;
-
-two <? hehe
-
-> <?
-> ini_set();
-EMAIL;
+        one
+        
+        <?php
+        echo $foo;
+        
+        two <? hehe
+        
+        > <?
+        > ini_set();
+        EMAIL;
         $expected = <<<HTML
-<p>one</p>
-<p>&lt;?php <br>
-echo \$foo;</p>
-<p>two &lt;? hehe</p>
-<blockquote>
-<p>&lt;? <br>
-<code>ini_set()</code>;</p>
-</blockquote>
-HTML;
+        <p>one</p>
+        <p>&lt;?php <br>
+        echo \$foo;</p>
+        <p>two &lt;? hehe</p>
+        <blockquote>
+        <p>&lt;? <br>
+        <code>ini_set()</code>;</p>
+        </blockquote>
+        HTML;
         $this->assertEquals($expected, trim($this->parser->parse($content)));
     }
 
@@ -136,12 +128,12 @@ HTML;
     public function should_strip_mailing_list_signature()
     {
         $content = <<<MARKDOWN
-Hello
-
----
-PHP Internals - PHP Runtime Development Mailing List
-To unsubscribe, visit: http://www.php.net/unsub.php
-MARKDOWN;
+        Hello
+        
+        ---
+        PHP Internals - PHP Runtime Development Mailing List
+        To unsubscribe, visit: http://www.php.net/unsub.php
+        MARKDOWN;
         $this->assertEquals('<p>Hello</p>', trim($this->parser->parse($content)));
     }
 
@@ -151,16 +143,16 @@ MARKDOWN;
     public function should_strip_unindented_trailing_quotation_1()
     {
         $content = <<<MARKDOWN
-Hello Georges
-
----
-
-From: Georges Henry gh@example.com
-Sent: Friday, June 24, 2016 6:50:59 PM
-To: Pierre Lefroie
-Cc: PHP internals
-Subject: Re: [PHP-DEV] [RFC] Asynchronous Signal Handling
-MARKDOWN;
+        Hello Georges
+        
+        ---
+        
+        From: Georges Henry gh@example.com
+        Sent: Friday, June 24, 2016 6:50:59 PM
+        To: Pierre Lefroie
+        Cc: PHP internals
+        Subject: Re: [PHP-DEV] [RFC] Asynchronous Signal Handling
+        MARKDOWN;
         $this->assertEquals('<p>Hello Georges</p>', trim($this->parser->parse($content)));
     }
 
@@ -170,15 +162,15 @@ MARKDOWN;
     public function should_strip_unindented_trailing_quotation_2()
     {
         $content = <<<MARKDOWN
-Hello Georges
-
-________________________________
-From: Georges Henry gh@example.com
-Sent: Friday, June 24, 2016 6:50:59 PM
-To: Pierre Lefroie
-Cc: PHP internals
-Subject: Re: [PHP-DEV] [RFC] Asynchronous Signal Handling
-MARKDOWN;
+        Hello Georges
+        
+        ________________________________
+        From: Georges Henry gh@example.com
+        Sent: Friday, June 24, 2016 6:50:59 PM
+        To: Pierre Lefroie
+        Cc: PHP internals
+        Subject: Re: [PHP-DEV] [RFC] Asynchronous Signal Handling
+        MARKDOWN;
         $this->assertEquals('<p>Hello Georges</p>', trim($this->parser->parse($content)));
     }
 
@@ -188,10 +180,10 @@ MARKDOWN;
     public function should_strip_trailing_line_breaks()
     {
         $content = <<<MARKDOWN
-Hello
-
-
-MARKDOWN;
+        Hello
+        
+        
+        MARKDOWN;
         $this->assertEquals('<p>Hello</p>', trim($this->parser->parse($content)));
     }
 
@@ -231,18 +223,18 @@ MARKDOWN;
     public function should_handle_leading_blockquote()
     {
         $content = <<<MARKDOWN
-> But you still have to remember to use a
-> proper escaping function.
-
-I see no problem.
-MARKDOWN;
+        > But you still have to remember to use a
+        > proper escaping function.
+        
+        I see no problem.
+        MARKDOWN;
         $expected = <<<HTML
-<blockquote>
-<p>But you still have to remember to use a <br>
-proper escaping function.</p>
-</blockquote>
-<p>I see no problem.</p>
-HTML;
+        <blockquote>
+        <p>But you still have to remember to use a <br>
+        proper escaping function.</p>
+        </blockquote>
+        <p>I see no problem.</p>
+        HTML;
         $this->assertEquals($expected, trim($this->parser->parse($content)));
     }
 
@@ -252,39 +244,39 @@ HTML;
     public function should_strip_quote_headers()
     {
         $content = <<<MARKDOWN
-On Tue, Jul 5, 2016 at 3:21 PM, Levi Morrison <levim+test@php.net> wrote:\r\n
-
-> But you still have to remember to use
-
-Test with indented quotation header:
-
-> Test that the blockquote is not cut in half
->
-> On 30/06/16 23:46, Thomas Bley wrote:
->
-> > But you still have to remember to use
-> >
->>> On 30/06/16 23:46, Thomas Bley wrote:
->>> abc
-
-Trick: don't forget that On Wed, Stanislav wrote:
-MARKDOWN;
+        On Tue, Jul 5, 2016 at 3:21 PM, Levi Morrison <levim+test@php.net> wrote:\r\n
+        
+        > But you still have to remember to use
+        
+        Test with indented quotation header:
+        
+        > Test that the blockquote is not cut in half
+        >
+        > On 30/06/16 23:46, Thomas Bley wrote:
+        >
+        > > But you still have to remember to use
+        > >
+        >>> On 30/06/16 23:46, Thomas Bley wrote:
+        >>> abc
+        
+        Trick: don't forget that On Wed, Stanislav wrote:
+        MARKDOWN;
         $expected = <<<HTML
-<blockquote>
-<p>But you still have to remember to use</p>
-</blockquote>
-<p>Test with indented quotation header:</p>
-<blockquote>
-<p>Test that the blockquote is not cut in half</p>
-<blockquote>
-<p>But you still have to remember to use</p>
-<blockquote>
-<p>abc</p>
-</blockquote>
-</blockquote>
-</blockquote>
-<p>Trick: don't forget that On Wed, Stanislav wrote:</p>
-HTML;
+        <blockquote>
+        <p>But you still have to remember to use</p>
+        </blockquote>
+        <p>Test with indented quotation header:</p>
+        <blockquote>
+        <p>Test that the blockquote is not cut in half</p>
+        <blockquote>
+        <p>But you still have to remember to use</p>
+        <blockquote>
+        <p>abc</p>
+        </blockquote>
+        </blockquote>
+        </blockquote>
+        <p>Trick: don't forget that On Wed, Stanislav wrote:</p>
+        HTML;
         $this->assertEquals($expected, trim($this->parser->parse($content)));
     }
 }

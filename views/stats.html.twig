@@ -1,0 +1,15 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+
+    <h1 class="text-xl mb-8">Stats!</h1>
+
+    <p class="mb-2">There are:</p>
+
+    <ul>
+        <li>{{ userCount }} users</li>
+        <li>{{ threadCount }} threads</li>
+        <li>{{ emailCount }} emails</li>
+    </ul>
+
+{% endblock %}

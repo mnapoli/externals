@@ -1,14 +1,20 @@
 service: externals
+frameworkVersion: '>=2.3'
 
 provider:
     name: aws
-    runtime: provided.al2
-    stage: prod
     region: eu-west-1
+    stage: prod
+    runtime: provided.al2
+    layers:
+        - ${bref:layer.php-80}
+    timeout: 10
     environment:
         APP_ENV: prod
         EXTERNALS_APP_VERSION: ${env:SEED_BUILD_ID}
-        DB_URL: ${ssm:/externals/db_url}
+        DATABASE_NAME: 'externals-prod'
+        DATABASE_USER: ${ssm:/externals/db/user}
+        DATABASE_PASSWORD: ${ssm:/externals/db/password}
         ALGOLIA_APP_ID: KSTITII7EC
         ALGOLIA_API_KEY: ${ssm:/externals/algolia_api_key}
         ALGOLIA_INDEX_PREFIX: v2_ # prod
@@ -19,50 +25,111 @@ provider:
         GITHUB_OAUTH_REDIRECT_URL: 'https://externals.io/login'
         SENTRY_URL: ${ssm:/externals/sentry_url}
         SESSION_SECRET_KEY: ${ssm:/externals/session_secret_key}
+        # See https://bref.sh/docs/environment/performances.html#bref-for-event-driven-functions
+        BREF_LOOP_MAX: '100'
 
 package:
     exclude:
+        - '.github/**'
+        - 'assets/**'
         - 'backups/**'
         - 'node_modules/**'
         - 'tests/**'
         - 'var/log/**'
-        - 'web/assets/**'
+        - 'web/**'
 
 functions:
-    website:
-        handler: web/index.php
-        description: 'externals.io website'
-        timeout: 30 # in seconds (API Gateway has a timeout of 30 seconds)
-        layers:
-            - ${bref:layer.php-74-fpm}
+    home:
+        handler: Externals\Application\Controller\HomeController
         events:
-            -   http: 'ANY /'
-            -   http: 'ANY {proxy+}'
+            - httpApi: 'GET /'
+    thread:
+        handler: Externals\Application\Controller\ThreadController
+        events:
+            - httpApi: 'GET /message/{number}'
+    top:
+        handler: Externals\Application\Controller\TopController
+        events:
+            - httpApi: 'GET /top'
+    news:
+        handler: Externals\Application\Controller\NewsController
+        events:
+            - httpApi: 'GET /news'
+    login:
+        handler: Externals\Application\Controller\LoginController
+        events:
+            - httpApi: 'GET /login'
+    logout:
+        handler: Externals\Application\Controller\LogoutController
+        events:
+            - httpApi: 'GET /logout'
+    email-source:
+        handler: Externals\Application\Controller\EmailSourceController
+        events:
+            - httpApi: 'GET /email/{number}/source'
+    stats:
+        handler: Externals\Application\Controller\StatsController
+        events:
+            - httpApi: 'GET /stats'
+    vote:
+        handler: Externals\Application\Controller\VoteController
+        events:
+            - httpApi: 'POST /votes/{number}'
+    rss:
+        handler: Externals\Application\Controller\RssController
+        events:
+            - httpApi: 'GET /rss'
+    rss-rfc:
+        handler: Externals\Application\Controller\RssRfcController
+        events:
+            - httpApi: 'GET /rss-rfc'
+    # Keep backward compatibility with old URLs (old threads)
+    legacy-thread-redirect:
+        handler: Externals\Application\Controller\LegacyThreadRedirectController
+        events:
+            - httpApi: 'GET /thread/{id}'
+    # Catch-all to render a "Not found" page
+    not-found:
+        handler: Bref\Micro\Http\ThrowNotFound
+        events:
+            - httpApi: '*'
 
     # This script fetches emails from the mailing list and updates our database
     updater:
         handler: updater.php
         description: 'externals.io updater'
         timeout: 900
-        layers:
-            - ${bref:layer.php-74}
+        environment:
+            BREF_LOOP_MAX: '1'
         events:
             -   schedule:
                     rate: rate(15 minutes)
                     # Only enabled in production
                     enabled: ${self:custom.isProd}
 
+    console:
+        handler: console
+        timeout: 900
+        layers:
+            - ${bref:layer.php-80}
+            - ${bref:layer.console}
+
 plugins:
     - ./vendor/bref/bref
-    # This lets us use `#{Assets.Arn}` variables
-    - serverless-pseudo-parameters
+    - '@mnapoli/lift/plugin'
 
 custom:
     stage: ${opt:stage, self:provider.stage}
-    isProd: ${self:custom.isProdMap.${self:custom.stage}, self.enabled.other}
+    isProd: ${self:custom.isProdMap.${self:custom.stage}, self:custom.isProdMap.other}
     isProdMap:
         prod: true
         other: false
+    lift:
+        use: shared
+        s3:
+            assets:
+                public: true
+                cors: true
 
 resources:
 
@@ -74,32 +141,6 @@ resources:
 
     Resources:
 
-        # The S3 bucket that stores the assets
-        Assets:
-            Type: AWS::S3::Bucket
-            Description: 'Public bucket that serves externals.io assets'
-            Condition: IsProd
-            Properties:
-                BucketName: 'externals-assets-${self:custom.stage}'
-                # Enables CORS (e.g. when a JS script loads files from S3)
-                CorsConfiguration:
-                    CorsRules:
-                        -   AllowedHeaders: ["*"]
-                            AllowedMethods: [GET]
-                            AllowedOrigins: ["*"]
-        # The policy that makes the bucket publicly readable (necessary for a public website)
-        AssetsBucketPolicy:
-            Type: AWS::S3::BucketPolicy
-            Condition: IsProd
-            Properties:
-                Bucket: !Ref Assets
-                PolicyDocument:
-                    Statement:
-                        -   Effect: 'Allow'
-                            Principal: '*' # everyone
-                            Action: 's3:GetObject' # to read
-                            Resource: '#{Assets.Arn}/*' # things in the bucket
-
         # We use CloudFront in front of API Gateway to be able to redirect HTTP to HTTPS
         # because API Gateway does not listen at all to HTTP requests.
         CDN:
@@ -110,17 +151,18 @@ resources:
                     Enabled: true
                     # Cheapest option by default (https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_DistributionConfig.html)
                     PriceClass: PriceClass_100
+                    # Enable http2 transfer for better performances
+                    HttpVersion: http2
                     # Origins are where CloudFront fetches content
                     Origins:
                         # The website (AWS Lambda)
                         -   Id: Website
-                            DomainName: '#{ApiGatewayRestApi}.execute-api.#{AWS::Region}.amazonaws.com'
-                            OriginPath: '/prod'
+                            DomainName: !Join ['.', [!Ref HttpApi, 'execute-api', !Ref AWS::Region, 'amazonaws.com']]
                             CustomOriginConfig:
                                 OriginProtocolPolicy: 'https-only' # API Gateway only supports HTTPS
                         # The assets (S3)
                         -   Id: Assets
-                            DomainName: '#{Assets}.s3.amazonaws.com'
+                            DomainName: 'externals-prod-assets.s3.amazonaws.com'
                             CustomOriginConfig:
                                 OriginProtocolPolicy: 'http-only' # S3 websites only support HTTP
                     # The default behavior is to send everything to AWS Lambda
@@ -134,14 +176,16 @@ resources:
                         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloudfront-distribution-forwardedvalues.html
                         ForwardedValues:
                             QueryString: true
+                            Cookies:
+                                Forward: all # Forward cookies to use them in PHP
                             # We must *not* forward the `Host` header else it messes up API Gateway
                             Headers:
                                 - 'Accept'
+                                - 'Accept-Encoding'
                                 - 'Accept-Language'
+                                - 'Authorization'
                                 - 'Origin'
                                 - 'Referer'
-                            Cookies:
-                                Forward: all
                         ViewerProtocolPolicy: redirect-to-https
                     CacheBehaviors:
                         # Assets will be served under the `/assets/` prefix
@@ -156,7 +200,7 @@ resources:
                             ViewerProtocolPolicy: redirect-to-https
                             Compress: true # Serve files with gzip for browsers that support it (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/ServingCompressedFiles.html)
                     CustomErrorResponses:
-                        # Do not cache HTTP errors
+                        # Force CloudFront to not cache HTTP errors
                         -   ErrorCode: 500
                             ErrorCachingMinTTL: 0
                         -   ErrorCode: 504

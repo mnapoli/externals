@@ -2,37 +2,18 @@
 
 namespace Externals\User;
 
-class User implements \JsonSerializable
+use JsonSerializable;
+
+/**
+ * @psalm-immutable
+ */
+class User implements JsonSerializable
 {
-    /** @var int */
-    private $id;
-
-    /** @var string */
-    private $githubId;
-
-    /** @var string */
-    private $name;
-
-    public function __construct(int $id, string $githubId, string $name)
-    {
-        $this->id = $id;
-        $this->githubId = $githubId;
-        $this->name = $name;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function getGithubId(): string
-    {
-        return $this->githubId;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
+    public function __construct(
+        public int $id,
+        public string $githubId,
+        public string $name
+    ) {
     }
 
     /**
@@ -47,9 +28,9 @@ class User implements \JsonSerializable
         ];
     }
 
-    public static function fromData(?array $data): ?self
+    public static function fromData(mixed $data): ?self
     {
-        if ($data === null) {
+        if (! is_array($data)) {
             return null;
         }
 

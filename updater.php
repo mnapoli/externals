@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
 use Externals\EmailSynchronizer;
-use Stratify\Framework\Application;
+use Psr\Container\ContainerInterface;
 
-/** @var Application $application */
-$application = require __DIR__ . '/res/bootstrap.php';
+/** @var ContainerInterface $container */
+$container = require __DIR__ . '/config/bootstrap.php';
 
-$synchronizer = $application->getContainer()->get(EmailSynchronizer::class);
+$synchronizer = $container->get(EmailSynchronizer::class);
 
 return fn() => $synchronizer->synchronize();
