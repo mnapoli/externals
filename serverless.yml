@@ -96,7 +96,7 @@ functions:
 
     # This script fetches emails from the mailing list and updates our database
     updater:
-        handler: updater.php
+        handler: Externals\Application\Handler\SynchronizeHandler
         description: 'externals.io updater'
         timeout: 900
         environment:
