@@ -23,7 +23,7 @@
             <a class="underline" href="#{{ email.number }}" title="{{ email.date|date }}">{{ email.date|time_diff }}</a>
             by <strong>{{ email.from.nameOrEmail }}</strong>
             <span class="text-xs text-gray-500">
-                — <a href="/email/{{ email.number }}/source" target="_blank">view source</a>
+                — <a href="/email/{{ email.number }}/source" target="_blank" rel="nofollow">view source</a>
             </span>
             {% if not email.isRead %}
                 <div class="ml-4 inline-block bg-blue-100 rounded px-2 py-1 leading-none text-xs text-blue-600">unread</div>
