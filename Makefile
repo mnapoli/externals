@@ -1,5 +1,6 @@
 preview:
-	ENV=dev XDEBUG_MODE=debug vendor/bin/bref-dev-server --assets=web
+	#ENV=dev XDEBUG_MODE=debug vendor/bin/bref-dev-server --assets=web
+	ENV=dev vendor/bin/bref-dev-server --assets=web
 
 install:
 	set -e
