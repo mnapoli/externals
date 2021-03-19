@@ -7,5 +7,5 @@ before_compile:
 before_build:
     - make assets-prod
 
-after_deploy:
+before_deploy:
     - aws s3 sync web s3://externals-$SEED_STAGE_NAME-assets --delete
