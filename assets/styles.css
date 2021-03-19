@@ -60,11 +60,28 @@ article blockquote blockquote {
 }
 
 /* Article nesting :p */
-article article, article article article article, article article article article article article {
+article article,
+article article article article,
+article article article article article article,
+article article article article article article article article, 
+article article article article article article article article article article,
+article article article article article article article article article article article article,
+article article article article article article article article article article article article article article {
     @apply bg-gray-50;
 }
-article article article, article article article article article, article article article article article article article {
+article article article,
+article article article article article,
+article article article article article article article, 
+article article article article article article article article article,
+article article article article article article article article article article article,
+article article article article article article article article article article article article article,
+article article article article article article article article article article article article article article article {
     @apply bg-white;
+}
+
+/* Horizontally scrollable code blocks */
+article pre {
+    @apply overflow-x-scroll;
 }
 
 @tailwind components;
