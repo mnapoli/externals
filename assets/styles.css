@@ -58,12 +58,15 @@ article:target {
 article blockquote blockquote {
     @apply hidden;
 }
+article:last-child {
+    margin-bottom: 0;
+}
 
 /* Article nesting :p */
 article article,
 article article article article,
 article article article article article article,
-article article article article article article article article, 
+article article article article article article article article,
 article article article article article article article article article article,
 article article article article article article article article article article article article,
 article article article article article article article article article article article article article article {
@@ -71,7 +74,7 @@ article article article article article article article article article article 
 }
 article article article,
 article article article article article,
-article article article article article article article, 
+article article article article article article article,
 article article article article article article article article article,
 article article article article article article article article article article article,
 article article article article article article article article article article article article article,

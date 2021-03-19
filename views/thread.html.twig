@@ -30,11 +30,11 @@
             {% endif %}
         </header>
 
-        <div id="{{ email.number }}-body" class="border-l border-gray-200 pl-2 sm:px-4 pt-1 pb-1">
+        <div id="{{ email.number }}-body" class="border-l border-gray-200 pl-2 sm:pl-4 pt-1 pb-1">
             <div class="email-content overflow-hidden text-sm sm:text-base mb-6">
                 {{ email.content|raw }}
             </div>
-            <div class="sm:ml-4 md:ml-6">
+            <div class="sm:ml-2">
                 {% for reply in item.replies %}
                     {{ _self.threadItem(reply) }}
                 {% endfor %}
