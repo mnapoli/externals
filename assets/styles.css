@@ -87,5 +87,10 @@ article pre {
     @apply overflow-x-scroll;
 }
 
+/* Hide search box before initialization */
+#search-container {
+    display: none;
+}
+
 @tailwind components;
 @tailwind utilities;
