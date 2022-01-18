@@ -11,22 +11,28 @@ class UserRepository
     ) {
     }
 
-    public function getOrCreate(string $githubId, string $name): User
+    public function getOrCreate(string $githubId, string $ghName): User
     {
         $userData = $this->db->fetchAssociative('SELECT * FROM users WHERE githubId = ?', [$githubId]);
 
         if ($userData) {
-            return new User((int) $userData['id'], $githubId, (string) $userData['name']);
+            $id = (int) $userData['id'];
+
+            if ($ghName !== (string) $userData['name']) {
+                $this->db->update('users', ['name' => $ghName], ['id' => $id]);
+            }
+
+            return new User($id, $githubId, $ghName);
         }
 
         $this->db->insert('users', [
             'githubId' => $githubId,
-            'name' => $name,
+            'name' => $ghName,
         ]);
 
         $id = (int) $this->db->lastInsertId();
 
-        return new User($id, $githubId, $name);
+        return new User($id, $githubId, $ghName);
     }
 
     public function getUserCount(): int
