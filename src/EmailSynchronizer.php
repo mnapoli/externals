@@ -33,6 +33,8 @@ class EmailSynchronizer
         27418,
         69049,
         69050,
+        // See https://github.com/mnapoli/externals/issues/173
+        117903,
     ];
 
     public function __construct(
