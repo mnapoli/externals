@@ -17,7 +17,7 @@
                 </svg>
             </button>
             {% if email.from.email %}
-                <img class="hidden sm:block absolute top-0 right-0 mt-1 mr-2 rounded-full border border-gray-100 shadow-lg w-16 h-16 text-white bg-white" src="https://unavatar.now.sh/{{ email.from.email }}"
+                <img class="hidden sm:block absolute top-0 right-0 mt-1 mr-2 rounded-full border border-gray-100 shadow-lg w-16 h-16 text-white bg-white" src="https://unavatar.io/{{ email.from.email }}"
                      alt="{{ email.from.nameOrEmail }}" title="{{ email.from.nameOrEmail }}">
             {% endif %}
             <a class="underline" href="#{{ email.number }}" title="{{ email.date|date }}">{{ email.date|time_diff }}</a>
