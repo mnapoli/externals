@@ -103,6 +103,7 @@ class EmailRepository
 
     private function findThreads(string $where, string $orderBy, int $page, ?User $user): array
     {
+        $page = max(1, $page);
         $offset = ($page - 1) * 20;
 
         if ($user) {
