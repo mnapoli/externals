@@ -155,6 +155,7 @@ class EmailSynchronizer
         $threadId = null;
         if ($firstReference !== null) {
             // When using the iPhone mailer, references may not have the root email of the thread.
+            // See https://github.com/mnapoli/externals/pull/189/files
             $threadId = $this->findEmailThreadId($firstReference);
         } else if ($inReplyTo !== null) {
             // We know it is a reply to an email but we weren't able to find the thread ID: let's find it from our database
