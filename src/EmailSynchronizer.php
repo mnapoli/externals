@@ -137,13 +137,13 @@ class EmailSynchronizer
             }
         }
         // Extract the thread ID from the "references" header
-        $threadId = null;
+        $firstReference = null;
         $references = $parsedDocument->getHeaderValue('References');
         if ($references) {
             $references = preg_split('/(?<=>)/', $references);
             $references = array_filter(array_map('trim', $references));
             if (! empty($references)) {
-                $threadId = reset($references);
+                $firstReference = reset($references);
                 if (! $inReplyTo) {
                     // In old mails the `In-Reply-To` header didn't exist, instead it was at the end of the references
                     // Example: https://externals.io/message/2536#2784
@@ -151,10 +151,17 @@ class EmailSynchronizer
                 }
             }
         }
-        // We know it is a reply to an email but we weren't able to find the thread ID: let's find it from our database
-        if ($threadId === null && $inReplyTo !== null) {
+
+        $threadId = null;
+        if ($firstReference !== null) {
+            // When using the iPhone mailer, references may not have the root email of the thread.
+            // See https://github.com/mnapoli/externals/pull/189/files
+            $threadId = $this->findEmailThreadId($firstReference);
+        } else if ($inReplyTo !== null) {
+            // We know it is a reply to an email but we weren't able to find the thread ID: let's find it from our database
             $threadId = $this->findEmailThreadId($inReplyTo);
         }
+
         // No thread ID: this is a new thread
         if ($threadId === null) {
             $threadId = $emailId;
@@ -214,10 +221,10 @@ class EmailSynchronizer
         return $date;
     }
 
-    private function findEmailThreadId(string $inReplyTo): ?string
+    private function findEmailThreadId(string $targetId): ?string
     {
         try {
-            $email = $this->emailRepository->getById($inReplyTo);
+            $email = $this->emailRepository->getById($targetId);
         } catch (NotFound) {
             // We didn't find the thread, let's move on
             return null;
