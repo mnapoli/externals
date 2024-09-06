@@ -7,7 +7,7 @@ provider:
     stage: prod
     runtime: provided.al2
     layers:
-        - ${bref:layer.php-80}
+        - ${bref:layer.php-81}
     timeout: 10
     environment:
         APP_ENV: prod
@@ -119,7 +119,7 @@ functions:
         handler: console
         timeout: 900
         layers:
-            - ${bref:layer.php-80}
+            - ${bref:layer.php-81}
             - ${bref:layer.console}
 
 plugins:
