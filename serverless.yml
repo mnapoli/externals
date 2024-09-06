@@ -1,5 +1,5 @@
 service: externals
-frameworkVersion: '>=2.3'
+frameworkVersion: '3'
 
 provider:
     name: aws
@@ -11,22 +11,30 @@ provider:
     timeout: 10
     environment:
         APP_ENV: prod
-        EXTERNALS_APP_VERSION: ${env:SEED_BUILD_ID}
+        EXTERNALS_APP_VERSION: ${env:GITHUB_RUN_ID}
         DATABASE_NAME: 'externals-prod'
         DATABASE_USER: ${ssm:/externals/db/user}
         DATABASE_PASSWORD: ${ssm:/externals/db/password}
         ALGOLIA_APP_ID: KSTITII7EC
         ALGOLIA_API_KEY: ${ssm:/externals/algolia_api_key}
-        ALGOLIA_INDEX_PREFIX: v2_ # prod
-#        ALGOLIA_INDEX_PREFIX: dev_ # staging
-        GITHUB_OAUTH_CLIENT_ID: b75b3226c86d801a95cd # prod
-#        GITHUB_OAUTH_CLIENT_ID: 422ae3a54f6ebd43895b # staging
+        ALGOLIA_INDEX_PREFIX: ${param:algoliaIndexPrefix}
+        GITHUB_OAUTH_CLIENT_ID: ${param:githubOAuthClientId}
         GITHUB_OAUTH_CLIENT_SECRET: ${ssm:/externals/github_oauth_client_secret}
         GITHUB_OAUTH_REDIRECT_URL: 'https://externals.io/login'
         SENTRY_URL: ${ssm:/externals/sentry_url}
         SESSION_SECRET_KEY: ${ssm:/externals/session_secret_key}
         # See https://bref.sh/docs/environment/performances.html#bref-for-event-driven-functions
         BREF_LOOP_MAX: '100'
+
+params:
+    prod:
+        isProd: true
+        algoliaIndexPrefix: v2_
+        githubOAuthClientId: b75b3226c86d801a95cd
+    default:
+        isProd: false
+        algoliaIndexPrefix: dev_
+        githubOAuthClientId: 422ae3a54f6ebd43895b
 
 package:
     exclude:
@@ -105,7 +113,7 @@ functions:
             -   schedule:
                     rate: rate(15 minutes)
                     # Only enabled in production
-                    enabled: ${self:custom.isProd}
+                    enabled: ${param:isProd}
 
     console:
         handler: console
@@ -119,11 +127,7 @@ plugins:
     - '@mnapoli/lift/plugin'
 
 custom:
-    stage: ${opt:stage, self:provider.stage}
-    isProd: ${self:custom.isProdMap.${self:custom.stage}, self:custom.isProdMap.other}
-    isProdMap:
-        prod: true
-        other: false
+    brefOrg: matthieu
     lift:
         use: shared
         s3:
@@ -136,7 +140,7 @@ resources:
     Conditions:
         IsProd:
             Fn::Equals:
-                - ${self:custom.stage}
+                - ${sls:stage}
                 - prod
 
     Resources:
