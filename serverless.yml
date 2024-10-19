@@ -1,7 +1,7 @@
 service: externals
 frameworkVersion: '3'
 bref:
-    team: matthieu
+    team: bref
 
 provider:
     name: aws
