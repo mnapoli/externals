@@ -1,5 +1,7 @@
 service: externals
 frameworkVersion: '3'
+bref:
+    team: matthieu
 
 provider:
     name: aws
@@ -127,7 +129,6 @@ plugins:
     - '@mnapoli/lift/plugin'
 
 custom:
-    brefOrg: matthieu
     lift:
         use: shared
         s3:
