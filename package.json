@@ -5,6 +5,7 @@
     },
     "devDependencies": {
         "@mnapoli/lift": "^0.5.1",
-        "esbuild": "^0.8.54"
+        "esbuild": "^0.8.54",
+        "serverless-lift": "^1.30.2"
     }
 }

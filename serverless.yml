@@ -15,8 +15,8 @@ provider:
         APP_ENV: prod
         EXTERNALS_APP_VERSION: ${env:GITHUB_RUN_ID}
         DATABASE_NAME: 'externals-prod'
-        #DATABASE_HOST: ${ssm:/externals/db/host}
-        #DATABASE_PORT: 3306
+        DATABASE_HOST: ${ssm:/externals/db/host}
+        DATABASE_PORT: 3306
         DATABASE_USER: ${ssm:/externals/db/user}
         DATABASE_PASSWORD: ${ssm:/externals/db/password}
         ALGOLIA_APP_ID: KSTITII7EC
@@ -129,6 +129,13 @@ functions:
 plugins:
     - ./vendor/bref/bref
     - '@mnapoli/lift/plugin'
+    - serverless-lift
+
+constructs:
+    website:
+        type: server-side-website
+        assets:
+            '/assets/*': web/assets
 
 custom:
     lift:
