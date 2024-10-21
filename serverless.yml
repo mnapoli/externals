@@ -7,7 +7,9 @@ provider:
     name: aws
     region: eu-west-1
     stage: prod
-    runtime: php-81
+    runtime: provided.al2
+    layers:
+        - ${bref:layer.php-81}
     timeout: 10
     environment:
         APP_ENV: prod
@@ -120,7 +122,9 @@ functions:
     console:
         handler: console
         timeout: 900
-        runtime: php-81-console
+        layers:
+            - ${bref:layer.php-81}
+            - ${bref:layer.console}
 
 plugins:
     - ./vendor/bref/bref
