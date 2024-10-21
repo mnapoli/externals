@@ -19,8 +19,8 @@ use Rvdv\Nntp\Connection\Connection;
 use Rvdv\Nntp\Exception\UnknownHandlerException;
 use Throwable;
 use ZBateson\MailMimeParser\Header\DateHeader;
+use ZBateson\MailMimeParser\IMessage;
 use ZBateson\MailMimeParser\MailMimeParser;
-use ZBateson\MailMimeParser\Message;
 
 class EmailSynchronizer
 {
@@ -108,9 +108,9 @@ class EmailSynchronizer
         }
 
         $mailParser = new MailMimeParser;
-        $parsedDocument = $mailParser->parse($source);
+        $parsedDocument = $mailParser->parse($source, false);
 
-        $subject = $this->subjectParser->sanitize($parsedDocument->getHeaderValue('subject'));
+        $subject = $this->subjectParser->sanitize((string) $parsedDocument->getHeaderValue('subject'));
         $content = $this->contentParser->parse((string) $parsedDocument->getTextContent());
 
         // We don't use the special AddressHeader class because it doesn't seem to parse the
@@ -200,7 +200,7 @@ class EmailSynchronizer
         });
     }
 
-    private function parseDateTime(Message $parsedDocument): ?DateTimeInterface
+    private function parseDateTime(IMessage $parsedDocument): ?DateTimeInterface
     {
         $dateHeader = $parsedDocument->getHeader('date');
 

@@ -45,7 +45,7 @@ $cli->command('reparse', function (EmailRepository $repository, EmailContentPars
         } catch (NotFound) {
             continue;
         }
-        $parsedDocument = (new MailMimeParser)->parse($email->getSource());
+        $parsedDocument = (new MailMimeParser)->parse($email->getSource(), false);
         $content = $parser->parse((string) $parsedDocument->getTextContent());
         $repository->updateContent($email->getId(), $content);
         $output->writeln("<info>Updated email {$number}</info>");
