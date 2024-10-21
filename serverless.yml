@@ -7,9 +7,7 @@ provider:
     name: aws
     region: eu-west-1
     stage: prod
-    runtime: provided.al2
-    layers:
-        - ${bref:layer.php-81}
+    runtime: php-81
     timeout: 10
     environment:
         APP_ENV: prod
@@ -122,13 +120,10 @@ functions:
     console:
         handler: console
         timeout: 900
-        layers:
-            - ${bref:layer.php-81}
-            - ${bref:layer.console}
+        runtime: php-81-console
 
 plugins:
     - ./vendor/bref/bref
-    - '@mnapoli/lift/plugin'
     - serverless-lift
 
 constructs:
@@ -138,6 +133,3 @@ constructs:
             '/assets/*': web/assets
         domain: externals.io
         certificate: arn:aws:acm:us-east-1:416566615250:certificate/0f28e63d-d3a9-4578-9f8b-14347bfe8326
-
-custom:
-    lift:
