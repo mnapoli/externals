@@ -44,7 +44,7 @@ class RssRfcBuilder
             $this->addTextNode('title', $thread['subject'], $item);
             $this->addTextNode('link', $this->host . '/message/' . $thread['number'], $item);
             $this->addTextNode('description', $thread['subject'], $item);
-            $this->addTextNode('guid', $thread['number'], $item);
+            $this->addTextNode('guid', (string) $thread['number'], $item);
             $this->addTextNode('pubDate', (new \DateTime($thread['date']))->format('r'), $item);
             $channel->appendChild($item);
         }
