@@ -136,6 +136,8 @@ constructs:
         type: server-side-website
         assets:
             '/assets/*': web/assets
+        domain: externals.io
+        certificate: arn:aws:acm:us-east-1:416566615250:certificate/0f28e63d-d3a9-4578-9f8b-14347bfe8326
 
 custom:
     lift:
