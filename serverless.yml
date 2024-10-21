@@ -112,10 +112,10 @@ functions:
         environment:
             BREF_LOOP_MAX: '1'
         events:
-            -   schedule:
-                    rate: rate(15 minutes)
-                    # Only enabled in production
-                    enabled: ${param:isProd}
+        #    -   schedule:
+        #            rate: rate(15 minutes)
+        #            # Only enabled in production
+        #            enabled: ${param:isProd}
 
     console:
         handler: console
@@ -211,11 +211,11 @@ resources:
                         -   ErrorCode: 504
                             ErrorCachingMinTTL: 0
                     # Custom domain name
-                    Aliases:
-                        - externals.io
-                        - v3.externals.io
-                    ViewerCertificate:
-                        # ARN of the certificate created in ACM
-                        AcmCertificateArn: arn:aws:acm:us-east-1:416566615250:certificate/0f28e63d-d3a9-4578-9f8b-14347bfe8326
-                        # See https://docs.aws.amazon.com/fr_fr/cloudfront/latest/APIReference/API_ViewerCertificate.html
-                        SslSupportMethod: 'sni-only'
+                    #Aliases:
+                    #    - externals.io
+                    #    - v3.externals.io
+                    #ViewerCertificate:
+                    #    # ARN of the certificate created in ACM
+                    #    AcmCertificateArn: arn:aws:acm:us-east-1:416566615250:certificate/0f28e63d-d3a9-4578-9f8b-14347bfe8326
+                    #    # See https://docs.aws.amazon.com/fr_fr/cloudfront/latest/APIReference/API_ViewerCertificate.html
+                    #    SslSupportMethod: 'sni-only'
