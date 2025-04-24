@@ -4,7 +4,7 @@
         "tailwindcss": "^2.0.2"
     },
     "devDependencies": {
-        "esbuild": "^0.8.54",
+        "esbuild": "^0.25.0",
         "serverless-lift": "^1.30.2"
     }
 }
