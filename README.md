@@ -33,6 +33,8 @@ To recompile the assets if you change them, run `make assets`. Assets are automa
 
 ## Setup via docker
 
+Note: this is obsolete and will likely not work.
+
 - clone the repository
 - run `docker-compose up`
 - run `docker-compose run cli php /var/task/console db --force` to initialize the database
