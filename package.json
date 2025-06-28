@@ -1,7 +1,7 @@
 {
     "dependencies": {
         "jquery": "^3.4.0",
-        "tailwindcss": "^2.0.2"
+        "tailwindcss": "^2.2.19"
     },
     "devDependencies": {
         "esbuild": "^0.8.54",
