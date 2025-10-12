@@ -23,6 +23,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Externals\Application\Database\CustomMySQLPlatform;
 use Externals\Search\AlgoliaSearchIndex;
+use Externals\Search\NullSearchIndex;
 use Externals\Search\SearchIndex;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Github;
@@ -40,19 +41,35 @@ return [
     'assetsBaseUrl' => 'https://externals.io',
 
     Connection::class =>
-        fn(Container $c) => DriverManager::getConnection([
-            'dbname' => getenv('DATABASE_NAME'),
-            'user' => getenv('DATABASE_USER'),
-            'password' => getenv('DATABASE_PASSWORD'),
-            'host' => getenv('DATABASE_HOST'),
-            'port' => getenv('DATABASE_PORT'),
-            'driver' => 'pdo_mysql',
-            'charset' => 'utf8mb4',
-            'platform' => new CustomMySQLPlatform(),
-            'driverOptions' => [
-                PDO::ATTR_TIMEOUT => 5,
-            ],
-        ]),
+        fn(Container $c) => DriverManager::getConnection(
+            (function() use ($c) {
+                // Use SQLite if DATABASE_PATH is set
+                $databasePath = getenv('DATABASE_PATH');
+                if (!empty($databasePath)) {
+                    return [
+                        'driver' => 'pdo_sqlite',
+                        'path' => $databasePath,
+                    ];
+                }
+
+                // Otherwise use MySQL
+                $config = [
+                    'driver' => 'pdo_mysql',
+                    'host' => getenv('DATABASE_HOST') ?: 'localhost',
+                    'dbname' => getenv('DATABASE_NAME') ?: 'externals',
+                    'user' => getenv('DATABASE_USER') ?: 'root',
+                    'password' => getenv('DATABASE_PASSWORD') ?: '',
+                    'charset' => 'utf8mb4',
+                ];
+
+                $dbPort = getenv('DATABASE_PORT');
+                if (!empty($dbPort)) {
+                    $config['port'] = (int) $dbPort;
+                }
+
+                return $config;
+            })()
+        ),
 
     Environment::class => function (Container $c) {
         $loader = new FilesystemLoader(__DIR__ . '/../views');
@@ -91,8 +108,16 @@ return [
     'algolia.index_prefix' => env('ALGOLIA_INDEX_PREFIX', 'dev_'),
     \AlgoliaSearch\Client::class => create()
         ->constructor(env('ALGOLIA_APP_ID'), env('ALGOLIA_API_KEY')),
-    SearchIndex::class => autowire(AlgoliaSearchIndex::class)
-        ->constructorParameter('indexPrefix', get('algolia.index_prefix')),
+    SearchIndex::class => function (Container $c) {
+        $algoliaAppId = getenv('ALGOLIA_APP_ID');
+        if (empty($algoliaAppId)) {
+            return new NullSearchIndex();
+        }
+        return new AlgoliaSearchIndex(
+            $c->get(\AlgoliaSearch\Client::class),
+            $c->get('algolia.index_prefix')
+        );
+    },
 
     'session.secret_key' => env('SESSION_SECRET_KEY'),
     SessionMiddleware::class =>
