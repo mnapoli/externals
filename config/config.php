@@ -13,6 +13,7 @@ use Psr\Log\LogLevel;
 use PSR7Sessions\Storageless\Http\SessionMiddleware;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use Externals\Application\Twig\EmailReplyExtension;
 use VStelmakh\UrlHighlight\Highlighter\HtmlHighlighter;
 use VStelmakh\UrlHighlight\UrlHighlight;
 use function DI\autowire;
@@ -65,6 +66,7 @@ return [
         $twig->addGlobal('version', $c->get('version'));
         $twig->addGlobal('assetsBaseUrl', $c->get('assetsBaseUrl'));
         $twig->addExtension(new Twig_Extensions_Extension_Date);
+        $twig->addExtension(new EmailReplyExtension());
         return $twig;
     },
 
