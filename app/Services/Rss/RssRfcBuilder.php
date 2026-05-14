@@ -7,6 +7,7 @@ namespace App\Services\Rss;
 use DateTimeImmutable;
 use DomDocument;
 use DomElement;
+use RuntimeException;
 
 class RssRfcBuilder
 {
@@ -47,7 +48,12 @@ class RssRfcBuilder
             $channel->appendChild($item);
         }
 
-        return $this->dom->saveXML();
+        $xml = $this->dom->saveXML();
+        if ($xml === false) {
+            throw new RuntimeException('Failed to generate RSS XML');
+        }
+
+        return $xml;
     }
 
     private function addTextNode(string $name, string $value, DomElement $parent): void

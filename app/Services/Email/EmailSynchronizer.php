@@ -113,33 +113,37 @@ class EmailSynchronizer
 
             return;
         }
-        /** @var EmailAddress[] $fromArray */
         $fromArray = (new EmailAddressParser($fromHeader->getRawValue()))->parse();
-        $from = reset($fromArray);
+        $from = $fromArray[0] ?? null;
+        if (! $from) {
+            Log::warning("Cannot synchronize message $number because the 'from' header could not be parsed");
+
+            return;
+        }
 
         $emailId = $parsedDocument->getHeaderValue('message-id');
 
         $inReplyTo = null;
         $inReplyToHeader = $parsedDocument->getHeaderValue('In-Reply-To');
         if ($inReplyToHeader) {
-            $inReplyToHeader = preg_split('/(?<=>)/', $inReplyToHeader);
-            $inReplyToHeader = array_filter(array_map('trim', $inReplyToHeader));
-            if (! empty($inReplyToHeader)) {
-                $inReplyTo = reset($inReplyToHeader);
+            $inReplyToParts = preg_split('/(?<=>)/', $inReplyToHeader) ?: [];
+            $inReplyToParts = array_filter(array_map('trim', $inReplyToParts));
+            if (! empty($inReplyToParts)) {
+                $inReplyTo = reset($inReplyToParts);
             }
         }
 
         $firstReference = null;
         $references = $parsedDocument->getHeaderValue('References');
         if ($references) {
-            $references = preg_split('/(?<=>)/', $references);
-            $references = array_filter(array_map('trim', $references));
-            if (! empty($references)) {
-                $firstReference = reset($references);
+            $referenceParts = preg_split('/(?<=>)/', $references) ?: [];
+            $referenceParts = array_filter(array_map('trim', $referenceParts));
+            if (! empty($referenceParts)) {
+                $firstReference = reset($referenceParts);
                 if (! $inReplyTo) {
                     // In old mails the In-Reply-To header didn't exist; instead it was at the end of the references.
                     // Example: https://externals.io/message/2536#2784
-                    $inReplyTo = end($references);
+                    $inReplyTo = end($referenceParts);
                 }
             }
         }

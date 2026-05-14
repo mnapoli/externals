@@ -54,7 +54,7 @@ class EmailAddressParser
     private function extractEmails(string $emails): string
     {
         $names = $emails;
-        $emails = preg_split('/[\s,\/]+/', $emails);
+        $emails = preg_split('/[\s,\/]+/', $emails) ?: [];
 
         foreach ($emails as $key => $email) {
             $email = $this->trimCharacters($email);
@@ -75,7 +75,7 @@ class EmailAddressParser
 
     private function extractNames(string $names): void
     {
-        $names = preg_split('/(,|  |\n)/', $names);
+        $names = preg_split('/(,|  |\n)/', $names) ?: [];
         $names = array_filter($names);
 
         foreach ($names as $key => $name) {
