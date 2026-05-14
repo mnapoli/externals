@@ -60,6 +60,7 @@ class NntpClient
         }
 
         $parts = explode(' ', trim($response));
+
         // 211 count first last name
         return [
             'count' => (int) ($parts[1] ?? 0),

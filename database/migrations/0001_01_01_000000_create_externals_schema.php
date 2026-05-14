@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Schema;
  * Column names use camelCase to preserve compatibility with the existing
  * production data — please do not rename them.
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('emails', function (Blueprint $table) {
