@@ -24,11 +24,17 @@ class UserEmailRead extends Model
         'lastReadDate' => 'immutable_datetime',
     ];
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'userId', 'id');
     }
 
+    /**
+     * @return BelongsTo<Email, $this>
+     */
     public function email(): BelongsTo
     {
         return $this->belongsTo(Email::class, 'emailId', 'id');

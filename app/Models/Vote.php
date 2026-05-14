@@ -30,11 +30,17 @@ class Vote extends Model
         'updatedAt' => 'immutable_datetime',
     ];
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'userId', 'id');
     }
 
+    /**
+     * @return BelongsTo<Email, $this>
+     */
     public function email(): BelongsTo
     {
         return $this->belongsTo(Email::class, 'emailNumber', 'number');

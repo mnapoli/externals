@@ -32,6 +32,9 @@ class Thread extends Model
         'lastUpdate' => 'immutable_datetime',
     ];
 
+    /**
+     * @return BelongsTo<Email, $this>
+     */
     public function email(): BelongsTo
     {
         return $this->belongsTo(Email::class, 'emailId', 'id');

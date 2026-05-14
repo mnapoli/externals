@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\GetOrCreateUser;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class LoginController extends Controller
 {
-    public function __invoke(Request $request): View|RedirectResponse
+    public function __invoke(Request $request): Response
     {
         if ($request->user()) {
             return redirect('/');

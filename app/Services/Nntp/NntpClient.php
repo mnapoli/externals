@@ -51,6 +51,8 @@ class NntpClient
 
     /**
      * Select a newsgroup. Returns ['count' => int, 'first' => int, 'last' => int, 'name' => string].
+     *
+     * @return array{count: int, first: int, last: int, name: string}
      */
     public function group(string $name): array
     {

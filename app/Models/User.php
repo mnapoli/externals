@@ -56,11 +56,17 @@ class User extends Model implements Authenticatable
         return '';
     }
 
+    /**
+     * @return HasMany<Vote, $this>
+     */
     public function votes(): HasMany
     {
         return $this->hasMany(Vote::class, 'userId', 'id');
     }
 
+    /**
+     * @return HasMany<UserEmailRead, $this>
+     */
     public function reads(): HasMany
     {
         return $this->hasMany(UserEmailRead::class, 'userId', 'id');

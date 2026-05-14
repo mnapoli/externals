@@ -46,16 +46,25 @@ class Email extends Model
         'isThreadRoot' => 'boolean',
     ];
 
+    /**
+     * @return BelongsTo<Thread, $this>
+     */
     public function thread(): BelongsTo
     {
         return $this->belongsTo(Thread::class, 'threadId', 'emailId');
     }
 
+    /**
+     * @return HasMany<Vote, $this>
+     */
     public function votes(): HasMany
     {
         return $this->hasMany(Vote::class, 'emailNumber', 'number');
     }
 
+    /**
+     * @return Attribute<EmailAddress, never>
+     */
     public function from(): Attribute
     {
         return Attribute::get(
@@ -63,6 +72,9 @@ class Email extends Model
         );
     }
 
+    /**
+     * @return Attribute<bool, never>
+     */
     public function isRead(): Attribute
     {
         return Attribute::get(

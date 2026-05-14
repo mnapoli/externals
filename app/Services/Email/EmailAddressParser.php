@@ -11,7 +11,9 @@ use App\Support\Email\EmailAddress;
  */
 class EmailAddressParser
 {
+    /** @var array<int, ?string> */
     private array $emails = [];
+    /** @var array<int, string> */
     private array $names = [];
 
     public function __construct(

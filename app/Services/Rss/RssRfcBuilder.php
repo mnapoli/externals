@@ -17,7 +17,7 @@ class RssRfcBuilder
     ) {}
 
     /**
-     * @param  array[]  $threads
+     * @param  array<int, array<string, mixed>>  $threads
      */
     public function build(array $threads): string
     {
