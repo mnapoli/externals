@@ -8,16 +8,15 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
+            -   uses: actions/checkout@v6
+
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.1'
+                    php-version: '8.5'
+                    coverage: none
 
-            -   name: Git checkout
-                uses: actions/checkout@v2
+            -   uses: ramsey/composer-install@v4
 
-            -   name: Install Composer dependencies
-                run: composer install --no-interaction --no-progress --no-suggest --ignore-platform-reqs
-
-            -   name: Run PHPUnit
+            -   name: PHPUnit
                 run: vendor/bin/phpunit --colors=always

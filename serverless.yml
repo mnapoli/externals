@@ -1,5 +1,4 @@
 service: externals
-frameworkVersion: '3'
 bref:
     team: bref
 
@@ -7,27 +6,32 @@ provider:
     name: aws
     region: eu-west-1
     stage: prod
-    runtime: provided.al2
-    layers:
-        - ${bref:layer.php-81}
     timeout: 10
     environment:
-        APP_ENV: prod
-        EXTERNALS_APP_VERSION: ${env:GITHUB_RUN_ID}
-        DATABASE_NAME: 'externals-prod'
-        DATABASE_HOST: ${ssm:/externals/db/host}
-        DATABASE_PORT: 3306
-        DATABASE_USER: ${ssm:/externals/db/user}
-        DATABASE_PASSWORD: ${ssm:/externals/db/password}
+        APP_ENV: production
+        APP_DEBUG: 'false'
+        APP_KEY: ${ssm:/externals/app_key}
+        APP_VERSION: ${env:GITHUB_RUN_ID}
+        APP_URL: 'https://externals.io'
+        LOG_CHANNEL: stderr
+        DB_CONNECTION: mysql
+        DB_DATABASE: 'externals-prod'
+        DB_HOST: ${ssm:/externals/db/host}
+        DB_PORT: 3306
+        DB_USERNAME: ${ssm:/externals/db/user}
+        DB_PASSWORD: ${ssm:/externals/db/password}
+        SESSION_DRIVER: cookie
+        SESSION_ENCRYPT: 'true'
+        CACHE_STORE: array
+        QUEUE_CONNECTION: sync
         ALGOLIA_APP_ID: KSTITII7EC
         ALGOLIA_API_KEY: ${ssm:/externals/algolia_api_key}
         ALGOLIA_INDEX_PREFIX: ${param:algoliaIndexPrefix}
-        GITHUB_OAUTH_CLIENT_ID: ${param:githubOAuthClientId}
-        GITHUB_OAUTH_CLIENT_SECRET: ${ssm:/externals/github_oauth_client_secret}
-        GITHUB_OAUTH_REDIRECT_URL: 'https://externals.io/login'
-        SENTRY_URL: ${ssm:/externals/sentry_url}
-        SESSION_SECRET_KEY: ${ssm:/externals/session_secret_key}
-        # See https://bref.sh/docs/environment/performances.html#bref-for-event-driven-functions
+        GITHUB_CLIENT_ID: ${param:githubOAuthClientId}
+        GITHUB_CLIENT_SECRET: ${ssm:/externals/github_oauth_client_secret}
+        GITHUB_REDIRECT_URI: 'https://externals.io/login'
+        SENTRY_LARAVEL_DSN: ${ssm:/externals/sentry_url}
+        # https://bref.sh/docs/environment/performances.html#bref-for-event-driven-functions
         BREF_LOOP_MAX: '100'
 
 params:
@@ -41,99 +45,54 @@ params:
         githubOAuthClientId: 422ae3a54f6ebd43895b
 
 package:
-    exclude:
-        - '.github/**'
-        - 'assets/**'
-        - 'backups/**'
-        - 'node_modules/**'
-        - 'tests/**'
-        - 'var/log/**'
-        - 'web/**'
+    patterns:
+        - '!.github/**'
+        - '!node_modules/**'
+        - '!tests/**'
+        - '!storage/logs/**'
+        - '!storage/framework/cache/**'
+        - '!storage/framework/sessions/**'
+        - '!storage/framework/views/**'
+        - '!resources/css/**'
+        - '!resources/js/**'
 
 functions:
-    home:
-        handler: Externals\Application\Controller\HomeController
-        events:
-            - httpApi: 'GET /'
-    thread:
-        handler: Externals\Application\Controller\ThreadController
-        events:
-            - httpApi: 'GET /message/{number}'
-    top:
-        handler: Externals\Application\Controller\TopController
-        events:
-            - httpApi: 'GET /top'
-    news:
-        handler: Externals\Application\Controller\NewsController
-        events:
-            - httpApi: 'GET /news'
-    login:
-        handler: Externals\Application\Controller\LoginController
-        events:
-            - httpApi: 'GET /login'
-    logout:
-        handler: Externals\Application\Controller\LogoutController
-        events:
-            - httpApi: 'GET /logout'
-    email-source:
-        handler: Externals\Application\Controller\EmailSourceController
-        events:
-            - httpApi: 'GET /email/{number}/source'
-    stats:
-        handler: Externals\Application\Controller\StatsController
-        events:
-            - httpApi: 'GET /stats'
-    vote:
-        handler: Externals\Application\Controller\VoteController
-        events:
-            - httpApi: 'POST /votes/{number}'
-    rss:
-        handler: Externals\Application\Controller\RssController
-        events:
-            - httpApi: 'GET /rss'
-    rss-rfc:
-        handler: Externals\Application\Controller\RssRfcController
-        events:
-            - httpApi: 'GET /rss-rfc'
-    # Keep backward compatibility with old URLs (old threads)
-    legacy-thread-redirect:
-        handler: Externals\Application\Controller\LegacyThreadRedirectController
-        events:
-            - httpApi: 'GET /thread/{id}'
-    # Catch-all to render a "Not found" page
-    not-found:
-        handler: Bref\Micro\Http\ThrowNotFound
+    web:
+        handler: public/index.php
+        runtime: php-85-fpm
         events:
             - httpApi: '*'
 
-    # This script fetches emails from the mailing list and updates our database
-    updater:
-        handler: Externals\Application\Handler\SynchronizeHandler
-        description: 'externals.io updater'
+    # Synchronize new emails from PHP's NNTP server every 15 minutes.
+    sync:
+        handler: artisan
+        runtime: php-85-console
         timeout: 900
         environment:
             BREF_LOOP_MAX: '1'
         events:
             -   schedule:
                     rate: rate(15 minutes)
-                    # Only enabled in production
+                    input:
+                        cli: 'externals:sync'
                     enabled: ${param:isProd}
 
-    console:
-        handler: console
+    artisan:
+        handler: artisan
+        runtime: php-85-console
         timeout: 900
-        layers:
-            - ${bref:layer.php-81}
-            - ${bref:layer.console}
 
 plugins:
     - ./vendor/bref/bref
-    - serverless-lift
+    - ./vendor/bref/laravel-bridge
 
 constructs:
     website:
         type: server-side-website
         assets:
-            '/assets/*': web/assets
+            '/assets/*': public/assets
+            '/build/*': public/build
+            '/favicon.ico': public/favicon.ico
+            '/robots.txt': public/robots.txt
         domain: externals.io
         certificate: arn:aws:acm:us-east-1:416566615250:certificate/0f28e63d-d3a9-4578-9f8b-14347bfe8326
