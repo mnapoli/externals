@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Feature\Actions;
 
 use App\Actions\GetOrCreateUser;
 use App\Models\User;
