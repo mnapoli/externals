@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Actions\Voting;
+namespace App\Actions;
 
-use App\Actions\Email\RefreshThread;
 use App\Models\Vote;
 use Illuminate\Support\Carbon;
 

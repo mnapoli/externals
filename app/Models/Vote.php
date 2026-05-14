@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -35,5 +36,12 @@ class Vote extends Model
     public function email(): BelongsTo
     {
         return $this->belongsTo(Email::class, 'emailNumber', 'number');
+    }
+
+    protected function setKeysForSaveQuery($query): Builder
+    {
+        return $query
+            ->where('userId', $this->getAttribute('userId'))
+            ->where('emailNumber', $this->getAttribute('emailNumber'));
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -34,5 +35,12 @@ class UserEmailRead extends Model
     public function email(): BelongsTo
     {
         return $this->belongsTo(Email::class, 'emailId', 'id');
+    }
+
+    protected function setKeysForSaveQuery($query): Builder
+    {
+        return $query
+            ->where('userId', $this->getAttribute('userId'))
+            ->where('emailId', $this->getAttribute('emailId'));
     }
 }

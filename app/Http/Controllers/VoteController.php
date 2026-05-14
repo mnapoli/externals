@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\Voting\CastVote;
+use App\Actions\CastVote;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

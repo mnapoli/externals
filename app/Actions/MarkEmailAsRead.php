@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Actions\Email;
+namespace App\Actions;
 
 use App\Models\Email;
 use App\Models\User;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\Email\MarkEmailAsRead;
+use App\Actions\MarkEmailAsRead;
 use App\Exceptions\NotFoundException;
 use App\Models\Email;
 use App\Services\Email\ThreadQuery;

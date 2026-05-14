@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Actions\Email;
+namespace App\Actions;
 
 use Illuminate\Support\Facades\DB;
 
-class RefreshAllThreads
+class RefreshThread
 {
-    public function handle(): void
+    public function handle(int $threadNumber): void
     {
         DB::statement(<<<'SQL'
             REPLACE INTO threads (emailId, emailNumber, lastUpdate, emailCount, votes)
@@ -17,7 +17,8 @@ class RefreshAllThreads
               FROM emails
               LEFT JOIN emails threadEmails ON emails.id = threadEmails.threadId
               WHERE emails.isThreadRoot = 1
+                AND emails.number = ?
               GROUP BY emails.id
-            SQL);
+            SQL, [$threadNumber]);
     }
 }

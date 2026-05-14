@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Email;
 
-use App\Actions\Email\RefreshAllThreads;
+use App\Actions\RefreshAllThreads;
 use App\Models\Email;
 use App\Services\Nntp\ArticleNotFoundException;
 use App\Services\Nntp\NntpClient;

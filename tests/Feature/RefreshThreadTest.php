@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Actions\Email\RefreshThread;
+use App\Actions\RefreshThread;
 use App\Models\Email;
 use App\Models\Thread;
 use App\Models\User;
