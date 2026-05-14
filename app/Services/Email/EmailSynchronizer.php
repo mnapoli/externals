@@ -9,7 +9,6 @@ use App\Models\Email;
 use App\Services\Nntp\ArticleNotFoundException;
 use App\Services\Nntp\NntpClient;
 use App\Services\Search\SearchIndex;
-use App\Support\Email\EmailAddress;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
