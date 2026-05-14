@@ -65,7 +65,7 @@ class LoginControllerTest extends TestCase
 
     public function test_callback_with_invalid_state_renders_error_view(): void
     {
-        Socialite::fake('github', fn () => throw new InvalidStateException);
+        Socialite::fake('github', fn() => throw new InvalidStateException);
 
         $response = $this->get('/login?code=abc');
 
@@ -77,7 +77,7 @@ class LoginControllerTest extends TestCase
 
     public function test_callback_with_socialite_failure_renders_error_view(): void
     {
-        Socialite::fake('github', fn () => throw new RuntimeException('boom'));
+        Socialite::fake('github', fn() => throw new RuntimeException('boom'));
 
         $response = $this->get('/login?code=abc');
 
