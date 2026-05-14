@@ -16,9 +16,9 @@ class RefreshAllThreadsTest extends TestCase
 
     public function test_creates_a_thread_row_for_every_root(): void
     {
-        $this->createEmail('<root-a>', 1, threadId: '<root-a>', isThreadRoot: true, fetchDate: '2026-01-01 10:00:00');
-        $this->createEmail('<reply-a>', 2, threadId: '<root-a>', isThreadRoot: false, fetchDate: '2026-01-02 10:00:00');
-        $this->createEmail('<root-b>', 3, threadId: '<root-b>', isThreadRoot: true, fetchDate: '2026-01-03 10:00:00');
+        $rootA = Email::factory()->create(['id' => '<root-a>']);
+        Email::factory()->replyTo($rootA)->create();
+        Email::factory()->create(['id' => '<root-b>']);
 
         app(RefreshAllThreads::class)->handle();
 
@@ -32,8 +32,8 @@ class RefreshAllThreadsTest extends TestCase
 
     public function test_ignores_non_root_emails(): void
     {
-        $this->createEmail('<root>', 1, threadId: '<root>', isThreadRoot: true, fetchDate: '2026-01-01 10:00:00');
-        $this->createEmail('<reply>', 2, threadId: '<root>', isThreadRoot: false, fetchDate: '2026-01-02 10:00:00');
+        $root = Email::factory()->create();
+        Email::factory()->replyTo($root)->create();
 
         app(RefreshAllThreads::class)->handle();
 
@@ -42,8 +42,8 @@ class RefreshAllThreadsTest extends TestCase
 
     public function test_replaces_existing_thread_rows(): void
     {
-        $this->createEmail('<root>', 1, threadId: '<root>', isThreadRoot: true, fetchDate: '2026-01-01 10:00:00');
-        Thread::create([
+        Email::factory()->create(['id' => '<root>', 'number' => 1, 'fetchDate' => '2026-01-01 10:00:00']);
+        Thread::factory()->create([
             'emailId' => '<root>',
             'emailNumber' => 1,
             'lastUpdate' => '2020-01-01 00:00:00',
@@ -56,28 +56,5 @@ class RefreshAllThreadsTest extends TestCase
         $thread = Thread::find('<root>');
         $this->assertSame(1, $thread->emailCount);
         $this->assertSame(0, $thread->votes);
-    }
-
-    private function createEmail(
-        string $id,
-        int $number,
-        string $threadId,
-        bool $isThreadRoot,
-        string $fetchDate,
-    ): void {
-        Email::create([
-            'id' => $id,
-            'number' => $number,
-            'subject' => "Subject $number",
-            'content' => '',
-            'source' => '',
-            'threadId' => $threadId,
-            'isThreadRoot' => $isThreadRoot,
-            'date' => $fetchDate,
-            'fetchDate' => $fetchDate,
-            'fromEmail' => 'a@b.c',
-            'fromName' => 'Author',
-            'inReplyTo' => null,
-        ]);
     }
 }

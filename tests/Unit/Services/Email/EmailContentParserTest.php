@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Tests\Unit\Services\Email;
 
 use App\Services\Email\EmailContentParser;
 use Tests\TestCase;
@@ -19,14 +19,14 @@ class EmailContentParserTest extends TestCase
 
     public function test_should_parse_markdown(): void
     {
-        $content = <<<MARKDOWN
+        $content = <<<'MARKDOWN'
         This is a paragraph.
 
             echo 'code';
 
         > Take that!
         MARKDOWN;
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <p>This is a paragraph.</p>
         <pre><code>echo 'code';
         </code></pre>
@@ -48,14 +48,14 @@ class EmailContentParserTest extends TestCase
 
     public function test_should_keep_line_breaks(): void
     {
-        $content = <<<MARKDOWN
+        $content = <<<'MARKDOWN'
         This is a paragraph
         that spans on 2 lines:
 
         echo 'code';
         echo 'another code;
         MARKDOWN;
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <p>This is a paragraph <br>
         that spans on 2 lines:</p>
         <p>echo 'code'; <br>
@@ -73,7 +73,7 @@ class EmailContentParserTest extends TestCase
 
         We use 2/3 vote for "a feature affecting the language itself".
         EMAIL;
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <blockquote>
         <p>and the test: &lt;hello&gt;</p>
         </blockquote>
@@ -96,10 +96,10 @@ class EmailContentParserTest extends TestCase
         > <?
         > ini_set();
         EMAIL;
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <p>one</p>
         <p>&lt;?php <br>
-        echo \$foo;</p>
+        echo $foo;</p>
         <p>two &lt;? hehe</p>
         <blockquote>
         <p>&lt;? <br>
@@ -111,7 +111,7 @@ class EmailContentParserTest extends TestCase
 
     public function test_should_strip_mailing_list_signature(): void
     {
-        $content = <<<MARKDOWN
+        $content = <<<'MARKDOWN'
         Hello
 
         ---
@@ -123,7 +123,7 @@ class EmailContentParserTest extends TestCase
 
     public function test_should_strip_unindented_trailing_quotation_1(): void
     {
-        $content = <<<MARKDOWN
+        $content = <<<'MARKDOWN'
         Hello Georges
 
         ---
@@ -139,7 +139,7 @@ class EmailContentParserTest extends TestCase
 
     public function test_should_strip_unindented_trailing_quotation_2(): void
     {
-        $content = <<<MARKDOWN
+        $content = <<<'MARKDOWN'
         Hello Georges
 
         ________________________________
@@ -154,7 +154,7 @@ class EmailContentParserTest extends TestCase
 
     public function test_should_strip_trailing_line_breaks(): void
     {
-        $content = <<<MARKDOWN
+        $content = <<<'MARKDOWN'
         Hello
 
 
@@ -185,13 +185,13 @@ class EmailContentParserTest extends TestCase
 
     public function test_should_handle_leading_blockquote(): void
     {
-        $content = <<<MARKDOWN
+        $content = <<<'MARKDOWN'
         > But you still have to remember to use a
         > proper escaping function.
 
         I see no problem.
         MARKDOWN;
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <blockquote>
         <p>But you still have to remember to use a <br>
         proper escaping function.</p>
@@ -221,7 +221,7 @@ class EmailContentParserTest extends TestCase
 
         Trick: don't forget that On Wed, Stanislav wrote:
         MARKDOWN;
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <blockquote>
         <p>But you still have to remember to use</p>
         </blockquote>

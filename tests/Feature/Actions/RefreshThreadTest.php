@@ -9,7 +9,6 @@ use App\Models\Email;
 use App\Models\Thread;
 use App\Models\User;
 use App\Models\Vote;
-use DateTimeImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -19,12 +18,12 @@ class RefreshThreadTest extends TestCase
 
     public function test_creates_thread_row_with_email_count_and_votes(): void
     {
-        $this->createEmail('<root>', 1, threadId: '<root>', isThreadRoot: true, fetchDate: '2026-01-01 10:00:00');
-        $this->createEmail('<reply-1>', 2, threadId: '<root>', isThreadRoot: false, fetchDate: '2026-01-02 11:00:00');
-        $this->createEmail('<reply-2>', 3, threadId: '<root>', isThreadRoot: false, fetchDate: '2026-01-03 12:00:00');
+        $root = Email::factory()->create(['id' => '<root>', 'number' => 1, 'fetchDate' => '2026-01-01 10:00:00']);
+        Email::factory()->replyTo($root)->create(['fetchDate' => '2026-01-02 11:00:00']);
+        Email::factory()->replyTo($root)->create(['fetchDate' => '2026-01-03 12:00:00']);
 
-        $user = User::create(['githubId' => 'gh-1', 'name' => 'alice']);
-        Vote::create(['userId' => $user->id, 'emailNumber' => 1, 'value' => 1, 'updatedAt' => new DateTimeImmutable]);
+        $user = User::factory()->create();
+        Vote::factory()->create(['userId' => $user->id, 'emailNumber' => 1, 'value' => 1]);
 
         app(RefreshThread::class)->handle(1);
 
@@ -38,7 +37,7 @@ class RefreshThreadTest extends TestCase
 
     public function test_root_with_no_replies_has_count_one_and_zero_votes(): void
     {
-        $this->createEmail('<solo>', 10, threadId: '<solo>', isThreadRoot: true, fetchDate: '2026-02-01 09:00:00');
+        Email::factory()->create(['id' => '<solo>', 'number' => 10]);
 
         app(RefreshThread::class)->handle(10);
 
@@ -50,8 +49,8 @@ class RefreshThreadTest extends TestCase
 
     public function test_replaces_existing_thread_row(): void
     {
-        $this->createEmail('<root>', 1, threadId: '<root>', isThreadRoot: true, fetchDate: '2026-01-01 10:00:00');
-        Thread::create([
+        Email::factory()->create(['id' => '<root>', 'number' => 1, 'fetchDate' => '2026-01-01 10:00:00']);
+        Thread::factory()->create([
             'emailId' => '<root>',
             'emailNumber' => 1,
             'lastUpdate' => '2020-01-01 00:00:00',
@@ -69,8 +68,8 @@ class RefreshThreadTest extends TestCase
 
     public function test_only_refreshes_the_target_thread(): void
     {
-        $this->createEmail('<root-a>', 1, threadId: '<root-a>', isThreadRoot: true, fetchDate: '2026-01-01 10:00:00');
-        $this->createEmail('<root-b>', 2, threadId: '<root-b>', isThreadRoot: true, fetchDate: '2026-01-02 10:00:00');
+        Email::factory()->create(['id' => '<root-a>', 'number' => 1]);
+        Email::factory()->create(['id' => '<root-b>', 'number' => 2]);
 
         app(RefreshThread::class)->handle(1);
 
@@ -80,34 +79,11 @@ class RefreshThreadTest extends TestCase
 
     public function test_does_nothing_when_email_is_not_a_thread_root(): void
     {
-        $this->createEmail('<root>', 1, threadId: '<root>', isThreadRoot: true, fetchDate: '2026-01-01 10:00:00');
-        $this->createEmail('<reply>', 2, threadId: '<root>', isThreadRoot: false, fetchDate: '2026-01-02 10:00:00');
+        $root = Email::factory()->create(['id' => '<root>', 'number' => 1]);
+        Email::factory()->replyTo($root)->create(['number' => 2]);
 
         app(RefreshThread::class)->handle(2);
 
         $this->assertNull(Thread::find('<root>'));
-    }
-
-    private function createEmail(
-        string $id,
-        int $number,
-        string $threadId,
-        bool $isThreadRoot,
-        string $fetchDate,
-    ): void {
-        Email::create([
-            'id' => $id,
-            'number' => $number,
-            'subject' => "Subject $number",
-            'content' => '',
-            'source' => '',
-            'threadId' => $threadId,
-            'isThreadRoot' => $isThreadRoot,
-            'date' => $fetchDate,
-            'fetchDate' => $fetchDate,
-            'fromEmail' => 'a@b.c',
-            'fromName' => 'Author',
-            'inReplyTo' => null,
-        ]);
     }
 }

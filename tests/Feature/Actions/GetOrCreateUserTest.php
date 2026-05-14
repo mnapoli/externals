@@ -24,7 +24,7 @@ class GetOrCreateUserTest extends TestCase
 
     public function test_should_return_existing_user(): void
     {
-        $existing = User::create(['githubId' => 'abc', 'name' => 'joe']);
+        $existing = User::factory()->create(['githubId' => 'abc', 'name' => 'joe']);
 
         $user = app(GetOrCreateUser::class)->handle('abc', 'joe');
 
@@ -34,7 +34,7 @@ class GetOrCreateUserTest extends TestCase
 
     public function test_should_update_user_name_when_changed(): void
     {
-        User::create(['githubId' => 'abc', 'name' => 'joe']);
+        User::factory()->create(['githubId' => 'abc', 'name' => 'joe']);
 
         $user = app(GetOrCreateUser::class)->handle('abc', 'jane');
 
