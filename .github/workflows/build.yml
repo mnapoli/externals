@@ -23,6 +23,11 @@ jobs:
         steps:
             -   uses: actions/checkout@v6
 
+            -   uses: actions/setup-node@v4
+                with:
+                    node-version: '22'
+                    cache: 'npm'
+
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
@@ -31,6 +36,10 @@ jobs:
                     coverage: none
 
             -   uses: ramsey/composer-install@v4
+
+            -   run: npm ci
+
+            -   run: npm run build
 
             -   name: PHPUnit
                 env:
