@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,18 +12,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $userId
  * @property string $emailId
- * @property \DateTimeImmutable $lastReadDate
+ * @property DateTimeImmutable $lastReadDate
  */
 class UserEmailRead extends Model
 {
-    protected $table = 'user_emails_read';
-
     public $incrementing = false;
-
     public $timestamps = false;
-
+    protected $table = 'user_emails_read';
     protected $guarded = [];
-
     protected $casts = [
         'lastReadDate' => 'immutable_datetime',
     ];

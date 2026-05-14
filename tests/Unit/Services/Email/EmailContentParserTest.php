@@ -34,7 +34,7 @@ class EmailContentParserTest extends TestCase
         <p>Take that!</p>
         </blockquote>
         HTML;
-        $this->assertEquals($expected, trim($this->parser->parse($content)));
+        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
     }
 
     public function test_should_escape_html(): void
@@ -42,7 +42,7 @@ class EmailContentParserTest extends TestCase
         $content = 'Test of <strong>XSS</strong> <script>alert("xss")</script> injection';
         $this->assertEquals(
             '<p>Test of &lt;strong&gt;XSS&lt;/strong&gt; &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; injection</p>',
-            trim($this->parser->parse($content))
+            mb_trim($this->parser->parse($content)),
         );
     }
 
@@ -61,7 +61,7 @@ class EmailContentParserTest extends TestCase
         <p>echo 'code'; <br>
         echo 'another code;</p>
         HTML;
-        $this->assertEquals($expected, trim($this->parser->parse($content)));
+        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
     }
 
     public function test_should_encode_html_entities(): void
@@ -80,7 +80,7 @@ class EmailContentParserTest extends TestCase
         <p>&lt;foo&gt;&lt;/foo&gt; test</p>
         <p>We use 2/3 vote for &quot;a feature affecting the language itself&quot;.</p>
         HTML;
-        $this->assertEquals($expected, trim($this->parser->parse($content)));
+        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
     }
 
     public function test_should_support_php_opening_tag(): void
@@ -106,7 +106,7 @@ class EmailContentParserTest extends TestCase
         <code>ini_set()</code>;</p>
         </blockquote>
         HTML;
-        $this->assertEquals($expected, trim($this->parser->parse($content)));
+        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
     }
 
     public function test_should_strip_mailing_list_signature(): void
@@ -118,7 +118,7 @@ class EmailContentParserTest extends TestCase
         PHP Internals - PHP Runtime Development Mailing List
         To unsubscribe, visit: http://www.php.net/unsub.php
         MARKDOWN;
-        $this->assertEquals('<p>Hello</p>', trim($this->parser->parse($content)));
+        $this->assertEquals('<p>Hello</p>', mb_trim($this->parser->parse($content)));
     }
 
     public function test_should_strip_unindented_trailing_quotation_1(): void
@@ -134,7 +134,7 @@ class EmailContentParserTest extends TestCase
         Cc: PHP internals
         Subject: Re: [PHP-DEV] [RFC] Asynchronous Signal Handling
         MARKDOWN;
-        $this->assertEquals('<p>Hello Georges</p>', trim($this->parser->parse($content)));
+        $this->assertEquals('<p>Hello Georges</p>', mb_trim($this->parser->parse($content)));
     }
 
     public function test_should_strip_unindented_trailing_quotation_2(): void
@@ -149,7 +149,7 @@ class EmailContentParserTest extends TestCase
         Cc: PHP internals
         Subject: Re: [PHP-DEV] [RFC] Asynchronous Signal Handling
         MARKDOWN;
-        $this->assertEquals('<p>Hello Georges</p>', trim($this->parser->parse($content)));
+        $this->assertEquals('<p>Hello Georges</p>', mb_trim($this->parser->parse($content)));
     }
 
     public function test_should_strip_trailing_line_breaks(): void
@@ -159,28 +159,28 @@ class EmailContentParserTest extends TestCase
 
 
         MARKDOWN;
-        $this->assertEquals('<p>Hello</p>', trim($this->parser->parse($content)));
+        $this->assertEquals('<p>Hello</p>', mb_trim($this->parser->parse($content)));
     }
 
     public function test_should_linkify_links(): void
     {
         $content = 'Hello http://google.com';
         $expected = '<p>Hello <a href="http://google.com" rel="nofollow" target="_blank">http://google.com</a></p>';
-        $this->assertEquals($expected, trim($this->parser->parse($content)));
+        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
     }
 
     public function test_should_detect_php_functions(): void
     {
         $content = 'Try to call preg_match() without parameters.';
         $expected = '<p>Try to call <code>preg_match()</code> without parameters.</p>';
-        $this->assertEquals($expected, trim($this->parser->parse($content)));
+        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
     }
 
     public function test_should_detect_php_constants(): void
     {
         $content = 'Try to use PHP_INT_MAX and you will see.';
         $expected = '<p>Try to use <code>PHP_INT_MAX</code> and you will see.</p>';
-        $this->assertEquals($expected, trim($this->parser->parse($content)));
+        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
     }
 
     public function test_should_handle_leading_blockquote(): void
@@ -198,7 +198,7 @@ class EmailContentParserTest extends TestCase
         </blockquote>
         <p>I see no problem.</p>
         HTML;
-        $this->assertEquals($expected, trim($this->parser->parse($content)));
+        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
     }
 
     public function test_should_strip_quote_headers(): void
@@ -237,6 +237,6 @@ class EmailContentParserTest extends TestCase
         </blockquote>
         <p>Trick: don't forget that On Wed, Stanislav wrote:</p>
         HTML;
-        $this->assertEquals($expected, trim($this->parser->parse($content)));
+        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
     }
 }

@@ -10,7 +10,6 @@ use Illuminate\Console\Command;
 class RefreshThreadsCommand extends Command
 {
     protected $signature = 'externals:refresh-threads';
-
     protected $description = 'Refresh the threads projection';
 
     public function handle(): int

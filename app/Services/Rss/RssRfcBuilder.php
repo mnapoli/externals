@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Rss;
 
-use DateTime;
+use DateTimeImmutable;
 use DomDocument;
 use DomElement;
 
@@ -12,7 +12,9 @@ class RssRfcBuilder
 {
     private ?DomDocument $dom = null;
 
-    public function __construct(private readonly string $host) {}
+    public function __construct(
+        private readonly string $host,
+    ) {}
 
     /**
      * @param  array[]  $threads
@@ -38,10 +40,10 @@ class RssRfcBuilder
         foreach ($threads as $thread) {
             $item = $this->dom->createElement('item');
             $this->addTextNode('title', $thread['subject'], $item);
-            $this->addTextNode('link', $this->host.'/message/'.$thread['number'], $item);
+            $this->addTextNode('link', $this->host . '/message/' . $thread['number'], $item);
             $this->addTextNode('description', $thread['subject'], $item);
             $this->addTextNode('guid', (string) $thread['number'], $item);
-            $this->addTextNode('pubDate', (new DateTime($thread['date']))->format('r'), $item);
+            $this->addTextNode('pubDate', (new DateTimeImmutable($thread['date']))->format('r'), $item);
             $channel->appendChild($item);
         }
 

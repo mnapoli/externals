@@ -10,7 +10,7 @@ use App\Services\Nntp\ArticleNotFoundException;
 use App\Services\Nntp\NntpClient;
 use App\Services\Search\SearchIndex;
 use App\Support\Email\EmailAddress;
-use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use Illuminate\Database\QueryException;
@@ -23,9 +23,7 @@ use ZBateson\MailMimeParser\MailMimeParser;
 
 class EmailSynchronizer
 {
-    /**
-     * Articles that should never be attempted to be fetched.
-     */
+    /** Articles that should never be attempted to be fetched. */
     public const array BROKEN_MESSAGES = [
         992,
         27418,
@@ -56,7 +54,7 @@ class EmailSynchronizer
             if ($maxNumberOfEmailsToSynchronize !== null) {
                 Log::info(sprintf(
                     '%d emails will be synchronized',
-                    min($numberOfLastEmailToSynchronize - $numberOfLastEmailSynchronized, $maxNumberOfEmailsToSynchronize)
+                    min($numberOfLastEmailToSynchronize - $numberOfLastEmailSynchronized, $maxNumberOfEmailsToSynchronize),
                 ));
             }
 
@@ -172,7 +170,7 @@ class EmailSynchronizer
             'threadId' => $threadId,
             'isThreadRoot' => $threadId === $emailId,
             'date' => $date,
-            'fetchDate' => new DateTime('now', new DateTimeZone('UTC')),
+            'fetchDate' => new DateTimeImmutable('now', new DateTimeZone('UTC')),
             'fromEmail' => $from->email,
             'fromName' => $from->name,
             'inReplyTo' => $inReplyTo,
@@ -203,7 +201,7 @@ class EmailSynchronizer
             $date = $dateHeader->getDateTime();
         }
         try {
-            $date = $date ?: new DateTime($dateHeader->getValue());
+            $date = $date ?: new DateTimeImmutable($dateHeader->getValue());
         } catch (Throwable) {
             return null;
         }

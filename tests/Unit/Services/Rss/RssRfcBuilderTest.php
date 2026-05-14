@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Services\Rss;
 
 use App\Services\Rss\RssRfcBuilder;
-use DateTime;
+use DateTimeImmutable;
 use SimpleXMLElement;
 use Tests\TestCase;
 
@@ -47,7 +47,7 @@ class RssRfcBuilderTest extends TestCase
         $this->assertSame('https://externals.io/message/100', (string) $first->link);
         $this->assertSame('[RFC] My proposal', (string) $first->description);
         $this->assertSame('100', (string) $first->guid);
-        $this->assertSame((new DateTime('2026-02-10 12:34:56'))->format('r'), (string) $first->pubDate);
+        $this->assertSame((new DateTimeImmutable('2026-02-10 12:34:56'))->format('r'), (string) $first->pubDate);
 
         $second = $rss->channel->item[1];
         $this->assertSame('101', (string) $second->guid);

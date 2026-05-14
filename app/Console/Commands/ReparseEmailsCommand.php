@@ -12,7 +12,6 @@ use ZBateson\MailMimeParser\MailMimeParser;
 class ReparseEmailsCommand extends Command
 {
     protected $signature = 'externals:reparse';
-
     protected $description = 'Re-parse the content of every email from its stored source';
 
     public function handle(EmailContentParser $parser): int

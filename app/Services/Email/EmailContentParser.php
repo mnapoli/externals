@@ -23,7 +23,7 @@ class EmailContentParser
         $content = str_replace('<?', '&lt;?', $content);
 
         $content = $this->stripMailingListFooter($content);
-        $content = rtrim($content, " \t\n\r\0\x0B->");
+        $content = mb_rtrim($content, " \t\n\r\0\x0B->");
         $content = $this->stripTrailingUnindentedQuotation($content);
         $content = $this->stripQuoteHeaders($content);
 
@@ -33,7 +33,7 @@ class EmailContentParser
         try {
             $content = (string) $this->markdownParser->convert($content);
         } catch (Throwable $e) {
-            Log::warning('Unable to parse email content as Markdown: '.$e->getMessage(), [
+            Log::warning('Unable to parse email content as Markdown: ' . $e->getMessage(), [
                 'exception' => $e,
                 'text' => $content,
             ]);

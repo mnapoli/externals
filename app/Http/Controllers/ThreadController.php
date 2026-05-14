@@ -14,7 +14,9 @@ use Illuminate\Http\Response;
 
 class ThreadController extends Controller
 {
-    public function __construct(private readonly ThreadQuery $threads) {}
+    public function __construct(
+        private readonly ThreadQuery $threads,
+    ) {}
 
     public function __invoke(Request $request, int $number): Response|RedirectResponse
     {

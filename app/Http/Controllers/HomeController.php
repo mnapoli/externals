@@ -11,7 +11,9 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function __construct(private readonly ThreadQuery $threads) {}
+    public function __construct(
+        private readonly ThreadQuery $threads,
+    ) {}
 
     public function __invoke(Request $request): View
     {

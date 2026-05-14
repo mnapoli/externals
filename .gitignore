@@ -33,3 +33,4 @@ yarn-error.log
 /.serverless-offline/
 /backups/
 /.claude/
+/storage/pint/cache.json

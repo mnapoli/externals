@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Support\Email\EmailAddress;
 use Database\Factories\EmailFactory;
+use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,8 +21,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $source
  * @property ?string $threadId
  * @property bool $isThreadRoot
- * @property \DateTimeImmutable $date
- * @property \DateTimeImmutable $fetchDate
+ * @property DateTimeImmutable $date
+ * @property DateTimeImmutable $fetchDate
  * @property ?string $fromEmail
  * @property ?string $fromName
  * @property ?string $inReplyTo
@@ -33,18 +34,12 @@ class Email extends Model
     /** @use HasFactory<EmailFactory> */
     use HasFactory;
 
-    protected $table = 'emails';
-
-    protected $primaryKey = 'id';
-
-    protected $keyType = 'string';
-
     public $incrementing = false;
-
     public $timestamps = false;
-
+    protected $table = 'emails';
+    protected $primaryKey = 'id';
+    protected $keyType = 'string';
     protected $guarded = [];
-
     protected $casts = [
         'date' => 'immutable_datetime',
         'fetchDate' => 'immutable_datetime',
@@ -64,14 +59,14 @@ class Email extends Model
     public function from(): Attribute
     {
         return Attribute::get(
-            fn () => new EmailAddress($this->fromEmail, $this->fromName),
+            fn() => new EmailAddress($this->fromEmail, $this->fromName),
         );
     }
 
     public function isRead(): Attribute
     {
         return Attribute::get(
-            fn () => (bool) ($this->attributes['wasRead'] ?? false),
+            fn() => (bool) ($this->attributes['wasRead'] ?? false),
         );
     }
 
@@ -82,6 +77,6 @@ class Email extends Model
 
     public function getUrl(): string
     {
-        return '/'.$this->id;
+        return '/' . $this->id;
     }
 }

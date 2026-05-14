@@ -20,10 +20,8 @@ class User extends Model implements Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 
-    protected $table = 'users';
-
     public $timestamps = false;
-
+    protected $table = 'users';
     protected $guarded = [];
 
     public function getAuthIdentifierName(): string

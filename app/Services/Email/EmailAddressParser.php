@@ -12,7 +12,6 @@ use App\Support\Email\EmailAddress;
 class EmailAddressParser
 {
     private array $emails = [];
-
     private array $names = [];
 
     public function __construct(
@@ -68,7 +67,7 @@ class EmailAddressParser
 
     private function trimCharacters(string $string): string
     {
-        return trim($string, ' /"=');
+        return mb_trim($string, ' /"=');
     }
 
     private function extractNames(string $names): void
@@ -79,10 +78,10 @@ class EmailAddressParser
         foreach ($names as $key => $name) {
             $name = $this->trimCharacters($name);
 
-            if (mb_strpos($name, 'Watson Research') ||
-                mb_strlen($name) <= 3 ||
-                str_contains($name, '?') ||
-                str_contains($name, 'http')
+            if (mb_strpos($name, 'Watson Research')
+                || mb_strlen($name) <= 3
+                || str_contains($name, '?')
+                || str_contains($name, 'http')
             ) {
                 continue;
             }

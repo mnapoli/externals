@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(CommonMarkConverter::class, fn () => new CommonMarkConverter([
+        $this->app->singleton(CommonMarkConverter::class, fn() => new CommonMarkConverter([
             'renderer' => [
                 'soft_break' => " <br>\n",
             ],
@@ -37,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
             return new UrlHighlight(null, $highlighter);
         });
 
-        $this->app->singleton(SearchClient::class, fn () => SearchClient::create(
+        $this->app->singleton(SearchClient::class, fn() => SearchClient::create(
             (string) config('services.algolia.app_id'),
             (string) config('services.algolia.api_key'),
         ));
@@ -55,15 +55,15 @@ class AppServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(RssBuilder::class, fn () => new RssBuilder((string) config('externals.rss_host')));
-        $this->app->singleton(RssRfcBuilder::class, fn () => new RssRfcBuilder((string) config('externals.rss_host')));
+        $this->app->singleton(RssBuilder::class, fn() => new RssBuilder((string) config('externals.rss_host')));
+        $this->app->singleton(RssRfcBuilder::class, fn() => new RssRfcBuilder((string) config('externals.rss_host')));
     }
 
     public function boot(): void
     {
         View::share('version', (string) config('externals.version'));
         View::share('assetsBaseUrl', (string) config('externals.assets_base_url'));
-        View::share('algoliaIndex', config('services.algolia.index_prefix').'emails');
+        View::share('algoliaIndex', config('services.algolia.index_prefix') . 'emails');
         View::share('noIndex', (bool) config('externals.no_index'));
         View::share('debug', (bool) config('app.debug'));
     }

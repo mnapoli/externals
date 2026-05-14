@@ -60,7 +60,7 @@ class ThreadQuery
                     ON readStatus.emailId = ? AND readStatus.userId = ?
                  WHERE emails.threadId = ?
                  ORDER BY emails.date ASC',
-                [$threadId, $user->id, $threadId]
+                [$threadId, $user->id, $threadId],
             );
         } else {
             $rows = DB::select(
@@ -68,11 +68,11 @@ class ThreadQuery
                  FROM emails
                  WHERE emails.threadId = ?
                  ORDER BY emails.date ASC',
-                [$threadId]
+                [$threadId],
             );
         }
 
-        $emails = Email::hydrate(array_map(fn ($row) => (array) $row, $rows));
+        $emails = Email::hydrate(array_map(fn($row) => (array) $row, $rows));
 
         /** @var ThreadItem[] $indexedThreadItem */
         $indexedThreadItem = [];
@@ -143,6 +143,6 @@ class ThreadQuery
             $parameters = [];
         }
 
-        return array_map(fn ($row) => (array) $row, DB::select($query, $parameters));
+        return array_map(fn($row) => (array) $row, DB::select($query, $parameters));
     }
 }

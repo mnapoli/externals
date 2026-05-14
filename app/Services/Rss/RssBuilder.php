@@ -12,7 +12,9 @@ class RssBuilder
 {
     private ?DomDocument $dom = null;
 
-    public function __construct(private readonly string $host) {}
+    public function __construct(
+        private readonly string $host,
+    ) {}
 
     /**
      * @param  iterable<Email>  $emails
@@ -38,7 +40,7 @@ class RssBuilder
         foreach ($emails as $email) {
             $item = $this->dom->createElement('item');
             $this->addTextNode('title', $email->subject, $item);
-            $this->addTextNode('link', $this->host.'/message/'.$email->number, $item);
+            $this->addTextNode('link', $this->host . '/message/' . $email->number, $item);
             $this->addTextNode('description', $email->content, $item);
             $this->addTextNode('guid', $email->id, $item);
             $this->addTextNode('pubDate', $email->date->format('r'), $item);

@@ -18,7 +18,7 @@ class AlgoliaSearchIndex implements SearchIndex
     public function indexEmail(Email $email): void
     {
         $this->searchClient->saveObject(
-            $this->indexPrefix.'emails',
+            $this->indexPrefix . 'emails',
             [
                 'objectID' => (string) $email->number,
                 'subject' => $email->subject,
@@ -29,7 +29,7 @@ class AlgoliaSearchIndex implements SearchIndex
                 'fromName' => $email->fromName,
                 'date' => $email->date->format(DateTime::ATOM),
                 'timestamp' => $email->date->getTimestamp(),
-            ]
+            ],
         );
     }
 }

@@ -10,7 +10,6 @@ use Illuminate\Console\Command;
 class SyncEmailsCommand extends Command
 {
     protected $signature = 'externals:sync {max? : Max number of emails to synchronize}';
-
     protected $description = 'Synchronize emails from the PHP internals NNTP server';
 
     public function handle(EmailSynchronizer $synchronizer): int

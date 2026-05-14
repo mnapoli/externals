@@ -15,7 +15,7 @@ use RuntimeException;
 class NntpClient
 {
     /** @var resource|null */
-    private $socket = null;
+    private $socket;
 
     public function __construct(
         private readonly string $host,
@@ -59,7 +59,7 @@ class NntpClient
             throw new RuntimeException("Cannot select group $name: $response");
         }
 
-        $parts = explode(' ', trim($response));
+        $parts = explode(' ', mb_trim($response));
 
         // 211 count first last name
         return [
@@ -85,12 +85,12 @@ class NntpClient
         $lines = [];
         while (true) {
             $line = $this->readLine();
-            if ($line === ".\r\n" || $line === ".\n" || rtrim($line, "\r\n") === '.') {
+            if ($line === ".\r\n" || $line === ".\n" || mb_rtrim($line, "\r\n") === '.') {
                 break;
             }
             // RFC 3977 §3.1.1: lines starting with a dot are dot-stuffed
             if (str_starts_with($line, '..')) {
-                $line = substr($line, 1);
+                $line = mb_substr($line, 1);
             }
             $lines[] = $line;
         }
@@ -103,7 +103,7 @@ class NntpClient
         if ($this->socket === null) {
             throw new RuntimeException('NNTP client is not connected');
         }
-        if (fwrite($this->socket, $command."\r\n") === false) {
+        if (fwrite($this->socket, $command . "\r\n") === false) {
             throw new RuntimeException("Failed to send NNTP command: $command");
         }
 

@@ -15,14 +15,14 @@ class EmailReplyUrl
     {
         $subject = $email->subject;
         if (! preg_match('/^Re:/i', $subject)) {
-            $subject = 'Re: '.$subject;
+            $subject = 'Re: ' . $subject;
         }
 
         $parsedEmail = (new MailMimeParser)->parse($email->source, false);
 
         $references = $parsedEmail->getHeaderValue('References');
         $messageId = $email->id;
-        $newReferences = $references ? trim($references).' '.$messageId : $messageId;
+        $newReferences = $references ? mb_trim($references) . ' ' . $messageId : $messageId;
 
         $fromName = $email->from->getNameOrEmail();
         $date = $email->date->format('D, d M Y H:i:s O');
@@ -31,8 +31,8 @@ class EmailReplyUrl
         $quotedContent = '';
         if ($originalContent) {
             $quotedContent = implode("\n", array_map(
-                fn ($line) => '> '.$line,
-                explode("\n", trim($originalContent))
+                fn($line) => '> ' . $line,
+                explode("\n", mb_trim($originalContent)),
             ));
         }
 
@@ -45,6 +45,6 @@ class EmailReplyUrl
             'References' => $newReferences,
         ];
 
-        return 'mailto:'.self::MAILING_LIST_ADDRESS.'?'.http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+        return 'mailto:' . self::MAILING_LIST_ADDRESS . '?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
     }
 }

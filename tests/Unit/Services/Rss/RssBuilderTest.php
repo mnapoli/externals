@@ -6,7 +6,7 @@ namespace Tests\Unit\Services\Rss;
 
 use App\Models\Email;
 use App\Services\Rss\RssBuilder;
-use DateTime;
+use DateTimeImmutable;
 use SimpleXMLElement;
 use Tests\TestCase;
 
@@ -31,7 +31,7 @@ class RssBuilderTest extends TestCase
             'number' => 42,
             'subject' => 'Hello world',
             'content' => '<p>Body</p>',
-            'date' => new DateTime('2026-01-15 10:00:00'),
+            'date' => new DateTimeImmutable('2026-01-15 10:00:00'),
         ]);
 
         $xml = (new RssBuilder('https://externals.io'))->build([$email]);
@@ -43,7 +43,7 @@ class RssBuilderTest extends TestCase
         $this->assertSame('https://externals.io/message/42', (string) $item->link);
         $this->assertSame('<p>Body</p>', (string) $item->description);
         $this->assertSame('<msg-1>', (string) $item->guid);
-        $this->assertSame((new DateTime('2026-01-15 10:00:00'))->format('r'), (string) $item->pubDate);
+        $this->assertSame((new DateTimeImmutable('2026-01-15 10:00:00'))->format('r'), (string) $item->pubDate);
     }
 
     public function test_should_escape_special_characters_in_subject(): void
@@ -53,7 +53,7 @@ class RssBuilderTest extends TestCase
             'number' => 1,
             'subject' => 'Subject with <tags> & "quotes"',
             'content' => '',
-            'date' => new DateTime('2026-01-01 00:00:00'),
+            'date' => new DateTimeImmutable('2026-01-01 00:00:00'),
         ]);
 
         $xml = (new RssBuilder('https://externals.io'))->build([$email]);

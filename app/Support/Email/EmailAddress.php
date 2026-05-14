@@ -16,11 +16,6 @@ class EmailAddress
         public readonly ?string $name = null,
     ) {}
 
-    public function getNameOrEmail(): string
-    {
-        return $this->name ?: ($this->email ?? '');
-    }
-
     public function __toString(): string
     {
         if ($this->name === null) {
@@ -28,5 +23,10 @@ class EmailAddress
         }
 
         return sprintf('"%s" <%s>', $this->name, $this->email);
+    }
+
+    public function getNameOrEmail(): string
+    {
+        return $this->name ?: ($this->email ?? '');
     }
 }

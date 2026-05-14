@@ -35,4 +35,4 @@ Route::get('/rss-rfc', RssRfcController::class);
 Route::get('/thread/{id}', LegacyThreadRedirectController::class)->whereNumber('id');
 
 // Catch-all "not found" page
-Route::fallback(fn () => response()->view('errors.404', [], 404));
+Route::fallback(fn() => response()->view('errors.404', [], 404));
