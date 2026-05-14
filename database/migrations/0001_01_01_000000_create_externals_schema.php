@@ -39,7 +39,7 @@ return new class extends Migration
             $table->unsignedInteger('emailCount');
             $table->integer('votes')->default(0);
 
-            $table->foreign('emailId', 'foreign_emailId')
+            $table->foreign('emailId', 'threads_foreign_emailId')
                 ->references('id')->on('emails')
                 ->cascadeOnDelete();
         });
@@ -62,10 +62,10 @@ return new class extends Migration
             $table->dateTime('lastReadDate');
 
             $table->primary(['userId', 'emailId']);
-            $table->foreign('userId', 'foreign_userId')
+            $table->foreign('userId', 'user_emails_read_foreign_userId')
                 ->references('id')->on('users')
                 ->cascadeOnDelete();
-            $table->foreign('emailId', 'foreign_emailId')
+            $table->foreign('emailId', 'user_emails_read_foreign_emailId')
                 ->references('id')->on('emails')
                 ->cascadeOnDelete();
         });
@@ -77,10 +77,10 @@ return new class extends Migration
             $table->dateTime('updatedAt');
 
             $table->primary(['userId', 'emailNumber']);
-            $table->foreign('userId', 'foreign_userId')
+            $table->foreign('userId', 'votes_foreign_userId')
                 ->references('id')->on('users')
                 ->cascadeOnDelete();
-            $table->foreign('emailNumber', 'foreign_emailNumber')
+            $table->foreign('emailNumber', 'votes_foreign_emailNumber')
                 ->references('number')->on('emails')
                 ->cascadeOnDelete();
         });
