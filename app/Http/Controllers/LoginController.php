@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\User\UserRepository;
+use App\Actions\User\GetOrCreateUser;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,8 +14,6 @@ use Throwable;
 
 class LoginController extends Controller
 {
-    public function __construct(private readonly UserRepository $userRepository) {}
-
     public function __invoke(Request $request): View|RedirectResponse
     {
         if ($request->user()) {
@@ -34,7 +32,7 @@ class LoginController extends Controller
             return response()->view('auth.login-error', ['error' => $e->getMessage()], 400);
         }
 
-        $user = $this->userRepository->getOrCreate(
+        $user = app(GetOrCreateUser::class)->handle(
             (string) $githubUser->getId(),
             (string) $githubUser->getNickname(),
         );

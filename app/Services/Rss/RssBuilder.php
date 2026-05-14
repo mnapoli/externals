@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Rss;
+namespace App\Services\Rss;
 
-use App\Email\Email;
+use App\Models\Email;
 use DomDocument;
 use DomElement;
 
@@ -15,9 +15,9 @@ class RssBuilder
     public function __construct(private readonly string $host) {}
 
     /**
-     * @param  Email[]  $emails
+     * @param  iterable<Email>  $emails
      */
-    public function build(array $emails): string
+    public function build(iterable $emails): string
     {
         $this->dom = new DomDocument('1.0', 'utf-8');
 

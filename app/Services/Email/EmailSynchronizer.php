@@ -2,18 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Email;
+namespace App\Services\Email;
 
-use App\Exceptions\NotFoundException;
-use App\Nntp\ArticleNotFoundException;
-use App\Nntp\NntpClient;
-use App\Search\SearchIndex;
+use App\Actions\Email\RefreshAllThreads;
+use App\Models\Email;
+use App\Services\Nntp\ArticleNotFoundException;
+use App\Services\Nntp\NntpClient;
+use App\Services\Search\SearchIndex;
+use App\Support\Email\EmailAddress;
 use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
-use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\QueryException;
-use Psr\Log\LoggerInterface;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 use ZBateson\MailMimeParser\Header\DateHeader;
 use ZBateson\MailMimeParser\IMessage;
@@ -36,12 +38,9 @@ class EmailSynchronizer
     ];
 
     public function __construct(
-        private readonly EmailRepository $emailRepository,
         private readonly EmailSubjectParser $subjectParser,
         private readonly EmailContentParser $contentParser,
         private readonly SearchIndex $searchIndex,
-        private readonly LoggerInterface $logger,
-        private readonly ConnectionInterface $db,
     ) {}
 
     public function synchronize(?int $maxNumberOfEmailsToSynchronize = null): void
@@ -52,10 +51,10 @@ class EmailSynchronizer
         try {
             $group = $client->group('php.internals');
             $numberOfLastEmailToSynchronize = $group['last'];
-            $numberOfLastEmailSynchronized = $this->emailRepository->getLastEmailNumber();
+            $numberOfLastEmailSynchronized = (int) Email::max('number');
 
             if ($maxNumberOfEmailsToSynchronize !== null) {
-                $this->logger->info(sprintf(
+                Log::info(sprintf(
                     '%d emails will be synchronized',
                     min($numberOfLastEmailToSynchronize - $numberOfLastEmailSynchronized, $maxNumberOfEmailsToSynchronize)
                 ));
@@ -66,17 +65,17 @@ class EmailSynchronizer
                 $count++;
 
                 if (in_array($number, self::BROKEN_MESSAGES, true)) {
-                    $this->logger->warning("Skipping blacklisted message $number");
+                    Log::warning("Skipping blacklisted message $number");
 
                     continue;
                 }
 
-                $this->logger->info("Synchronizing message $number");
+                Log::info("Synchronizing message $number");
 
                 try {
                     $rawContent = $client->article($number);
                 } catch (ArticleNotFoundException) {
-                    $this->logger->warning("Cannot fetch message $number, skipping");
+                    Log::warning("Cannot fetch message $number, skipping");
 
                     continue;
                 }
@@ -91,15 +90,15 @@ class EmailSynchronizer
             $client->disconnect();
         }
 
-        if (($count ?? 0) > 0) {
-            $this->emailRepository->refreshThreads();
+        if ($count > 0) {
+            app(RefreshAllThreads::class)->handle();
         }
     }
 
     public function synchronizeEmail(int $number, string $source): void
     {
         if (! mb_check_encoding($source, 'UTF-8')) {
-            $this->logger->warning("Cannot synchronize message $number because it contains invalid UTF-8 characters");
+            Log::warning("Cannot synchronize message $number because it contains invalid UTF-8 characters");
 
             return;
         }
@@ -112,10 +111,11 @@ class EmailSynchronizer
 
         $fromHeader = $parsedDocument->getHeader('from');
         if (! $fromHeader) {
-            $this->logger->warning("Cannot synchronize message $number because it contains no 'from' header");
+            Log::warning("Cannot synchronize message $number because it contains no 'from' header");
 
             return;
         }
+        /** @var EmailAddress[] $fromArray */
         $fromArray = (new EmailAddressParser($fromHeader->getRawValue()))->parse();
         $from = reset($fromArray);
 
@@ -158,30 +158,33 @@ class EmailSynchronizer
 
         $date = $this->parseDateTime($parsedDocument);
         if (! $date) {
-            $this->logger->warning("Cannot synchronize message $number because it contains an invalid date");
+            Log::warning("Cannot synchronize message $number because it contains an invalid date");
 
             return;
         }
 
-        $newEmail = new Email(
-            $emailId,
-            $number,
-            $subject,
-            $content,
-            $source,
-            $threadId,
-            $date,
-            $from,
-            $inReplyTo,
-        );
+        $newEmail = new Email([
+            'id' => $emailId,
+            'number' => $number,
+            'subject' => $subject,
+            'content' => $content,
+            'source' => $source,
+            'threadId' => $threadId,
+            'isThreadRoot' => $threadId === $emailId,
+            'date' => $date,
+            'fetchDate' => new DateTime('now', new DateTimeZone('UTC')),
+            'fromEmail' => $from->email,
+            'fromName' => $from->name,
+            'inReplyTo' => $inReplyTo,
+        ]);
 
-        $this->db->transaction(function () use ($newEmail): void {
+        DB::transaction(function () use ($newEmail): void {
             try {
-                $this->emailRepository->add($newEmail);
+                $newEmail->save();
             } catch (QueryException $e) {
                 // Duplicate key — email ID was already used
                 if ($e->getCode() === '23000') {
-                    $this->logger->warning("Cannot synchronize message {$newEmail->number} because the email ID {$newEmail->id} already exists in database");
+                    Log::warning("Cannot synchronize message {$newEmail->number} because the email ID {$newEmail->id} already exists in database");
 
                     return;
                 }
@@ -212,9 +215,8 @@ class EmailSynchronizer
 
     private function findEmailThreadId(string $targetId): ?string
     {
-        try {
-            $email = $this->emailRepository->getById($targetId);
-        } catch (NotFoundException) {
+        $email = Email::find($targetId);
+        if (! $email) {
             return null;
         }
 

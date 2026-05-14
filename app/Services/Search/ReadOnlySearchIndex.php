@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Search;
+namespace App\Services\Search;
 
-use App\Email\Email;
+use App\Models\Email;
 
 class ReadOnlySearchIndex implements SearchIndex
 {

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Email\EmailContentParser;
-use App\Email\EmailRepository;
-use App\Exceptions\NotFoundException;
+use App\Models\Email;
+use App\Services\Email\EmailContentParser;
 use Illuminate\Console\Command;
 use ZBateson\MailMimeParser\MailMimeParser;
 
@@ -16,21 +15,20 @@ class ReparseEmailsCommand extends Command
 
     protected $description = 'Re-parse the content of every email from its stored source';
 
-    public function handle(EmailRepository $repository, EmailContentParser $parser): int
+    public function handle(EmailContentParser $parser): int
     {
         $start = microtime(true);
-        $maxNumber = $repository->getLastEmailNumber();
+        $maxNumber = (int) Email::max('number');
         $mailParser = new MailMimeParser;
 
         for ($number = $maxNumber; $number > 0; $number--) {
-            try {
-                $email = $repository->getByNumber($number);
-            } catch (NotFoundException) {
+            $email = Email::where('number', $number)->first();
+            if (! $email) {
                 continue;
             }
             $parsedDocument = $mailParser->parse($email->source, false);
-            $content = $parser->parse((string) $parsedDocument->getTextContent());
-            $repository->updateContent($email->id, $content);
+            $email->content = $parser->parse((string) $parsedDocument->getTextContent());
+            $email->save();
             $this->info("Updated email $number");
         }
 

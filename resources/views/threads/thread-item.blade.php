@@ -17,7 +17,7 @@
         by <strong>{{ $email->from->getNameOrEmail() }}</strong>
         <span class="text-xs text-gray-500">
             — <a href="/email/{{ $email->number }}/source" target="_blank" rel="nofollow">view source</a>
-            — <a href="{{ \App\Email\EmailReplyUrl::build($email) }}" rel="nofollow">reply</a>
+            — <a href="{{ \App\Support\Email\EmailReplyUrl::build($email) }}" rel="nofollow">reply</a>
         </span>
         @if(! $email->isRead)
             <div class="ml-4 inline-block bg-blue-100 rounded px-2 py-1 leading-none text-xs text-blue-600">unread</div>

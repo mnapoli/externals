@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Email\EmailSynchronizer;
+use App\Services\Email\EmailSynchronizer;
 use Illuminate\Console\Command;
 
 class SyncEmailsCommand extends Command

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Email;
+namespace App\Support\Email;
 
 /**
  * Email address that may be associated to a name.

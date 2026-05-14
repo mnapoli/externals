@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Email;
+namespace App\Services\Email;
 
+use Illuminate\Support\Facades\Log;
 use League\CommonMark\CommonMarkConverter;
-use Psr\Log\LoggerInterface;
 use Throwable;
 use VStelmakh\UrlHighlight\UrlHighlight;
 
@@ -14,7 +14,6 @@ class EmailContentParser
     public function __construct(
         private readonly UrlHighlight $urlHighlight,
         private readonly CommonMarkConverter $markdownParser,
-        private readonly LoggerInterface $logger,
     ) {}
 
     public function parse(string $content): string
@@ -34,7 +33,7 @@ class EmailContentParser
         try {
             $content = (string) $this->markdownParser->convert($content);
         } catch (Throwable $e) {
-            $this->logger->warning('Unable to parse email content as Markdown: '.$e->getMessage(), [
+            Log::warning('Unable to parse email content as Markdown: '.$e->getMessage(), [
                 'exception' => $e,
                 'text' => $content,
             ]);

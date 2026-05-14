@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Email;
+namespace App\Support\Email;
 
+use App\Models\Email;
 use ZBateson\MailMimeParser\MailMimeParser;
 
 class EmailReplyUrl

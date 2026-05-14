@@ -1,0 +1,39 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+/**
+ * @property int $userId
+ * @property int $emailNumber
+ * @property int $value
+ * @property \DateTimeImmutable $updatedAt
+ */
+class Vote extends Model
+{
+    protected $table = 'votes';
+
+    public $incrementing = false;
+
+    public $timestamps = false;
+
+    protected $guarded = [];
+
+    protected $casts = [
+        'updatedAt' => 'immutable_datetime',
+    ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'userId', 'id');
+    }
+
+    public function email(): BelongsTo
+    {
+        return $this->belongsTo(Email::class, 'emailNumber', 'number');
+    }
+}

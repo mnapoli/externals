@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Email\EmailRepository;
+use App\Exceptions\NotFoundException;
+use App\Models\Email;
 use Illuminate\Http\Response;
 
 class EmailSourceController extends Controller
 {
-    public function __construct(private readonly EmailRepository $repository) {}
-
     public function __invoke(int $number): Response
     {
-        return response($this->repository->getEmailSource($number), 200, [
+        $source = Email::where('number', $number)->value('source');
+        if ($source === null) {
+            throw new NotFoundException('Email not found');
+        }
+
+        return response($source, 200, [
             'Content-Type' => 'text/plain; charset=utf-8',
         ]);
     }

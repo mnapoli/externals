@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Voting\Voting;
+use App\Actions\Voting\CastVote;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class VoteController extends Controller
 {
-    public function __construct(private readonly Voting $voting) {}
-
     public function __invoke(Request $request, int $number): JsonResponse
     {
         $user = $request->user();
@@ -25,7 +23,7 @@ class VoteController extends Controller
         }
 
         return response()->json([
-            'newTotal' => $this->voting->vote($user->id, $number, $vote),
+            'newTotal' => app(CastVote::class)->handle($user->id, $number, $vote),
             'newValue' => $vote,
         ]);
     }

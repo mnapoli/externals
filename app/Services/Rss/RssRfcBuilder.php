@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Rss;
+namespace App\Services\Rss;
 
 use DateTime;
 use DomDocument;

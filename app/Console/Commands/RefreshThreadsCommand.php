@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Email\EmailRepository;
+use App\Actions\Email\RefreshAllThreads;
 use Illuminate\Console\Command;
 
 class RefreshThreadsCommand extends Command
@@ -13,10 +13,10 @@ class RefreshThreadsCommand extends Command
 
     protected $description = 'Refresh the threads projection';
 
-    public function handle(EmailRepository $repository): int
+    public function handle(): int
     {
         $start = microtime(true);
-        $repository->refreshThreads();
+        app(RefreshAllThreads::class)->handle();
         $time = microtime(true) - $start;
 
         $this->comment(sprintf('Threads have been refreshed in %.2f seconds', $time));

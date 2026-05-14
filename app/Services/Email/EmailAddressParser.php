@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Email;
+namespace App\Services\Email;
+
+use App\Support\Email\EmailAddress;
 
 /**
  * @see https://github.com/madewithlove/why-cant-we-have-nice-things/blob/master/src/Services/IdentityExtractor.php

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use Algolia\AlgoliaSearch\Api\SearchClient;
-use App\Rss\RssBuilder;
-use App\Rss\RssRfcBuilder;
-use App\Search\AlgoliaSearchIndex;
-use App\Search\ReadOnlySearchIndex;
-use App\Search\SearchIndex;
+use App\Services\Rss\RssBuilder;
+use App\Services\Rss\RssRfcBuilder;
+use App\Services\Search\AlgoliaSearchIndex;
+use App\Services\Search\ReadOnlySearchIndex;
+use App\Services\Search\SearchIndex;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use League\CommonMark\CommonMarkConverter;

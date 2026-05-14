@@ -4,26 +4,18 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Actions\User\GetOrCreateUser;
 use App\Models\User;
-use App\User\UserRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class UserRepositoryTest extends TestCase
+class GetOrCreateUserTest extends TestCase
 {
     use RefreshDatabase;
 
-    private UserRepository $repository;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->repository = $this->app->make(UserRepository::class);
-    }
-
     public function test_should_create_new_user(): void
     {
-        $user = $this->repository->getOrCreate('abc', 'joe');
+        $user = app(GetOrCreateUser::class)->handle('abc', 'joe');
 
         $this->assertSame('abc', $user->githubId);
         $this->assertSame('joe', $user->name);
@@ -34,7 +26,7 @@ class UserRepositoryTest extends TestCase
     {
         $existing = User::create(['githubId' => 'abc', 'name' => 'joe']);
 
-        $user = $this->repository->getOrCreate('abc', 'joe');
+        $user = app(GetOrCreateUser::class)->handle('abc', 'joe');
 
         $this->assertSame($existing->id, $user->id);
         $this->assertSame('joe', $user->name);
@@ -44,7 +36,7 @@ class UserRepositoryTest extends TestCase
     {
         User::create(['githubId' => 'abc', 'name' => 'joe']);
 
-        $user = $this->repository->getOrCreate('abc', 'jane');
+        $user = app(GetOrCreateUser::class)->handle('abc', 'jane');
 
         $this->assertSame('jane', $user->name);
         $this->assertDatabaseHas('users', ['githubId' => 'abc', 'name' => 'jane']);
