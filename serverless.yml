@@ -6,14 +6,12 @@ provider:
     name: aws
     region: eu-west-1
     stage: prod
-    timeout: 10
     environment:
         APP_ENV: production
         APP_DEBUG: 'false'
         APP_KEY: ${ssm:/externals/app_key}
         APP_VERSION: ${env:GITHUB_RUN_ID}
-        APP_URL: 'https://externals.io'
-        LOG_CHANNEL: stderr
+        APP_URL: ${construct:website.url}
         DB_CONNECTION: mysql
         DB_DATABASE: 'externals-prod'
         DB_HOST: ${ssm:/externals/db/host}
@@ -31,8 +29,6 @@ provider:
         GITHUB_CLIENT_SECRET: ${ssm:/externals/github_oauth_client_secret}
         GITHUB_REDIRECT_URI: 'https://externals.io/login'
         SENTRY_LARAVEL_DSN: ${ssm:/externals/sentry_url}
-        # https://bref.sh/docs/environment/performances.html#bref-for-event-driven-functions
-        BREF_LOOP_MAX: '100'
 
 params:
     prod:
@@ -47,19 +43,22 @@ params:
 package:
     patterns:
         - '!.github/**'
+        - '!database/*.sqlite'
         - '!node_modules/**'
-        - '!tests/**'
-        - '!storage/logs/**'
-        - '!storage/framework/cache/**'
-        - '!storage/framework/sessions/**'
-        - '!storage/framework/views/**'
+        - '!public/storage'
         - '!resources/css/**'
         - '!resources/js/**'
+        - '!storage/**'
+        - '!tests/**'
+        # Exclude assets except for the manifest file
+        - '!public/build/**'
+        - 'public/build/manifest.json'
 
 functions:
     web:
         handler: public/index.php
         runtime: php-85-fpm
+        timeout: 10
         events:
             - httpApi: '*'
 
@@ -68,8 +67,6 @@ functions:
         handler: artisan
         runtime: php-85-console
         timeout: 900
-        environment:
-            BREF_LOOP_MAX: '1'
         events:
             -   schedule:
                     rate: rate(15 minutes)
