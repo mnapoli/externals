@@ -9,7 +9,7 @@ provider:
     environment:
         APP_ENV: ${param:appEnv}
         APP_DEBUG: 'false'
-        APP_KEY: ${ssm:/externals/app_key}
+        APP_KEY: ${ssm:/externals/session_secret_key}
         APP_VERSION: ${env:GITHUB_RUN_ID}
         APP_URL: ${construct:website.url}
         DB_CONNECTION: mysql
