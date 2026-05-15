@@ -27,7 +27,7 @@ provider:
         ALGOLIA_INDEX_PREFIX: ${param:algoliaIndexPrefix}
         GITHUB_CLIENT_ID: ${param:githubOAuthClientId}
         GITHUB_CLIENT_SECRET: ${ssm:/externals/github_oauth_client_secret}
-        GITHUB_REDIRECT_URI: 'https://externals.io/login'
+        GITHUB_REDIRECT_URI: '${construct:website.url}login'
         SENTRY_LARAVEL_DSN: ${ssm:/externals/sentry_url}
 
 params:
@@ -35,12 +35,14 @@ params:
         isProd: true
         appEnv: production
         dbDatabase: 'externals-prod'
+        domain: externals.io
         algoliaIndexPrefix: v2_
         githubOAuthClientId: b75b3226c86d801a95cd
     default:
         isProd: false
         appEnv: staging
         dbDatabase: 'externals-staging'
+        domain: staging.externals.io
         algoliaIndexPrefix: dev_
         githubOAuthClientId: 422ae3a54f6ebd43895b
 
@@ -95,5 +97,5 @@ constructs:
             '/build/*': public/build
             '/favicon.ico': public/favicon.ico
             '/robots.txt': public/robots.txt
-        domain: externals.io
+        domain: ${param:domain}
         certificate: arn:aws:acm:us-east-1:416566615250:certificate/0f28e63d-d3a9-4578-9f8b-14347bfe8326
