@@ -49,6 +49,7 @@ params:
 package:
     patterns:
         - '!.github/**'
+        - 'backups/**'
         - '!database/*.sqlite'
         - '!node_modules/**'
         - '!public/storage'
@@ -68,26 +69,22 @@ functions:
         events:
             - httpApi: '*'
 
-    # Synchronize new emails from PHP's NNTP server every 15 minutes.
-    sync:
-        handler: artisan
-        runtime: php-85-console
-        timeout: 900
-        events:
-            -   schedule:
-                    rate: rate(15 minutes)
-                    input:
-                        cli: 'externals:sync'
-                    enabled: ${param:isProd}
-
     artisan:
         handler: artisan
         runtime: php-85-console
         timeout: 900
+        events:
+            # Synchronize new emails from PHP's NNTP server every 15 minutes.
+            -   schedule:
+                    rate: rate(15 minutes)
+                    input:
+                        cli: 'externals:sync'
+                    # Only enabled in production
+                    enabled: ${param:isProd}
 
 plugins:
     - ./vendor/bref/bref
-    - ./vendor/bref/laravel-bridge
+    - serverless-lift
 
 constructs:
     website:
