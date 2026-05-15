@@ -38,11 +38,6 @@ jobs:
                 env:
                     BREF_TOKEN: ${{ secrets.BREF_TOKEN }}
 
-            -   name: Refresh staging DB from prod
-                run: bref command --env=staging "staging:refresh-from-prod"
-                env:
-                    BREF_TOKEN: ${{ secrets.BREF_TOKEN }}
-
             -   name: Run migrations
                 run: bref command --env=staging "migrate --force"
                 env:
