@@ -7,13 +7,13 @@ provider:
     region: eu-west-1
     stage: prod
     environment:
-        APP_ENV: production
+        APP_ENV: ${param:appEnv}
         APP_DEBUG: 'false'
         APP_KEY: ${ssm:/externals/app_key}
         APP_VERSION: ${env:GITHUB_RUN_ID}
         APP_URL: ${construct:website.url}
         DB_CONNECTION: mysql
-        DB_DATABASE: 'externals-prod'
+        DB_DATABASE: ${param:dbDatabase}
         DB_HOST: ${ssm:/externals/db/host}
         DB_PORT: 3306
         DB_USERNAME: ${ssm:/externals/db/user}
@@ -33,10 +33,14 @@ provider:
 params:
     prod:
         isProd: true
+        appEnv: production
+        dbDatabase: 'externals-prod'
         algoliaIndexPrefix: v2_
         githubOAuthClientId: b75b3226c86d801a95cd
     default:
         isProd: false
+        appEnv: staging
+        dbDatabase: 'externals-staging'
         algoliaIndexPrefix: dev_
         githubOAuthClientId: 422ae3a54f6ebd43895b
 

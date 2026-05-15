@@ -37,3 +37,13 @@ jobs:
             -   run: bref deploy --env=staging
                 env:
                     BREF_TOKEN: ${{ secrets.BREF_TOKEN }}
+
+            -   name: Refresh staging DB from prod
+                run: bref cli artisan --env=staging -- staging:refresh-from-prod
+                env:
+                    BREF_TOKEN: ${{ secrets.BREF_TOKEN }}
+
+            -   name: Run migrations
+                run: bref cli artisan --env=staging -- migrate --force
+                env:
+                    BREF_TOKEN: ${{ secrets.BREF_TOKEN }}
