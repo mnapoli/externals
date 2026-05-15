@@ -81,7 +81,7 @@
             <p class="mb-2">
                 Externals is a serverless application created by <a class="underline" href="https://mnapoli.fr">@mnapoli</a> and deployed with <a class="underline" href="https://bref.sh/" title="Serverless PHP applications">Bref</a>.
             </p>
-            <p class="mb-2">Search sponsored by <a class="underline" href="https://www.algolia.com">Algolia</a></p>
+            <p class="mb-2">Search sponsored by <a class="underline" href="https://www.algolia.com">Algolia</a> and avatars provided by <a href="https://unavatar.io">Unavatar</a>.</p>
             <p class="mb-2">
                 <strong>About data:</strong> if you login using GitHub, no personal data (or GitHub token) will be stored.<br>
                 The only thing stored is your GitHub ID, username and which threads/emails you have already read.
