@@ -69,7 +69,7 @@
     },
     "extra": {
         "aws/aws-sdk-php": [
-            "S3",
+            "S3"
         ],
         "laravel": {
             "dont-discover": []
