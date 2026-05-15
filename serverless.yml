@@ -29,6 +29,7 @@ provider:
         GITHUB_CLIENT_SECRET: ${ssm:/externals/github_oauth_client_secret}
         GITHUB_REDIRECT_URI: '${construct:website.url}login'
         SENTRY_LARAVEL_DSN: ${ssm:/externals/sentry_url}
+        GOOGLE_NO_INDEX: ${param:noIndex}
 
 params:
     prod:
@@ -38,6 +39,7 @@ params:
         domain: externals.io
         algoliaIndexPrefix: v2_
         githubOAuthClientId: b75b3226c86d801a95cd
+        noIndex: 0
     default:
         isProd: false
         appEnv: staging
@@ -45,6 +47,7 @@ params:
         domain: staging.externals.io
         algoliaIndexPrefix: dev_
         githubOAuthClientId: 422ae3a54f6ebd43895b
+        noIndex: 1
 
 package:
     patterns:
