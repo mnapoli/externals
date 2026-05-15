@@ -63,9 +63,12 @@ package:
 
 functions:
     web:
-        handler: public/index.php
-        runtime: php-85-fpm
+        handler: Bref\LaravelBridge\Http\OctaneHandler
+        runtime: php-85
         timeout: 10
+        environment:
+            BREF_LOOP_MAX: 250
+            OCTANE_PERSIST_DATABASE_SESSIONS: 1
         events:
             - httpApi: '*'
 
