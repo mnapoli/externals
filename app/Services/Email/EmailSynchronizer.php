@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Email;
 
-use App\Actions\RefreshAllThreads;
+use App\Actions\RefreshThread;
 use App\Models\Email;
 use App\Services\Nntp\ArticleNotFoundException;
 use App\Services\Nntp\NntpClient;
@@ -58,6 +58,7 @@ class EmailSynchronizer
             }
 
             $count = 0;
+            $touchedThreadIds = [];
             for ($number = $numberOfLastEmailSynchronized + 1; $number <= $numberOfLastEmailToSynchronize; $number++) {
                 $count++;
 
@@ -77,7 +78,10 @@ class EmailSynchronizer
                     continue;
                 }
 
-                $this->synchronizeEmail($number, $rawContent);
+                $threadId = $this->synchronizeEmail($number, $rawContent);
+                if ($threadId !== null) {
+                    $touchedThreadIds[$threadId] = true;
+                }
 
                 if ($maxNumberOfEmailsToSynchronize !== null && $count >= $maxNumberOfEmailsToSynchronize) {
                     break;
@@ -87,17 +91,21 @@ class EmailSynchronizer
             $client->disconnect();
         }
 
-        if ($count > 0) {
-            app(RefreshAllThreads::class)->handle();
+        $refreshThread = app(RefreshThread::class);
+        foreach (array_keys($touchedThreadIds) as $threadId) {
+            $refreshThread->handle(emailId: $threadId);
         }
     }
 
-    public function synchronizeEmail(int $number, string $source): void
+    /**
+     * @return ?string The threadId of the saved email, or null if nothing was saved.
+     */
+    public function synchronizeEmail(int $number, string $source): ?string
     {
         if (! mb_check_encoding($source, 'UTF-8')) {
             Log::warning("Cannot synchronize message $number because it contains invalid UTF-8 characters");
 
-            return;
+            return null;
         }
 
         $mailParser = new MailMimeParser;
@@ -110,14 +118,14 @@ class EmailSynchronizer
         if (! $fromHeader) {
             Log::warning("Cannot synchronize message $number because it contains no 'from' header");
 
-            return;
+            return null;
         }
         $fromArray = (new EmailAddressParser($fromHeader->getRawValue()))->parse();
         $from = $fromArray[0] ?? null;
         if (! $from) {
             Log::warning("Cannot synchronize message $number because the 'from' header could not be parsed");
 
-            return;
+            return null;
         }
 
         $emailId = $parsedDocument->getHeaderValue('message-id');
@@ -161,7 +169,7 @@ class EmailSynchronizer
         if (! $date) {
             Log::warning("Cannot synchronize message $number because it contains an invalid date");
 
-            return;
+            return null;
         }
 
         $newEmail = new Email([
@@ -179,7 +187,8 @@ class EmailSynchronizer
             'inReplyTo' => $inReplyTo,
         ]);
 
-        DB::transaction(function () use ($newEmail): void {
+        $saved = false;
+        DB::transaction(function () use ($newEmail, &$saved): void {
             try {
                 $newEmail->save();
             } catch (QueryException $e) {
@@ -192,7 +201,10 @@ class EmailSynchronizer
                 throw $e;
             }
             $this->searchIndex->indexEmail($newEmail);
+            $saved = true;
         });
+
+        return $saved ? $newEmail->threadId : null;
     }
 
     private function parseDateTime(IMessage $parsedDocument): ?DateTimeInterface

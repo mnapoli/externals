@@ -21,11 +21,11 @@ Route::get('/top', TopController::class);
 Route::get('/news', NewsController::class);
 Route::get('/stats', StatsController::class);
 
-Route::get('/login', LoginController::class);
+Route::get('/login', LoginController::class)->name('login');
 Route::post('/logout', LogoutController::class);
 
 Route::get('/message/{number}', ThreadController::class)->whereNumber('number');
-Route::get('/email/{number}/source', EmailSourceController::class)->whereNumber('number');
+Route::get('/email/{number}/source', EmailSourceController::class)->whereNumber('number')->middleware('auth');
 Route::post('/votes/{number}', VoteController::class)->whereNumber('number');
 
 Route::get('/rss', RssController::class);

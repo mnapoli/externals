@@ -21,7 +21,7 @@ class RssController extends Controller
         $emails = Email::where('number', '>', $since)
             ->orderBy('number', 'desc')
             ->limit(100)
-            ->get();
+            ->get(['id', 'number', 'subject', 'content', 'date']);
 
         return response($this->rss->build($emails), 200, [
             'Content-Type' => 'text/xml; charset=utf-8',
