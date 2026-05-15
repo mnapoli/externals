@@ -79,32 +79,14 @@
         <div class="container max-w-4xl">
             <p class="mb-2">Contribute to the project on GitHub: <a class="underline" href="https://github.com/mnapoli/externals">mnapoli/externals</a></p>
             <p class="mb-2">
-                Externals is a serverless application deployed with <a class="underline" href="https://bref.sh/" title="Serverless PHP applications">Bref</a>
-                and sponsored by <a class="underline" title="Serverless consulting company" href="https://null.tc/?ref=externals">null ❤</a>
+                Externals is a serverless application created by <a class="underline" href="https://mnapoli.fr">@mnapoli</a> and deployed with <a class="underline" href="https://bref.sh/" title="Serverless PHP applications">Bref</a>.
             </p>
             <p class="mb-2">Search sponsored by <a class="underline" href="https://www.algolia.com">Algolia</a></p>
             <p class="mb-2">
                 <strong>About data:</strong> if you login using GitHub, no personal data (or GitHub token) will be stored.<br>
                 The only thing stored is your GitHub ID, username and which threads/emails you have already read.
             </p>
-            <p>
-                Oh and if you're interested, check out my <a class="underline" href="https://serverless-visually-explained.com/?ref=externals" title="Serverless online course">Serverless Visually Explained</a> course.
-            </p>
         </div>
     </footer>
-
-    @section('scripts')
-        @if(! $debug)
-            {{-- Google Analytics --}}
-            <script>
-                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-                ga('create', 'UA-15584647-16', 'auto');
-                ga('send', 'pageview');
-            </script>
-        @endif
-    @show
 </body>
 </html>
