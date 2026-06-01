@@ -40,6 +40,7 @@ params:
         algoliaIndexPrefix: v2_
         githubOAuthClientId: b75b3226c86d801a95cd
         noIndex: 0
+        reservedConcurrency: 30
     default:
         isProd: false
         appEnv: staging
@@ -48,6 +49,7 @@ params:
         algoliaIndexPrefix: dev_
         githubOAuthClientId: 422ae3a54f6ebd43895b
         noIndex: 1
+        reservedConcurrency: 3
 
 package:
     patterns:
@@ -69,6 +71,7 @@ functions:
         handler: Bref\LaravelBridge\Http\OctaneHandler
         runtime: php-85
         timeout: 10
+        reservedConcurrency: ${param:reservedConcurrency}
         environment:
             BREF_LOOP_MAX: 250
             OCTANE_PERSIST_DATABASE_SESSIONS: 1
