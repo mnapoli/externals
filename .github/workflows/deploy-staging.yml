@@ -2,7 +2,7 @@ name: Deploy staging
 
 on:
     push:
-        branches: ['staging']
+        branches: ['staging', 'v4']
 
 jobs:
 
@@ -35,5 +35,10 @@ jobs:
             -   run: npm run build
 
             -   run: bref deploy --env=staging
+                env:
+                    BREF_TOKEN: ${{ secrets.BREF_TOKEN }}
+
+            -   name: Run migrations
+                run: bref command --env=staging "migrate --force"
                 env:
                     BREF_TOKEN: ${{ secrets.BREF_TOKEN }}

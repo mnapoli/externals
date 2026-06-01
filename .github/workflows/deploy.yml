@@ -8,36 +8,31 @@ jobs:
 
     deploy:
         runs-on: ubuntu-latest
+        # Avoid deploying concurrently
+        concurrency: deploy
         timeout-minutes: 30
         steps:
-
-            -   uses: actions/checkout@v4
+            -   uses: actions/checkout@v6
 
             -   uses: actions/setup-node@v4
                 with:
-                    node-version: '18'
-
-            -   name: Cache npm dependencies
-                uses: actions/cache@v4
-                with:
-                    path: ~/.npm # npm cache files are stored in `~/.npm`
-                    key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-                    restore-keys: |
-                        ${{ runner.OS }}-node-
+                    node-version: '22'
+                    cache: 'npm'
 
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.1'
-                    tools: bref/cli:^1
+                    php-version: '8.5'
+                    tools: bref/cli
+                    coverage: none
 
-            -   uses: ramsey/composer-install@v3
+            -   uses: ramsey/composer-install@v4
                 with:
-                    composer-options: '--optimize-autoloader --no-dev --ignore-platform-reqs'
+                    composer-options: '--no-dev'
 
             -   run: npm ci
 
-            -   run: make assets-prod
+            -   run: npm run build
 
             -   run: bref deploy --env=prod
                 env:

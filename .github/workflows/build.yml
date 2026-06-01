@@ -7,17 +7,52 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
+        services:
+            mysql:
+                image: mysql:8.0
+                env:
+                    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+                    MYSQL_DATABASE: externals_test
+                ports:
+                    - 3306:3306
+                options: >-
+                    --health-cmd="mysqladmin ping"
+                    --health-interval=10s
+                    --health-timeout=5s
+                    --health-retries=5
         steps:
+            -   uses: actions/checkout@v6
+
+            -   uses: actions/setup-node@v4
+                with:
+                    node-version: '22'
+                    cache: 'npm'
+
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.1'
+                    php-version: '8.5'
+                    extensions: pdo_mysql
+                    coverage: none
 
-            -   name: Git checkout
-                uses: actions/checkout@v2
+            -   uses: ramsey/composer-install@v4
 
-            -   name: Install Composer dependencies
-                run: composer install --no-interaction --no-progress --no-suggest --ignore-platform-reqs
+            -   run: npm ci
 
-            -   name: Run PHPUnit
+            -   run: npm run build
+
+            -   name: PHPUnit
+                env:
+                    DB_CONNECTION: mysql
+                    DB_HOST: 127.0.0.1
+                    DB_PORT: '3306'
+                    DB_DATABASE: externals_test
+                    DB_USERNAME: root
+                    DB_PASSWORD: ''
                 run: vendor/bin/phpunit --colors=always
+
+            -   name: PHPStan
+                run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress
+
+            -   name: Pint
+                run: vendor/bin/pint --test
