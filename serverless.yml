@@ -27,7 +27,7 @@ provider:
         ALGOLIA_INDEX_PREFIX: ${param:algoliaIndexPrefix}
         GITHUB_CLIENT_ID: ${param:githubOAuthClientId}
         GITHUB_CLIENT_SECRET: ${ssm:/externals/github_oauth_client_secret}
-        GITHUB_REDIRECT_URI: '${construct:website.url}login'
+        GITHUB_REDIRECT_URI: '${construct:website.url}/login'
         SENTRY_LARAVEL_DSN: ${ssm:/externals/sentry_url}
         GOOGLE_NO_INDEX: ${param:noIndex}
 
