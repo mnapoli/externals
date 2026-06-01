@@ -8,6 +8,9 @@ jobs:
 
     deploy:
         runs-on: ubuntu-latest
+        environment:
+            name: prod
+            url: https://externals.io
         # Avoid deploying concurrently
         concurrency: deploy
         timeout-minutes: 30

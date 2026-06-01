@@ -8,6 +8,9 @@ jobs:
 
     deploy:
         runs-on: ubuntu-latest
+        environment:
+            name: staging
+            url: https://staging.externals.io
         # Avoid deploying concurrently
         concurrency: deploy-staging
         timeout-minutes: 30
