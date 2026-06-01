@@ -21,6 +21,8 @@ class HomeControllerTest extends TestCase
         $response->assertViewIs('home');
         $response->assertViewHas('user', null);
         $response->assertViewHas('page', 1);
+        $response->assertSee('instantsearch.js/2/instantsearch.min.js', false);
+        $response->assertSee('function init_search()', false);
     }
 
     public function test_renders_home_for_authenticated_user(): void
