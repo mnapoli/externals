@@ -29,6 +29,7 @@ provider:
         GITHUB_CLIENT_SECRET: ${ssm:/externals/github_oauth_client_secret}
         GITHUB_REDIRECT_URI: '${construct:website.url}/login'
         SENTRY_LARAVEL_DSN: ${ssm:/externals/sentry_url}
+        SENTRY_SAMPLE_RATE: 0
         GOOGLE_NO_INDEX: ${param:noIndex}
 
 params:
