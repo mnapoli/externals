@@ -40,3 +40,7 @@ jobs:
             -   run: bref deploy --env=prod
                 env:
                     BREF_TOKEN: ${{ secrets.BREF_TOKEN }}
+
+            -   run: bref command --env=prod "migrate --force"
+                env:
+                    BREF_TOKEN: ${{ secrets.BREF_TOKEN }}
