@@ -44,8 +44,11 @@ class LoginControllerTest extends TestCase
         $response = $this->get('/login?code=abc');
 
         $response->assertRedirect('/');
+        $user = User::where('githubId', '12345')->firstOrFail();
         $this->assertDatabaseHas('users', ['githubId' => '12345', 'name' => 'octocat']);
-        $this->assertAuthenticatedAs(User::where('githubId', '12345')->firstOrFail());
+        $this->assertAuthenticatedAs($user);
+        $this->assertNotNull($user->remember_token);
+        $this->assertSame(60, mb_strlen($user->remember_token));
     }
 
     public function test_callback_logs_in_existing_user(): void

@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property string $githubId
  * @property string $name
+ * @property string|null $remember_token
  */
 class User extends Model implements Authenticatable
 {
@@ -44,16 +45,19 @@ class User extends Model implements Authenticatable
         return '';
     }
 
-    public function getRememberToken(): string
+    public function getRememberToken(): ?string
     {
-        return '';
+        return $this->remember_token;
     }
 
-    public function setRememberToken($value): void {}
+    public function setRememberToken($value): void
+    {
+        $this->remember_token = $value;
+    }
 
     public function getRememberTokenName(): string
     {
-        return '';
+        return 'remember_token';
     }
 
     /**

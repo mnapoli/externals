@@ -36,7 +36,7 @@ class LoginController extends Controller
             (string) $githubUser->getId(),
             (string) $githubUser->getNickname(),
         );
-        Auth::login($user);
+        Auth::login($user, remember: true);
         $request->session()->regenerate();
 
         return redirect('/');
