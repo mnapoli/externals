@@ -37,7 +37,7 @@ jobs:
 
             -   run: npm run build
 
-            -   run: bref deploy --env=prod
+            -   run: bref deploy --env=prod --osls4
                 env:
                     BREF_TOKEN: ${{ secrets.BREF_TOKEN }}
 
