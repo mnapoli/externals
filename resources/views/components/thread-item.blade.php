@@ -8,8 +8,9 @@
 
     <header class="text-xs sm:text-sm text-gray-300 bg-gray-600 rounded-tl py-1 px-2 relative">
         <button type="button" @click="open = !open" class="mr-2 cursor-pointer">
-            <flux:icon.minus-circle class="w-4 h-4 inline-block" x-show="open" />
-            <flux:icon.plus-circle class="w-4 h-4 inline-block" x-show="!open" x-cloak />
+            <svg class="w-4 h-4 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
         </button>
         @if($email->from->email)
             <img class="hidden sm:block absolute top-0 right-0 mt-1 mr-2 rounded-full border border-gray-100 shadow-lg w-16 h-16 text-white bg-white" src="https://unavatar.io/{{ $email->from->email }}"

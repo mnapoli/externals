@@ -1,9 +1,7 @@
 @import 'tailwindcss';
-@import '../../vendor/livewire/flux/dist/flux.css';
 
 @source '../**/*.blade.php';
 @source '../**/*.js';
-@source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 
 @utility container {
     margin-inline: auto;
