@@ -6,9 +6,6 @@
         "build": "vite build",
         "dev": "vite"
     },
-    "dependencies": {
-        "jquery": "^3.7.1"
-    },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
         "concurrently": "^9.2.3",

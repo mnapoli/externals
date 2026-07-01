@@ -10,7 +10,6 @@ use App\Services\Rss\RssRfcBuilder;
 use App\Services\Search\AlgoliaSearchIndex;
 use App\Services\Search\ReadOnlySearchIndex;
 use App\Services\Search\SearchIndex;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use League\CommonMark\CommonMarkConverter;
 use VStelmakh\UrlHighlight\Highlighter\HtmlHighlighter;
@@ -59,12 +58,5 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(RssRfcBuilder::class, fn() => new RssRfcBuilder((string) config('externals.rss_host')));
     }
 
-    public function boot(): void
-    {
-        View::share('version', (string) config('externals.version'));
-        View::share('assetsBaseUrl', (string) config('externals.assets_base_url'));
-        View::share('algoliaIndex', config('services.algolia.index_prefix') . 'emails');
-        View::share('noIndex', (bool) config('externals.no_index'));
-        View::share('debug', (bool) config('app.debug'));
-    }
+    public function boot(): void {}
 }

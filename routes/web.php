@@ -2,31 +2,25 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Auth\GithubController;
 use App\Http\Controllers\EmailSourceController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegacyThreadRedirectController;
-use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
-use App\Http\Controllers\NewsController;
 use App\Http\Controllers\RssController;
 use App\Http\Controllers\RssRfcController;
-use App\Http\Controllers\StatsController;
-use App\Http\Controllers\ThreadController;
-use App\Http\Controllers\TopController;
-use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
+use Livewire\Volt\Volt;
 
-Route::get('/', HomeController::class);
-Route::get('/top', TopController::class);
-Route::get('/news', NewsController::class);
-Route::get('/stats', StatsController::class);
+Volt::route('/', 'pages.home');
+Volt::route('/top', 'pages.top');
+Volt::route('/news', 'pages.news');
+Volt::route('/stats', 'pages.stats');
 
-Route::get('/login', LoginController::class)->name('login');
-Route::post('/logout', LogoutController::class);
+Route::get('/login', GithubController::class)->name('login');
+Route::post('/logout', LogoutController::class)->name('logout');
 
-Route::get('/message/{number}', ThreadController::class)->whereNumber('number');
+Volt::route('/message/{number}', 'pages.thread')->whereNumber('number');
 Route::get('/email/{number}/source', EmailSourceController::class)->whereNumber('number')->middleware('auth');
-Route::post('/votes/{number}', VoteController::class)->whereNumber('number');
 
 Route::get('/rss', RssController::class);
 Route::get('/rss-rfc', RssRfcController::class);

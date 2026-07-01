@@ -8,6 +8,9 @@
     padding-inline: 1rem;
 }
 
+/* Alpine: hide elements until Alpine initialises */
+[x-cloak] { display: none !important; }
+
 /* https://stackoverflow.com/questions/71074/how-to-remove-firefoxs-dotted-outline-on-buttons-as-well-as-links */
 :focus { outline: none; }
 ::-moz-focus-inner { border: 0; }

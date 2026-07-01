@@ -2,80 +2,65 @@
 
 declare(strict_types=1);
 
-namespace Feature\Http;
-
 use App\Models\Email;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class ThreadControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    public function test_returns_404_when_email_does_not_exist(): void
-    {
-        $response = $this->get('/message/12345');
+test('returns 404 when email does not exist', function (): void {
+    $response = $this->get('/message/12345');
 
-        $response->assertNotFound();
-    }
+    $response->assertNotFound();
+});
 
-    public function test_renders_thread_view_for_root_email(): void
-    {
-        Email::factory()->create(['number' => 100, 'subject' => 'Hello world']);
+test('renders thread view for root email', function (): void {
+    Email::factory()->create(['number' => 100, 'subject' => 'Hello world']);
 
-        $response = $this->get('/message/100');
+    $response = $this->get('/message/100');
 
-        $response->assertOk();
-        $response->assertViewIs('thread');
-        $response->assertViewHas('subject', 'Hello world');
-        $response->assertViewHas('threadId', 100);
-    }
+    $response->assertOk();
+    $response->assertSee('Hello world');
+});
 
-    public function test_redirects_replies_to_thread_root_with_anchor(): void
-    {
-        $root = Email::factory()->create(['number' => 100]);
-        $reply = Email::factory()->replyTo($root)->create(['number' => 101]);
+test('redirects replies to thread root with anchor', function (): void {
+    $root = Email::factory()->create(['number' => 100]);
+    $reply = Email::factory()->replyTo($root)->create(['number' => 101]);
 
-        $response = $this->get('/message/' . $reply->number);
+    $response = $this->get('/message/' . $reply->number);
 
-        $response->assertRedirect("/message/{$root->number}#{$reply->number}");
-    }
+    $response->assertRedirect("/message/{$root->number}#{$reply->number}");
+});
 
-    public function test_renders_orphan_reply_when_thread_root_missing(): void
-    {
-        Email::factory()->create([
-            'number' => 200,
-            'id' => '<reply@example.com>',
-            'threadId' => '<missing-root@example.com>',
-            'isThreadRoot' => false,
-        ]);
+test('renders orphan reply when thread root missing', function (): void {
+    Email::factory()->create([
+        'number' => 200,
+        'id' => '<reply@example.com>',
+        'threadId' => '<missing-root@example.com>',
+        'isThreadRoot' => false,
+    ]);
 
-        $response = $this->get('/message/200');
+    $response = $this->get('/message/200');
 
-        $response->assertOk();
-        $response->assertViewIs('thread');
-    }
+    $response->assertOk();
+});
 
-    public function test_marks_email_as_read_for_authenticated_user(): void
-    {
-        Email::factory()->create(['id' => '<root@example.com>', 'number' => 300]);
-        $user = User::factory()->create();
+test('marks email as read for authenticated user', function (): void {
+    Email::factory()->create(['id' => '<root@example.com>', 'number' => 300]);
+    $user = User::factory()->create();
 
-        $this->actingAs($user)->get('/message/300')->assertOk();
+    $this->actingAs($user)->get('/message/300')->assertOk();
 
-        $this->assertDatabaseHas('user_emails_read', [
-            'emailId' => '<root@example.com>',
-            'userId' => $user->id,
-        ]);
-    }
+    $this->assertDatabaseHas('user_emails_read', [
+        'emailId' => '<root@example.com>',
+        'userId' => $user->id,
+    ]);
+});
 
-    public function test_does_not_mark_as_read_for_guest(): void
-    {
-        Email::factory()->create(['id' => '<root@example.com>', 'number' => 301]);
+test('does not mark as read for guest', function (): void {
+    Email::factory()->create(['id' => '<root@example.com>', 'number' => 301]);
 
-        $this->get('/message/301')->assertOk();
+    $this->get('/message/301')->assertOk();
 
-        $this->assertDatabaseCount('user_emails_read', 0);
-    }
-}
+    $this->assertDatabaseCount('user_emails_read', 0);
+});

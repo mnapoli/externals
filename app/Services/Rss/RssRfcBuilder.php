@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Rss;
 
-use DateTimeImmutable;
+use App\Support\Email\ThreadSummary;
 use DomDocument;
 use DomElement;
 use RuntimeException;
@@ -18,7 +18,7 @@ class RssRfcBuilder
     ) {}
 
     /**
-     * @param  array<int, array<string, mixed>>  $threads
+     * @param  ThreadSummary[]  $threads
      */
     public function build(array $threads): string
     {
@@ -40,11 +40,11 @@ class RssRfcBuilder
 
         foreach ($threads as $thread) {
             $item = $this->dom->createElement('item');
-            $this->addTextNode('title', $thread['subject'], $item);
-            $this->addTextNode('link', $this->host . '/message/' . $thread['number'], $item);
-            $this->addTextNode('description', $thread['subject'], $item);
-            $this->addTextNode('guid', (string) $thread['number'], $item);
-            $this->addTextNode('pubDate', (new DateTimeImmutable($thread['date']))->format('r'), $item);
+            $this->addTextNode('title', $thread->subject, $item);
+            $this->addTextNode('link', $this->host . '/message/' . $thread->number, $item);
+            $this->addTextNode('description', $thread->subject, $item);
+            $this->addTextNode('guid', (string) $thread->number, $item);
+            $this->addTextNode('pubDate', $thread->date->format('r'), $item);
             $channel->appendChild($item);
         }
 

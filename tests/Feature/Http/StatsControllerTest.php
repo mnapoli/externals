@@ -2,30 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Feature\Http;
-
 use App\Models\Email;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class StatsControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    public function test_renders_stats_with_counts(): void
-    {
-        User::factory()->count(3)->create();
-        $root = Email::factory()->create();
-        Email::factory()->replyTo($root)->create();
-        Email::factory()->replyTo($root)->create();
+test('renders stats with counts', function (): void {
+    User::factory()->count(3)->create();
+    $root = Email::factory()->create();
+    Email::factory()->replyTo($root)->create();
+    Email::factory()->replyTo($root)->create();
 
-        $response = $this->get('/stats');
+    $response = $this->get('/stats');
 
-        $response->assertOk();
-        $response->assertViewIs('stats');
-        $response->assertViewHas('userCount', 3);
-        $response->assertViewHas('threadCount', 1);
-        $response->assertViewHas('emailCount', 3);
-    }
-}
+    $response->assertOk();
+    $response->assertSee('3 users');
+    $response->assertSee('1 threads');
+    $response->assertSee('3 emails');
+});

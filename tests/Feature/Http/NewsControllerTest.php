@@ -2,17 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Feature\Http;
+test('renders news page', function (): void {
+    $response = $this->get('/news');
 
-use Tests\TestCase;
-
-class NewsControllerTest extends TestCase
-{
-    public function test_renders_news_page(): void
-    {
-        $response = $this->get('/news');
-
-        $response->assertOk();
-        $response->assertViewIs('news');
-    }
-}
+    $response->assertOk();
+    $response->assertSee("What's new?", false);
+});

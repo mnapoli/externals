@@ -7,39 +7,41 @@ namespace App\Services\Email;
 use App\Models\Email;
 use App\Models\User;
 use App\Support\Email\ThreadItem;
+use App\Support\Email\ThreadSummary;
 use Illuminate\Support\Facades\DB;
 
 /**
  * Holds the multi-join thread aggregation queries that don't translate
- * cleanly to Eloquent. Returns plain arrays for thread listings (consumed
- * by views) and Email model instances for the threaded view.
+ * cleanly to Eloquent. Returns ThreadSummary value objects for thread
+ * listings and Email model instances for the threaded view.
  */
 class ThreadQuery
 {
     /**
-     * @return array<int, array<string, mixed>>
+     * @return ThreadSummary[]
      */
     public function findLatestThreads(int $page, ?User $user): array
     {
-        return $this->findThreads('', 'ORDER BY threads.lastUpdate DESC', $page, $user);
+        return $this->findThreads('', [], 'ORDER BY threads.lastUpdate DESC', $page, $user);
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return ThreadSummary[]
      */
     public function findTopThreads(int $page, ?User $user): array
     {
-        $where = 'WHERE threads.votes > 0 AND threads.lastUpdate > DATE_SUB(NOW(), INTERVAL 1 MONTH)';
+        $where = 'WHERE threads.votes > 0 AND threads.lastUpdate > ?';
+        $oneMonthAgo = now()->subMonth()->toDateTimeString();
 
-        return $this->findThreads($where, 'ORDER BY threads.votes DESC, threads.lastUpdate DESC', $page, $user);
+        return $this->findThreads($where, [$oneMonthAgo], 'ORDER BY threads.votes DESC, threads.lastUpdate DESC', $page, $user);
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return ThreadSummary[]
      */
     public function findLatestRfcThreads(): array
     {
-        return $this->findThreads("WHERE threadInfos.subject LIKE '%RFC%'", 'ORDER BY threadInfos.date DESC', 1, null);
+        return $this->findThreads("WHERE threadInfos.subject LIKE '%RFC%'", [], 'ORDER BY threadInfos.date DESC', 1, null);
     }
 
     /**
@@ -94,9 +96,13 @@ class ThreadQuery
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return ThreadSummary[]
      */
-    private function findThreads(string $where, string $orderBy, int $page, ?User $user): array
+    /**
+     * @param  list<mixed>  $whereBindings  Bindings for any `?` placeholders in $where.
+     * @return ThreadSummary[]
+     */
+    private function findThreads(string $where, array $whereBindings, string $orderBy, int $page, ?User $user): array
     {
         $page = max(1, $page);
         $offset = ($page - 1) * 20;
@@ -121,7 +127,7 @@ class ThreadQuery
                 $orderBy
                 LIMIT 20 OFFSET $offset
                 SQL;
-            $parameters = [$user->id, $user->id];
+            $parameters = [$user->id, $user->id, ...$whereBindings];
         } else {
             $query = <<<SQL
                 SELECT
@@ -129,6 +135,7 @@ class ThreadQuery
                     threadInfos.subject,
                     threadInfos.date,
                     threadInfos.fromName,
+                    threadInfos.fromEmail,
                     threads.emailCount,
                     threads.lastUpdate,
                     threads.votes,
@@ -140,9 +147,9 @@ class ThreadQuery
                 $orderBy
                 LIMIT 20 OFFSET $offset
                 SQL;
-            $parameters = [];
+            $parameters = $whereBindings;
         }
 
-        return array_map(fn($row) => (array) $row, DB::select($query, $parameters));
+        return array_map(ThreadSummary::fromRow(...), DB::select($query, $parameters));
     }
 }

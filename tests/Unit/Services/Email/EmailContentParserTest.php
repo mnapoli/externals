@@ -2,241 +2,217 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Services\Email;
-
 use App\Services\Email\EmailContentParser;
-use Tests\TestCase;
 
-class EmailContentParserTest extends TestCase
-{
-    private EmailContentParser $parser;
+beforeEach(function (): void {
+    $this->parser = $this->app->make(EmailContentParser::class);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->parser = $this->app->make(EmailContentParser::class);
-    }
-
-    public function test_should_parse_markdown(): void
-    {
-        $content = <<<'MARKDOWN'
-        This is a paragraph.
-
-            echo 'code';
-
-        > Take that!
-        MARKDOWN;
-        $expected = <<<'HTML'
-        <p>This is a paragraph.</p>
-        <pre><code>echo 'code';
-        </code></pre>
-        <blockquote>
-        <p>Take that!</p>
-        </blockquote>
-        HTML;
-        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
-    }
-
-    public function test_should_escape_html(): void
-    {
-        $content = 'Test of <strong>XSS</strong> <script>alert("xss")</script> injection';
-        $this->assertEquals(
-            '<p>Test of &lt;strong&gt;XSS&lt;/strong&gt; &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; injection</p>',
-            mb_trim($this->parser->parse($content)),
-        );
-    }
-
-    public function test_should_keep_line_breaks(): void
-    {
-        $content = <<<'MARKDOWN'
-        This is a paragraph
-        that spans on 2 lines:
+test('should parse markdown', function (): void {
+    $content = <<<'MARKDOWN'
+    This is a paragraph.
 
         echo 'code';
-        echo 'another code;
-        MARKDOWN;
-        $expected = <<<'HTML'
-        <p>This is a paragraph <br>
-        that spans on 2 lines:</p>
-        <p>echo 'code'; <br>
-        echo 'another code;</p>
-        HTML;
-        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
-    }
 
-    public function test_should_encode_html_entities(): void
-    {
-        $content = <<<'EMAIL'
-        > and the test: <hello>
+    > Take that!
+    MARKDOWN;
+    $expected = <<<'HTML'
+    <p>This is a paragraph.</p>
+    <pre><code>echo 'code';
+    </code></pre>
+    <blockquote>
+    <p>Take that!</p>
+    </blockquote>
+    HTML;
+    $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
+});
 
-        <foo></foo> test
+test('should escape html', function (): void {
+    $content = 'Test of <strong>XSS</strong> <script>alert("xss")</script> injection';
+    $this->assertEquals(
+        '<p>Test of &lt;strong&gt;XSS&lt;/strong&gt; &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; injection</p>',
+        mb_trim($this->parser->parse($content)),
+    );
+});
 
-        We use 2/3 vote for "a feature affecting the language itself".
-        EMAIL;
-        $expected = <<<'HTML'
-        <blockquote>
-        <p>and the test: &lt;hello&gt;</p>
-        </blockquote>
-        <p>&lt;foo&gt;&lt;/foo&gt; test</p>
-        <p>We use 2/3 vote for &quot;a feature affecting the language itself&quot;.</p>
-        HTML;
-        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
-    }
+test('should keep line breaks', function (): void {
+    $content = <<<'MARKDOWN'
+    This is a paragraph
+    that spans on 2 lines:
 
-    public function test_should_support_php_opening_tag(): void
-    {
-        $content = <<<'EMAIL'
-        one
+    echo 'code';
+    echo 'another code;
+    MARKDOWN;
+    $expected = <<<'HTML'
+    <p>This is a paragraph <br>
+    that spans on 2 lines:</p>
+    <p>echo 'code'; <br>
+    echo 'another code;</p>
+    HTML;
+    $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
+});
 
-        <?php
-        echo $foo;
+test('should encode html entities', function (): void {
+    $content = <<<'EMAIL'
+    > and the test: <hello>
 
-        two <? hehe
+    <foo></foo> test
 
-        > <?
-        > ini_set();
-        EMAIL;
-        $expected = <<<'HTML'
-        <p>one</p>
-        <p>&lt;?php <br>
-        echo $foo;</p>
-        <p>two &lt;? hehe</p>
-        <blockquote>
-        <p>&lt;? <br>
-        <code>ini_set()</code>;</p>
-        </blockquote>
-        HTML;
-        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
-    }
+    We use 2/3 vote for "a feature affecting the language itself".
+    EMAIL;
+    $expected = <<<'HTML'
+    <blockquote>
+    <p>and the test: &lt;hello&gt;</p>
+    </blockquote>
+    <p>&lt;foo&gt;&lt;/foo&gt; test</p>
+    <p>We use 2/3 vote for &quot;a feature affecting the language itself&quot;.</p>
+    HTML;
+    $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
+});
 
-    public function test_should_strip_mailing_list_signature(): void
-    {
-        $content = <<<'MARKDOWN'
-        Hello
+test('should support php opening tag', function (): void {
+    $content = <<<'EMAIL'
+    one
 
-        ---
-        PHP Internals - PHP Runtime Development Mailing List
-        To unsubscribe, visit: http://www.php.net/unsub.php
-        MARKDOWN;
-        $this->assertEquals('<p>Hello</p>', mb_trim($this->parser->parse($content)));
-    }
+    <?php
+    echo $foo;
 
-    public function test_should_strip_unindented_trailing_quotation_1(): void
-    {
-        $content = <<<'MARKDOWN'
-        Hello Georges
+    two <? hehe
 
-        ---
+    > <?
+    > ini_set();
+    EMAIL;
+    $expected = <<<'HTML'
+    <p>one</p>
+    <p>&lt;?php <br>
+    echo $foo;</p>
+    <p>two &lt;? hehe</p>
+    <blockquote>
+    <p>&lt;? <br>
+    <code>ini_set()</code>;</p>
+    </blockquote>
+    HTML;
+    $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
+});
 
-        From: Georges Henry gh@example.com
-        Sent: Friday, June 24, 2016 6:50:59 PM
-        To: Pierre Lefroie
-        Cc: PHP internals
-        Subject: Re: [PHP-DEV] [RFC] Asynchronous Signal Handling
-        MARKDOWN;
-        $this->assertEquals('<p>Hello Georges</p>', mb_trim($this->parser->parse($content)));
-    }
+test('should strip mailing list signature', function (): void {
+    $content = <<<'MARKDOWN'
+    Hello
 
-    public function test_should_strip_unindented_trailing_quotation_2(): void
-    {
-        $content = <<<'MARKDOWN'
-        Hello Georges
+    ---
+    PHP Internals - PHP Runtime Development Mailing List
+    To unsubscribe, visit: http://www.php.net/unsub.php
+    MARKDOWN;
+    $this->assertEquals('<p>Hello</p>', mb_trim($this->parser->parse($content)));
+});
 
-        ________________________________
-        From: Georges Henry gh@example.com
-        Sent: Friday, June 24, 2016 6:50:59 PM
-        To: Pierre Lefroie
-        Cc: PHP internals
-        Subject: Re: [PHP-DEV] [RFC] Asynchronous Signal Handling
-        MARKDOWN;
-        $this->assertEquals('<p>Hello Georges</p>', mb_trim($this->parser->parse($content)));
-    }
+test('should strip unindented trailing quotation 1', function (): void {
+    $content = <<<'MARKDOWN'
+    Hello Georges
 
-    public function test_should_strip_trailing_line_breaks(): void
-    {
-        $content = <<<'MARKDOWN'
-        Hello
+    ---
+
+    From: Georges Henry gh@example.com
+    Sent: Friday, June 24, 2016 6:50:59 PM
+    To: Pierre Lefroie
+    Cc: PHP internals
+    Subject: Re: [PHP-DEV] [RFC] Asynchronous Signal Handling
+    MARKDOWN;
+    $this->assertEquals('<p>Hello Georges</p>', mb_trim($this->parser->parse($content)));
+});
+
+test('should strip unindented trailing quotation 2', function (): void {
+    $content = <<<'MARKDOWN'
+    Hello Georges
+
+    ________________________________
+    From: Georges Henry gh@example.com
+    Sent: Friday, June 24, 2016 6:50:59 PM
+    To: Pierre Lefroie
+    Cc: PHP internals
+    Subject: Re: [PHP-DEV] [RFC] Asynchronous Signal Handling
+    MARKDOWN;
+    $this->assertEquals('<p>Hello Georges</p>', mb_trim($this->parser->parse($content)));
+});
+
+test('should strip trailing line breaks', function (): void {
+    $content = <<<'MARKDOWN'
+    Hello
 
 
-        MARKDOWN;
-        $this->assertEquals('<p>Hello</p>', mb_trim($this->parser->parse($content)));
-    }
+    MARKDOWN;
+    $this->assertEquals('<p>Hello</p>', mb_trim($this->parser->parse($content)));
+});
 
-    public function test_should_linkify_links(): void
-    {
-        $content = 'Hello http://google.com';
-        $expected = '<p>Hello <a href="http://google.com" rel="nofollow" target="_blank">http://google.com</a></p>';
-        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
-    }
+test('should linkify links', function (): void {
+    $content = 'Hello http://google.com';
+    $expected = '<p>Hello <a href="http://google.com" rel="nofollow" target="_blank">http://google.com</a></p>';
+    $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
+});
 
-    public function test_should_detect_php_functions(): void
-    {
-        $content = 'Try to call preg_match() without parameters.';
-        $expected = '<p>Try to call <code>preg_match()</code> without parameters.</p>';
-        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
-    }
+test('should detect php functions', function (): void {
+    $content = 'Try to call preg_match() without parameters.';
+    $expected = '<p>Try to call <code>preg_match()</code> without parameters.</p>';
+    $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
+});
 
-    public function test_should_detect_php_constants(): void
-    {
-        $content = 'Try to use PHP_INT_MAX and you will see.';
-        $expected = '<p>Try to use <code>PHP_INT_MAX</code> and you will see.</p>';
-        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
-    }
+test('should detect php constants', function (): void {
+    $content = 'Try to use PHP_INT_MAX and you will see.';
+    $expected = '<p>Try to use <code>PHP_INT_MAX</code> and you will see.</p>';
+    $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
+});
 
-    public function test_should_handle_leading_blockquote(): void
-    {
-        $content = <<<'MARKDOWN'
-        > But you still have to remember to use a
-        > proper escaping function.
+test('should handle leading blockquote', function (): void {
+    $content = <<<'MARKDOWN'
+    > But you still have to remember to use a
+    > proper escaping function.
 
-        I see no problem.
-        MARKDOWN;
-        $expected = <<<'HTML'
-        <blockquote>
-        <p>But you still have to remember to use a <br>
-        proper escaping function.</p>
-        </blockquote>
-        <p>I see no problem.</p>
-        HTML;
-        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
-    }
+    I see no problem.
+    MARKDOWN;
+    $expected = <<<'HTML'
+    <blockquote>
+    <p>But you still have to remember to use a <br>
+    proper escaping function.</p>
+    </blockquote>
+    <p>I see no problem.</p>
+    HTML;
+    $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
+});
 
-    public function test_should_strip_quote_headers(): void
-    {
-        $content = <<<MARKDOWN
-        On Tue, Jul 5, 2016 at 3:21 PM, Levi Morrison <levim+test@php.net> wrote:\r\n
+test('should strip quote headers', function (): void {
+    $content = <<<MARKDOWN
+    On Tue, Jul 5, 2016 at 3:21 PM, Levi Morrison <levim+test@php.net> wrote:\r\n
 
-        > But you still have to remember to use
+    > But you still have to remember to use
 
-        Test with indented quotation header:
+    Test with indented quotation header:
 
-        > Test that the blockquote is not cut in half
-        >
-        > On 30/06/16 23:46, Thomas Bley wrote:
-        >
-        > > But you still have to remember to use
-        > >
-        >>> On 30/06/16 23:46, Thomas Bley wrote:
-        >>> abc
+    > Test that the blockquote is not cut in half
+    >
+    > On 30/06/16 23:46, Thomas Bley wrote:
+    >
+    > > But you still have to remember to use
+    > >
+    >>> On 30/06/16 23:46, Thomas Bley wrote:
+    >>> abc
 
-        Trick: don't forget that On Wed, Stanislav wrote:
-        MARKDOWN;
-        $expected = <<<'HTML'
-        <blockquote>
-        <p>But you still have to remember to use</p>
-        </blockquote>
-        <p>Test with indented quotation header:</p>
-        <blockquote>
-        <p>Test that the blockquote is not cut in half</p>
-        <blockquote>
-        <p>But you still have to remember to use</p>
-        <blockquote>
-        <p>abc</p>
-        </blockquote>
-        </blockquote>
-        </blockquote>
-        <p>Trick: don't forget that On Wed, Stanislav wrote:</p>
-        HTML;
-        $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
-    }
-}
+    Trick: don't forget that On Wed, Stanislav wrote:
+    MARKDOWN;
+    $expected = <<<'HTML'
+    <blockquote>
+    <p>But you still have to remember to use</p>
+    </blockquote>
+    <p>Test with indented quotation header:</p>
+    <blockquote>
+    <p>Test that the blockquote is not cut in half</p>
+    <blockquote>
+    <p>But you still have to remember to use</p>
+    <blockquote>
+    <p>abc</p>
+    </blockquote>
+    </blockquote>
+    </blockquote>
+    <p>Trick: don't forget that On Wed, Stanislav wrote:</p>
+    HTML;
+    $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
+});

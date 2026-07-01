@@ -49,7 +49,7 @@ jobs:
                     DB_DATABASE: externals_test
                     DB_USERNAME: root
                     DB_PASSWORD: ''
-                run: vendor/bin/phpunit --colors=always
+                run: vendor/bin/pest --colors=always
 
             -   name: PHPStan
                 run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress

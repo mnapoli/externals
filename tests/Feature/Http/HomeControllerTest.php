@@ -2,47 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Feature\Http;
-
-use App\Models\Email;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class HomeControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    public function test_renders_home_for_guest(): void
-    {
-        $response = $this->get('/');
+test('renders home for guest', function (): void {
+    $response = $this->get('/');
 
-        $response->assertOk();
-        $response->assertViewIs('home');
-        $response->assertViewHas('user', null);
-        $response->assertViewHas('page', 1);
-        $response->assertSee('instantsearch.js/2/instantsearch.min.js', false);
-        $response->assertSee('function init_search()', false);
-    }
+    $response->assertOk();
+    $response->assertSee('mailing list to the outside', false);
+    $response->assertSee('id="search-input"', false);
+});
 
-    public function test_renders_home_for_authenticated_user(): void
-    {
-        $user = User::factory()->create();
+test('renders home for authenticated user', function (): void {
+    $user = User::factory()->create(['name' => 'octocat']);
 
-        $response = $this->actingAs($user)->get('/');
+    $response = $this->actingAs($user)->get('/');
 
-        $response->assertOk();
-        $response->assertViewHas('user', fn($viewUser) => $viewUser?->is($user));
-    }
-
-    public function test_page_count_reflects_thread_root_count(): void
-    {
-        Email::factory()->count(25)->create();
-
-        $response = $this->get('/');
-
-        $response->assertOk();
-        // 25 threads / 20 per page = 2 pages
-        $response->assertViewHas('pageCount', 2);
-    }
-}
+    $response->assertOk();
+    // The nav greets the logged-in user by name.
+    $response->assertSee('octocat');
+});

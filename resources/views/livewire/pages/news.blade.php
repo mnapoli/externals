@@ -1,7 +1,13 @@
-@extends('layout')
+<?php
 
-@section('content')
+use Livewire\Attributes\Layout;
+use Livewire\Volt\Component;
 
+new #[Layout('components.layouts.app')] class extends Component {
+    //
+}; ?>
+
+<div>
     <div class="page-header">
         <h1>What's new?</h1>
     </div>
@@ -55,5 +61,4 @@
 
         <p>The most interesting threads can be seen on the <a href="/top">"Top threads" page</a>.</p>
     </div>
-
-@endsection
+</div>
