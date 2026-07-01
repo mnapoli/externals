@@ -7,17 +7,18 @@ namespace App\Services\Email;
 use App\Models\Email;
 use App\Models\User;
 use App\Support\Email\ThreadItem;
+use App\Support\Email\ThreadSummary;
 use Illuminate\Support\Facades\DB;
 
 /**
  * Holds the multi-join thread aggregation queries that don't translate
- * cleanly to Eloquent. Returns plain arrays for thread listings (consumed
- * by views) and Email model instances for the threaded view.
+ * cleanly to Eloquent. Returns ThreadSummary value objects for thread
+ * listings and Email model instances for the threaded view.
  */
 class ThreadQuery
 {
     /**
-     * @return array<int, array<string, mixed>>
+     * @return ThreadSummary[]
      */
     public function findLatestThreads(int $page, ?User $user): array
     {
@@ -25,7 +26,7 @@ class ThreadQuery
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return ThreadSummary[]
      */
     public function findTopThreads(int $page, ?User $user): array
     {
@@ -35,7 +36,7 @@ class ThreadQuery
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return ThreadSummary[]
      */
     public function findLatestRfcThreads(): array
     {
@@ -94,7 +95,7 @@ class ThreadQuery
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return ThreadSummary[]
      */
     private function findThreads(string $where, string $orderBy, int $page, ?User $user): array
     {
@@ -129,6 +130,7 @@ class ThreadQuery
                     threadInfos.subject,
                     threadInfos.date,
                     threadInfos.fromName,
+                    threadInfos.fromEmail,
                     threads.emailCount,
                     threads.lastUpdate,
                     threads.votes,
@@ -143,6 +145,6 @@ class ThreadQuery
             $parameters = [];
         }
 
-        return array_map(fn($row) => (array) $row, DB::select($query, $parameters));
+        return array_map(ThreadSummary::fromRow(...), DB::select($query, $parameters));
     }
 }
