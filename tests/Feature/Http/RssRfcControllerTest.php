@@ -2,21 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Feature\Http;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class RssRfcControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    public function test_returns_rss_xml(): void
-    {
-        $response = $this->get('/rss-rfc');
+test('returns rss xml', function (): void {
+    $response = $this->get('/rss-rfc');
 
-        $response->assertOk();
-        $response->assertHeader('Content-Type', 'text/xml; charset=utf-8');
-        $this->assertStringContainsString('<rss', $response->getContent());
-    }
-}
+    $response->assertOk();
+    $response->assertHeader('Content-Type', 'text/xml; charset=utf-8');
+    $this->assertStringContainsString('<rss', $response->getContent());
+});
