@@ -22,7 +22,7 @@ class ThreadQuery
      */
     public function findLatestThreads(int $page, ?User $user): array
     {
-        return $this->findThreads('', 'ORDER BY threads.lastUpdate DESC', $page, $user);
+        return $this->findThreads('', [], 'ORDER BY threads.lastUpdate DESC', $page, $user);
     }
 
     /**
@@ -30,9 +30,10 @@ class ThreadQuery
      */
     public function findTopThreads(int $page, ?User $user): array
     {
-        $where = 'WHERE threads.votes > 0 AND threads.lastUpdate > DATE_SUB(NOW(), INTERVAL 1 MONTH)';
+        $where = 'WHERE threads.votes > 0 AND threads.lastUpdate > ?';
+        $oneMonthAgo = now()->subMonth()->toDateTimeString();
 
-        return $this->findThreads($where, 'ORDER BY threads.votes DESC, threads.lastUpdate DESC', $page, $user);
+        return $this->findThreads($where, [$oneMonthAgo], 'ORDER BY threads.votes DESC, threads.lastUpdate DESC', $page, $user);
     }
 
     /**
@@ -40,7 +41,7 @@ class ThreadQuery
      */
     public function findLatestRfcThreads(): array
     {
-        return $this->findThreads("WHERE threadInfos.subject LIKE '%RFC%'", 'ORDER BY threadInfos.date DESC', 1, null);
+        return $this->findThreads("WHERE threadInfos.subject LIKE '%RFC%'", [], 'ORDER BY threadInfos.date DESC', 1, null);
     }
 
     /**
@@ -97,7 +98,11 @@ class ThreadQuery
     /**
      * @return ThreadSummary[]
      */
-    private function findThreads(string $where, string $orderBy, int $page, ?User $user): array
+    /**
+     * @param  list<mixed>  $whereBindings  Bindings for any `?` placeholders in $where.
+     * @return ThreadSummary[]
+     */
+    private function findThreads(string $where, array $whereBindings, string $orderBy, int $page, ?User $user): array
     {
         $page = max(1, $page);
         $offset = ($page - 1) * 20;
@@ -122,7 +127,7 @@ class ThreadQuery
                 $orderBy
                 LIMIT 20 OFFSET $offset
                 SQL;
-            $parameters = [$user->id, $user->id];
+            $parameters = [$user->id, $user->id, ...$whereBindings];
         } else {
             $query = <<<SQL
                 SELECT
@@ -142,7 +147,7 @@ class ThreadQuery
                 $orderBy
                 LIMIT 20 OFFSET $offset
                 SQL;
-            $parameters = [];
+            $parameters = $whereBindings;
         }
 
         return array_map(ThreadSummary::fromRow(...), DB::select($query, $parameters));

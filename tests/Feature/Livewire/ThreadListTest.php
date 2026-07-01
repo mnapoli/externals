@@ -54,3 +54,41 @@ test('clicking the active vote again removes it', function (): void {
 
     $this->assertSame(0, (int) Vote::where('userId', $user->id)->where('emailNumber', 42)->sum('value'));
 });
+
+test('top mode lists recently updated threads with positive votes', function (): void {
+    Email::factory()->create([
+        'number' => 42,
+        'subject' => 'Voted recent thread',
+        'fetchDate' => now()->subDays(3),
+    ]);
+    Vote::factory()->create(['userId' => User::factory()->create()->id, 'emailNumber' => 42, 'value' => 1]);
+    app(RefreshAllThreads::class)->handle();
+
+    Volt::test('thread-list', ['mode' => 'top'])
+        ->assertSee('Voted recent thread');
+});
+
+test('top mode excludes threads without positive votes', function (): void {
+    Email::factory()->create([
+        'number' => 42,
+        'subject' => 'Unvoted recent thread',
+        'fetchDate' => now()->subDays(3),
+    ]);
+    app(RefreshAllThreads::class)->handle();
+
+    Volt::test('thread-list', ['mode' => 'top'])
+        ->assertDontSee('Unvoted recent thread');
+});
+
+test('top mode excludes voted threads older than a month', function (): void {
+    Email::factory()->create([
+        'number' => 42,
+        'subject' => 'Voted stale thread',
+        'fetchDate' => now()->subMonths(2),
+    ]);
+    Vote::factory()->create(['userId' => User::factory()->create()->id, 'emailNumber' => 42, 'value' => 1]);
+    app(RefreshAllThreads::class)->handle();
+
+    Volt::test('thread-list', ['mode' => 'top'])
+        ->assertDontSee('Voted stale thread');
+});
