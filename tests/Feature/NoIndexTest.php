@@ -2,59 +2,44 @@
 
 declare(strict_types=1);
 
-namespace Feature;
-
-use App\Providers\AppServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\View;
-use Tests\TestCase;
 
-class NoIndexTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    public function test_noindex_meta_tag_is_rendered_when_enabled(): void
-    {
-        View::share('noIndex', true);
+test('noindex meta tag is rendered when enabled', function (): void {
+    config()->set('externals.no_index', true);
 
-        $response = $this->get('/');
+    $response = $this->get('/');
 
-        $response->assertOk();
-        $response->assertSee('<meta name="robots" content="noindex">', false);
-    }
+    $response->assertOk();
+    $response->assertSee('<meta name="robots" content="noindex">', false);
+});
 
-    public function test_noindex_meta_tag_is_not_rendered_when_disabled(): void
-    {
-        View::share('noIndex', false);
+test('noindex meta tag is not rendered when disabled', function (): void {
+    config()->set('externals.no_index', false);
 
-        $response = $this->get('/');
+    $response = $this->get('/');
 
-        $response->assertOk();
-        $response->assertDontSee('<meta name="robots" content="noindex">', false);
-    }
+    $response->assertOk();
+    $response->assertDontSee('<meta name="robots" content="noindex">', false);
+});
 
-    public function test_noindex_config_truthy_shares_true_to_views(): void
-    {
-        config()->set('externals.no_index', '1');
-        $this->app->register(AppServiceProvider::class, force: true);
+test('noindex config truthy renders meta tag', function (): void {
+    config()->set('externals.no_index', '1');
 
-        $this->assertTrue(View::shared('noIndex'));
-    }
+    $this->get('/')->assertSee('<meta name="robots" content="noindex">', false);
+});
 
-    public function test_noindex_config_falsy_shares_false_to_views(): void
-    {
-        config()->set('externals.no_index', '0');
-        $this->app->register(AppServiceProvider::class, force: true);
+test('noindex config falsy does not render meta tag', function (): void {
+    config()->set('externals.no_index', '0');
 
-        $this->assertFalse(View::shared('noIndex'));
-    }
+    $this->get('/')->assertDontSee('<meta name="robots" content="noindex">', false);
+});
 
-    public function test_noindex_defaults_to_false_when_env_var_is_absent(): void
-    {
-        // Matches the production configuration where GOOGLE_NO_INDEX is not set.
-        // The default of `env('GOOGLE_NO_INDEX', false)` resolves to false.
-        $config = require config_path('externals.php');
+test('noindex defaults to false when env var is absent', function (): void {
+    // Matches the production configuration where GOOGLE_NO_INDEX is not set.
+    // The default of `env('GOOGLE_NO_INDEX', false)` resolves to false.
+    $config = require config_path('externals.php');
 
-        $this->assertFalse($config['no_index']);
-    }
-}
+    $this->assertFalse($config['no_index']);
+});

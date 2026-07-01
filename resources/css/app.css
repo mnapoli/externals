@@ -1,12 +1,17 @@
 @import 'tailwindcss';
+@import '../../vendor/livewire/flux/dist/flux.css';
 
 @source '../**/*.blade.php';
 @source '../**/*.js';
+@source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 
 @utility container {
     margin-inline: auto;
     padding-inline: 1rem;
 }
+
+/* Alpine: hide elements until Alpine initialises */
+[x-cloak] { display: none !important; }
 
 /* https://stackoverflow.com/questions/71074/how-to-remove-firefoxs-dotted-outline-on-buttons-as-well-as-links */
 :focus { outline: none; }
