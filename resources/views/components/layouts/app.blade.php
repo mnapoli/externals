@@ -37,6 +37,10 @@
 </head>
 <body class="antialiased">
 
+    <div id="php-survey-banner" class="w-full px-5 py-3 bg-[#62a66d] text-white text-base font-semibold leading-snug text-center shadow-[0_2px_6px_rgba(0,0,0,0.18)]">
+        <a href="https://surveys.jetbrains.com/s3/ex-state-of-php-2026" target="_blank" rel="noopener noreferrer" class="underline underline-offset-[3px]">Take the State of PHP 2026 Survey →</a>
+    </div>
+
     <nav class="bg-white text-gray-600 font-light w-full shadow">
         <div class="container max-w-4xl flex items-center">
             <a class="block px-1 py-3 mr-4" href="/"><img src="/assets/images/logo.svg" alt="externals" class="w-10 sm:w-16"></a>
