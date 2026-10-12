@@ -104,5 +104,6 @@ constructs:
             '/build/*': public/build
             '/favicon.ico': public/favicon.ico
             '/robots.txt': public/robots.txt
+            '/llms.txt': public/llms.txt
         domain: ${param:domain}
         certificate: arn:aws:acm:us-east-1:416566615250:certificate/0f28e63d-d3a9-4578-9f8b-14347bfe8326

@@ -1,0 +1,42 @@
+# externals.io
+
+> externals.io is a read-only web mirror of php.internals, the mailing list where PHP core developers discuss RFCs and the development of the PHP language. Emails are synchronized from the official archive every 15 minutes and grouped into threads.
+
+- Every email has a number: the NNTP article number in the official archive (`https://news-web.php.net/php.internals/{number}`).
+- A thread is identified by the number of its first email. Requesting a reply's number redirects to the thread root.
+- RFC discussions usually have `[RFC]`, `[VOTE]` or `[DISCUSSION]` in the subject. The RFCs themselves live at https://wiki.php.net/rfc.
+- The site is read-only: to take part in a discussion, reply by email to internals@lists.php.net.
+- Everything below is public and needs no authentication.
+
+## Threads
+
+- [Thread as Markdown](https://externals.io/message/{number}.md): the full thread (all messages, in chronological order) as Markdown. Sending `Accept: text/markdown` to `/message/{number}` returns the same content.
+- [Thread as HTML](https://externals.io/message/{number}): the thread page for humans.
+- [Latest threads](https://externals.io/?page=1): threads by latest activity, 20 per page (`?page=N`).
+- [Top threads](https://externals.io/top?page=1): most upvoted threads of the last month.
+
+## Search
+
+- [Search as Markdown](https://externals.io/search.md?q={query}): full-text search over email subjects and content, with links to the Markdown threads.
+- [Search as HTML](https://externals.io/search?q={query}&page=1): the same results for humans.
+- All search endpoints accept `page=N` (20 results per page) and `since` / `until` dates (`YYYY-MM-DD`). Results are individual emails: open the thread and find the message by its number.
+
+## JSON API
+
+Meant for agents and personal tools: please don't bulk download the archive through it.
+
+- [API index](https://externals.io/api): lists the endpoints and their parameters.
+- [List threads](https://externals.io/api/threads?sort=latest&page=1): `sort` is `latest` or `top`, 20 threads per page.
+- [Get a thread](https://externals.io/api/threads/{number}): the thread and all its messages, with message content as Markdown.
+- [Search](https://externals.io/api/search?q={query}&page=1): search results as JSON.
+
+## Feeds
+
+- [Latest emails (RSS)](https://externals.io/rss)
+- [Latest RFC threads (RSS)](https://externals.io/rss-rfc)
+- [Sitemap](https://externals.io/sitemap.xml): every thread with its last update date.
+
+## Optional
+
+- [Original archive](https://news-web.php.net/php.internals): the official php.internals archive on the PHP NNTP server.
+- [Source code](https://github.com/mnapoli/externals): externals.io is open source.

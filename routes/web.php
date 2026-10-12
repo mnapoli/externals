@@ -10,6 +10,7 @@ use App\Http\Controllers\RssController;
 use App\Http\Controllers\RssRfcController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SearchMarkdownController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ThreadMarkdownController;
 use App\Http\Middleware\ServeThreadMarkdown;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,10 @@ Route::get('/search.md', SearchMarkdownController::class)->withoutMiddleware('we
 
 Route::get('/rss', RssController::class);
 Route::get('/rss-rfc', RssRfcController::class);
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index']);
+Route::get('/sitemaps/pages.xml', [SitemapController::class, 'pages']);
+Route::get('/sitemaps/threads-{page}.xml', [SitemapController::class, 'threads'])->whereNumber('page');
 
 // Backward compatibility with old thread URLs
 Route::get('/thread/{id}', LegacyThreadRedirectController::class)->whereNumber('id');
