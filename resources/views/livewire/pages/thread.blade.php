@@ -64,6 +64,7 @@ new #[Layout('components.layouts.app')] class extends Component {
 
 @push('head')
     <script type="application/ld+json">{!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_THROW_ON_ERROR) !!}</script>
+    <link rel="alternate" type="text/markdown" href="/message/{{ $number }}.md" title="Thread as Markdown">
 @endpush
 
 <div x-data="{
