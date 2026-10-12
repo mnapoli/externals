@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SearchRequest;
 use App\Services\Search\EmailSearch;
 use App\Services\Search\SearchResults;
+use App\Support\Markdown\AgentLinks;
 use Illuminate\Http\Response;
 
 class SearchMarkdownController extends Controller
@@ -16,7 +17,8 @@ class SearchMarkdownController extends Controller
         $results = $request->results($search);
         if (! $results) {
             $markdown = "# Search\n\nSearch the PHP internals mailing list: `/search.md?q=your+query`."
-                . " Optional parameters: `page`, `since` and `until` (YYYY-MM-DD).\n";
+                . " Optional parameters: `page`, `since` and `until` (YYYY-MM-DD).\n\n"
+                . AgentLinks::markdown() . "\n";
 
             return $this->markdown($markdown);
         }
@@ -26,6 +28,8 @@ class SearchMarkdownController extends Controller
             '',
             "{$results->totalHits} results, page {$results->page} of " . max(1, $results->pageCount) . '.'
                 . ' Each result is a message: its link is the whole thread as Markdown, find the message by its number.',
+            '',
+            AgentLinks::markdown(),
             '',
         ];
         foreach ($results->hits as $i => $hit) {

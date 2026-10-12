@@ -74,6 +74,7 @@ test('search results as markdown', function (): void {
     $response->assertHeader('Content-Type', 'text/markdown; charset=utf-8');
     expect($response->getContent())
         ->toStartWith("# Search results for \"enum\"\n")
+        ->toContain('More for agents: search with ' . url('/search.md'))
         ->toContain('1. [[RFC] Something <new>](' . url('/message/101.md') . ') — message #101 by Alice on 2026-01-02')
         ->toContain('   > the **enum** <proposal>')
         ->toContain('Next page: ' . url('/search.md?q=enum&page=2'));
@@ -84,7 +85,7 @@ test('markdown search without a query explains how to search', function (): void
     $response = $this->get('/search.md');
 
     $response->assertOk();
-    expect($response->getContent())->toContain('/search.md?q=');
+    expect($response->getContent())->toContain('/search.md?q=')->toContain('JSON API at ' . url('/api'));
 });
 
 test('markdown search rejects invalid parameters', function (): void {
