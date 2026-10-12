@@ -22,13 +22,7 @@ class EmailContentParser
         // @see https://github.com/mnapoli/externals/issues/15
         $content = str_replace('<?', '&lt;?', $content);
 
-        $content = $this->stripMailingListFooter($content);
-        $content = mb_rtrim($content, " \t\n\r\0\x0B->");
-        $content = $this->stripTrailingUnindentedQuotation($content);
-        $content = $this->stripQuoteHeaders($content);
-
-        $content = $this->parsePhpFunctions($content);
-        $content = $this->parsePhpConstants($content);
+        $content = $this->toMarkdown($content);
 
         try {
             $content = (string) $this->markdownParser->convert($content);
@@ -41,6 +35,22 @@ class EmailContentParser
         }
 
         return $this->urlHighlight->highlightUrls($content);
+    }
+
+    /**
+     * Cleans up the plain text of an email (mailing list footer, quote headers…)
+     * and returns it as Markdown, without rendering it to HTML.
+     */
+    public function toMarkdown(string $content): string
+    {
+        $content = $this->stripMailingListFooter($content);
+        $content = mb_rtrim($content, " \t\n\r\0\x0B->");
+        $content = $this->stripTrailingUnindentedQuotation($content);
+        $content = $this->stripQuoteHeaders($content);
+
+        $content = $this->parsePhpFunctions($content);
+
+        return $this->parsePhpConstants($content);
     }
 
     private function parsePhpFunctions(string $content): string

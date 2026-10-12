@@ -8,6 +8,8 @@ use App\Http\Controllers\LegacyThreadRedirectController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\RssController;
 use App\Http\Controllers\RssRfcController;
+use App\Http\Controllers\ThreadMarkdownController;
+use App\Http\Middleware\ServeThreadMarkdown;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -19,7 +21,8 @@ Volt::route('/stats', 'pages.stats');
 Route::get('/login', GithubController::class)->name('login');
 Route::post('/logout', LogoutController::class)->name('logout');
 
-Volt::route('/message/{number}', 'pages.thread')->whereNumber('number');
+Volt::route('/message/{number}', 'pages.thread')->whereNumber('number')->middleware(ServeThreadMarkdown::class);
+Route::get('/message/{number}.md', ThreadMarkdownController::class)->whereNumber('number')->withoutMiddleware('web');
 Route::get('/email/{number}/source', EmailSourceController::class)->whereNumber('number')->middleware('auth');
 
 Route::get('/rss', RssController::class);

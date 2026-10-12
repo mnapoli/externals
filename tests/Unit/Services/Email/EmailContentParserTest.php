@@ -216,3 +216,23 @@ test('should strip quote headers', function (): void {
     HTML;
     $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
 });
+
+test('should clean up content without rendering it to html', function (): void {
+    $content = <<<'TEXT'
+    On Mon, 1 Jan 2026, Alice wrote:
+    > Take that!
+
+    Use strlen() here.
+
+    --
+    PHP Internals - PHP Runtime Development Mailing List
+    To unsubscribe, visit: http://www.php.net/unsub.php
+    TEXT;
+    $expected = <<<'MARKDOWN'
+
+    > Take that!
+
+    Use `strlen()` here.
+    MARKDOWN;
+    $this->assertEquals($expected, $this->parser->toMarkdown($content));
+});
