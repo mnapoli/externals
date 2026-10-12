@@ -7,7 +7,9 @@ namespace App\Providers;
 use Algolia\AlgoliaSearch\Api\SearchClient;
 use App\Services\Rss\RssBuilder;
 use App\Services\Rss\RssRfcBuilder;
+use App\Services\Search\AlgoliaEmailSearch;
 use App\Services\Search\AlgoliaSearchIndex;
+use App\Services\Search\EmailSearch;
 use App\Services\Search\ReadOnlySearchIndex;
 use App\Services\Search\SearchIndex;
 use Illuminate\Support\ServiceProvider;
@@ -53,6 +55,11 @@ class AppServiceProvider extends ServiceProvider
                 (string) config('services.algolia.index_prefix'),
             );
         });
+
+        $this->app->singleton(EmailSearch::class, fn($app) => new AlgoliaEmailSearch(
+            $app->make(SearchClient::class),
+            (string) config('services.algolia.index_prefix'),
+        ));
 
         $this->app->singleton(RssBuilder::class, fn() => new RssBuilder((string) config('externals.rss_host')));
         $this->app->singleton(RssRfcBuilder::class, fn() => new RssRfcBuilder((string) config('externals.rss_host')));
