@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Email;
 
 use App\Models\Email;
+use App\Support\Markdown\AgentLinks;
 use Illuminate\Support\Collection;
 use ZBateson\MailMimeParser\MailMimeParser;
 
@@ -34,6 +35,7 @@ class ThreadMarkdown
             '- Started by ' . $root->from->getNameOrEmail() . ' on ' . $root->date->format(DATE_ATOM),
             '- Messages: ' . $emails->count(),
             '- Reply by email to internals@lists.php.net',
+            '- ' . AgentLinks::markdown(),
         ];
 
         foreach ($emails as $email) {
