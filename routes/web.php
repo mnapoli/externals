@@ -37,4 +37,5 @@ Route::get('/rss-rfc', RssRfcController::class);
 Route::get('/thread/{id}', LegacyThreadRedirectController::class)->whereNumber('id');
 
 // Catch-all "not found" page
-Route::fallback(fn() => response()->view('errors.404', [], 404));
+// abort() lets the exception handler render JSON for /api/* and HTML otherwise
+Route::fallback(fn() => abort(404));
