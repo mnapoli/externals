@@ -13,6 +13,8 @@ return [
     'algolia' => [
         'app_id' => env('ALGOLIA_APP_ID', ''),
         'api_key' => env('ALGOLIA_API_KEY', ''),
+        // Only needed to change the index settings (externals:configure-search-index)
+        'admin_api_key' => env('ALGOLIA_ADMIN_API_KEY', ''),
         'index_prefix' => env('ALGOLIA_INDEX_PREFIX', 'dev_'),
     ],
 
