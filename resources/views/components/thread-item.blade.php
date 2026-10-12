@@ -16,8 +16,8 @@
             <img class="hidden sm:block absolute top-0 right-0 mt-1 mr-2 rounded-full border border-gray-100 shadow-lg w-16 h-16 text-white bg-white" src="https://unavatar.io/{{ $email->from->email }}"
                  alt="{{ $email->from->getNameOrEmail() }}" title="{{ $email->from->getNameOrEmail() }}">
         @endif
-        <a class="underline" href="#{{ $email->number }}" title="{{ $email->date->format('Y-m-d H:i') }}">{{ \Carbon\Carbon::instance($email->date)->diffForHumans() }}</a>
-        by <strong>{{ $email->from->getNameOrEmail() }}</strong>
+        <a class="underline" href="#{{ $email->number }}" title="{{ $email->date->format('Y-m-d H:i') }}"><time datetime="{{ $email->date->format(DATE_ATOM) }}">{{ \Carbon\Carbon::instance($email->date)->diffForHumans() }}</time></a>
+        by <strong class="author">{{ $email->from->getNameOrEmail() }}</strong>
         <span class="text-xs text-gray-500">
             — <a href="/email/{{ $email->number }}/source" target="_blank" rel="nofollow">view source</a>
             — <a href="{{ \App\Support\Email\EmailReplyUrl::build($email) }}" rel="nofollow">reply</a>

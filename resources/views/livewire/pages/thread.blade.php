@@ -4,6 +4,7 @@ use App\Actions\MarkEmailAsRead;
 use App\Exceptions\NotFoundException;
 use App\Models\Email;
 use App\Services\Email\ThreadQuery;
+use App\Support\Email\ThreadStructuredData;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
@@ -54,9 +55,16 @@ new #[Layout('components.layouts.app')] class extends Component {
      */
     public function with(): array
     {
-        return ['thread' => $this->thread];
+        return [
+            'thread' => $this->thread,
+            'structuredData' => ThreadStructuredData::build($this->thread, $this->number, $this->subject),
+        ];
     }
 }; ?>
+
+@push('head')
+    <script type="application/ld+json">{!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_THROW_ON_ERROR) !!}</script>
+@endpush
 
 <div x-data="{
         ids: [],

@@ -10,11 +10,6 @@ new #[Layout('components.layouts.app')] class extends Component {
 <div>
     <header class="sm:text-lg text-gray-500 font-light py-4 sm:py-8">
         <p>Opening PHP's <a class="underline" href="https://news-web.php.net/php.internals" target="_blank" rel="noreferrer noopener">#internals</a> mailing list to the outside.</p>
-        <noscript>
-            Your browser either doesn't support javascript or it is disabled.
-            This website does not work without javascript.
-            Make sure to activate it or consider switching to a modern browser.
-        </noscript>
     </header>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.css">
