@@ -85,3 +85,62 @@ test('serves html on the thread URL to browsers', function (): void {
     $response->assertHeader('Vary', 'Accept');
     $response->assertSee('<link rel="alternate" type="text/markdown" href="/message/100.md"', false);
 });
+
+/**
+ * A thread of 30 emails, numbered 100 to 129 in chronological order.
+ */
+function longThread(): void
+{
+    $root = Email::factory()->create(['number' => 100, 'date' => '2026-01-01 00:00:00']);
+    for ($i = 1; $i < 30; $i++) {
+        Email::factory()->replyTo($root)->create(['number' => 100 + $i, 'date' => "2026-01-01 00:$i:00"]);
+    }
+}
+
+test('paginates long threads', function (): void {
+    longThread();
+
+    $first = $this->get('/message/100.md')->assertOk()->getContent();
+    expect($first)
+        ->toContain('- Messages: 30')
+        ->toContain('- Page 1 of 2: messages 1 to 25 (25 per page, add `?page=N` to the URL)')
+        ->toContain('- Next page: ' . url('/message/100.md?page=2'))
+        ->toContain('## #124 ')
+        ->not->toContain('## #125 ')
+        ->toEndWith('Next page: ' . url('/message/100.md?page=2') . "\n");
+
+    $second = $this->get('/message/100.md?page=2')->assertOk()->getContent();
+    expect($second)
+        ->toContain('- Page 2 of 2: messages 26 to 30')
+        ->toContain('## #125 ')
+        ->toContain('## #129 ')
+        ->not->toContain('## #124 ')
+        ->not->toContain('Next page');
+});
+
+test('short threads have no pagination', function (): void {
+    Email::factory()->create(['number' => 100]);
+
+    expect($this->get('/message/100.md')->getContent())->not->toContain('Page 1 of');
+});
+
+test('redirects replies to the page that contains them', function (): void {
+    longThread();
+
+    $this->get('/message/110.md')->assertRedirect('/message/100.md');
+    $this->get('/message/127.md')->assertRedirect('/message/100.md?page=2');
+});
+
+test('returns 404 for pages that do not exist', function (string $page): void {
+    longThread();
+
+    $this->get("/message/100.md?page=$page")->assertNotFound();
+})->with(['0', '3', 'abc']);
+
+test('paginates the markdown served on the thread URL', function (): void {
+    longThread();
+
+    $response = $this->get('/message/100?page=2', ['Accept' => 'text/markdown']);
+
+    expect($response->getContent())->toContain('- Page 2 of 2');
+});

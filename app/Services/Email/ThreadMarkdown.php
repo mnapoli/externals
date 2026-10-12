@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Email;
 
+use App\Exceptions\NotFoundException;
 use App\Models\Email;
 use App\Support\Markdown\AgentLinks;
 use Illuminate\Support\Collection;
@@ -14,18 +15,61 @@ use ZBateson\MailMimeParser\MailMimeParser;
  *
  * Messages are listed flat in chronological order (each one says which message
  * it replies to), which reads better than a nested tree in plain text.
+ *
+ * Long threads are paginated: agents' fetch tools truncate long documents.
  */
 class ThreadMarkdown
 {
+    public const int PER_PAGE = 25;
+
     public function __construct(
         private readonly EmailContentParser $contentParser,
     ) {}
 
-    public function render(Email $root): string
+    /**
+     * @param  Collection<int, Email>  $emails
+     */
+    public static function pageCount(Collection $emails): int
     {
-        $emails = Email::where('threadId', $root->threadId)->orderBy('date')->get();
+        return max(1, (int) ceil($emails->count() / self::PER_PAGE));
+    }
+
+    /**
+     * The page of the thread that contains the given email.
+     *
+     * @param  Collection<int, Email>  $emails
+     */
+    public static function pageOf(Collection $emails, int $number): int
+    {
+        $position = $emails->search(fn(Email $email) => $email->number === $number);
+
+        return $position === false ? 1 : intdiv($position, self::PER_PAGE) + 1;
+    }
+
+    /**
+     * All the emails of the thread, in chronological order.
+     *
+     * @return Collection<int, Email>
+     */
+    public function emails(Email $root): Collection
+    {
+        return Email::where('threadId', $root->threadId)->orderBy('date')->orderBy('number')->get();
+    }
+
+    /**
+     * @throws NotFoundException  When the page doesn't exist.
+     */
+    public function render(Email $root, int $page = 1): string
+    {
+        $emails = $this->emails($root);
         $numbersById = $emails->pluck('number', 'id');
         $rootNumber = $root->number;
+        $pageCount = self::pageCount($emails);
+        if ($page < 1 || $page > $pageCount) {
+            throw new NotFoundException("Page $page of thread $rootNumber does not exist");
+        }
+        $pageEmails = $emails->forPage($page, self::PER_PAGE);
+        $nextPageUrl = $page < $pageCount ? url("/message/$rootNumber.md?page=" . ($page + 1)) : null;
 
         $lines = [
             '# ' . $root->subject,
@@ -34,15 +78,35 @@ class ThreadMarkdown
             '- Original archive: https://news-web.php.net/php.internals/' . $rootNumber,
             '- Started by ' . $root->from->getNameOrEmail() . ' on ' . $root->date->format(DATE_ATOM),
             '- Messages: ' . $emails->count(),
-            '- Reply by email to internals@lists.php.net',
-            '- ' . AgentLinks::markdown(),
         ];
+        if ($pageCount > 1) {
+            $lines[] = sprintf(
+                '- Page %d of %d: messages %d to %d (%d per page, add `?page=N` to the URL)',
+                $page,
+                $pageCount,
+                ($page - 1) * self::PER_PAGE + 1,
+                ($page - 1) * self::PER_PAGE + $pageEmails->count(),
+                self::PER_PAGE,
+            );
+        }
+        if ($nextPageUrl) {
+            $lines[] = '- Next page: ' . $nextPageUrl;
+        }
+        $lines[] = '- Reply by email to internals@lists.php.net';
+        $lines[] = '- ' . AgentLinks::markdown();
 
-        foreach ($emails as $email) {
+        foreach ($pageEmails as $email) {
             $lines[] = '';
             $lines[] = '---';
             $lines[] = '';
             $lines[] = $this->renderEmail($email, $rootNumber, $numbersById);
+        }
+
+        if ($nextPageUrl) {
+            $lines[] = '';
+            $lines[] = '---';
+            $lines[] = '';
+            $lines[] = 'Next page: ' . $nextPageUrl;
         }
 
         return implode("\n", $lines) . "\n";

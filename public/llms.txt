@@ -10,7 +10,7 @@
 
 ## Threads
 
-- [Thread as Markdown](https://externals.io/message/{number}.md): the full thread (all messages, in chronological order) as Markdown. Sending `Accept: text/markdown` to `/message/{number}` returns the same content.
+- [Thread as Markdown](https://externals.io/message/{number}.md): the thread (messages in chronological order) as Markdown. Sending `Accept: text/markdown` to `/message/{number}` returns the same content. Long threads are split in pages of 25 messages (`?page=N`, the header gives the page count and the next page URL); a reply's number redirects to the page that contains it.
 - [Thread as HTML](https://externals.io/message/{number}): the thread page for humans.
 - [Latest threads](https://externals.io/?page=1): threads by latest activity, 20 per page (`?page=N`).
 - [Top threads](https://externals.io/top?page=1): most upvoted threads of the last month.
@@ -27,7 +27,7 @@ Meant for agents and personal tools: please don't bulk download the archive thro
 
 - [API index](https://externals.io/api): lists the endpoints and their parameters.
 - [List threads](https://externals.io/api/threads?sort=latest&page=1): `sort` is `latest` or `top`, 20 threads per page.
-- [Get a thread](https://externals.io/api/threads/{number}): the thread and all its messages, with message content as Markdown.
+- [Get a thread](https://externals.io/api/threads/{number}): the thread and its messages, with message content as Markdown. Messages are paginated like the Markdown thread (`?page=N`, see `meta` and `links`).
 - [Search](https://externals.io/api/search?q={query}&page=1): search results as JSON.
 
 ## Feeds

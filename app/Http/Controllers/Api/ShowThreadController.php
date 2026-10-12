@@ -11,11 +11,16 @@ use App\Models\Thread;
 use App\Services\Email\ThreadMarkdown;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class ShowThreadController extends Controller
 {
-    public function __invoke(int $number, ThreadMarkdown $markdown): JsonResponse|RedirectResponse
+    public function __invoke(int $number, Request $request, ThreadMarkdown $markdown): JsonResponse|RedirectResponse
     {
+        $validated = $request->validate([
+            'page' => ['sometimes', 'integer', 'min:1'],
+        ]);
+
         $email = Email::where('number', $number)->first();
         if (! $email) {
             throw new NotFoundException("Email $number was not found");
@@ -24,15 +29,23 @@ class ShowThreadController extends Controller
         if (! $email->isThreadRoot()) {
             $root = Email::find($email->threadId);
             if ($root) {
-                return redirect("/api/threads/{$root->number}");
+                // Return the page of the thread that contains this email
+                $page = ThreadMarkdown::pageOf($markdown->emails($root), $number);
+
+                return redirect("/api/threads/{$root->number}" . ($page > 1 ? "?page=$page" : ''));
             }
             // Root message not found — return the thread from this message anyway
         }
 
-        $emails = Email::where('threadId', $email->threadId)->orderBy('date')->get();
+        $emails = $markdown->emails($email);
         $numbersById = $emails->pluck('number', 'id');
+        $page = (int) ($validated['page'] ?? 1);
+        $pageCount = ThreadMarkdown::pageCount($emails);
+        if ($page > $pageCount) {
+            throw new NotFoundException("Page $page of thread $number does not exist");
+        }
 
-        $messages = $emails->map(fn(Email $message) => [
+        $messages = $emails->forPage($page, ThreadMarkdown::PER_PAGE)->values()->map(fn(Email $message) => [
             'number' => $message->number,
             'author' => $message->from->getNameOrEmail(),
             'date' => $message->date->format(DATE_ATOM),
@@ -53,6 +66,15 @@ class ShowThreadController extends Controller
                 'markdownUrl' => url("/message/$number.md"),
                 'archiveUrl' => "https://news-web.php.net/php.internals/$number",
                 'messages' => $messages,
+            ],
+            'meta' => [
+                'page' => $page,
+                'perPage' => ThreadMarkdown::PER_PAGE,
+                'pageCount' => $pageCount,
+            ],
+            'links' => [
+                'prev' => $page > 1 ? url("/api/threads/$number?page=" . ($page - 1)) : null,
+                'next' => $page < $pageCount ? url("/api/threads/$number?page=" . ($page + 1)) : null,
             ],
         ])->header('Cache-Control', 'public, max-age=300');
     }
