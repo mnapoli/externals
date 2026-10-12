@@ -8,6 +8,8 @@ use App\Http\Controllers\LegacyThreadRedirectController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\RssController;
 use App\Http\Controllers\RssRfcController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SearchMarkdownController;
 use App\Http\Controllers\ThreadMarkdownController;
 use App\Http\Middleware\ServeThreadMarkdown;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +26,9 @@ Route::post('/logout', LogoutController::class)->name('logout');
 Volt::route('/message/{number}', 'pages.thread')->whereNumber('number')->middleware(ServeThreadMarkdown::class);
 Route::get('/message/{number}.md', ThreadMarkdownController::class)->whereNumber('number')->withoutMiddleware('web');
 Route::get('/email/{number}/source', EmailSourceController::class)->whereNumber('number')->middleware('auth');
+
+Route::get('/search', SearchController::class);
+Route::get('/search.md', SearchMarkdownController::class)->withoutMiddleware('web');
 
 Route::get('/rss', RssController::class);
 Route::get('/rss-rfc', RssRfcController::class);

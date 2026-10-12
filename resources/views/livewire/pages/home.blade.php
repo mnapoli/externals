@@ -14,11 +14,12 @@ new #[Layout('components.layouts.app')] class extends Component {
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.css">
     {{-- Search --}}
-    <div class="mb-4 relative">
-        <input id="search-input" type="text" placeholder="Search..."
+    {{-- The form is the fallback without JavaScript: pressing Enter opens the full results --}}
+    <form action="/search" method="get" class="mb-4 relative">
+        <input id="search-input" type="text" name="q" placeholder="Search..."
                class="w-full px-4 py-2 transition border-b border-transparent border-gray-200 focus:border-red-400">
         <a class="absolute right-0 top-0 mt-4" href="https://www.algolia.com/" target="_blank" rel="noreferrer noopener"><img class="w-10 text-gray-500 opacity-50" src="/assets/images/algolia.svg" alt="Algolia"></a>
-    </div>
+    </form>
     <div id="search-container" class="px-6 py-4 bg-white rounded-lg border border-gray-50 shadow-lg">
         <h3 class="font-bold text-lg mb-4">Search results</h3>
         <ul id="search-results" class="list-unstyled"></ul>
