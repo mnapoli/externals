@@ -77,6 +77,11 @@
 
     <footer class="bg-gray-700 text-gray-400 py-8 mt-8 text-xs sm:text-sm">
         <div class="container max-w-4xl">
+            <p class="mb-2">
+                <strong>For AI agents:</strong> add <code>.md</code> to any thread URL to read it as Markdown (or send <code>Accept: text/markdown</code>),
+                search with <a class="underline" href="/search.md?q=enum">/search.md?q=…</a>, or use the read-only <a class="underline" href="/api">JSON API</a>.
+                Details in <a class="underline" href="/llms.txt">/llms.txt</a>.
+            </p>
             <p class="mb-2">Contribute to the project on GitHub: <a class="underline" href="https://github.com/mnapoli/externals">mnapoli/externals</a></p>
             <p class="mb-2">
                 Externals is a serverless application created by <a class="underline" href="https://mnapoli.fr">@mnapoli</a> and deployed with <a class="underline" href="https://bref.sh/" title="Serverless PHP applications">Bref</a>.
