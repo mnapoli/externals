@@ -1,4 +1,5 @@
 @php($defaultTitle = "#externals - Opening PHP's #internals to the outside")
+@php($canonicalUrl = rtrim(config('app.url'), '/') . '/' . ltrim(request()->path(), '/') . (request()->integer('page') > 1 ? '?page=' . request()->integer('page') : ''))
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +9,7 @@
     <link rel="alternate" type="application/rss+xml" href="/rss-rfc" title="Latest RFC Threads"/>
 
     <title>{{ $title ?? $defaultTitle }}</title>
+    <link rel="canonical" href="{{ $canonicalUrl }}">
 
     <meta name="google-site-verification" content="hTdWskuVWUMoQAWfM3WcbBH16xhAxqzOyjfJbQmRor0" />
 
@@ -22,7 +24,7 @@
 
     <meta name="og:title" content="{{ $title ?? $defaultTitle }}">
     <meta name="og:type" content="website">
-    <meta name="og:url" content="https://externals.io/">
+    <meta name="og:url" content="{{ $canonicalUrl }}">
     <meta name="og:image" content="/assets/images/apple-touch-icon.png">
     <meta name="og:description" content="#externals - Opening PHP's #internals to the outside">
 
@@ -34,6 +36,7 @@
     @endif
 
     <script async defer data-domain="externals.io" src="https://plausible.io/js/plausible.js"></script>
+    @stack('head')
 </head>
 <body class="antialiased">
 
