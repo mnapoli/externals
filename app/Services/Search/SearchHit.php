@@ -17,7 +17,10 @@ class SearchHit
     public const string HIGHLIGHT_END = "\u{E001}";
 
     public function __construct(
+        /** Number of the email */
         public readonly int $number,
+        /** Number of the first email of its thread, the one in thread URLs */
+        public readonly int $threadNumber,
         public readonly string $subject,
         public readonly string $author,
         public readonly CarbonImmutable $date,
