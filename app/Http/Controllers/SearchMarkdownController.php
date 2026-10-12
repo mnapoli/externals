@@ -27,14 +27,15 @@ class SearchMarkdownController extends Controller
             "# Search results for \"{$results->query}\"",
             '',
             "{$results->totalHits} results, page {$results->page} of " . max(1, $results->pageCount) . '.'
-                . ' Each result is a message: its link is the whole thread as Markdown, find the message by its number.',
+                . ' Each result is an email: results with the same thread number are in the same thread.'
+                . ' The link opens the thread as Markdown, find the email in it by its number.',
             '',
             AgentLinks::markdown(),
             '',
         ];
         foreach ($results->hits as $i => $hit) {
             $position = ($results->page - 1) * SearchResults::PER_PAGE + $i + 1;
-            $lines[] = sprintf('%d. [%s](%s) — message #%d by %s on %s', $position, $hit->subject, url("/message/{$hit->number}.md"), $hit->number, $hit->author, $hit->date->toDateString());
+            $lines[] = sprintf('%d. [%s](%s) — email #%d in thread #%d, by %s on %s', $position, $hit->subject, url("/message/{$hit->number}.md"), $hit->number, $hit->threadNumber, $hit->author, $hit->date->toDateString());
             $lines[] = '   > ' . $hit->snippetAsMarkdown();
         }
         if ($results->page < $results->pageCount) {

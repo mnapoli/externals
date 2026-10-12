@@ -23,6 +23,7 @@ class FakeEmailSearch implements EmailSearch
         $this->searches[] = [$query, $page, $since, $until];
         $hit = new SearchHit(
             number: 101,
+            threadNumber: 100,
             subject: '[RFC] Something <new>',
             author: 'Alice',
             date: CarbonImmutable::parse('2026-01-02 10:00:00'),
@@ -51,7 +52,7 @@ test('the search page lists results', function (): void {
     $response = $this->get('/search?q=enum');
 
     $response->assertOk();
-    $response->assertSee('<a class="underline" href="/message/101">[RFC] Something &lt;new&gt;</a>', false);
+    $response->assertSee('<a class="underline" href="/message/100#101">[RFC] Something &lt;new&gt;</a>', false);
     $response->assertSee('the <mark>enum</mark> &lt;proposal&gt;', false);
     $response->assertSee('href="' . url('/search?q=enum&amp;page=2') . '" rel="next"', false);
     $response->assertSee('<link rel="alternate" type="text/markdown" href="' . url('/search.md?q=enum') . '"', false);
@@ -75,7 +76,7 @@ test('search results as markdown', function (): void {
     expect($response->getContent())
         ->toStartWith("# Search results for \"enum\"\n")
         ->toContain('More for agents: search with ' . url('/search.md'))
-        ->toContain('1. [[RFC] Something <new>](' . url('/message/101.md') . ') — message #101 by Alice on 2026-01-02')
+        ->toContain('1. [[RFC] Something <new>](' . url('/message/101.md') . ') — email #101 in thread #100, by Alice on 2026-01-02')
         ->toContain('   > the **enum** <proposal>')
         ->toContain('Next page: ' . url('/search.md?q=enum&page=2'));
     expect($response->headers->getCookies())->toBeEmpty();
@@ -100,11 +101,12 @@ test('search results as json', function (): void {
     $response->assertJsonPath('links', ['prev' => null, 'next' => url('/api/search?q=enum&page=2')]);
     $response->assertJsonPath('data.0', [
         'number' => 101,
+        'threadNumber' => 100,
         'subject' => '[RFC] Something <new>',
         'author' => 'Alice',
         'date' => '2026-01-02T10:00:00+00:00',
         'snippet' => 'the enum <proposal>',
-        'url' => url('/message/101'),
+        'url' => url('/message/100#101'),
         'markdownUrl' => url('/message/101.md'),
         'apiUrl' => url('/api/threads/101'),
     ]);

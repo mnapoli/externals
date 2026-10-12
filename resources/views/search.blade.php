@@ -15,7 +15,7 @@
 
         @forelse($results->hits as $hit)
             <article class="mb-6">
-                <h2 class="text-lg"><a class="underline" href="/message/{{ $hit->number }}">{{ $hit->subject }}</a></h2>
+                <h2 class="text-lg"><a class="underline" href="/message/{{ $hit->threadNumber }}#{{ $hit->number }}">{{ $hit->subject }}</a></h2>
                 <p class="text-gray-400 text-sm">
                     by <strong>{{ $hit->author }}</strong>
                     on <time datetime="{{ $hit->date->toAtomString() }}">{{ $hit->date->toDateString() }}</time>

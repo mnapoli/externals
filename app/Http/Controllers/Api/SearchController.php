@@ -24,11 +24,12 @@ class SearchController extends Controller
         return response()->json([
             'data' => array_map(fn(SearchHit $hit) => [
                 'number' => $hit->number,
+                'threadNumber' => $hit->threadNumber,
                 'subject' => $hit->subject,
                 'author' => $hit->author,
                 'date' => $hit->date->toAtomString(),
                 'snippet' => $hit->snippetAsText(),
-                'url' => url("/message/{$hit->number}"),
+                'url' => url("/message/{$hit->threadNumber}#{$hit->number}"),
                 'markdownUrl' => url("/message/{$hit->number}.md"),
                 'apiUrl' => url("/api/threads/{$hit->number}"),
             ], $results->hits),
