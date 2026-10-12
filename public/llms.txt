@@ -19,6 +19,7 @@
 
 - [Search as Markdown](https://externals.io/search.md?q={query}): full-text search over email subjects and content, with links to the Markdown threads.
 - [Search as HTML](https://externals.io/search?q={query}&page=1): the same results for humans.
+- All search endpoints accept `page=N` (20 results per page) and `since` / `until` dates (`YYYY-MM-DD`). Results are individual emails: open the thread and find the message by its number.
 
 ## JSON API
 
