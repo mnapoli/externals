@@ -23,6 +23,9 @@
 
 ## JSON API
 
+Meant for agents and personal tools: please don't bulk download the archive through it.
+
+- [API index](https://externals.io/api): lists the endpoints and their parameters.
 - [List threads](https://externals.io/api/threads?sort=latest&page=1): `sort` is `latest` or `top`, 20 threads per page.
 - [Get a thread](https://externals.io/api/threads/{number}): the thread and all its messages, with message content as Markdown.
 - [Search](https://externals.io/api/search?q={query}&page=1): search results as JSON.
