@@ -106,3 +106,26 @@ test('redirects a reply to its thread', function (): void {
 test('returns a json 404 for unknown threads', function (): void {
     $this->get('/api/threads/12345')->assertNotFound()->assertJsonStructure(['message']);
 });
+
+test('paginates the messages of long threads', function (): void {
+    $root = Email::factory()->create(['number' => 100, 'date' => '2026-01-01 00:00:00']);
+    for ($i = 1; $i < 30; $i++) {
+        Email::factory()->replyTo($root)->create(['number' => 100 + $i, 'date' => "2026-01-01 00:$i:00"]);
+    }
+
+    $first = $this->getJson('/api/threads/100');
+    $first->assertOk();
+    $first->assertJsonPath('data.messageCount', 30);
+    $first->assertJsonCount(25, 'data.messages');
+    $first->assertJsonPath('meta', ['page' => 1, 'perPage' => 25, 'pageCount' => 2]);
+    $first->assertJsonPath('links', ['prev' => null, 'next' => url('/api/threads/100?page=2')]);
+
+    $second = $this->getJson('/api/threads/100?page=2');
+    $second->assertJsonCount(5, 'data.messages');
+    $second->assertJsonPath('data.messages.0.number', 125);
+    $second->assertJsonPath('links.prev', url('/api/threads/100?page=1'));
+
+    $this->getJson('/api/threads/127')->assertRedirect('/api/threads/100?page=2');
+    $this->getJson('/api/threads/100?page=3')->assertNotFound();
+    $this->getJson('/api/threads/100?page=0')->assertUnprocessable();
+});
