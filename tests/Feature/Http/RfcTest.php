@@ -10,6 +10,7 @@ use App\Services\Rfc\RfcStatus;
 use App\Services\Rfc\RfcThreads;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Livewire\Volt\Volt;
 
 uses(RefreshDatabase::class);
 
@@ -61,6 +62,39 @@ test('lists the RFCs by status', function (): void {
     $response->assertSeeInOrder(['In voting', 'Enumerations', 'Implemented — PHP 8.5', 'Pipe operator', '1 thread']);
     $response->assertSee('href="/rfc/pipe-operator-v3"', false);
     $response->assertDontSee('Unlisted RFC');
+});
+
+test('shows the first RFCs of each section, and the others on demand', function (): void {
+    foreach (range(1, 12) as $i) {
+        Rfc::factory()->create(['title' => "Declined RFC $i", 'status' => RfcStatus::Declined, 'indexPosition' => $i]);
+    }
+
+    $component = Volt::test('pages.rfcs')
+        ->assertSee('Declined RFC 10')
+        ->assertDontSee('Declined RFC 11')
+        ->assertSee('Show 2 more');
+
+    $component->call('expand', 'Declined')
+        ->assertSee('Declined RFC 12')
+        ->assertDontSee('Show 2 more');
+});
+
+test('filters the RFCs by title or slug', function (): void {
+    rfcWithThread();
+    foreach (range(1, 12) as $i) {
+        Rfc::factory()->create(['title' => "Declined RFC $i", 'status' => RfcStatus::Declined, 'indexPosition' => 10 + $i]);
+    }
+
+    Volt::test('pages.rfcs')
+        ->set('q', 'PIPE-operator')
+        ->assertSee('Pipe operator')
+        ->assertDontSee('Enumerations')
+        // All the matches, without "Show more"
+        ->set('q', 'declined rfc')
+        ->assertSee('Declined RFC 12')
+        ->assertDontSee('Show 2 more')
+        ->set('q', 'nothing like this')
+        ->assertSee('No RFC matches');
 });
 
 test('shows an RFC with its votes, threads and text', function (): void {
