@@ -1,13 +1,30 @@
 <?php
 
+use App\Models\Rfc;
 use App\Models\RfcVote;
 use App\Services\Rfc\RfcList;
 use App\Services\Rfc\RfcThreads;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
 use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.app')] class extends Component {
+    /** RFCs shown per section before "Show more": rendering all ~940 RFCs is slow. */
+    public const int SECTION_PREVIEW = 10;
+
+    /** Filter on the title or slug. */
+    #[Url(except: '')]
+    public string $q = '';
+
+    /** @var list<string> Titles of the sections showing all their RFCs */
+    public array $expanded = [];
+
+    public function expand(string $section): void
+    {
+        $this->expanded[] = $section;
+    }
+
     public function rendering(View $view): void
     {
         $view->title('PHP RFCs - Externals');
@@ -18,8 +35,25 @@ new #[Layout('components.layouts.app')] class extends Component {
      */
     public function with(): array
     {
+        $sections = app(RfcList::class)->sections();
+
+        $q = mb_strtolower(mb_trim($this->q));
+        if ($q !== '') {
+            // All the matches, in open sections
+            $sections = array_values(array_filter(array_map(function (array $section) use ($q) {
+                $section['rfcs'] = array_values(array_filter(
+                    $section['rfcs'],
+                    fn(Rfc $rfc) => str_contains(mb_strtolower($rfc->title . ' ' . $rfc->slug), $q),
+                ));
+                $section['open'] = true;
+
+                return $section;
+            }, $sections), fn(array $section) => $section['rfcs'] !== []));
+        }
+
         return [
-            'sections' => app(RfcList::class)->sections(),
+            'sections' => $sections,
+            'searching' => $q !== '',
             'activity' => app(RfcThreads::class)->activityByRfc(),
             'userVotes' => auth()->check() ? RfcVote::where('userId', auth()->id())->pluck('value', 'rfcId') : collect(),
         ];
@@ -30,7 +64,7 @@ new #[Layout('components.layouts.app')] class extends Component {
     <link rel="alternate" type="text/markdown" href="/rfc.md" title="RFCs as Markdown">
 @endpush
 
-<div x-data="{ q: '' }">
+<div>
     <h1 class="text-xl sm:text-3xl font-light mb-2">
         PHP RFCs
         <a href="/rfc.md" type="text/markdown" class="ml-2 align-middle text-xs font-normal text-gray-400 hover:text-gray-600" title="This list as Markdown, for AI agents">View as Markdown</a>
@@ -39,24 +73,28 @@ new #[Layout('components.layouts.app')] class extends Component {
         The RFCs of <a class="underline" href="https://wiki.php.net/rfc">wiki.php.net/rfc</a>, synchronized every hour, with their discussions on the mailing list.
     </p>
 
-    <input type="search" x-model="q" placeholder="Filter by title…" aria-label="Filter RFCs by title"
+    <input type="search" wire:model.live.debounce.250ms="q" placeholder="Filter by title…" aria-label="Filter RFCs by title"
            class="w-full mb-8 px-4 py-2 rounded border border-gray-300 focus:border-gray-400 bg-white">
 
+    @if($searching && $sections === [])
+        <p class="text-sm text-gray-500">No RFC matches "{{ $q }}".</p>
+    @endif
+
     @foreach($sections as $section)
-        <details class="mb-6 group/section" @if($section['open']) open @endif
-                 x-bind:open="q !== '' || {{ $section['open'] ? 'true' : 'false' }}"
-                 x-show="q === '' || [...$el.querySelectorAll('[data-title]')].some(e => e.dataset.title.includes(q.toLowerCase()))">
+        @php($showAll = $searching || in_array($section['title'], $expanded, true))
+        @php($hiddenCount = $showAll ? 0 : max(0, count($section['rfcs']) - self::SECTION_PREVIEW))
+        {{-- wire:ignore.self: re-renders must not close the sections opened by the visitor --}}
+        <details wire:key="section-{{ $searching ? 'search' : 'all' }}-{{ $section['title'] }}" wire:ignore.self
+                 class="mb-6" @if($section['open']) open @endif>
             <summary class="cursor-pointer select-none text-lg text-gray-700 mb-2">
                 {{ $section['title'] }}
                 <span class="text-sm text-gray-400">({{ count($section['rfcs']) }})</span>
             </summary>
             <ul>
-                @foreach($section['rfcs'] as $rfc)
+                @foreach($showAll ? $section['rfcs'] : array_slice($section['rfcs'], 0, self::SECTION_PREVIEW) as $rfc)
                     @php($rfcActivity = $activity->get($rfc->slug))
                     @php($poll = $rfc->status === \App\Services\Rfc\RfcStatus::Voting ? $rfc->polls->first() : null)
                     <li wire:key="rfc-{{ $rfc->slug }}"
-                        data-title="{{ mb_strtolower($rfc->title . ' ' . $rfc->slug) }}"
-                        x-show="q === '' || $el.dataset.title.includes(q.toLowerCase())"
                         class="py-2 border-b border-gray-100 flex items-baseline gap-3">
                         @if($rfc->status->acceptsCommunityVotes() || $rfc->upvotes || $rfc->downvotes)
                             <livewire:rfc-vote :rfc-id="$rfc->id" :can-vote="$rfc->status->acceptsCommunityVotes()"
@@ -89,6 +127,13 @@ new #[Layout('components.layouts.app')] class extends Component {
                     </li>
                 @endforeach
             </ul>
+            @if($hiddenCount > 0)
+                <button type="button" wire:click="expand(@js($section['title']))" wire:loading.attr="disabled"
+                        class="mt-2 text-sm text-gray-500 hover:text-gray-800 cursor-pointer">
+                    <span wire:loading.remove wire:target="expand(@js($section['title']))">Show {{ $hiddenCount }} more</span>
+                    <span wire:loading wire:target="expand(@js($section['title']))">Loading…</span>
+                </button>
+            @endif
         </details>
     @endforeach
 </div>

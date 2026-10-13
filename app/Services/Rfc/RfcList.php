@@ -23,12 +23,15 @@ class RfcList
     public function sections(?RfcStatus $status = null): array
     {
         $rfcs = Rfc::query()
+            // Not the text of the RFCs: megabytes that lists don't need
+            ->select(['id', 'slug', 'title', 'status', 'indexSubsection', 'phpVersion', 'indexPosition', 'isListed', 'authors'])
             ->where('isListed', true)
             ->when($status, fn($query) => $query->where('status', $status))
-            ->with('polls')
             ->withVoteCounts()
             ->orderBy('indexPosition')
             ->get();
+        // Lists only show the results of ongoing votes
+        $rfcs->where('status', RfcStatus::Voting)->load('polls');
 
         return array_map($this->sortByCommunityVotes(...), $this->group($rfcs));
     }
