@@ -205,7 +205,7 @@ test('links existing threads to RFCs', function (): void {
     ]);
 });
 
-test('the list of RFCs shows the avatar of the first author', function (): void {
+test('the list of RFCs shows the avatar or the initials of the first author', function (): void {
     Rfc::factory()->create(['authors' => 'Larry Garfield (Larry@GarfieldTech.com), Ilija Tovilo']);
     Rfc::factory()->create(['authors' => 'Someone without email']);
 
@@ -214,4 +214,6 @@ test('the list of RFCs shows the avatar of the first author', function (): void 
     $response->assertOk();
     expect(mb_substr_count($response->getContent(), 'https://www.gravatar.com/avatar/'))->toBe(1);
     $response->assertSee('https://www.gravatar.com/avatar/' . hash('sha256', 'larry@garfieldtech.com') . '?s=48&amp;d=blank', false);
+    $response->assertSee('LG');
+    $response->assertSee('SE');
 });

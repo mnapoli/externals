@@ -64,12 +64,13 @@ new #[Layout('components.layouts.app')] class extends Component {
                                                :user-vote="(int) $userVotes->get($rfc->id, 0)"
                                                :key="'vote-' . $rfc->id" />
                         @endif
-                        @if($rfc->authorAvatarUrl())
-                            <img src="{{ $rfc->authorAvatarUrl() }}" alt="" title="{{ $rfc->authors }}" loading="lazy"
-                                 class="self-center w-6 h-6 shrink-0 rounded-full bg-gray-100">
-                        @else
-                            <div class="self-center w-6 h-6 shrink-0 rounded-full bg-gray-100"></div>
-                        @endif
+                        <div class="relative self-center w-6 h-6 shrink-0 rounded-full bg-gray-100 text-[10px] leading-none text-gray-500 flex items-center justify-center select-none"
+                             title="{{ $rfc->authors }}">
+                            {{ $rfc->authorInitials() }}
+                            @if($rfc->authorAvatarUrl())
+                                <img src="{{ $rfc->authorAvatarUrl() }}" alt="" loading="lazy" class="absolute inset-0 w-6 h-6 rounded-full">
+                            @endif
+                        </div>
                         <div class="flex-grow min-w-0 sm:flex sm:items-baseline sm:gap-4">
                             <a href="/rfc/{{ $rfc->slug }}" class="block sm:flex-grow text-gray-800 hover:text-red-600">{{ $rfc->title }}</a>
                             <div class="text-xs text-gray-400 sm:whitespace-nowrap sm:text-right">
