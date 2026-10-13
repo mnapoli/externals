@@ -73,6 +73,22 @@ class Rfc extends Model
         return url('/rfc/' . $this->slug);
     }
 
+    /**
+     * Gravatar of the first author, transparent when there is none.
+     *
+     * Gravatar rather than unavatar.io (used for emails): the list of RFCs shows ~200 avatars,
+     * which exceeds the rate limit of unavatar.io.
+     */
+    public function authorAvatarUrl(): ?string
+    {
+        // The header of most RFCs reads "Name, email"
+        if (! preg_match('/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/u', (string) $this->authors, $matches)) {
+            return null;
+        }
+
+        return 'https://www.gravatar.com/avatar/' . hash('sha256', mb_strtolower($matches[0])) . '?s=48&d=blank';
+    }
+
     public function wikiUrl(): string
     {
         return RfcPageParser::WIKI_URL . '/rfc/' . $this->slug;

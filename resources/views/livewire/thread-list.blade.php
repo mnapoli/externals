@@ -108,7 +108,7 @@ new class extends Component {
                     @endif
                     @foreach($rfcs[$thread->number] ?? [] as $rfc)
                         <a href="/rfc/{{ $rfc->slug }}" title="RFC: {{ $rfc->title }}"
-                           class="ml-1 inline-block rounded px-1.5 py-0.5 text-xs leading-none whitespace-nowrap {{ $rfc->status->badgeClasses() }}">RFC · {{ $rfc->statusLabel() }}</a>
+                           class="ml-1 inline-block rounded px-1.5 py-0.5 text-xs leading-none whitespace-nowrap bg-gray-100 text-gray-500 hover:text-gray-700">RFC · {{ $rfc->statusLabel() }}</a>
                     @endforeach
                 </div>
             </div>
