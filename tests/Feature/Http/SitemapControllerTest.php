@@ -69,9 +69,9 @@ test('threads sitemap returns 404 for out of range pages', function (): void {
     $this->get('/sitemaps/threads-0.xml')->assertNotFound();
 });
 
-test('pages sitemap lists the thread listings', function (): void {
+test('pages sitemap lists the thread and RFC listings', function (): void {
     $response = $this->get('/sitemaps/pages.xml');
 
     $response->assertOk();
-    expect(sitemapValues($response->getContent(), 'url/s:loc'))->toBe([url('/'), url('/top')]);
+    expect(sitemapValues($response->getContent(), 'url/s:loc'))->toBe([url('/'), url('/top'), url('/rfc')]);
 });

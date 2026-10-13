@@ -16,6 +16,7 @@
         "laravel/socialite": "^5.18",
         "laravel/tinker": "^3.0",
         "league/commonmark": "^2.6",
+        "league/html-to-markdown": "^5.1",
         "livewire/livewire": "^4.3",
         "livewire/volt": "^1.10",
         "sentry/sentry-laravel": "^4.10",

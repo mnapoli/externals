@@ -16,8 +16,9 @@ class AgentLinks
     public static function markdown(): string
     {
         return sprintf(
-            'More for agents: search with %s · JSON API at %s · documentation at %s',
+            'More for agents: search with %s · RFCs at %s · JSON API at %s · documentation at %s',
             url('/search.md') . '?q={query}',
+            url('/rfc.md'),
             url('/api'),
             url('/llms.txt'),
         );

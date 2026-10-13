@@ -91,6 +91,13 @@ functions:
                         cli: 'externals:sync'
                     # Only enabled in production
                     enabled: ${param:isProd}
+            # Synchronize RFCs from wiki.php.net every hour.
+            -   schedule:
+                    rate: rate(1 hour)
+                    input:
+                        cli: 'externals:sync-rfcs'
+                    # Only enabled in production
+                    enabled: ${param:isProd}
 
 plugins:
     - ./vendor/bref/bref

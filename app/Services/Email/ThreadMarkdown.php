@@ -6,6 +6,7 @@ namespace App\Services\Email;
 
 use App\Exceptions\NotFoundException;
 use App\Models\Email;
+use App\Services\Rfc\RfcThreads;
 use App\Support\Markdown\AgentLinks;
 use Illuminate\Support\Collection;
 use ZBateson\MailMimeParser\MailMimeParser;
@@ -24,6 +25,7 @@ class ThreadMarkdown
 
     public function __construct(
         private readonly EmailContentParser $contentParser,
+        private readonly RfcThreads $rfcThreads,
     ) {}
 
     /**
@@ -79,6 +81,9 @@ class ThreadMarkdown
             '- Started by ' . $root->from->getNameOrEmail() . ' on ' . $root->date->format(DATE_ATOM),
             '- Messages: ' . $emails->count(),
         ];
+        foreach ($this->rfcThreads->rfcsOf($rootNumber) as $rfc) {
+            $lines[] = sprintf('- RFC: %s (%s) — %s.md', $rfc->title, $rfc->statusLabel(), $rfc->url());
+        }
         if ($pageCount > 1) {
             $lines[] = sprintf(
                 '- Page %d of %d: messages %d to %d (%d per page, add `?page=N` to the URL)',

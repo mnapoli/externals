@@ -35,7 +35,7 @@ test('renders the whole thread as markdown', function (): void {
     expect($markdown)
         ->toStartWith("# [RFC] Something\n")
         ->toContain('- Messages: 2')
-        ->toContain('- More for agents: search with ' . url('/search.md') . '?q={query} · JSON API at ' . url('/api') . ' · documentation at ' . url('/llms.txt'))
+        ->toContain('- More for agents: search with ' . url('/search.md') . '?q={query} · RFCs at ' . url('/rfc.md') . ' · JSON API at ' . url('/api') . ' · documentation at ' . url('/llms.txt'))
         ->toContain('https://news-web.php.net/php.internals/100')
         ->toContain('## #100 — Alice — 2026-01-01T10:00:00+00:00')
         ->toContain('Please review.')

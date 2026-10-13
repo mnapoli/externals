@@ -102,3 +102,55 @@ article pre {
 #search-container {
     display: none;
 }
+
+/* RFC text, converted from the PHP wiki */
+.rfc-content h2 {
+    @apply text-xl font-normal mt-8 mb-2 pb-1 border-b border-gray-200;
+}
+.rfc-content h3 {
+    @apply text-lg font-normal mt-6 mb-2;
+}
+.rfc-content h4, .rfc-content h5 {
+    @apply font-semibold mt-4 mb-2;
+}
+.rfc-content p, .rfc-content ol, .rfc-content ul, .rfc-content pre, .rfc-content blockquote, .rfc-content table {
+    @apply mt-2 mb-3;
+}
+.rfc-content ol, .rfc-content ul {
+    @apply ml-4 list-outside;
+}
+.rfc-content ul {
+    @apply list-disc;
+}
+.rfc-content ol {
+    @apply list-decimal;
+}
+.rfc-content li {
+    @apply pl-2 my-1;
+}
+.rfc-content a {
+    @apply text-red-600;
+    /* Long URLs must not widen the page on mobile */
+    overflow-wrap: anywhere;
+}
+.rfc-content code {
+    @apply text-xs text-red-700 bg-red-50 p-1 rounded;
+}
+.rfc-content pre {
+    @apply bg-gray-100 border border-gray-200 p-2 rounded overflow-x-auto;
+}
+.rfc-content pre > code {
+    @apply text-sm text-gray-700 bg-transparent p-0;
+}
+.rfc-content blockquote {
+    @apply text-gray-600 border-l-4 border-gray-200 px-3;
+}
+.rfc-content table {
+    @apply block overflow-x-auto text-sm;
+}
+.rfc-content th, .rfc-content td {
+    @apply border border-gray-200 px-2 py-1 text-left align-top;
+}
+.rfc-content th {
+    @apply bg-gray-50 font-semibold;
+}

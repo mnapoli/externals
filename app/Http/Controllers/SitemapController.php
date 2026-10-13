@@ -36,6 +36,8 @@ class SitemapController extends Controller
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
         $xml .= $this->entry('url', url('/'));
         $xml .= $this->entry('url', url('/top'));
+        // Not the RFC pages: their canonical URL is on wiki.php.net
+        $xml .= $this->entry('url', url('/rfc'));
         $xml .= '</urlset>' . "\n";
 
         return $this->xmlResponse($xml);

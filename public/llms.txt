@@ -4,7 +4,7 @@
 
 - Every email has a number: the NNTP article number in the official archive (`https://news-web.php.net/php.internals/{number}`).
 - A thread is identified by the number of its first email. Requesting a reply's number redirects to the thread root.
-- RFC discussions usually have `[RFC]`, `[VOTE]` or `[DISCUSSION]` in the subject. The RFCs themselves live at https://wiki.php.net/rfc.
+- RFC discussions usually have `[RFC]`, `[VOTE]` or `[DISCUSSION]` in the subject. The RFCs themselves live at https://wiki.php.net/rfc and are imported every hour (see "RFCs" below).
 - The site is read-only: to take part in a discussion, reply by email to internals@lists.php.net.
 - Everything below is public and needs no authentication.
 
@@ -14,6 +14,12 @@
 - [Thread as HTML](https://externals.io/message/{number}): the thread page for humans.
 - [Latest threads](https://externals.io/?page=1): threads by latest activity, 20 per page (`?page=N`).
 - [Top threads](https://externals.io/top?page=1): most upvoted threads of the last month.
+
+## RFCs
+
+- [RFCs as Markdown](https://externals.io/rfc.md): all RFCs of https://wiki.php.net/rfc grouped by status (in voting, under discussion, draft, accepted, implemented by PHP version, declined, withdrawn, inactive, obsolete). Sending `Accept: text/markdown` to `/rfc` returns the same content.
+- [RFC as Markdown](https://externals.io/rfc/{slug}.md): an RFC (the slug is the wiki page name, e.g. `pipe-operator-v3`) with its status, its votes (results and voters), the threads that discuss it, and its full text.
+- An RFC is linked to a thread when the first email of the thread links to the RFC page, or when the RFC page links to the thread. Thread pages list their RFCs.
 
 ## Search
 
@@ -29,6 +35,8 @@ Meant for agents and personal tools: please don't bulk download the archive thro
 - [List threads](https://externals.io/api/threads?sort=latest&page=1): `sort` is `latest` or `top`, 20 threads per page.
 - [Get a thread](https://externals.io/api/threads/{number}): the thread and its messages, with message content as Markdown. Messages are paginated like the Markdown thread (`?page=N`, see `meta` and `links`).
 - [Search](https://externals.io/api/search?q={query}&page=1): search results as JSON.
+- [List RFCs](https://externals.io/api/rfcs?status=voting): all RFCs in the order of the wiki index, optionally filtered by `status`.
+- [Get an RFC](https://externals.io/api/rfcs/{slug}): an RFC with its votes, its threads, and its text as Markdown. `/api/threads/{number}` lists the RFCs of a thread in `rfcs`.
 
 ## Feeds
 
