@@ -1,5 +1,6 @@
 @php($defaultTitle = "#externals - Opening PHP's #internals to the outside")
-@php($canonicalUrl = rtrim(config('app.url'), '/') . '/' . ltrim(request()->path(), '/') . (request()->integer('page') > 1 ? '?page=' . request()->integer('page') : ''))
+{{-- Pages can override the canonical URL, e.g. RFCs whose original is on wiki.php.net --}}
+@php($canonicalUrl = $canonical ?? rtrim(config('app.url'), '/') . '/' . ltrim(request()->path(), '/') . (request()->integer('page') > 1 ? '?page=' . request()->integer('page') : ''))
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +25,7 @@
 
     <meta name="og:title" content="{{ $title ?? $defaultTitle }}">
     <meta name="og:type" content="website">
-    <meta name="og:url" content="{{ $canonicalUrl }}">
+    <meta name="og:url" content="{{ $ogUrl ?? $canonicalUrl }}">
     <meta name="og:image" content="/assets/images/apple-touch-icon.png">
     <meta name="og:description" content="#externals - Opening PHP's #internals to the outside">
 
@@ -50,6 +51,7 @@
             <div class="flex-grow flex items-center text-sm sm:text-base">
                 <a class="block px-2 sm:px-4 py-2 sm:py-3" href="/">Latest</a>
                 <a class="block px-2 sm:px-4 py-2 sm:py-3" href="/top">Top</a>
+                <a class="block px-2 sm:px-4 py-2 sm:py-3" href="/rfc">RFCs</a>
             </div>
             <div class="text-sm">
                 @auth
@@ -79,7 +81,7 @@
         <div class="container max-w-4xl">
             <p class="mb-2">
                 <strong>For AI agents:</strong> add <code>.md</code> to any thread URL to read it as Markdown (or send <code>Accept: text/markdown</code>),
-                search with <a class="underline" href="/search.md?q=enum">/search.md?q=…</a>, or use the read-only <a class="underline" href="/api">JSON API</a>.
+                search with <a class="underline" href="/search.md?q=enum">/search.md?q=…</a>, list RFCs with <a class="underline" href="/rfc.md">/rfc.md</a>, or use the read-only <a class="underline" href="/api">JSON API</a>.
                 Details in <a class="underline" href="/llms.txt">/llms.txt</a>.
             </p>
             <p class="mb-2">Contribute to the project on GitHub: <a class="underline" href="https://github.com/mnapoli/externals">mnapoli/externals</a></p>

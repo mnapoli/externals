@@ -8,6 +8,7 @@ use App\Actions\RefreshThread;
 use App\Models\Email;
 use App\Services\Nntp\ArticleNotFoundException;
 use App\Services\Nntp\NntpClient;
+use App\Services\Rfc\RfcThreads;
 use App\Services\Search\SearchIndex;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -38,6 +39,7 @@ class EmailSynchronizer
         private readonly EmailSubjectParser $subjectParser,
         private readonly EmailContentParser $contentParser,
         private readonly SearchIndex $searchIndex,
+        private readonly RfcThreads $rfcThreads,
     ) {}
 
     public function synchronize(?int $maxNumberOfEmailsToSynchronize = null): void
@@ -201,6 +203,7 @@ class EmailSynchronizer
                 throw $e;
             }
             $this->searchIndex->indexEmail($newEmail);
+            $this->rfcThreads->linkThreadRoot($newEmail);
             $saved = true;
         });
 

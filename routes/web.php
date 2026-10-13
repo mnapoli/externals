@@ -6,13 +6,15 @@ use App\Http\Controllers\Auth\GithubController;
 use App\Http\Controllers\EmailSourceController;
 use App\Http\Controllers\LegacyThreadRedirectController;
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\RfcListMarkdownController;
+use App\Http\Controllers\RfcMarkdownController;
 use App\Http\Controllers\RssController;
 use App\Http\Controllers\RssRfcController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SearchMarkdownController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ThreadMarkdownController;
-use App\Http\Middleware\ServeThreadMarkdown;
+use App\Http\Middleware\ServeMarkdown;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -24,9 +26,16 @@ Volt::route('/stats', 'pages.stats');
 Route::get('/login', GithubController::class)->name('login');
 Route::post('/logout', LogoutController::class)->name('logout');
 
-Volt::route('/message/{number}', 'pages.thread')->whereNumber('number')->middleware(ServeThreadMarkdown::class);
+Volt::route('/message/{number}', 'pages.thread')->whereNumber('number')->middleware(ServeMarkdown::class . ':' . ThreadMarkdownController::class);
 Route::get('/message/{number}.md', ThreadMarkdownController::class)->whereNumber('number')->withoutMiddleware('web');
 Route::get('/email/{number}/source', EmailSourceController::class)->whereNumber('number')->middleware('auth');
+
+// RFC slugs are DokuWiki page IDs: they can contain dots and slashes
+// The ".md" routes must be declared first, as the slug pattern would match them too
+Route::get('/rfc.md', RfcListMarkdownController::class)->withoutMiddleware('web');
+Route::get('/rfc/{slug}.md', RfcMarkdownController::class)->where('slug', '[A-Za-z0-9_.\-/]+')->withoutMiddleware('web');
+Volt::route('/rfc', 'pages.rfcs')->middleware(ServeMarkdown::class . ':' . RfcListMarkdownController::class);
+Volt::route('/rfc/{slug}', 'pages.rfc')->where('slug', '[A-Za-z0-9_.\-/]+')->middleware(ServeMarkdown::class . ':' . RfcMarkdownController::class);
 
 Route::get('/search', SearchController::class);
 Route::get('/search.md', SearchMarkdownController::class)->withoutMiddleware('web');

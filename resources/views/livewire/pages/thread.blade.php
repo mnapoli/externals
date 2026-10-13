@@ -4,6 +4,7 @@ use App\Actions\MarkEmailAsRead;
 use App\Exceptions\NotFoundException;
 use App\Models\Email;
 use App\Services\Email\ThreadQuery;
+use App\Services\Rfc\RfcThreads;
 use App\Support\Email\ThreadStructuredData;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
@@ -58,6 +59,7 @@ new #[Layout('components.layouts.app')] class extends Component {
         return [
             'thread' => $this->thread,
             'structuredData' => ThreadStructuredData::build($this->thread, $this->number, $this->subject),
+            'rfcs' => app(RfcThreads::class)->rfcsOf($this->number),
         ];
     }
 }; ?>
@@ -87,6 +89,22 @@ new #[Layout('components.layouts.app')] class extends Component {
         {{ $subject }}
         <a href="/message/{{ $number }}.md" type="text/markdown" class="ml-2 align-middle text-xs font-normal text-gray-400 hover:text-gray-600" title="This thread as Markdown, for AI agents">View as Markdown</a>
     </h1>
+
+    @if($rfcs->isNotEmpty())
+        <div class="-mt-4 sm:-mt-8 mb-8 sm:mb-10 space-y-2">
+            @foreach($rfcs as $rfc)
+                @php($poll = $rfc->polls->first())
+                <a href="/rfc/{{ $rfc->slug }}" class="flex flex-wrap items-baseline gap-x-2 gap-y-1 rounded border border-gray-200 bg-gray-50 hover:border-gray-300 px-3 py-2 text-sm">
+                    <span class="text-gray-400">RFC</span>
+                    <span class="text-gray-800">{{ $rfc->title }}</span>
+                    <span class="rounded px-2 py-0.5 text-xs {{ $rfc->status->badgeClasses() }}">{{ $rfc->statusLabel() }}</span>
+                    @if($poll?->hasVotes())
+                        <span class="text-xs text-gray-500">{{ $poll->summary() }}@if(! $poll->isClosed) (vote open)@endif</span>
+                    @endif
+                </a>
+            @endforeach
+        </div>
+    @endif
 
     @auth
         <button x-show="hasUnread" x-cloak

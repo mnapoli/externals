@@ -34,10 +34,21 @@ class ApiIndexController extends Controller
                     'description' => 'Full-text search over emails, 20 results per page.',
                     'parameters' => ['q' => 'search query (required)', 'page' => 'page number, from 1', 'since' => 'YYYY-MM-DD', 'until' => 'YYYY-MM-DD'],
                 ],
+                [
+                    'url' => url('/api/rfcs'),
+                    'description' => 'All RFCs of wiki.php.net, in the order of the wiki index.',
+                    'parameters' => ['status' => 'voting, discussion, draft, accepted, implemented, declined, withdrawn, inactive or obsolete'],
+                ],
+                [
+                    'url' => url('/api/rfcs/{slug}'),
+                    'description' => 'An RFC with its votes, the threads that discuss it, and its text as Markdown.',
+                ],
             ],
             'markdown' => [
                 'thread' => url('/message/{number}.md'),
                 'search' => url('/search.md?q={query}'),
+                'rfcs' => url('/rfc.md'),
+                'rfc' => url('/rfc/{slug}.md'),
             ],
         ])->header('Cache-Control', 'public, max-age=3600');
     }

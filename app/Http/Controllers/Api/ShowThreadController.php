@@ -7,15 +7,17 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\NotFoundException;
 use App\Http\Controllers\Controller;
 use App\Models\Email;
+use App\Models\Rfc;
 use App\Models\Thread;
 use App\Services\Email\ThreadMarkdown;
+use App\Services\Rfc\RfcThreads;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class ShowThreadController extends Controller
 {
-    public function __invoke(int $number, Request $request, ThreadMarkdown $markdown): JsonResponse|RedirectResponse
+    public function __invoke(int $number, Request $request, ThreadMarkdown $markdown, RfcThreads $rfcThreads): JsonResponse|RedirectResponse
     {
         $validated = $request->validate([
             'page' => ['sometimes', 'integer', 'min:1'],
@@ -65,6 +67,14 @@ class ShowThreadController extends Controller
                 'url' => url("/message/$number"),
                 'markdownUrl' => url("/message/$number.md"),
                 'archiveUrl' => "https://news-web.php.net/php.internals/$number",
+                'rfcs' => $rfcThreads->rfcsOf($number)->map(fn(Rfc $rfc) => [
+                    'slug' => $rfc->slug,
+                    'title' => $rfc->title,
+                    'status' => $rfc->status->value,
+                    'url' => $rfc->url(),
+                    'markdownUrl' => $rfc->url() . '.md',
+                    'apiUrl' => url('/api/rfcs/' . $rfc->slug),
+                ]),
                 'messages' => $messages,
             ],
             'meta' => [

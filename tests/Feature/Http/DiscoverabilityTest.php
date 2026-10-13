@@ -31,6 +31,8 @@ test('the api index lists the endpoints', function (): void {
         url('/api/threads'),
         url('/api/threads/{number}'),
         url('/api/search'),
+        url('/api/rfcs'),
+        url('/api/rfcs/{slug}'),
     ]);
 });
 
