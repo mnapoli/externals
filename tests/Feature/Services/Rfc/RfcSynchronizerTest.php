@@ -92,8 +92,8 @@ test('imports the RFCs of the wiki', function (): void {
     expect($poll->question)->toBe('Accept?');
     expect($poll->isClosed)->toBeFalse();
     expect($poll->closesAt)->toBe('2026-01-10 00:00:00 UTC');
-    expect($poll->choices)->toBe([['label' => 'Yes', 'count' => 1], ['label' => 'No', 'count' => 0]]);
-    expect($poll->voters)->toBe([['name' => 'alice', 'choices' => ['Yes'], 'votedAt' => '2026-01-02 10:00']]);
+    expect($poll->choices)->toEqual([['label' => 'Yes', 'count' => 1], ['label' => 'No', 'count' => 0]]);
+    expect($poll->voters)->toEqual([['name' => 'alice', 'choices' => ['Yes'], 'votedAt' => '2026-01-02 10:00']]);
 
     // The page links to a reply: the RFC is linked to its thread
     expect(DB::table('rfc_threads')->where('rfcSlug', 'discussed')->pluck('threadNumber')->all())->toBe([100]);

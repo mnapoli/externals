@@ -50,8 +50,16 @@ class ShowRfcController extends Controller
                     'question' => $poll->question,
                     'isClosed' => $poll->isClosed,
                     'closesAt' => $poll->closesAt,
-                    'choices' => $poll->choices,
-                    'voters' => $poll->voters,
+                    // Rebuilt in a fixed key order: MySQL reorders the keys of JSON objects
+                    'choices' => array_map(fn(array $choice) => [
+                        'label' => $choice['label'],
+                        'count' => $choice['count'],
+                    ], $poll->choices),
+                    'voters' => array_map(fn(array $voter) => [
+                        'name' => $voter['name'],
+                        'choices' => $voter['choices'],
+                        'votedAt' => $voter['votedAt'],
+                    ], $poll->voters),
                 ]),
                 'threads' => $threads->threadsOf($rfc->slug)->map(fn(LinkedThread $thread) => [
                     'number' => $thread->number,
