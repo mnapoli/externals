@@ -2,8 +2,11 @@
 
 use App\Actions\CastVote;
 use App\Models\Email;
+use App\Models\Rfc;
 use App\Models\Vote;
 use App\Services\Email\ThreadQuery;
+use App\Services\Rfc\RfcThreads;
+use App\Support\Email\ThreadSummary;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Url;
 use Livewire\Volt\Component;
@@ -45,8 +48,11 @@ new class extends Component {
         $user = auth()->user();
 
         if ($this->mode === 'top') {
+            $threads = app(ThreadQuery::class)->findTopThreads(1, $user);
+
             return [
-                'threads' => app(ThreadQuery::class)->findTopThreads(1, $user),
+                'threads' => $threads,
+                'rfcs' => $this->rfcsOf($threads),
                 'pageCount' => 1,
             ];
         }
@@ -57,10 +63,22 @@ new class extends Component {
             fn() => Email::where('isThreadRoot', true)->count(),
         );
 
+        $threads = app(ThreadQuery::class)->findLatestThreads($this->page, $user);
+
         return [
-            'threads' => app(ThreadQuery::class)->findLatestThreads($this->page, $user),
+            'threads' => $threads,
+            'rfcs' => $this->rfcsOf($threads),
             'pageCount' => (int) ceil($threadCount / 20),
         ];
+    }
+
+    /**
+     * @param  ThreadSummary[]  $threads
+     * @return array<int, list<Rfc>> Keyed by thread number
+     */
+    private function rfcsOf(array $threads): array
+    {
+        return app(RfcThreads::class)->rfcsOfThreads(array_values(array_map(fn(ThreadSummary $thread) => $thread->number, $threads)));
     }
 }; ?>
 
@@ -88,6 +106,10 @@ new class extends Component {
                     @if($thread->fromName)
                         by {{ $thread->fromName }}
                     @endif
+                    @foreach($rfcs[$thread->number] ?? [] as $rfc)
+                        <a href="/rfc/{{ $rfc->slug }}" title="RFC: {{ $rfc->title }}"
+                           class="ml-1 inline-block rounded px-1.5 py-0.5 text-xs leading-none whitespace-nowrap bg-gray-100 text-gray-500 hover:text-gray-700">RFC · {{ $rfc->statusLabel() }}</a>
+                    @endforeach
                 </div>
             </div>
             @if($thread->emailCount > 1)

@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 use App\Actions\RefreshAllThreads;
 use App\Models\Email;
+use App\Models\Rfc;
 use App\Models\User;
 use App\Models\Vote;
+use App\Services\Rfc\RfcStatus;
+use App\Services\Rfc\RfcThreads;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Livewire\Volt\Volt;
 
 uses(RefreshDatabase::class);
@@ -91,4 +95,21 @@ test('top mode excludes voted threads older than a month', function (): void {
 
     Volt::test('thread-list', ['mode' => 'top'])
         ->assertDontSee('Voted stale thread');
+});
+
+test('threads link to the RFCs they discuss', function (): void {
+    Email::factory()->create(['number' => 42, 'subject' => '[RFC] Pipe operator']);
+    Email::factory()->create(['number' => 43, 'subject' => 'Unrelated']);
+    app(RefreshAllThreads::class)->handle();
+    Rfc::factory()->create(['slug' => 'pipe-operator-v3', 'title' => 'Pipe operator', 'status' => RfcStatus::Voting]);
+    // Linked from both the email and the wiki: a single badge
+    DB::table('rfc_threads')->insert([
+        ['rfcSlug' => 'pipe-operator-v3', 'threadNumber' => 42, 'source' => RfcThreads::SOURCE_EMAIL],
+        ['rfcSlug' => 'pipe-operator-v3', 'threadNumber' => 42, 'source' => RfcThreads::SOURCE_WIKI],
+    ]);
+
+    $html = Volt::test('thread-list', ['mode' => 'latest'])->html();
+
+    expect(mb_substr_count($html, 'href="/rfc/pipe-operator-v3"'))->toBe(1);
+    expect($html)->toContain('RFC · In voting');
 });

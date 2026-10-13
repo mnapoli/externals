@@ -53,6 +53,17 @@ enum RfcStatus: string
     }
 
     /**
+     * Community votes only make sense while the RFC can still change.
+     */
+    public function acceptsCommunityVotes(): bool
+    {
+        return match ($this) {
+            self::Voting, self::Discussion, self::Draft => true,
+            default => false,
+        };
+    }
+
+    /**
      * Tailwind classes of the status badge.
      */
     public function badgeClasses(): string

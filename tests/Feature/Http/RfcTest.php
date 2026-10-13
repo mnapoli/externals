@@ -204,3 +204,16 @@ test('links existing threads to RFCs', function (): void {
         ['rfcSlug' => 'foo', 'threadNumber' => 100, 'source' => 'email'],
     ]);
 });
+
+test('the list of RFCs shows the avatar or the initials of the first author', function (): void {
+    Rfc::factory()->create(['authors' => 'Larry Garfield (Larry@GarfieldTech.com), Ilija Tovilo']);
+    Rfc::factory()->create(['authors' => 'Someone without email']);
+
+    $response = $this->get('/rfc');
+
+    $response->assertOk();
+    expect(mb_substr_count($response->getContent(), 'https://www.gravatar.com/avatar/'))->toBe(1);
+    $response->assertSee('https://www.gravatar.com/avatar/' . hash('sha256', 'larry@garfieldtech.com') . '?s=48&amp;d=blank', false);
+    $response->assertSee('LG');
+    $response->assertSee('SE');
+});

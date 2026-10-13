@@ -12,6 +12,11 @@ use Illuminate\Support\Collection;
  */
 class RfcList
 {
+    private static function score(Rfc $rfc): int
+    {
+        return (int) $rfc->upvotes - (int) $rfc->downvotes;
+    }
+
     /**
      * @return list<array{title: string, status: RfcStatus, open: bool, rfcs: list<Rfc>}>
      */
@@ -21,10 +26,27 @@ class RfcList
             ->where('isListed', true)
             ->when($status, fn($query) => $query->where('status', $status))
             ->with('polls')
+            ->withVoteCounts()
             ->orderBy('indexPosition')
             ->get();
 
-        return $this->group($rfcs);
+        return array_map($this->sortByCommunityVotes(...), $this->group($rfcs));
+    }
+
+    /**
+     * RFCs being discussed or voted are sorted by community score, then in the order of the wiki.
+     *
+     * @param  array{title: string, status: RfcStatus, open: bool, rfcs: list<Rfc>}  $section
+     * @return array{title: string, status: RfcStatus, open: bool, rfcs: list<Rfc>}
+     */
+    private function sortByCommunityVotes(array $section): array
+    {
+        if (in_array($section['status'], [RfcStatus::Voting, RfcStatus::Discussion], true)) {
+            // usort() is stable: equal scores keep the order of the wiki
+            usort($section['rfcs'], fn(Rfc $a, Rfc $b) => self::score($b) <=> self::score($a));
+        }
+
+        return $section;
     }
 
     /**
