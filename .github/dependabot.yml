@@ -1,0 +1,39 @@
+# A single pull request per week, for all ecosystems.
+# Automatic security update pull requests are disabled in the repository settings:
+# they can't be scheduled, and would open one pull request per alert.
+version: 2
+
+multi-ecosystem-groups:
+  dependencies:
+    schedule:
+      interval: "weekly"
+      day: "monday"
+
+updates:
+  - package-ecosystem: "composer"
+    directory: "/"
+    patterns: ["*"]
+    multi-ecosystem-group: "dependencies"
+    # Also the dependencies of dependencies
+    allow:
+      - dependency-type: "all"
+    # Major versions are upgraded by hand: one breaking change would block the whole batch
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    patterns: ["*"]
+    multi-ecosystem-group: "dependencies"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    patterns: ["*"]
+    multi-ecosystem-group: "dependencies"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
