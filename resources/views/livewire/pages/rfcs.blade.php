@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\RfcVote;
 use App\Services\Rfc\RfcList;
 use App\Services\Rfc\RfcThreads;
 use Illuminate\View\View;
@@ -20,6 +21,7 @@ new #[Layout('components.layouts.app')] class extends Component {
         return [
             'sections' => app(RfcList::class)->sections(),
             'activity' => app(RfcThreads::class)->activityByRfc(),
+            'userVotes' => auth()->check() ? RfcVote::where('userId', auth()->id())->pluck('value', 'rfcId') : collect(),
         ];
     }
 }; ?>
@@ -55,19 +57,27 @@ new #[Layout('components.layouts.app')] class extends Component {
                     <li wire:key="rfc-{{ $rfc->slug }}"
                         data-title="{{ mb_strtolower($rfc->title . ' ' . $rfc->slug) }}"
                         x-show="q === '' || $el.dataset.title.includes(q.toLowerCase())"
-                        class="py-2 border-b border-gray-100 sm:flex sm:items-baseline sm:gap-4">
-                        <a href="/rfc/{{ $rfc->slug }}" class="block sm:flex-grow text-gray-800 hover:text-red-600">{{ $rfc->title }}</a>
-                        <div class="text-xs text-gray-400 sm:whitespace-nowrap sm:text-right">
-                            @if($poll)
-                                <span class="text-amber-700">{{ $poll->summary() }}</span>
-                                @if($rfcActivity) · @endif
-                            @endif
-                            @if($rfcActivity)
-                                {{ $rfcActivity->threadCount }} {{ Str::plural('thread', $rfcActivity->threadCount) }}
-                                @if($rfcActivity->lastActivity)
-                                    · <time datetime="{{ $rfcActivity->lastActivity->toAtomString() }}">{{ $rfcActivity->lastActivity->diffForHumans() }}</time>
+                        class="py-2 border-b border-gray-100 flex items-baseline gap-3">
+                        @if($rfc->status->acceptsCommunityVotes() || $rfc->upvotes || $rfc->downvotes)
+                            <livewire:rfc-vote :rfc-id="$rfc->id" :can-vote="$rfc->status->acceptsCommunityVotes()"
+                                               :upvotes="(int) $rfc->upvotes" :downvotes="(int) $rfc->downvotes"
+                                               :user-vote="(int) $userVotes->get($rfc->id, 0)"
+                                               :key="'vote-' . $rfc->id" />
+                        @endif
+                        <div class="flex-grow min-w-0 sm:flex sm:items-baseline sm:gap-4">
+                            <a href="/rfc/{{ $rfc->slug }}" class="block sm:flex-grow text-gray-800 hover:text-red-600">{{ $rfc->title }}</a>
+                            <div class="text-xs text-gray-400 sm:whitespace-nowrap sm:text-right">
+                                @if($poll)
+                                    <span class="text-amber-700">{{ $poll->summary() }}</span>
+                                    @if($rfcActivity) · @endif
                                 @endif
-                            @endif
+                                @if($rfcActivity)
+                                    {{ $rfcActivity->threadCount }} {{ Str::plural('thread', $rfcActivity->threadCount) }}
+                                    @if($rfcActivity->lastActivity)
+                                        · <time datetime="{{ $rfcActivity->lastActivity->toAtomString() }}">{{ $rfcActivity->lastActivity->diffForHumans() }}</time>
+                                    @endif
+                                @endif
+                            </div>
                         </div>
                     </li>
                 @endforeach

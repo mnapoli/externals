@@ -122,6 +122,37 @@ class RfcThreads
     }
 
     /**
+     * The (listed) RFCs of several threads, for lists of threads.
+     *
+     * Only the columns needed for a badge are loaded.
+     *
+     * @param  list<int>  $threadNumbers
+     * @return array<int, list<Rfc>> Keyed by thread number
+     */
+    public function rfcsOfThreads(array $threadNumbers): array
+    {
+        if ($threadNumbers === []) {
+            return [];
+        }
+
+        $rfcs = Rfc::query()
+            ->join('rfc_threads', 'rfc_threads.rfcSlug', '=', 'rfcs.slug')
+            ->whereIn('rfc_threads.threadNumber', $threadNumbers)
+            ->where('rfcs.isListed', true)
+            // A thread can be linked to an RFC twice: from its email and from the wiki
+            ->distinct()
+            ->orderBy('rfcs.indexPosition')
+            ->get(['rfcs.id', 'rfcs.slug', 'rfcs.title', 'rfcs.status', 'rfcs.phpVersion', 'rfcs.indexPosition', 'rfc_threads.threadNumber']);
+
+        $byThread = [];
+        foreach ($rfcs as $rfc) {
+            $byThread[(int) $rfc->getAttribute('threadNumber')][] = $rfc;
+        }
+
+        return $byThread;
+    }
+
+    /**
      * Number of linked threads and date of the latest activity, for all RFCs.
      *
      * @return Collection<string, RfcActivity> Keyed by RFC slug

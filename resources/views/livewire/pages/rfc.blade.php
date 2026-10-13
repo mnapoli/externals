@@ -2,6 +2,7 @@
 
 use App\Exceptions\NotFoundException;
 use App\Models\Rfc;
+use App\Models\RfcVote;
 use App\Services\Rfc\RfcContent;
 use App\Services\Rfc\RfcLinkExtractor;
 use App\Services\Rfc\RfcThreads;
@@ -45,12 +46,13 @@ new #[Layout('components.layouts.app')] class extends Component {
             'rfc' => $rfc,
             'threads' => app(RfcThreads::class)->threadsOf($rfc->slug),
             'contentHtml' => $rfc->content !== null ? app(RfcContent::class)->html($rfc) : null,
+            'userVote' => auth()->check() ? (int) RfcVote::where('userId', auth()->id())->where('rfcId', $rfc->id)->value('value') : 0,
         ];
     }
 
     private function rfc(): Rfc
     {
-        return Rfc::with('polls')->where('slug', $this->slug)->firstOrFail();
+        return Rfc::with('polls')->withVoteCounts()->where('slug', $this->slug)->firstOrFail();
     }
 }; ?>
 
@@ -67,10 +69,20 @@ new #[Layout('components.layouts.app')] class extends Component {
         <a href="/rfc/{{ $rfc->slug }}.md" type="text/markdown" class="ml-2 align-middle text-xs font-normal text-gray-400 hover:text-gray-600" title="This RFC as Markdown, for AI agents">View as Markdown</a>
     </h1>
 
-    <div class="mb-6 text-sm">
-        <span class="inline-block rounded px-2 py-0.5 text-xs {{ $rfc->status->badgeClasses() }}">{{ $rfc->statusLabel() }}</span>
-        @if(! $rfc->isListed)
-            <span class="ml-1 text-xs text-gray-400">no longer listed on the wiki index</span>
+    <div class="mb-6 text-sm flex flex-wrap items-baseline gap-x-4 gap-y-2">
+        <div>
+            <span class="inline-block rounded px-2 py-0.5 text-xs {{ $rfc->status->badgeClasses() }}">{{ $rfc->statusLabel() }}</span>
+            @if(! $rfc->isListed)
+                <span class="ml-1 text-xs text-gray-400">no longer listed on the wiki index</span>
+            @endif
+        </div>
+        @if($rfc->status->acceptsCommunityVotes() || $rfc->upvotes || $rfc->downvotes)
+            <div class="flex items-baseline gap-2">
+                <livewire:rfc-vote :rfc-id="$rfc->id" :can-vote="$rfc->status->acceptsCommunityVotes()"
+                                   :upvotes="(int) $rfc->upvotes" :downvotes="(int) $rfc->downvotes"
+                                   :user-vote="$userVote" />
+                <span class="text-xs text-gray-400">community vote</span>
+            </div>
         @endif
     </div>
 

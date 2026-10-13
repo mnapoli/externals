@@ -8,6 +8,8 @@ use App\Services\Rfc\RfcPageParser;
 use App\Services\Rfc\RfcStatus;
 use Database\Factories\RfcFactory;
 use DateTimeImmutable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -31,6 +33,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?string $implementation
  * @property ?string $content
  * @property ?DateTimeImmutable $fetchedAt
+ * @property-read ?int $upvotes Only with the `withVoteCounts()` scope
+ * @property-read ?int $downvotes Only with the `withVoteCounts()` scope
  */
 class Rfc extends Model
 {
@@ -54,6 +58,16 @@ class Rfc extends Model
         return $this->hasMany(RfcPoll::class, 'rfcId', 'id')->orderBy('position');
     }
 
+    /**
+     * Community votes (not the official vote of the wiki).
+     *
+     * @return HasMany<RfcVote, $this>
+     */
+    public function votes(): HasMany
+    {
+        return $this->hasMany(RfcVote::class, 'rfcId', 'id');
+    }
+
     public function url(): string
     {
         return url('/rfc/' . $this->slug);
@@ -70,5 +84,19 @@ class Rfc extends Model
     public function statusLabel(): string
     {
         return $this->status->label() . ($this->phpVersion !== null ? " (PHP {$this->phpVersion})" : '');
+    }
+
+    /**
+     * Counts of community votes, as `upvotes` and `downvotes` attributes.
+     *
+     * @param  Builder<self>  $query
+     */
+    #[Scope]
+    protected function withVoteCounts(Builder $query): void
+    {
+        $query->withCount([
+            'votes as upvotes' => fn(Builder $votes) => $votes->where('value', 1),
+            'votes as downvotes' => fn(Builder $votes) => $votes->where('value', -1),
+        ]);
     }
 }
