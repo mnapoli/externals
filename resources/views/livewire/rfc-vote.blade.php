@@ -23,9 +23,7 @@ new class extends Component {
     public function vote(int $value): void
     {
         if (! auth()->check()) {
-            $this->js(<<<'JS'
-                alert('You must log in to vote. To log in, click the "log in" link in the top-right corner.');
-            JS);
+            $this->redirect(route('login'));
 
             return;
         }
@@ -45,19 +43,19 @@ new class extends Component {
     }
 }; ?>
 
-<div class="vote-actions inline-flex items-center gap-1 text-sm text-gray-300 whitespace-nowrap" title="Community vote">
+<div class="inline-flex items-center gap-0.5 font-mono text-xs text-muted whitespace-nowrap" title="Community opinion on externals.io, not the official vote">
     @if($canVote)
-        <a class="vote-action upvote text-xl font-bold leading-none {{ $userVote === 1 ? 'active' : '' }}"
-           href="#" wire:click.prevent="vote(1)" title="Upvote">&blacktriangle;</a>
+        <button type="button" wire:click="vote(1)" aria-pressed="{{ $userVote === 1 ? 'true' : 'false' }}" aria-label="Upvote"
+                class="w-7 h-7 rounded cursor-pointer {{ $userVote === 1 ? 'bg-accent-soft text-accent-strong' : 'text-faint hover:bg-subtle hover:text-ink' }}">▲</button>
     @else
-        <span class="text-xl leading-none" title="Upvotes">&blacktriangle;</span>
+        <span class="w-5 text-center text-faint" aria-label="Upvotes">▲</span>
     @endif
-    <span class="min-w-[2ch] tabular-nums @if($upvotes > 0) text-gray-600 @endif">{{ $upvotes }}</span>
+    <span class="min-w-[2ch] tabular-nums {{ $upvotes > 0 ? 'text-ink-soft' : '' }}">{{ $upvotes }}</span>
     @if($canVote)
-        <a class="vote-action downvote text-xl font-bold leading-none {{ $userVote === -1 ? 'active' : '' }}"
-           href="#" wire:click.prevent="vote(-1)" title="Downvote">&blacktriangledown;</a>
+        <button type="button" wire:click="vote(-1)" aria-pressed="{{ $userVote === -1 ? 'true' : 'false' }}" aria-label="Downvote"
+                class="w-7 h-7 rounded cursor-pointer {{ $userVote === -1 ? 'bg-accent-soft text-accent-strong' : 'text-faint hover:bg-subtle hover:text-ink' }}">▼</button>
     @else
-        <span class="text-xl leading-none" title="Downvotes">&blacktriangledown;</span>
+        <span class="w-5 text-center text-faint" aria-label="Downvotes">▼</span>
     @endif
-    <span class="min-w-[2ch] tabular-nums @if($downvotes > 0) text-gray-600 @endif">{{ $downvotes }}</span>
+    <span class="min-w-[2ch] tabular-nums {{ $downvotes > 0 ? 'text-ink-soft' : '' }}">{{ $downvotes }}</span>
 </div>

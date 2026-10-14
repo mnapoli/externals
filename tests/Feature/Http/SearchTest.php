@@ -52,7 +52,7 @@ test('the search page lists results', function (): void {
     $response = $this->get('/search?q=enum');
 
     $response->assertOk();
-    $response->assertSee('<a class="underline" href="/message/100#101">[RFC] Something &lt;new&gt;</a>', false);
+    $response->assertSee('<a class="hover:text-accent" href="/message/100#101">[RFC] Something &lt;new&gt;</a>', false);
     $response->assertSee('the <mark>enum</mark> &lt;proposal&gt;', false);
     $response->assertSee('href="' . url('/search?q=enum&amp;page=2') . '" rel="next"', false);
     $response->assertSee('<link rel="alternate" type="text/markdown" href="' . url('/search.md?q=enum') . '"', false);

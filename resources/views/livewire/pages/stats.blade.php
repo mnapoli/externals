@@ -22,14 +22,15 @@ new #[Layout('components.layouts.app')] class extends Component {
     }
 }; ?>
 
-<div>
-    <h1 class="text-xl mb-8">Stats!</h1>
+<div class="mx-auto max-w-4xl">
+    <h1 class="text-2xl font-bold tracking-tight mb-6">Stats</h1>
 
-    <p class="mb-2">There are:</p>
-
-    <ul>
-        <li>{{ $userCount }} users</li>
-        <li>{{ $threadCount }} threads</li>
-        <li>{{ $emailCount }} emails</li>
-    </ul>
+    <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        @foreach(['users' => $userCount, 'threads' => $threadCount, 'emails' => $emailCount] as $label => $count)
+            <div class="bg-surface border border-line rounded-lg px-5 py-4">
+                <dt class="label text-muted">{{ Str::plural(Str::singular($label), $count) }}</dt>
+                <dd class="mt-1 text-3xl font-bold tabular-nums">{{ number_format($count) }}</dd>
+            </div>
+        @endforeach
+    </dl>
 </div>

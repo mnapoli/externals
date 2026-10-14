@@ -7,8 +7,9 @@ new #[Layout('components.layouts.app')] class extends Component {
     //
 }; ?>
 
-<div>
-    <h1 class="text-xl mb-8">Most interesting threads of the last month</h1>
+<div class="mx-auto max-w-5xl">
+    <h1 class="text-2xl font-bold tracking-tight mb-1">Top threads</h1>
+    <p class="text-sm text-muted mb-4">The most upvoted threads of the last month.</p>
 
     <livewire:thread-list mode="top" />
 </div>

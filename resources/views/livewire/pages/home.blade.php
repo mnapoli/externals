@@ -1,92 +1,90 @@
 <?php
 
+use App\Services\Rfc\RfcHighlights;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.app')] class extends Component {
-    //
+    /**
+     * @return array<string, mixed>
+     */
+    public function with(): array
+    {
+        $highlights = app(RfcHighlights::class);
+
+        return [
+            'voting' => $highlights->voting(),
+            'inDiscussion' => $highlights->inDiscussion(5),
+        ];
+    }
 }; ?>
 
-<div>
-    <header class="sm:text-lg text-gray-500 font-light py-4 sm:py-8">
-        <p>Opening PHP's <a class="underline" href="https://news-web.php.net/php.internals" target="_blank" rel="noreferrer noopener">#internals</a> mailing list to the outside.</p>
-    </header>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.css">
-    {{-- Search --}}
-    {{-- The form is the fallback without JavaScript: pressing Enter opens the full results --}}
-    <form action="/search" method="get" class="mb-4 relative">
-        <input id="search-input" type="text" name="q" placeholder="Search..."
-               class="w-full px-4 py-2 transition border-b border-transparent border-gray-200 focus:border-red-400">
-        <a class="absolute right-0 top-0 mt-4" href="https://www.algolia.com/" target="_blank" rel="noreferrer noopener"><img class="w-10 text-gray-500 opacity-50" src="/assets/images/algolia.svg" alt="Algolia"></a>
-    </form>
-    <div id="search-container" class="px-6 py-4 bg-white rounded-lg border border-gray-50 shadow-lg">
-        <h3 class="font-bold text-lg mb-4">Search results</h3>
-        <ul id="search-results" class="list-unstyled"></ul>
-    </div>
-    @verbatim
-        <script id="search-result-template" type="text/html">
-            <li class="my-3">
-                <a href="/message/{{ objectID }}">{{{ _highlightResult.subject.value }}}</a>
-                <span class="text-gray-400 text-sm float-right">
-                    by <strong>{{{ _highlightResult.fromName.value }}}</strong>
-                    on {{#helpers.date}}{{/helpers.date}}
-                </span>
-            </li>
-        </script>
-        <script id="no-results-template" type="text/html">
-            <p>No results found for the search <em>"{{query}}"</em>.</p>
-        </script>
-    @endverbatim
-
-    <section id="threads">
+<div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+    <section id="threads" class="w-full lg:flex-1 min-w-0" aria-labelledby="latest-title">
+        <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
+            <h1 id="latest-title" class="text-2xl font-bold tracking-tight">Latest threads</h1>
+            <p class="text-sm text-muted">Opening PHP's <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://news-web.php.net/php.internals" target="_blank" rel="noreferrer noopener">#internals</a> mailing list to the outside.</p>
+        </div>
         <livewire:thread-list mode="latest" />
     </section>
 
-    @assets
-        <script src="https://cdn.jsdelivr.net/instantsearch.js/2/instantsearch.min.js"></script>
-    @endassets
+    <aside class="w-full lg:w-80 shrink-0 flex flex-col gap-4 lg:sticky lg:top-20" aria-label="RFC highlights">
+        @if($voting->isNotEmpty())
+            <section class="bg-surface border border-line rounded-lg overflow-hidden" aria-labelledby="voting-title">
+                <div class="flex justify-between items-center px-4 py-2.5 border-b border-line">
+                    <h2 id="voting-title" class="label text-ink-soft">Voting now</h2>
+                    <span class="font-mono text-xs text-accent-strong">{{ $voting->count() }}</span>
+                </div>
+                @foreach($voting as $rfc)
+                    @php($poll = $rfc->polls->first())
+                    @php($closesAt = \App\Services\Rfc\RfcHighlights::closesAt($poll))
+                    @php($yesShare = $poll ? \App\Services\Rfc\RfcHighlights::yesShare($poll) : null)
+                    <a href="/rfc/{{ $rfc->slug }}" class="block px-4 py-3 border-b border-line last:border-b-0 hover:bg-[#fafaff]">
+                        <span class="block font-semibold text-sm text-ink">{{ $rfc->title }}</span>
+                        @if($closesAt)
+                            <span class="block mt-0.5 font-mono text-xs text-muted" title="{{ $poll->closesAt }}">Closes {{ $closesAt->diffForHumans() }}</span>
+                        @endif
+                        @if($yesShare !== null)
+                            <span class="relative block mt-2 h-1.5 rounded-full bg-subtle" role="img" aria-label="{{ $poll->summary() }}, {{ round($yesShare * 100) }}% yes, 2/3 needed">
+                                <span class="absolute inset-y-0 left-0 rounded-full {{ $yesShare >= 2 / 3 ? 'bg-pass' : 'bg-fail' }}" style="width: {{ round($yesShare * 100, 1) }}%"></span>
+                                <span class="absolute -inset-y-0.5 left-2/3 w-0.5 bg-ink" aria-hidden="true"></span>
+                            </span>
+                            <span class="mt-1.5 flex justify-between font-mono text-xs text-ink-soft">
+                                <span>{{ $poll->summary() }}</span>
+                                <span class="{{ $yesShare >= 2 / 3 ? 'text-pass' : 'text-fail' }}">{{ $yesShare >= 2 / 3 ? 'passing' : 'failing' }}</span>
+                            </span>
+                        @endif
+                    </a>
+                @endforeach
+            </section>
+        @endif
 
-    @script
-    <script>
-        const search = instantsearch({
-            appId: 'KSTITII7EC',
-            apiKey: 'badccd205e578e64657ae7f880959824',
-            indexName: '{{ config('services.algolia.index_prefix') }}emails',
-            searchParameters: {
-                hitsPerPage: 10,
-            },
-            searchFunction: function (helper) {
-                const searchResult = document.querySelector('#search-container');
-                if (helper.state.query === '') {
-                    searchResult.style.display = 'none';
-                    return;
-                }
-                helper.search();
-                searchResult.style.display = 'block';
-            },
-        });
-        search.addWidget(
-            instantsearch.widgets.searchBox({
-                container: '#search-input',
-                placeholder: 'Search...',
-                reset: false,
-                magnifier: false,
-            })
-        );
-        search.addWidget(
-            instantsearch.widgets.hits({
-                container: '#search-results',
-                templates: {
-                    item: document.querySelector('#search-result-template').innerHTML,
-                    empty: document.querySelector('#no-results-template').innerHTML,
-                },
-            })
-        );
-        search.templatesConfig.helpers.date = function () {
-            return new Date(this.date).toLocaleDateString();
-        };
-        search.start();
-    </script>
-    @endscript
+        @if($inDiscussion->isNotEmpty())
+            <section class="bg-surface border border-line rounded-lg overflow-hidden" aria-labelledby="discussion-title">
+                <div class="flex justify-between items-center px-4 py-2.5 border-b border-line">
+                    <h2 id="discussion-title" class="label text-ink-soft">Under discussion</h2>
+                    <a href="/rfc" class="font-mono text-xs text-muted hover:text-ink">All RFCs →</a>
+                </div>
+                @foreach($inDiscussion as ['rfc' => $rfc, 'activity' => $activity])
+                    <a href="/rfc/{{ $rfc->slug }}" class="block px-4 py-3 border-b border-line last:border-b-0 hover:bg-[#fafaff]">
+                        <span class="block font-semibold text-sm text-ink">{{ $rfc->title }}</span>
+                        <span class="block mt-0.5 font-mono text-xs text-muted">
+                            {{ $activity->threadCount }} {{ Str::plural('thread', $activity->threadCount) }}
+                            · <time datetime="{{ $activity->lastActivity->toAtomString() }}" title="{{ $activity->lastActivity->format('D, M j, Y \a\t H:i T') }}">{{ $activity->lastActivity->diffForHumans() }}</time>
+                        </span>
+                    </a>
+                @endforeach
+            </section>
+        @endif
+
+        @auth
+            <section class="hidden lg:block bg-surface border border-line rounded-lg px-4 py-3 text-sm text-ink-soft" aria-labelledby="keyboard-title">
+                <h2 id="keyboard-title" class="label mb-2">Keyboard</h2>
+                <dl class="grid grid-cols-[4rem_minmax(0,1fr)] gap-y-1.5 items-center">
+                    <dt><span class="kbd">/</span></dt><dd>Search</dd>
+                    <dt><span class="kbd">n</span></dt><dd>Next unread message, in a thread</dd>
+                </dl>
+            </section>
+        @endauth
+    </aside>
 </div>

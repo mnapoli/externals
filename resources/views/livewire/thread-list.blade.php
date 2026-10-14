@@ -21,10 +21,11 @@ new class extends Component {
     public function vote(int $number, int $value): void
     {
         if (! auth()->check()) {
-            $this->js(<<<'JS'
-                alert('You must log in to vote. To log in, click the "log in" link in the top-right corner.');
-            JS);
+            $this->redirect(route('login'));
 
+            return;
+        }
+        if (! in_array($value, [1, -1], true)) {
             return;
         }
 
@@ -83,76 +84,84 @@ new class extends Component {
 }; ?>
 
 <div class="thread-list">
-    @foreach($threads as $thread)
-        <div wire:key="thread-{{ $thread->number }}"
-             class="my-4 sm:my-8 flex items-center group @if($thread->votes < -1) opacity-25 @endif">
-            <div class="mr-4 sm:mr-8 text-sm text-gray-300 text-center vote-actions">
-                <a class="vote-action upvote text-2xl font-bold leading-none {{ $thread->userVote === 1 ? 'active' : '' }}"
-                   href="#" wire:click.prevent="vote({{ $thread->number }}, 1)" title="Upvote">
-                    &blacktriangle;
-                </a>
-                <div class="vote vote-value leading-none @if($thread->votes > 0) text-gray-500 @endif">{{ $thread->votes }}</div>
-                <a class="vote-action downvote text-2xl font-bold leading-none {{ $thread->userVote === -1 ? 'active' : '' }}"
-                   href="#" wire:click.prevent="vote({{ $thread->number }}, -1)" title="Downvote">
-                    &blacktriangledown;
-                </a>
-            </div>
-            <div class="flex-grow">
-                <a class="block text-gray-800 sm:text-lg mb-1 @if(auth()->check() && ! $thread->isRead && $thread->userVote >= 0) font-bold @endif" href="/message/{{ $thread->number }}">
-                    {{ $thread->subject }}
-                </a>
-                <div class="text-gray-400 text-xs sm:text-sm">
-                    {{ $thread->date->diffForHumans() }}
-                    @if($thread->fromName)
-                        by {{ $thread->fromName }}
-                    @endif
-                    @foreach($rfcs[$thread->number] ?? [] as $rfc)
-                        <a href="/rfc/{{ $rfc->slug }}" title="RFC: {{ $rfc->title }}"
-                           class="ml-1 inline-block rounded px-1.5 py-0.5 text-xs leading-none whitespace-nowrap bg-gray-100 text-gray-500 hover:text-gray-700">RFC · {{ $rfc->statusLabel() }}</a>
-                    @endforeach
+    @if($threads === [])
+        <p class="px-4 py-10 text-center text-muted bg-surface border border-line rounded-lg">
+            @if($mode === 'top')
+                No thread got upvotes in the last month. <a href="/" class="text-accent-strong underline underline-offset-2">Browse the latest threads</a>.
+            @else
+                No threads yet.
+            @endif
+        </p>
+    @else
+    <ol class="bg-surface border border-line rounded-lg overflow-hidden">
+        @foreach($threads as $thread)
+            @php($subject = \App\Support\Email\SubjectTags::parse($thread->subject))
+            @php($threadRfcs = $rfcs[$thread->number] ?? [])
+            @php($unread = auth()->check() && ! $thread->isRead)
+            <li wire:key="thread-{{ $thread->number }}"
+                class="grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[3rem_minmax(0,1fr)_auto] gap-x-3 sm:gap-x-4 items-center px-3 sm:px-4 py-3 border-b border-line last:border-b-0 hover:bg-[#fafaff]">
+                <div class="row-start-1 col-start-2 sm:col-start-1 flex flex-col items-center font-mono text-[13px] text-ink-soft" role="group" aria-label="Thread vote">
+                    <button type="button" wire:click="vote({{ $thread->number }}, 1)" aria-pressed="{{ $thread->userVote === 1 ? 'true' : 'false' }}" aria-label="Upvote"
+                            class="w-9 h-6 sm:h-5 rounded text-[11px] cursor-pointer {{ $thread->userVote === 1 ? 'bg-accent-soft text-accent-strong' : 'text-faint hover:bg-subtle hover:text-ink' }}">▲</button>
+                    <span class="leading-tight {{ $thread->userVote ? 'text-accent-strong font-semibold' : '' }}">{{ $thread->votes }}</span>
+                    <button type="button" wire:click="vote({{ $thread->number }}, -1)" aria-pressed="{{ $thread->userVote === -1 ? 'true' : 'false' }}" aria-label="Downvote"
+                            class="w-9 h-6 sm:h-5 rounded text-[11px] cursor-pointer {{ $thread->userVote === -1 ? 'bg-accent-soft text-accent-strong' : 'text-faint hover:bg-subtle hover:text-ink' }}">▼</button>
                 </div>
-            </div>
-            @if($thread->emailCount > 1)
-                <a href="/message/{{ $thread->number }}"
-                   class="bg-gradient-to-r from-white to-gray-50 text-gray-300 group-hover:to-red-50 group-hover:text-red-400 transition-colors rounded-r-lg px-4 py-3 relative hidden sm:block">
-                    <svg class="w-10 h-10 text-current"
-                         xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path d='M431 320.6c-1-3.6 1.2-8.6 3.3-12.2a33.68 33.68 0 012.1-3.1A162 162 0 00464 215c.3-92.2-77.5-167-173.7-167-83.9 0-153.9 57.1-170.3 132.9a160.7 160.7 0 00-3.7 34.2c0 92.3 74.8 169.1 171 169.1 15.3 0 35.9-4.6 47.2-7.7s22.5-7.2 25.4-8.3a26.44 26.44 0 019.3-1.7 26 26 0 0110.1 2l56.7 20.1a13.52 13.52 0 003.9 1 8 8 0 008-8 12.85 12.85 0 00-.5-2.7z' fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32'/><path d='M66.46 232a146.23 146.23 0 006.39 152.67c2.31 3.49 3.61 6.19 3.21 8s-11.93 61.87-11.93 61.87a8 8 0 002.71 7.68A8.17 8.17 0 0072 464a7.26 7.26 0 002.91-.6l56.21-22a15.7 15.7 0 0112 .2c18.94 7.38 39.88 12 60.83 12A159.21 159.21 0 00284 432.11' fill='none' stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='32'/></svg>
-                    <span class="absolute inset-0 text-center mt-4 ml-1 text-sm">{{ $thread->emailCount }}</span>
-                </a>
-            @endif
-        </div>
-    @endforeach
+                <div class="row-start-1 col-start-1 sm:col-start-2 min-w-0">
+                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        @foreach($threadRfcs as $rfc)
+                            <a href="/rfc/{{ $rfc->slug }}" title="RFC: {{ $rfc->title }}"
+                               class="label px-1.5 py-0.5 rounded whitespace-nowrap {{ $rfc->status->badgeClasses() }}">RFC · {{ $rfc->status->label() }}</a>
+                        @endforeach
+                        @foreach($threadRfcs === [] ? $subject->tags : $subject->tagsExcept('RFC', 'Discussion') as $tag)
+                            <span class="label px-1.5 py-0.5 rounded whitespace-nowrap bg-subtle text-ink-soft">{{ $tag }}</span>
+                        @endforeach
+                        <a href="/message/{{ $thread->number }}"
+                           class="text-[15px] leading-snug {{ $unread ? 'font-semibold text-ink' : 'font-medium' }} {{ $thread->votes < -1 ? 'text-faint' : 'text-ink' }} hover:text-accent">
+                            @if($unread)<span class="inline-block w-[7px] h-[7px] mr-1.5 align-[2px] rounded-full bg-accent" aria-hidden="true"></span><span class="sr-only">Unread: </span>@endif{{ $subject->title }}
+                        </a>
+                    </div>
+                    <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[13px] text-muted">
+                        @if($thread->fromName)<span>{{ $thread->fromName }}</span>@endif
+                        <span class="sm:hidden font-mono text-xs">{{ $thread->emailCount }} {{ Str::plural('msg', $thread->emailCount) }}@if($thread->newCount > 0) · <span class="text-accent-strong font-semibold">{{ $thread->newCount }} new</span>@endif</span>
+                        <a href="/message/{{ $thread->number }}" class="sm:hidden font-mono text-xs hover:text-ink" title="Last message {{ $thread->lastUpdate->format('D, M j, Y \a\t H:i T') }}"><time datetime="{{ $thread->lastUpdate->toAtomString() }}">{{ $thread->lastUpdate->diffForHumans(short: true) }}</time></a>
+                        @if($thread->votes < -1)<span class="text-xs">low score</span>@endif
+                    </div>
+                </div>
+                <div class="hidden sm:flex flex-col items-end gap-1 font-mono text-xs text-muted whitespace-nowrap">
+                    <span>{{ $thread->emailCount }} {{ Str::plural('msg', $thread->emailCount) }}@if($thread->newCount > 0) · <span class="text-accent-strong font-semibold">{{ $thread->newCount }} new</span>@endif</span>
+                    <a href="/message/{{ $thread->number }}" class="hover:text-ink" title="Last message {{ $thread->lastUpdate->format('D, M j, Y \a\t H:i T') }}"><time datetime="{{ $thread->lastUpdate->toAtomString() }}">{{ $thread->lastUpdate->diffForHumans() }}</time></a>
+                </div>
+            </li>
+        @endforeach
+    </ol>
+    @endif
 
-    @if($mode === 'latest')
-        <div class="my-12 border-t flex justify-center">
-            @if($page > 1)
-                <button type="button" wire:click="$set('page', 1)" class="block w-10 py-4 text-center text-gray-400 hover:text-gray-800 cursor-pointer" style="margin-top: 1px">
-                    1
-                </button>
-            @endif
-            @if($page > 5)
-                <div class="block w-10 py-4 text-center text-gray-400" style="margin-top: 1px">…</div>
-            @endif
-            @if($page > 2)
-                @for($i = max($page - 3, 2); $i <= $page - 1; $i++)
-                    <button type="button" wire:click="$set('page', {{ $i }})" class="block w-10 py-4 text-center text-gray-400 hover:text-gray-800 cursor-pointer" style="margin-top: 1px">
-                        {{ $i }}
-                    </button>
-                @endfor
-            @endif
-            <div class="w-10 py-4 text-center border-t-2 border-red-200 text-red-400" style="margin-top: -1px">
-                {{ $page }}
+    @if($mode === 'latest' && $pageCount > 1)
+        <nav aria-label="Pagination" class="mt-4 flex flex-wrap items-center justify-between gap-3 font-mono text-[13px]">
+            <span class="text-muted">Page {{ $page }} of {{ number_format($pageCount) }}</span>
+            <div class="flex flex-wrap gap-1.5">
+                @php($pageLinks = array_values(array_unique(array_filter([1, $page - 2, $page - 1, $page, $page + 1, $page + 2, $pageCount], fn(int $i) => $i >= 1 && $i <= $pageCount))))
+                @if($page > 1)
+                    <a href="/?page={{ $page - 1 }}" wire:click.prevent="$set('page', {{ $page - 1 }})" rel="prev"
+                       class="px-3 py-2 rounded-md border border-line-strong bg-surface hover:border-accent-line">← Newer</a>
+                @endif
+                @foreach($pageLinks as $i => $pageLink)
+                    @if($i > 0 && $pageLink > $pageLinks[$i - 1] + 1)
+                        <span class="px-1 py-2 text-faint" aria-hidden="true">…</span>
+                    @endif
+                    @if($pageLink === $page)
+                        <span aria-current="page" class="px-3 py-2 rounded-md border border-accent-line bg-accent-soft text-accent-strong font-semibold">{{ $pageLink }}</span>
+                    @else
+                        <a href="/?page={{ $pageLink }}" wire:click.prevent="$set('page', {{ $pageLink }})"
+                           class="px-3 py-2 rounded-md border border-line-strong bg-surface hover:border-accent-line">{{ $pageLink }}</a>
+                    @endif
+                @endforeach
+                @if($page < $pageCount)
+                    <a href="/?page={{ $page + 1 }}" wire:click.prevent="$set('page', {{ $page + 1 }})" rel="next"
+                       class="px-3 py-2 rounded-md border border-line-strong bg-surface hover:border-accent-line">Older →</a>
+                @endif
             </div>
-            @if($page < $pageCount)
-                @for($i = $page + 1; $i <= min($page + 4, $pageCount); $i++)
-                    <button type="button" wire:click="$set('page', {{ $i }})" class="block w-10 py-4 text-center text-gray-400 hover:text-gray-800 cursor-pointer" style="margin-top: 1px">
-                        {{ $i }}
-                    </button>
-                @endfor
-            @endif
-            @if($page + 4 < $pageCount)
-                <div class="block w-10 py-4 text-center text-gray-400" style="margin-top: 1px">…</div>
-            @endif
-        </div>
+        </nav>
     @endif
 </div>

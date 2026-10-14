@@ -119,7 +119,8 @@ class ThreadQuery
                     threads.lastUpdate,
                     threads.votes,
                     IF(readStatus.lastReadDate AND readStatus.lastReadDate >= threads.lastUpdate, 1, 0) as isRead,
-                    (SELECT votes.value FROM votes WHERE votes.emailNumber = threadInfos.number AND votes.userId = ?) as userVote
+                    (SELECT votes.value FROM votes WHERE votes.emailNumber = threadInfos.number AND votes.userId = ?) as userVote,
+                    (SELECT COUNT(*) FROM emails newEmails WHERE newEmails.threadId = threads.emailId AND newEmails.fetchDate > readStatus.lastReadDate) as newCount
                 FROM threads
                 LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
                 LEFT JOIN user_emails_read readStatus ON threads.emailId = readStatus.emailId AND readStatus.userId = ?
@@ -140,7 +141,8 @@ class ThreadQuery
                     threads.lastUpdate,
                     threads.votes,
                     0 as isRead,
-                    NULL as userVote
+                    NULL as userVote,
+                    0 as newCount
                 FROM threads
                 LEFT JOIN emails threadInfos ON threads.emailId = threadInfos.id
                 $where
