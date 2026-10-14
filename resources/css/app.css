@@ -38,6 +38,10 @@
     body {
         @apply bg-ground text-ink font-sans antialiased;
     }
+    /* "->" and "=>" must not turn into arrows in PHP code */
+    code, pre, kbd, .font-mono {
+        font-variant-ligatures: none;
+    }
     :focus-visible {
         @apply outline-2 outline-offset-2 outline-accent;
     }
@@ -119,6 +123,15 @@ html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
 .email-content details.quote > blockquote {
     @apply mt-2 mb-0;
 }
+
+/* Syntax highlighting: see App\Support\CodeHighlighter */
+code.highlighted .hl-keyword { color: #3d4a8f; font-weight: 500; }
+code.highlighted .hl-type, code.highlighted .hl-generic, code.highlighted .hl-attribute { color: #7a4b00; }
+code.highlighted .hl-property { color: #1d6b6b; }
+code.highlighted .hl-variable { color: #8a3a6b; }
+code.highlighted .hl-value, code.highlighted .hl-literal { color: #2f7d4f; }
+code.highlighted .hl-number { color: #a14a16; }
+code.highlighted .hl-comment { color: #6e6e7a; font-style: italic; }
 
 /* RFC text, converted from the PHP wiki */
 .rfc-content {

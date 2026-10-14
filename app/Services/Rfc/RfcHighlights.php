@@ -81,10 +81,14 @@ class RfcHighlights
             ->get()
             ->keyBy('slug');
 
-        return $activity
-            ->filter(fn(RfcActivity $activity, string $slug) => $rfcs->has($slug))
-            ->take($limit)
-            ->map(fn(RfcActivity $activity, string $slug) => ['rfc' => $rfcs->get($slug), 'activity' => $activity])
-            ->values();
+        $highlights = [];
+        foreach ($activity as $slug => $rfcActivity) {
+            $rfc = $rfcs->get($slug);
+            if ($rfc !== null) {
+                $highlights[] = ['rfc' => $rfc, 'activity' => $rfcActivity];
+            }
+        }
+
+        return collect(array_slice($highlights, 0, $limit));
     }
 }

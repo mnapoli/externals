@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Support\Email;
 
+use App\Support\CodeHighlighter;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
@@ -21,7 +22,7 @@ class EmailHtml
 
     public static function present(string $html): string
     {
-        return self::foldLongQuotes(self::unwrapLines($html));
+        return app(CodeHighlighter::class)->highlight(self::foldLongQuotes(self::unwrapLines($html)));
     }
 
     /**

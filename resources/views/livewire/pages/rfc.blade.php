@@ -162,7 +162,7 @@ new #[Layout('components.layouts.app')] class extends Component {
         </p>
         @if($contentHtml !== null)
             <div class="rfc-content text-sm sm:text-base">
-                {!! $contentHtml !!}
+                {!! app(\App\Support\CodeHighlighter::class)->highlight($contentHtml) !!}
             </div>
         @else
             <p class="text-sm text-muted">The text of this RFC has not been imported yet: read it on <a class="underline" href="{{ $rfc->wikiUrl() }}">wiki.php.net</a>.</p>
