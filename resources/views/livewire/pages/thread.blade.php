@@ -112,7 +112,15 @@ new #[Layout('components.layouts.app')] class extends Component {
             if (! id) return;
             this.$dispatch('thread-reveal', id);
             this.outlineOpen = false;
-            this.$nextTick(() => { window.location.hash = '#' + id });
+            this.$nextTick(() => {
+                const el = document.getElementById(id);
+                if (! el) return;
+                el.scrollIntoView();
+                // Replace the URL instead of adding to the history: going back must leave the thread, not walk through its messages
+                history.replaceState(history.state, '', '#' + id);
+                this.$root.querySelectorAll('article[data-target]').forEach(a => a.removeAttribute('data-target'));
+                el.setAttribute('data-target', '');
+            });
         },
         nextUnread() {
             if (this.cursor >= this.unread.length) this.cursor = 0;
@@ -127,6 +135,8 @@ new #[Layout('components.layouts.app')] class extends Component {
         if ($event.key === 'n') nextUnread();
         if ($event.key === 'j') step(1);
         if ($event.key === 'k') step(-1);"
+     @click="const link = $event.target.closest('a[href^=\'#\']');
+        if (link && ! $event.metaKey && ! $event.ctrlKey && ! $event.shiftKey) { $event.preventDefault(); go(link.getAttribute('href').slice(1)) }"
      class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start pb-20 lg:pb-0">
 
     @if($showOutline)
@@ -155,7 +165,7 @@ new #[Layout('components.layouts.app')] class extends Component {
                     @php($inContext = $messageUnread || (auth()->check() && $message->unreadDescendantCount() > 0))
                     @php($depth = $message->depth())
                     <li @if(! $inContext) x-show="filter === 'all'" @endif>
-                        <a href="#{{ $message->email->number }}" @click.prevent="go('{{ $message->email->number }}')"
+                        <a href="#{{ $message->email->number }}"
                            :class="current === '{{ $message->email->number }}' && 'bg-accent-soft'"
                            @class([
                                'flex items-center gap-1.5 min-h-11 lg:min-h-0 px-2 py-1 rounded text-[13px] whitespace-nowrap overflow-hidden hover:bg-subtle',

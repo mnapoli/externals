@@ -18,7 +18,7 @@
          data-message
          @class(['group/msg', 'unread' => $unread])>
     <div @class([
-            'rounded-lg border bg-surface group-target/msg:ring-4 group-target/msg:ring-accent-soft',
+            'rounded-lg border bg-surface group-target/msg:ring-4 group-target/msg:ring-accent-soft group-data-target/msg:ring-4 group-data-target/msg:ring-accent-soft',
             'border-accent-line' => $unread,
             'border-line' => ! $unread,
         ])>
