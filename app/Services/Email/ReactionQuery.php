@@ -10,7 +10,7 @@ use App\Support\Reaction;
 class ReactionQuery
 {
     /**
-     * Reaction counts of each email, in the order of the picker, and the reactions of the user.
+     * Reaction counts of each email and the reactions of the user, both in the order of the picker.
      *
      * Reactions are not used as array keys: PHP would turn "-1" into an integer.
      *
@@ -25,7 +25,6 @@ class ReactionQuery
 
         $rows = EmailReaction::query()
             ->whereIn('emailNumber', $emailNumbers)
-            ->orderBy('createdAt')
             ->get(['userId', 'emailNumber', 'reaction'])
             ->groupBy('emailNumber');
 
@@ -38,10 +37,8 @@ class ReactionQuery
                 if ($count > 0) {
                     $counts[] = ['reaction' => $reaction->value, 'count' => $count];
                 }
-            }
-            foreach ($emailRows as $row) {
-                if ($userId !== null && $row->userId === $userId) {
-                    $mine[] = $row->reaction->value;
+                if ($userId !== null && $emailRows->contains(fn(EmailReaction $row) => $row->reaction === $reaction && $row->userId === $userId)) {
+                    $mine[] = $reaction->value;
                 }
             }
             $reactions[(int) $emailNumber] = ['counts' => $counts, 'mine' => $mine];

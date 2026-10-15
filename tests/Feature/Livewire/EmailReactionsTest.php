@@ -59,7 +59,7 @@ test('reactions of a thread are counted per email in the order of the picker', f
     }
 
     expect(app(ReactionQuery::class)->forEmails([1, 2, 3], $alice->id))->toBe([
-        1 => ['counts' => [['reaction' => '+1', 'count' => 2], ['reaction' => 'eyes', 'count' => 1]], 'mine' => ['eyes', '+1']],
+        1 => ['counts' => [['reaction' => '+1', 'count' => 2], ['reaction' => 'eyes', 'count' => 1]], 'mine' => ['+1', 'eyes']],
         2 => ['counts' => [['reaction' => 'heart', 'count' => 1]], 'mine' => []],
     ]);
 });
