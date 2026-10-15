@@ -28,11 +28,15 @@ new #[Layout('components.layouts.app')] class extends Component {
         <livewire:thread-list mode="latest" />
     </section>
 
-    <aside class="w-full lg:w-80 shrink-0 flex flex-col gap-4 lg:sticky lg:top-20" aria-label="RFC highlights">
+    <aside class="w-full lg:w-80 shrink-0 flex flex-col gap-4 lg:sticky lg:top-20" aria-labelledby="rfcs-title">
+        <div class="flex items-baseline justify-between gap-2 -mb-1">
+            <h2 id="rfcs-title" class="text-2xl font-bold tracking-tight">RFCs</h2>
+            <a href="/rfc" class="text-sm text-muted hover:text-ink">All RFCs →</a>
+        </div>
         @if($voting->isNotEmpty())
             <section class="bg-surface border border-line rounded-lg overflow-hidden" aria-labelledby="voting-title">
                 <div class="flex justify-between items-center px-4 py-2.5 border-b border-line">
-                    <h2 id="voting-title" class="label text-ink-soft">Voting now</h2>
+                    <h3 id="voting-title" class="label text-ink-soft">Voting now</h3>
                     <span class="font-mono text-xs text-accent-strong">{{ $voting->count() }}</span>
                 </div>
                 @foreach($voting as $rfc)
@@ -62,8 +66,7 @@ new #[Layout('components.layouts.app')] class extends Component {
         @if($inDiscussion->isNotEmpty())
             <section class="bg-surface border border-line rounded-lg overflow-hidden" aria-labelledby="discussion-title">
                 <div class="flex justify-between items-center px-4 py-2.5 border-b border-line">
-                    <h2 id="discussion-title" class="label text-ink-soft">Under discussion</h2>
-                    <a href="/rfc" class="font-mono text-xs text-muted hover:text-ink">All RFCs →</a>
+                    <h3 id="discussion-title" class="label text-ink-soft">Under discussion</h3>
                 </div>
                 @foreach($inDiscussion as ['rfc' => $rfc, 'activity' => $activity])
                     <div class="px-4 py-3 border-b border-line last:border-b-0">
