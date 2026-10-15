@@ -104,81 +104,110 @@ new #[Layout('components.layouts.app')] class extends Component {
                 <span class="min-w-0">by <span class="text-ink font-medium">{{ $rfc->authorNames() }}</span></span>
             @endif
         </div>
-        <p class="mt-2 font-mono text-xs text-muted">
-            @if($rfc->version)v{{ $rfc->version }} · @endif
-            @if($rfc->date)created {{ $rfc->date }} · @endif
-            <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="{{ $rfc->wikiUrl() }}">wiki.php.net ↗</a>
-        </p>
+        {{-- One link per line: the implementation often lists several (PR, docs, proof of concept…) --}}
+        @php($implementations = $rfc->implementation ? preg_split('/\s*;\s*|\s*,\s*(?=https?:\/\/)|\R/u', $rfc->implementation, flags: PREG_SPLIT_NO_EMPTY) : [])
+        <div class="mt-3 space-y-1 font-mono text-xs text-muted [overflow-wrap:anywhere]">
+            @if($rfc->version || $rfc->date || ($rfc->targetVersion && $rfc->phpVersion === null))
+                <p>{{ implode(' · ', array_filter([
+                    $rfc->version ? "v{$rfc->version}" : null,
+                    $rfc->date ? "created {$rfc->date}" : null,
+                    $rfc->targetVersion && $rfc->phpVersion === null ? "targets {$rfc->targetVersion}" : null,
+                ])) }}</p>
+            @endif
+            <p><a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="{{ $rfc->wikiUrl() }}">{{ Str::after($rfc->wikiUrl(), 'https://') }} ↗</a></p>
+            @if($implementations !== [])
+                <div class="flex gap-2">
+                    <span class="shrink-0">implementation</span>
+                    <div class="min-w-0 space-y-1">
+                        @foreach($implementations as $implementation)
+                            <p>{!! $linkify($implementation) !!}</p>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        </div>
     </header>
 
     <aside class="space-y-4 mb-8 lg:mb-0 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:self-stretch">
-        @if($rfc->polls->isNotEmpty())
-            <section class="bg-surface border border-line rounded-lg overflow-hidden" aria-labelledby="official-vote">
-                <div class="flex items-baseline justify-between gap-2 px-4 py-2.5 border-b border-line">
-                    <h2 id="official-vote" class="label text-ink-soft">Official {{ Str::plural('vote', $rfc->polls->count()) }}</h2>
-                    <span class="text-xs text-muted">by php-src voters</span>
+        @php($canVote = $rfc->status->acceptsCommunityVotes())
+        @php($hasCommunity = $canVote || $rfc->upvotes || $rfc->downvotes)
+        @if($hasCommunity || $rfc->polls->isNotEmpty())
+            <section class="bg-surface border border-line rounded-lg overflow-hidden" aria-labelledby="voting">
+                <div class="px-4 py-2.5 border-b border-line">
+                    <h2 id="voting" class="label text-ink-soft">Voting</h2>
                 </div>
-                @foreach($rfc->polls as $poll)
-                    @php($total = array_sum(array_column($poll->choices, 'count')))
-                    @php($closesAt = \App\Services\Rfc\RfcHighlights::closesAt($poll))
-                    @php($yesShare = \App\Services\Rfc\RfcHighlights::yesShare($poll))
-                    <div class="px-4 py-3 border-b border-line last:border-b-0">
-                        <p class="text-sm font-medium text-ink">{{ $poll->question }}</p>
-                        <p class="mt-0.5 font-mono text-xs text-muted">
-                            @if($poll->isClosed)
-                                closed
-                            @elseif($closesAt)
-                                <span title="{{ $poll->closesAt }}">{{ $closesAt->isFuture() ? 'closes in ' . $closesAt->diffForHumans(syntax: \Carbon\CarbonInterface::DIFF_ABSOLUTE) : 'closed ' . $closesAt->diffForHumans() }}</span>
-                            @else
-                                open
-                            @endif
-                            @if($yesShare !== null)
-                                · <span class="{{ $yesShare >= 2 / 3 ? 'text-pass' : 'text-fail' }}">{{ round($yesShare * 100) }}% yes{{ $poll->isClosed ? '' : ($yesShare >= 2 / 3 ? ', passing' : ', failing') }}</span>
-                            @endif
-                        </p>
-                        @if($total > 0)
-                            <div class="mt-2.5 space-y-1.5">
-                                @foreach($poll->choices as $choice)
-                                    @php($isYes = mb_strtolower($choice['label']) === 'yes')
-                                    <div class="grid grid-cols-[minmax(0,6rem)_minmax(0,1fr)_2rem] items-center gap-2 text-xs">
-                                        <span class="truncate text-ink-soft" title="{{ $choice['label'] }}">{{ $choice['label'] }}</span>
-                                        <span class="relative h-1.5 rounded-full bg-subtle">
-                                            <span class="absolute inset-y-0 left-0 rounded-full {{ $isYes ? 'bg-pass' : ($loop->first ? 'bg-accent' : 'bg-faint') }}" style="width: {{ round($choice['count'] / $total * 100, 1) }}%"></span>
-                                        </span>
-                                        <span class="font-mono text-right text-ink">{{ $choice['count'] }}</span>
-                                    </div>
-                                @endforeach
+                {{-- What visitors can act on first: the community vote while the RFC can change, the official result after --}}
+                <div class="flex flex-col">
+                    @if($hasCommunity)
+                        <div @class(['px-4 py-3.5 bg-[#fbfbff] border-line', 'order-first border-b' => $canVote && $rfc->polls->isNotEmpty(), 'order-last border-t' => ! $canVote && $rfc->polls->isNotEmpty()])>
+                            <h3 class="text-sm font-semibold text-ink">Community vote</h3>
+                            <p class="mt-0.5 mb-3 text-xs text-muted">
+                                {{ $canVote ? 'Anyone with a GitHub account can vote on externals.io.' : 'Votes on externals.io, closed since the RFC moved on.' }}
+                                Not the official vote.
+                            </p>
+                            <livewire:rfc-vote :rfc-id="$rfc->id" :can-vote="$canVote" :large="true"
+                                               :upvotes="(int) $rfc->upvotes" :downvotes="(int) $rfc->downvotes"
+                                               :user-vote="$userVote" />
+                        </div>
+                    @endif
+                    @if($rfc->polls->isNotEmpty())
+                        <div>
+                            <div class="flex items-baseline justify-between gap-2 px-4 pt-3 pb-1">
+                                <h3 class="text-sm font-semibold text-ink">Official {{ Str::plural('vote', $rfc->polls->count()) }}</h3>
+                                <span class="text-xs text-muted">by php-src maintainers</span>
                             </div>
-                        @else
-                            <p class="mt-1 text-xs text-muted">No votes yet · {{ implode(' · ', array_column($poll->choices, 'label')) }}</p>
-                        @endif
-                        @if($poll->voters)
-                            <details class="mt-2.5 text-xs">
-                                <summary class="cursor-pointer font-mono text-muted hover:text-ink">{{ count($poll->voters) }} {{ Str::plural('voter', count($poll->voters)) }}</summary>
-                                <ul class="mt-2 max-h-72 overflow-y-auto space-y-1">
-                                    @foreach($poll->voters as $voter)
-                                        <li class="flex items-baseline gap-2">
-                                            <a class="text-ink hover:text-accent truncate" href="https://people.php.net/{{ $voter['name'] }}">{{ $voter['name'] }}</a>
-                                            <span class="ml-auto shrink-0 text-ink-soft">{{ implode(', ', $voter['choices']) }}</span>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </details>
-                        @endif
-                    </div>
-                @endforeach
-            </section>
-        @endif
-
-        @if($rfc->status->acceptsCommunityVotes() || $rfc->upvotes || $rfc->downvotes)
-            <section class="bg-surface border border-line rounded-lg px-4 py-3" aria-labelledby="community-opinion">
-                <div class="flex items-center justify-between gap-3">
-                    <h2 id="community-opinion" class="label text-ink-soft">Community opinion</h2>
-                    <livewire:rfc-vote :rfc-id="$rfc->id" :can-vote="$rfc->status->acceptsCommunityVotes()"
-                                       :upvotes="(int) $rfc->upvotes" :downvotes="(int) $rfc->downvotes"
-                                       :user-vote="$userVote" />
+                            @foreach($rfc->polls as $poll)
+                                @php($total = array_sum(array_column($poll->choices, 'count')))
+                                @php($closesAt = \App\Services\Rfc\RfcHighlights::closesAt($poll))
+                                @php($yesShare = \App\Services\Rfc\RfcHighlights::yesShare($poll))
+                                <div class="px-4 pt-2 pb-3 border-b border-line last:border-b-0">
+                                    <p class="text-[13px] text-ink">{{ $poll->question }}</p>
+                                    <p class="mt-0.5 font-mono text-xs text-muted">
+                                        @if($poll->isClosed)
+                                            closed
+                                        @elseif($closesAt)
+                                            <span title="{{ $poll->closesAt }}">{{ $closesAt->isFuture() ? 'closes in ' . $closesAt->diffForHumans(syntax: \Carbon\CarbonInterface::DIFF_ABSOLUTE) : 'closed ' . $closesAt->diffForHumans() }}</span>
+                                        @else
+                                            open
+                                        @endif
+                                        @if($yesShare !== null)
+                                            · <span class="{{ $yesShare >= 2 / 3 ? 'text-pass' : 'text-fail' }}">{{ round($yesShare * 100) }}% yes{{ $poll->isClosed ? '' : ($yesShare >= 2 / 3 ? ', passing' : ', failing') }}</span>
+                                        @endif
+                                    </p>
+                                    @if($total > 0)
+                                        <div class="mt-2.5 space-y-1.5">
+                                            @foreach($poll->choices as $choice)
+                                                @php($isYes = mb_strtolower($choice['label']) === 'yes')
+                                                <div class="grid grid-cols-[minmax(0,6rem)_minmax(0,1fr)_2rem] items-center gap-2 text-xs">
+                                                    <span class="truncate text-ink-soft" title="{{ $choice['label'] }}">{{ $choice['label'] }}</span>
+                                                    <span class="relative h-1.5 rounded-full bg-subtle">
+                                                        <span class="absolute inset-y-0 left-0 rounded-full {{ $isYes ? 'bg-pass' : ($loop->first ? 'bg-accent' : 'bg-faint') }}" style="width: {{ round($choice['count'] / $total * 100, 1) }}%"></span>
+                                                    </span>
+                                                    <span class="font-mono text-right text-ink">{{ $choice['count'] }}</span>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <p class="mt-1 text-xs text-muted">No votes yet · {{ implode(' · ', array_column($poll->choices, 'label')) }}</p>
+                                    @endif
+                                    @if($poll->voters)
+                                        <details class="mt-2.5 text-xs">
+                                            <summary class="cursor-pointer font-mono text-muted hover:text-ink">{{ count($poll->voters) }} {{ Str::plural('voter', count($poll->voters)) }}</summary>
+                                            <ul class="mt-2 max-h-72 overflow-y-auto space-y-1">
+                                                @foreach($poll->voters as $voter)
+                                                    <li class="flex items-baseline gap-2">
+                                                        <a class="text-ink hover:text-accent truncate" href="https://people.php.net/{{ $voter['name'] }}">{{ $voter['name'] }}</a>
+                                                        <span class="ml-auto shrink-0 text-ink-soft">{{ implode(', ', $voter['choices']) }}</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </details>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
-                <p class="mt-1 text-xs text-muted">On externals.io, not the official vote.</p>
             </section>
         @endif
 
@@ -221,18 +250,6 @@ new #[Layout('components.layouts.app')] class extends Component {
             @endif
         </section>
 
-        <section class="bg-surface border border-line rounded-lg px-4 py-3" aria-labelledby="details">
-            <h2 id="details" class="label text-ink-soft mb-2">Details</h2>
-            <dl class="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-[13px]">
-                @foreach(['Authors' => $rfc->authors, 'Created' => $rfc->date, 'Version' => $rfc->version, 'Target' => $rfc->targetVersion, 'Implementation' => $rfc->implementation] as $label => $value)
-                    @if($value)
-                        <dt class="text-muted">{{ $label }}</dt>
-                        <dd class="text-ink [overflow-wrap:anywhere]">{!! $linkify($value) !!}</dd>
-                    @endif
-                @endforeach
-            </dl>
-        </section>
-
         @if(count($headings) > 2)
             {{-- Sticks once the cards above are scrolled past --}}
             <nav aria-label="Contents" class="hidden lg:block sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto bg-surface border border-line rounded-lg px-2 py-3"
@@ -267,9 +284,6 @@ new #[Layout('components.layouts.app')] class extends Component {
                 </ol>
             </details>
         @endif
-        <p class="mb-5 pb-3 border-b border-line font-mono text-xs text-muted">
-            Text from <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="{{ $rfc->wikiUrl() }}">wiki.php.net</a>
-        </p>
         @if($contentHtml !== null)
             <div class="rfc-content">
                 {!! $contentHtml !!}

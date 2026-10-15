@@ -274,3 +274,14 @@ test('RFCs only mentioned by a thread are not shown as its RFC', function (): vo
     $this->get('/rfc/pipe-to-return')->assertSeeInOrder(['id="discussions"', 'href="/message/300"'], false)->assertDontSee('Mentioned in');
     $this->get('/rfc/pipe-assignment')->assertSeeInOrder(['Mentioned in', '[RFC] [Discussion] Pipe to return']);
 });
+
+test('shows each implementation link of an RFC on its own line, with a short label', function (): void {
+    Rfc::factory()->create([
+        'slug' => 'pear',
+        'implementation' => 'https://github.com/php/php-src/pull/17118; https://example.com/pear (PoC)',
+    ]);
+
+    $this->get('/rfc/pear')
+        ->assertSee('<p><a class="text-accent-strong underline decoration-accent-line underline-offset-2 hover:decoration-accent-strong" href="https://github.com/php/php-src/pull/17118">php/php-src#17118</a></p>', false)
+        ->assertSee('<p><a class="text-accent-strong underline decoration-accent-line underline-offset-2 hover:decoration-accent-strong" href="https://example.com/pear">example.com/pear</a> (PoC)</p>', false);
+});

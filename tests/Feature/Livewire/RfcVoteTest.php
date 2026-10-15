@@ -86,6 +86,16 @@ test('the RFC pages show the community vote of active RFCs only', function (): v
     Rfc::factory()->create(['slug' => 'active', 'title' => 'Active RFC']);
     Rfc::factory()->create(['slug' => 'archived', 'title' => 'Archived RFC', 'status' => RfcStatus::Declined]);
 
-    $this->get('/rfc/active')->assertOk()->assertSee('Community opinion');
-    $this->get('/rfc/archived')->assertOk()->assertDontSee('Community opinion');
+    $this->get('/rfc/active')->assertOk()->assertSee('Community vote')->assertSee('In favor');
+    $this->get('/rfc/archived')->assertOk()->assertDontSee('Community vote');
+});
+
+test('the RFC page keeps the community opinion of archived RFCs, without letting people vote', function (): void {
+    $rfc = Rfc::factory()->create(['slug' => 'archived', 'title' => 'Archived RFC', 'status' => RfcStatus::Declined]);
+    RfcVote::create(['userId' => User::factory()->create()->id, 'rfcId' => $rfc->id, 'value' => 1, 'updatedAt' => now()]);
+
+    $this->get('/rfc/archived')->assertOk()
+        ->assertSee('Community vote')
+        ->assertSee('1 in favor')
+        ->assertDontSee('wire:click="vote(1)"', false);
 });
