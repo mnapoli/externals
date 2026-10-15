@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\RefreshAllThreads;
 use App\Models\Email;
 use App\Models\Rfc;
 use App\Models\RfcPoll;
@@ -250,4 +251,24 @@ test('the list of RFCs shows the avatar or the initials of the first author', fu
     $response->assertSee('https://www.gravatar.com/avatar/' . hash('sha256', 'larry@garfieldtech.com') . '?s=48&amp;d=blank', false);
     $response->assertSee('LG');
     $response->assertSee('SE');
+});
+
+test('RFCs only mentioned by a thread are not shown as its RFC', function (): void {
+    Rfc::factory()->create(['slug' => 'pipe-to-return', 'title' => 'Pipe to return', 'status' => RfcStatus::Discussion]);
+    Rfc::factory()->create(['slug' => 'pipe-assignment', 'title' => 'Pipe Assignment Operator', 'status' => RfcStatus::Declined]);
+    Email::factory()->create(['number' => 300, 'subject' => '[RFC] [Discussion] Pipe to return']);
+    app(RefreshAllThreads::class)->handle();
+    DB::table('rfc_threads')->insert([
+        ['rfcSlug' => 'pipe-to-return', 'threadNumber' => 300, 'source' => RfcThreads::SOURCE_EMAIL],
+        ['rfcSlug' => 'pipe-assignment', 'threadNumber' => 300, 'source' => RfcThreads::SOURCE_EMAIL],
+    ]);
+
+    $list = $this->get('/')->getContent();
+    expect($list)->toContain('RFC · Discussion')->not->toContain('RFC · Declined');
+
+    $this->get('/message/300')
+        ->assertSeeInOrder(['Pipe to return', 'Also mentions', 'Pipe Assignment Operator']);
+
+    $this->get('/rfc/pipe-to-return')->assertSeeInOrder(['Discussions on the mailing list', 'Pipe to return'])->assertDontSee('Mentioned in');
+    $this->get('/rfc/pipe-assignment')->assertSeeInOrder(['Mentioned in', '[RFC] [Discussion] Pipe to return']);
 });

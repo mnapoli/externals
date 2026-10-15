@@ -7,6 +7,7 @@ namespace App\Services\Rfc;
 use App\Models\Email;
 use App\Models\Rfc;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -122,34 +123,62 @@ class RfcThreads
     }
 
     /**
-     * The (listed) RFCs of several threads, for lists of threads.
+     * The RFC each thread is about, and the RFCs it only mentions.
      *
-     * Only the columns needed for a badge are loaded.
-     *
-     * @param  list<int>  $threadNumbers
-     * @return array<int, list<Rfc>> Keyed by thread number
+     * @param  array<int, string>  $subjects  Subjects of the threads, keyed by thread number
+     * @param  bool  $listedOnly  Ignore the RFCs that are no longer listed on the wiki index
+     * @return array<int, ThreadRfcs> Keyed by thread number, only the threads linked to RFCs
      */
-    public function rfcsOfThreads(array $threadNumbers): array
+    public function rfcLinksOfThreads(array $subjects, bool $listedOnly = true): array
     {
-        if ($threadNumbers === []) {
+        if ($subjects === []) {
             return [];
         }
 
-        $rfcs = Rfc::query()
+        $rows = Rfc::query()
             ->join('rfc_threads', 'rfc_threads.rfcSlug', '=', 'rfcs.slug')
-            ->whereIn('rfc_threads.threadNumber', $threadNumbers)
-            ->where('rfcs.isListed', true)
-            // A thread can be linked to an RFC twice: from its email and from the wiki
-            ->distinct()
+            ->whereIn('rfc_threads.threadNumber', array_keys($subjects))
+            ->when($listedOnly, fn(Builder $query) => $query->where('rfcs.isListed', true))
             ->orderBy('rfcs.indexPosition')
-            ->get(['rfcs.id', 'rfcs.slug', 'rfcs.title', 'rfcs.status', 'rfcs.phpVersion', 'rfcs.indexPosition', 'rfc_threads.threadNumber']);
+            ->get(['rfcs.id', 'rfcs.slug', 'rfcs.title', 'rfcs.status', 'rfcs.phpVersion', 'rfcs.isListed', 'rfcs.indexPosition', 'rfc_threads.threadNumber', 'rfc_threads.source']);
 
-        $byThread = [];
-        foreach ($rfcs as $rfc) {
-            $byThread[(int) $rfc->getAttribute('threadNumber')][] = $rfc;
+        // A thread can be linked to an RFC twice: from its email and from the wiki
+        $links = [];
+        foreach ($rows as $rfc) {
+            $threadNumber = (int) $rfc->getAttribute('threadNumber');
+            $fromWiki = $rfc->getAttribute('source') === self::SOURCE_WIKI;
+            if (isset($links[$threadNumber][$rfc->slug])) {
+                $links[$threadNumber][$rfc->slug]['fromWiki'] = $links[$threadNumber][$rfc->slug]['fromWiki'] || $fromWiki;
+            } else {
+                $links[$threadNumber][$rfc->slug] = ['rfc' => $rfc, 'fromWiki' => $fromWiki];
+            }
         }
 
-        return $byThread;
+        $threadRfcs = [];
+        foreach ($links as $threadNumber => $threadLinks) {
+            $threadRfcs[$threadNumber] = ThreadRfcs::classify($subjects[$threadNumber] ?? '', array_values($threadLinks));
+        }
+
+        return $threadRfcs;
+    }
+
+    /**
+     * The threads about an RFC, and the threads that only mention it, oldest first.
+     *
+     * @return array{discussions: Collection<int, LinkedThread>, mentions: Collection<int, LinkedThread>}
+     */
+    public function discussionsOf(Rfc $rfc): array
+    {
+        $threads = $this->threadsOf($rfc->slug);
+        $links = $this->rfcLinksOfThreads(
+            $threads->mapWithKeys(fn(LinkedThread $thread) => [$thread->number => $thread->subject])->all(),
+            listedOnly: false,
+        );
+        [$discussions, $mentions] = $threads->partition(
+            fn(LinkedThread $thread) => ($links[$thread->number] ?? null)?->primary?->slug === $rfc->slug,
+        );
+
+        return ['discussions' => $discussions->values(), 'mentions' => $mentions->values()];
     }
 
     /**

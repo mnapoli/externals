@@ -2,10 +2,10 @@
 
 use App\Actions\CastVote;
 use App\Models\Email;
-use App\Models\Rfc;
 use App\Models\Vote;
 use App\Services\Email\ThreadQuery;
 use App\Services\Rfc\RfcThreads;
+use App\Services\Rfc\ThreadRfcs;
 use App\Support\Email\ThreadSummary;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Url;
@@ -75,11 +75,16 @@ new class extends Component {
 
     /**
      * @param  ThreadSummary[]  $threads
-     * @return array<int, list<Rfc>> Keyed by thread number
+     * @return array<int, ThreadRfcs> Keyed by thread number
      */
     private function rfcsOf(array $threads): array
     {
-        return app(RfcThreads::class)->rfcsOfThreads(array_values(array_map(fn(ThreadSummary $thread) => $thread->number, $threads)));
+        $subjects = [];
+        foreach ($threads as $thread) {
+            $subjects[$thread->number] = $thread->subject;
+        }
+
+        return app(RfcThreads::class)->rfcLinksOfThreads($subjects);
     }
 }; ?>
 
@@ -96,7 +101,7 @@ new class extends Component {
     <ol class="bg-surface border border-line rounded-lg overflow-hidden">
         @foreach($threads as $thread)
             @php($subject = \App\Support\Email\SubjectTags::parse($thread->subject))
-            @php($threadRfcs = $rfcs[$thread->number] ?? [])
+            @php($primaryRfc = ($rfcs[$thread->number] ?? null)?->primary)
             @php($unread = auth()->check() && ! $thread->isRead)
             <li wire:key="thread-{{ $thread->number }}"
                 class="grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[3rem_minmax(0,1fr)_auto] gap-x-3 sm:gap-x-4 items-center px-3 sm:px-4 py-3 border-b border-line last:border-b-0 hover:bg-[#fafaff]">
@@ -109,11 +114,11 @@ new class extends Component {
                 </div>
                 <div class="row-start-1 col-start-1 sm:col-start-2 min-w-0">
                     <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        @foreach($threadRfcs as $rfc)
-                            <a href="/rfc/{{ $rfc->slug }}" title="RFC: {{ $rfc->title }}"
-                               class="label px-1.5 py-0.5 rounded whitespace-nowrap {{ $rfc->status->badgeClasses() }}">RFC · {{ $rfc->status->badgeLabel() }}</a>
-                        @endforeach
-                        @foreach($threadRfcs === [] ? $subject->tags : $subject->tagsExcept('RFC', 'Discussion') as $tag)
+                        @if($primaryRfc)
+                            <a href="/rfc/{{ $primaryRfc->slug }}" title="RFC: {{ $primaryRfc->title }}"
+                               class="label px-1.5 py-0.5 rounded whitespace-nowrap {{ $primaryRfc->status->badgeClasses() }}">RFC · {{ $primaryRfc->status->badgeLabel() }}</a>
+                        @endif
+                        @foreach($primaryRfc === null ? $subject->tags : $subject->tagsExcept('RFC', 'Discussion') as $tag)
                             <span class="label px-1.5 py-0.5 rounded whitespace-nowrap bg-subtle text-ink-soft">{{ $tag }}</span>
                         @endforeach
                         <a href="/message/{{ $thread->number }}"

@@ -39,8 +39,8 @@ new #[Layout('components.layouts.app')] class extends Component {
                     @php($poll = $rfc->polls->first())
                     @php($closesAt = \App\Services\Rfc\RfcHighlights::closesAt($poll))
                     @php($yesShare = $poll ? \App\Services\Rfc\RfcHighlights::yesShare($poll) : null)
-                    <a href="/rfc/{{ $rfc->slug }}" class="block px-4 py-3 border-b border-line last:border-b-0 hover:bg-[#fafaff]">
-                        <span class="block font-semibold text-sm text-ink">{{ $rfc->title }}</span>
+                    <div class="px-4 py-3 border-b border-line last:border-b-0">
+                        <a href="/rfc/{{ $rfc->slug }}" class="block font-semibold text-sm text-ink hover:text-accent">{{ $rfc->title }}</a>
                         @if($closesAt)
                             <span class="block mt-0.5 font-mono text-xs text-muted" title="{{ $poll->closesAt }}">Closes {{ $closesAt->diffForHumans() }}</span>
                         @endif
@@ -54,7 +54,7 @@ new #[Layout('components.layouts.app')] class extends Component {
                                 <span class="{{ $yesShare >= 2 / 3 ? 'text-pass' : 'text-fail' }}">{{ $yesShare >= 2 / 3 ? 'passing' : 'failing' }}</span>
                             </span>
                         @endif
-                    </a>
+                    </div>
                 @endforeach
             </section>
         @endif
@@ -66,13 +66,13 @@ new #[Layout('components.layouts.app')] class extends Component {
                     <a href="/rfc" class="font-mono text-xs text-muted hover:text-ink">All RFCs →</a>
                 </div>
                 @foreach($inDiscussion as ['rfc' => $rfc, 'activity' => $activity])
-                    <a href="/rfc/{{ $rfc->slug }}" class="block px-4 py-3 border-b border-line last:border-b-0 hover:bg-[#fafaff]">
-                        <span class="block font-semibold text-sm text-ink">{{ $rfc->title }}</span>
+                    <div class="px-4 py-3 border-b border-line last:border-b-0">
+                        <a href="/rfc/{{ $rfc->slug }}" class="block font-semibold text-sm text-ink hover:text-accent">{{ $rfc->title }}</a>
                         <span class="block mt-0.5 font-mono text-xs text-muted">
                             {{ $activity->threadCount }} {{ Str::plural('thread', $activity->threadCount) }}
                             · <time datetime="{{ $activity->lastActivity->toAtomString() }}" title="{{ $activity->lastActivity->format('D, M j, Y \a\t H:i T') }}">{{ $activity->lastActivity->diffForHumans() }}</time>
                         </span>
-                    </a>
+                    </div>
                 @endforeach
             </section>
         @endif

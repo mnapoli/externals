@@ -7,6 +7,7 @@ use App\Models\Vote;
 use App\Services\Email\ReactionQuery;
 use App\Services\Email\ThreadQuery;
 use App\Services\Rfc\RfcThreads;
+use App\Services\Rfc\ThreadRfcs;
 use App\Support\Email\SubjectTags;
 use App\Support\Email\ThreadItem;
 use App\Support\Email\ThreadStructuredData;
@@ -50,6 +51,14 @@ new #[Layout('components.layouts.app')] class extends Component {
         return null;
     }
 
+    private function threadRfcs(): ThreadRfcs
+    {
+        $threadRfcs = app(RfcThreads::class)->rfcLinksOfThreads([$this->number => $this->subject])[$this->number] ?? ThreadRfcs::empty();
+        $threadRfcs->primary?->load('polls');
+
+        return $threadRfcs;
+    }
+
     public function rendering(View $view): void
     {
         $view->title($this->subject . ' - Externals');
@@ -73,7 +82,7 @@ new #[Layout('components.layouts.app')] class extends Component {
             'votes' => (int) Vote::where('emailNumber', $this->number)->sum('value'),
             'userVote' => $userId !== null ? (int) (Vote::where('userId', $userId)->where('emailNumber', $this->number)->value('value') ?? 0) : 0,
             'structuredData' => ThreadStructuredData::build($this->thread, $this->number, $this->subject),
-            'rfcs' => app(RfcThreads::class)->rfcsOf($this->number),
+            'threadRfcs' => $this->threadRfcs(),
         ];
     }
 }; ?>
@@ -196,7 +205,7 @@ new #[Layout('components.layouts.app')] class extends Component {
         <div class="mt-2 flex gap-3 sm:gap-4 items-start">
             <livewire:thread-vote :number="$number" :votes="$votes" :user-vote="$userVote" />
             <div class="min-w-0 flex-1">
-                @php($tags = $rfcs->isEmpty() ? $subjectTags->tags : $subjectTags->tagsExcept('RFC', 'Discussion'))
+                @php($tags = $threadRfcs->primary === null ? $subjectTags->tags : $subjectTags->tagsExcept('RFC', 'Discussion'))
                 @if($tags !== [])
                     <div class="flex flex-wrap gap-1.5">
                         @foreach($tags as $tag)
@@ -232,17 +241,25 @@ new #[Layout('components.layouts.app')] class extends Component {
             </div>
         @endif
 
-        @foreach($rfcs as $rfc)
+        @if($rfc = $threadRfcs->primary)
             @php($poll = $rfc->polls->first())
-            <a href="/rfc/{{ $rfc->slug }}" class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-line bg-surface hover:border-accent-line px-4 py-3 text-sm">
+            <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-line bg-surface px-4 py-3 text-sm">
                 <span class="label text-muted">RFC</span>
-                <span class="font-semibold">{{ $rfc->title }}</span>
+                <a href="/rfc/{{ $rfc->slug }}" class="font-semibold hover:text-accent">{{ $rfc->title }}</a>
                 <span class="label px-1.5 py-0.5 rounded {{ $rfc->status->badgeClasses() }}">{{ $rfc->status->badgeLabel() . ($rfc->phpVersion !== null ? " · PHP {$rfc->phpVersion}" : "") }}</span>
                 @if($poll?->hasVotes())
                     <span class="sm:ml-auto font-mono text-xs text-muted">Official vote: {{ $poll->summary() }}@if(! $poll->isClosed) · open @endif</span>
                 @endif
-            </a>
-        @endforeach
+            </div>
+        @endif
+        @if($threadRfcs->mentions !== [])
+            <p class="mt-2 text-sm text-muted">
+                {{ $threadRfcs->primary ? 'Also mentions' : 'Mentions' }}
+                @foreach($threadRfcs->mentions as $mentioned)
+                    <a href="/rfc/{{ $mentioned->slug }}" class="text-ink-soft underline decoration-line-strong underline-offset-2 hover:text-accent">{{ $mentioned->title }}</a> <span class="text-xs">({{ $mentioned->status->badgeLabel() }})</span>{{ $loop->last ? '' : ',' }}
+                @endforeach
+            </p>
+        @endif
 
         <div class="mt-6 flex flex-col gap-3">
             @foreach($thread as $item)

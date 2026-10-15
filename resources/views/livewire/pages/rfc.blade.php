@@ -41,10 +41,12 @@ new #[Layout('components.layouts.app')] class extends Component {
     public function with(): array
     {
         $rfc = $this->rfc();
+        ['discussions' => $threads, 'mentions' => $mentions] = app(RfcThreads::class)->discussionsOf($rfc);
 
         return [
             'rfc' => $rfc,
-            'threads' => app(RfcThreads::class)->threadsOf($rfc->slug),
+            'threads' => $threads,
+            'mentions' => $mentions,
             'contentHtml' => $rfc->content !== null ? app(RfcContent::class)->html($rfc) : null,
             'userVote' => auth()->check() ? (int) RfcVote::where('userId', auth()->id())->where('rfcId', $rfc->id)->value('value') : 0,
         ];
@@ -154,6 +156,23 @@ new #[Layout('components.layouts.app')] class extends Component {
             </p>
         @endforelse
     </section>
+
+    @if($mentions->isNotEmpty())
+        <section class="mb-10">
+            <h2 class="text-lg font-semibold mb-1">Mentioned in</h2>
+            <p class="text-sm text-muted mb-3">Threads about other subjects that link to this RFC.</p>
+            @foreach($mentions as $thread)
+                <div wire:key="mention-{{ $thread->number }}" class="py-2 border-b border-line last:border-b-0">
+                    <a class="text-ink-soft hover:text-accent" href="/message/{{ $thread->number }}">{{ $thread->subject }}</a>
+                    <div class="text-xs text-muted">
+                        <time datetime="{{ $thread->date->toAtomString() }}">{{ $thread->date->format('M j, Y') }}</time>
+                        @if($thread->fromName) by {{ $thread->fromName }} @endif
+                        · {{ $thread->emailCount }} {{ Str::plural('message', $thread->emailCount) }}
+                    </div>
+                </div>
+            @endforeach
+        </section>
+    @endif
 
     <section>
         <h2 class="text-lg font-semibold mb-1">RFC text</h2>
