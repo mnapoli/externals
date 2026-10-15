@@ -89,6 +89,16 @@ class Rfc extends Model
     }
 
     /**
+     * All the authors, without their email addresses, e.g. "Larry Garfield, Ilija Tovilo"
+     */
+    public function authorNames(): string
+    {
+        $names = preg_replace(['/[(<]?\s*' . self::EMAIL_PATTERN . '\s*[)>]?/u', '/\(\s*\)/u', '/\s+([,)])/u', '/\s{2,}/u'], ['', '', '$1', ' '], (string) $this->authors);
+
+        return mb_trim((string) $names, " ,\t\n");
+    }
+
+    /**
      * The name of the first author, e.g. "Larry Garfield" for "Larry Garfield (larry@garfieldtech.com), Ilija Tovilo"
      */
     public function authorName(): string

@@ -112,7 +112,7 @@ test('shows an RFC with its votes, threads and text', function (): void {
     $response->assertSeeInOrder(['Add the pipe operator?', 'Yes', '33', 'No', '7', 'alcaeus']);
     $response->assertSee('href="/message/100"', false);
     $response->assertSee('[RFC] Pipe Operator (again)');
-    $response->assertSee('<h2>Introduction</h2>', false);
+    $response->assertSee('<h2 id="rfc-introduction">Introduction</h2>', false);
     // Links to imported RFCs stay on externals.io
     $response->assertSee('href="' . url('/rfc/enumerations') . '"', false);
     $response->assertSee('href="https://wiki.php.net/rfc/unknown"', false);
@@ -271,6 +271,6 @@ test('RFCs only mentioned by a thread are not shown as its RFC', function (): vo
     $this->get('/message/300')
         ->assertSeeInOrder(['Pipe to return', 'Also mentions', 'Pipe Assignment Operator']);
 
-    $this->get('/rfc/pipe-to-return')->assertSeeInOrder(['Discussions on the mailing list', 'Pipe to return'])->assertDontSee('Mentioned in');
+    $this->get('/rfc/pipe-to-return')->assertSeeInOrder(['id="discussions"', 'href="/message/300"'], false)->assertDontSee('Mentioned in');
     $this->get('/rfc/pipe-assignment')->assertSeeInOrder(['Mentioned in', '[RFC] [Discussion] Pipe to return']);
 });

@@ -138,6 +138,10 @@ code.highlighted .hl-comment { color: #6e6e7a; font-style: italic; }
     @apply leading-relaxed;
     max-width: 72ch;
 }
+.rfc-content :is(h2, h3)[id] {
+    /* Below the sticky header when jumping to them from the contents */
+    scroll-margin-top: 5rem;
+}
 .rfc-content h2 {
     @apply text-xl font-semibold mt-10 mb-3 pb-1 border-b border-line;
 }

@@ -41,7 +41,7 @@
     <script async defer data-domain="externals.io" src="https://plausible.io/js/plausible.js"></script>
     @stack('head')
 </head>
-<body>
+<body class="min-h-dvh flex flex-col">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-surface focus:px-3 focus:py-2">Skip to content</a>
 
     <header class="sticky top-0 z-30 bg-surface border-b border-line"
@@ -86,7 +86,7 @@
         </div>
     </header>
 
-    <main id="main" class="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
+    <main id="main" class="flex-1 w-full mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
         @if(session()->has('status'))
             <p role="status" class="mb-6 px-4 py-3 rounded-lg border border-accent-line bg-accent-soft text-sm text-ink-soft">{{ session('status') }}</p>
         @endif
