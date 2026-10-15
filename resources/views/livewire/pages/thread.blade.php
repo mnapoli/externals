@@ -237,7 +237,7 @@ new #[Layout('components.layouts.app')] class extends Component {
             <a href="/rfc/{{ $rfc->slug }}" class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-line bg-surface hover:border-accent-line px-4 py-3 text-sm">
                 <span class="label text-muted">RFC</span>
                 <span class="font-semibold">{{ $rfc->title }}</span>
-                <span class="label px-1.5 py-0.5 rounded {{ $rfc->status->badgeClasses() }}">{{ $rfc->statusLabel() }}</span>
+                <span class="label px-1.5 py-0.5 rounded {{ $rfc->status->badgeClasses() }}">{{ $rfc->status->badgeLabel() . ($rfc->phpVersion !== null ? " · PHP {$rfc->phpVersion}" : "") }}</span>
                 @if($poll?->hasVotes())
                     <span class="sm:ml-auto font-mono text-xs text-muted">Official vote: {{ $poll->summary() }}@if(! $poll->isClosed) · open @endif</span>
                 @endif

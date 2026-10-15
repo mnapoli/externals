@@ -66,7 +66,7 @@ new #[Layout('components.layouts.app')] class extends Component {
 
     <div class="mb-6 text-sm flex flex-wrap items-baseline gap-x-4 gap-y-2">
         <div>
-            <span class="label inline-block rounded px-1.5 py-0.5 {{ $rfc->status->badgeClasses() }}">{{ $rfc->statusLabel() }}</span>
+            <span class="label inline-block rounded px-1.5 py-0.5 {{ $rfc->status->badgeClasses() }}">{{ $rfc->status->badgeLabel() . ($rfc->phpVersion !== null ? " · PHP {$rfc->phpVersion}" : "") }}</span>
             @if(! $rfc->isListed)
                 <span class="ml-1 text-xs text-muted">no longer listed on the wiki index</span>
             @endif

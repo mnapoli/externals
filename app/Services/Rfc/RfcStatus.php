@@ -53,6 +53,18 @@ enum RfcStatus: string
     }
 
     /**
+     * Shorter label, for badges.
+     */
+    public function badgeLabel(): string
+    {
+        return match ($this) {
+            self::Voting => 'Voting',
+            self::Discussion => 'Discussion',
+            default => $this->label(),
+        };
+    }
+
+    /**
      * Community votes only make sense while the RFC can still change.
      */
     public function acceptsCommunityVotes(): bool

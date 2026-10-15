@@ -111,7 +111,7 @@ new class extends Component {
                     <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                         @foreach($threadRfcs as $rfc)
                             <a href="/rfc/{{ $rfc->slug }}" title="RFC: {{ $rfc->title }}"
-                               class="label px-1.5 py-0.5 rounded whitespace-nowrap {{ $rfc->status->badgeClasses() }}">RFC · {{ $rfc->status->label() }}</a>
+                               class="label px-1.5 py-0.5 rounded whitespace-nowrap {{ $rfc->status->badgeClasses() }}">RFC · {{ $rfc->status->badgeLabel() }}</a>
                         @endforeach
                         @foreach($threadRfcs === [] ? $subject->tags : $subject->tagsExcept('RFC', 'Discussion') as $tag)
                             <span class="label px-1.5 py-0.5 rounded whitespace-nowrap bg-subtle text-ink-soft">{{ $tag }}</span>

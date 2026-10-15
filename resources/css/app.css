@@ -57,7 +57,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
 
 /* Small uppercase label, used for chips and panel headers */
 @utility label {
-    @apply font-mono text-[11px] font-medium uppercase tracking-wider;
+    @apply font-mono text-[11px] font-medium uppercase tracking-normal;
 }
 
 @utility kbd {

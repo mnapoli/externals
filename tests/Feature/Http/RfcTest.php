@@ -104,7 +104,7 @@ test('shows an RFC with its votes, threads and text', function (): void {
 
     $response->assertOk();
     $response->assertSee('Pipe operator');
-    $response->assertSee('Implemented (PHP 8.5)');
+    $response->assertSee('Implemented · PHP 8.5');
     $response->assertSee('Larry Garfield');
     $response->assertSeeInOrder(['Add the pipe operator?', 'Yes', '33', 'No', '7', 'alcaeus']);
     $response->assertSee('href="/message/100"', false);
@@ -207,7 +207,7 @@ test('threads show the RFCs they discuss', function (): void {
 
     $this->get('/message/100')
         ->assertSee('href="/rfc/pipe-operator-v3"', false)
-        ->assertSee('Implemented (PHP 8.5)')
+        ->assertSee('Implemented · PHP 8.5')
         ->assertSee('Yes: 33 · No: 7');
 
     expect($this->get('/message/100.md')->getContent())
