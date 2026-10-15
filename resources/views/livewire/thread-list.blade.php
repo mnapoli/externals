@@ -54,6 +54,7 @@ new class extends Component {
             return [
                 'threads' => $threads,
                 'rfcs' => $this->rfcsOf($threads),
+                'participants' => $this->participantsOf($threads),
                 'pageCount' => 1,
             ];
         }
@@ -69,8 +70,18 @@ new class extends Component {
         return [
             'threads' => $threads,
             'rfcs' => $this->rfcsOf($threads),
+            'participants' => $this->participantsOf($threads),
             'pageCount' => (int) ceil($threadCount / 20),
         ];
+    }
+
+    /**
+     * @param  ThreadSummary[]  $threads
+     * @return array<int, list<\App\Support\Email\Participant>> Keyed by thread number
+     */
+    private function participantsOf(array $threads): array
+    {
+        return app(ThreadQuery::class)->participantsOf(array_values(array_map(fn(ThreadSummary $thread) => $thread->number, $threads)));
     }
 
     /**
@@ -104,7 +115,11 @@ new class extends Component {
             @php($primaryRfc = ($rfcs[$thread->number] ?? null)?->primary)
             @php($unread = auth()->check() && ! $thread->isRead)
             <li wire:key="thread-{{ $thread->number }}"
-                class="grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[3rem_minmax(0,1fr)_auto] gap-x-3 sm:gap-x-4 items-center px-3 sm:px-4 py-3 border-b border-line last:border-b-0 hover:bg-[#fafaff]">
+                @class([
+                    'grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[3rem_minmax(0,1fr)_auto] gap-x-3 sm:gap-x-4 items-center px-3 sm:px-4 py-3.5 border-b border-line last:border-b-0',
+                    'bg-[#fbfbff] shadow-[inset_3px_0_0_var(--color-accent)] hover:bg-[#f6f8ff]' => $thread->newCount > 0,
+                    'hover:bg-[#fafaff]' => $thread->newCount === 0,
+                ])>
                 <div class="row-start-1 col-start-2 sm:col-start-1 flex flex-col items-center font-mono text-[13px] text-ink-soft" role="group" aria-label="Thread vote">
                     <button type="button" wire:click="vote({{ $thread->number }}, 1)" aria-pressed="{{ $thread->userVote === 1 ? 'true' : 'false' }}" aria-label="Upvote"
                             class="w-9 h-6 sm:h-5 rounded text-[11px] cursor-pointer {{ $thread->userVote === 1 ? 'bg-accent-soft text-accent-strong' : 'text-faint hover:bg-subtle hover:text-ink' }}">▲</button>
@@ -122,21 +137,21 @@ new class extends Component {
                             <span class="label px-1.5 py-0.5 rounded whitespace-nowrap bg-subtle text-ink-soft">{{ $tag }}</span>
                         @endforeach
                         <a href="/message/{{ $thread->number }}"
-                           class="text-[15px] leading-snug {{ $unread ? 'font-semibold text-ink' : 'font-medium' }} {{ $thread->votes < -1 ? 'text-faint' : 'text-ink' }} hover:text-accent">
-                            @if($unread)<span class="inline-block w-[7px] h-[7px] mr-1.5 align-[2px] rounded-full bg-accent" aria-hidden="true"></span><span class="sr-only">Unread: </span>@endif{{ $subject->title }}
+                           class="text-[15px] sm:text-base leading-snug {{ $unread ? 'font-bold text-ink' : 'font-medium' }} {{ $thread->votes < -1 ? 'text-faint' : 'text-ink' }} hover:text-accent">
+                            @if($unread)<span class="inline-block w-[9px] h-[9px] mr-2 align-[2px] rounded-full bg-accent ring-[3px] ring-accent-soft" aria-hidden="true"></span><span class="sr-only">Unread: </span>@endif{{ $subject->title }}
                         </a>
                     </div>
-                    <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[13px] text-muted">
-                        @if($thread->fromName)<span>{{ $thread->fromName }}</span>@endif
-                        <span class="sm:hidden font-mono text-xs">{{ $thread->emailCount }} {{ Str::plural('msg', $thread->emailCount) }}@if($thread->newCount > 0) · <span class="text-accent-strong font-semibold">{{ $thread->newCount }} new</span>@endif</span>
-                        <a href="/message/{{ $thread->number }}" class="sm:hidden font-mono text-xs hover:text-ink" title="Last message {{ $thread->lastUpdate->format('D, M j, Y \a\t H:i T') }}"><time datetime="{{ $thread->lastUpdate->toAtomString() }}">{{ $thread->lastUpdate->diffForHumans(short: true) }}</time></a>
-                        @if($thread->votes < -1)<span class="text-xs">low score</span>@endif
+                    <div class="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                        <x-participants :participants="$participants[$thread->number] ?? []" />
+                        <span class="font-mono text-xs text-ink-soft">{{ $thread->emailCount }} {{ Str::plural('message', $thread->emailCount) }}</span>
+                        @if($thread->newCount > 0)
+                            <span class="inline-flex items-center rounded-full bg-accent px-2 py-0.5 font-mono text-xs font-semibold text-white">{{ $thread->newCount }} new</span>
+                        @endif
+                        <a href="/message/{{ $thread->number }}" class="sm:hidden font-mono text-xs text-muted hover:text-ink" title="Last message {{ $thread->lastUpdate->format('D, M j, Y \a\t H:i T') }}"><time datetime="{{ $thread->lastUpdate->toAtomString() }}">{{ $thread->lastUpdate->diffForHumans(short: true) }}</time></a>
+                        @if($thread->votes < -1)<span class="text-xs text-muted">low score</span>@endif
                     </div>
                 </div>
-                <div class="hidden sm:flex flex-col items-end gap-1 font-mono text-xs text-muted whitespace-nowrap">
-                    <span>{{ $thread->emailCount }} {{ Str::plural('msg', $thread->emailCount) }}@if($thread->newCount > 0) · <span class="text-accent-strong font-semibold">{{ $thread->newCount }} new</span>@endif</span>
-                    <a href="/message/{{ $thread->number }}" class="hover:text-ink" title="Last message {{ $thread->lastUpdate->format('D, M j, Y \a\t H:i T') }}"><time datetime="{{ $thread->lastUpdate->toAtomString() }}">{{ $thread->lastUpdate->diffForHumans() }}</time></a>
-                </div>
+                <a href="/message/{{ $thread->number }}" class="hidden sm:block font-mono text-xs text-muted hover:text-ink whitespace-nowrap" title="Last message {{ $thread->lastUpdate->format('D, M j, Y \a\t H:i T') }}"><time datetime="{{ $thread->lastUpdate->toAtomString() }}">{{ $thread->lastUpdate->diffForHumans() }}</time></a>
             </li>
         @endforeach
     </ol>

@@ -76,7 +76,7 @@ new #[Layout('components.layouts.app')] class extends Component {
             'thread' => $this->thread,
             'messages' => $messages,
             'subjectTags' => SubjectTags::parse($this->subject),
-            'participantCount' => count(array_unique(array_map(fn(ThreadItem $item) => mb_strtolower($item->email->from->getNameOrEmail()), $messages))),
+            'participants' => app(ThreadQuery::class)->participantsOf([$this->number])[$this->number] ?? [],
             'unreadCount' => $userId !== null ? count(array_filter($messages, fn(ThreadItem $item) => ! $item->email->isRead)) : 0,
             'reactions' => app(ReactionQuery::class)->forEmails(array_map(fn(ThreadItem $item) => $item->email->number, $messages), $userId !== null ? (int) $userId : null),
             'votes' => (int) Vote::where('emailNumber', $this->number)->sum('value'),
@@ -214,13 +214,14 @@ new #[Layout('components.layouts.app')] class extends Component {
                     </div>
                 @endif
                 <h1 class="mt-1.5 text-2xl sm:text-3xl font-bold tracking-tight leading-tight break-words">{{ $subjectTags->title }}</h1>
-                <p class="mt-1.5 flex flex-wrap gap-x-4 gap-y-0.5 font-mono text-xs text-muted">
+                <div class="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-mono text-xs text-muted">
+                    <x-participants :participants="$participants" />
+                    <span>{{ count($participants) }} {{ Str::plural('participant', count($participants)) }}</span>
                     <span>{{ count($messages) }} {{ Str::plural('message', count($messages)) }}</span>
-                    <span>{{ $participantCount }} {{ Str::plural('participant', $participantCount) }}</span>
                     @if($first && $last)
                         <span>{{ $first->date->format('M j, Y') }}@if($last->format('Ymd') !== $first->date->format('Ymd')) → {{ $last->format('M j, Y') }}@endif</span>
                     @endif
-                </p>
+                </div>
             </div>
         </div>
 

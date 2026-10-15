@@ -6,6 +6,7 @@ namespace App\Services\Email;
 
 use App\Models\Email;
 use App\Models\User;
+use App\Support\Email\Participant;
 use App\Support\Email\ThreadItem;
 use App\Support\Email\ThreadSummary;
 use Illuminate\Support\Facades\DB;
@@ -93,6 +94,47 @@ class ThreadQuery
         }
 
         return $rootItems;
+    }
+
+    /**
+     * The people who wrote in each thread: the author of the thread first, then the most active.
+     *
+     * @param  list<int>  $threadNumbers  Numbers of the root emails
+     * @return array<int, list<Participant>> Keyed by thread number
+     */
+    public function participantsOf(array $threadNumbers): array
+    {
+        if ($threadNumbers === []) {
+            return [];
+        }
+
+        $rows = DB::table('emails as roots')
+            ->join('emails', 'emails.threadId', '=', 'roots.id')
+            ->whereIn('roots.number', $threadNumbers)
+            ->groupBy('roots.number', 'roots.fromEmail', 'emails.fromEmail')
+            ->orderBy('roots.number')
+            ->orderByRaw('CASE WHEN emails.fromEmail = roots.fromEmail THEN 0 ELSE 1 END')
+            ->orderByDesc('messageCount')
+            ->orderBy('firstDate')
+            ->get([
+                'roots.number as threadNumber',
+                'emails.fromEmail',
+                DB::raw('MAX(emails.fromName) as fromName'),
+                DB::raw('COUNT(*) as messageCount'),
+                DB::raw('MIN(emails.date) as firstDate'),
+            ]);
+
+        $participants = [];
+        foreach ($rows as $row) {
+            $email = $row->fromEmail !== null ? (string) $row->fromEmail : null;
+            $participants[(int) $row->threadNumber][] = new Participant(
+                name: (string) ($row->fromName ?? $email ?? 'Unknown'),
+                email: $email,
+                messageCount: (int) $row->messageCount,
+            );
+        }
+
+        return $participants;
     }
 
     /**
