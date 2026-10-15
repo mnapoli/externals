@@ -89,12 +89,20 @@ class Rfc extends Model
     }
 
     /**
+     * The name of the first author, e.g. "Larry Garfield" for "Larry Garfield (larry@garfieldtech.com), Ilija Tovilo"
+     */
+    public function authorName(): string
+    {
+        // Before its email or the next author
+        return mb_trim(preg_split('/[,(<&\/]|\band\b|' . self::EMAIL_PATTERN . '/u', (string) $this->authors)[0] ?? '');
+    }
+
+    /**
      * e.g. "LG" for "Larry Garfield (larry@garfieldtech.com), Ilija Tovilo"
      */
     public function authorInitials(): string
     {
-        // The name of the first author: before its email or the next author
-        $name = preg_split('/[,(<&\/]|\band\b|' . self::EMAIL_PATTERN . '/u', (string) $this->authors)[0] ?? '';
+        $name = $this->authorName();
         $words = array_values(array_filter(
             preg_split('/\s+/u', mb_trim($name)) ?: [],
             fn(string $word) => preg_match('/^\p{L}/u', $word) === 1,

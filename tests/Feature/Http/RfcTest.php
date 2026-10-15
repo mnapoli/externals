@@ -60,7 +60,9 @@ test('lists the RFCs by status', function (): void {
     $response = $this->get('/rfc');
 
     $response->assertOk();
-    $response->assertSeeInOrder(['In voting', 'Enumerations', 'Implemented — PHP 8.5', 'Pipe operator', '1 thread']);
+    // Sections of the same status are grouped in the navigation, e.g. the PHP versions under "Implemented"
+    $response->assertSeeInOrder(['In voting', 'Implemented', 'href="#section-implemented-php-85"', 'PHP 8.5'], false);
+    $response->assertSeeInOrder(['Voting', 'Enumerations', 'Implemented', 'PHP 8.5', 'Pipe operator', 'Larry Garfield', '1 thread']);
     $response->assertSee('href="/rfc/pipe-operator-v3"', false);
     $response->assertDontSee('Unlisted RFC');
 });

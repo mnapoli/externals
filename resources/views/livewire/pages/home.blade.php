@@ -40,24 +40,9 @@ new #[Layout('components.layouts.app')] class extends Component {
                     <span class="font-mono text-xs text-accent-strong">{{ $voting->count() }}</span>
                 </div>
                 @foreach($voting as $rfc)
-                    @php($poll = $rfc->polls->first())
-                    @php($closesAt = \App\Services\Rfc\RfcHighlights::closesAt($poll))
-                    @php($yesShare = $poll ? \App\Services\Rfc\RfcHighlights::yesShare($poll) : null)
                     <div class="px-4 py-3 border-b border-line last:border-b-0">
                         <a href="/rfc/{{ $rfc->slug }}" class="block font-semibold text-sm text-ink hover:text-accent">{{ $rfc->title }}</a>
-                        @if($closesAt)
-                            <span class="block mt-0.5 font-mono text-xs text-muted" title="{{ $poll->closesAt }}">{{ $closesAt->isFuture() ? 'Closes in ' . $closesAt->diffForHumans(syntax: \Carbon\CarbonInterface::DIFF_ABSOLUTE) : 'Closed ' . $closesAt->diffForHumans() }}</span>
-                        @endif
-                        @if($yesShare !== null)
-                            <span class="relative block mt-2 h-1.5 rounded-full bg-subtle" role="img" aria-label="{{ $poll->summary() }}, {{ round($yesShare * 100) }}% yes, 2/3 needed">
-                                <span class="absolute inset-y-0 left-0 rounded-full {{ $yesShare >= 2 / 3 ? 'bg-pass' : 'bg-fail' }}" style="width: {{ round($yesShare * 100, 1) }}%"></span>
-                                <span class="absolute -inset-y-0.5 left-2/3 w-0.5 bg-ink" aria-hidden="true"></span>
-                            </span>
-                            <span class="mt-1.5 flex justify-between font-mono text-xs text-ink-soft">
-                                <span>{{ $poll->summary() }}</span>
-                                <span class="{{ $yesShare >= 2 / 3 ? 'text-pass' : 'text-fail' }}">{{ $yesShare >= 2 / 3 ? 'passing' : 'failing' }}</span>
-                            </span>
-                        @endif
+                        <x-rfc-poll :poll="$rfc->polls->first()" class="mt-0.5" />
                     </div>
                 @endforeach
             </section>
