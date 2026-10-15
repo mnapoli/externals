@@ -177,7 +177,7 @@ new #[Layout('components.layouts.app')] class extends Component {
             {{-- wire:ignore.self: re-renders must not close the sections opened by the visitor --}}
             <details id="{{ $section['anchor'] }}" wire:key="section-{{ $searching ? 'search' : 'all' }}-{{ $section['title'] }}" wire:ignore.self
                      x-on:toggle="if ($el.open && ! $el.querySelector('[data-rfcs]')) $wire.open(@js($section['title'])).then(() => { if (location.hash === '#' + $el.id) $el.scrollIntoView() })"
-                     class="group/section mb-4 open:mb-8 scroll-mt-20" @if($section['open']) open @endif>
+                     class="group/section mb-4 open:mb-8" @if($section['open']) open @endif>
                 <summary class="list-none [&::-webkit-details-marker]:hidden flex items-center gap-2.5 mb-3 cursor-pointer select-none rounded focus-visible:outline-2">
                     <svg class="w-3.5 h-3.5 shrink-0 text-faint -rotate-90 group-open/section:rotate-0 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
                     <h2 class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
