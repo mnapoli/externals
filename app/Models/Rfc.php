@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Services\Rfc\RfcPageParser;
 use App\Services\Rfc\RfcStatus;
-use App\Support\Email\EmailAddress;
 use Database\Factories\RfcFactory;
 use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -78,15 +77,15 @@ class Rfc extends Model
     }
 
     /**
-     * Gravatar of the first author, transparent when there is none (the initials show through).
+     * Address of the first author, when the wiki gives one.
      */
-    public function authorAvatarUrl(): ?string
+    public function authorEmail(): ?string
     {
         if (! preg_match('/' . self::EMAIL_PATTERN . '/u', (string) $this->authors, $matches)) {
             return null;
         }
 
-        return EmailAddress::avatarUrlOf($matches[0], 48);
+        return $matches[0];
     }
 
     /**

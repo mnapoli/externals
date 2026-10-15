@@ -2,6 +2,7 @@
 
 use App\Models\Rfc;
 use App\Models\RfcVote;
+use App\Services\Email\AvatarUrls;
 use App\Services\Rfc\RfcList;
 use App\Services\Rfc\RfcThreads;
 use Illuminate\View\View;
@@ -53,6 +54,7 @@ new #[Layout('components.layouts.app')] class extends Component {
 
         return [
             'sections' => $sections,
+            'avatars' => app(AvatarUrls::class)->of(array_merge(...array_map(fn(array $section) => array_map(fn(Rfc $rfc) => $rfc->authorEmail(), $section['rfcs']), $sections)), 48),
             'searching' => $q !== '',
             'activity' => app(RfcThreads::class)->activityByRfc(),
             'userVotes' => auth()->check() ? RfcVote::where('userId', auth()->id())->pluck('value', 'rfcId') : collect(),
@@ -102,8 +104,9 @@ new #[Layout('components.layouts.app')] class extends Component {
                         <div class="relative self-center w-6 h-6 shrink-0 rounded-full bg-subtle text-[10px] leading-none text-muted flex items-center justify-center select-none"
                              title="{{ $rfc->authors }}">
                             {{ $rfc->authorInitials() }}
-                            @if($rfc->authorAvatarUrl())
-                                <img src="{{ $rfc->authorAvatarUrl() }}" alt="" loading="lazy" class="absolute inset-0 w-6 h-6 rounded-full">
+                            @php($avatar = $avatars[$rfc->authorEmail() ?? ''] ?? null)
+                            @if($avatar)
+                                <img src="{{ $avatar }}" alt="" loading="lazy" class="absolute inset-0 w-6 h-6 rounded-full object-cover">
                             @endif
                         </div>
                         <div class="flex-grow min-w-0 sm:flex sm:items-baseline sm:gap-4">

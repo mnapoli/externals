@@ -9,8 +9,8 @@
         <span title="{{ $participant->name }} · {{ $participant->messageCount }} {{ Str::plural('message', $participant->messageCount) }}"
               @class(['relative -ml-1.5 rounded-full ring-2 ring-surface items-center justify-center bg-[#e4e4ea] font-semibold text-ink-soft select-none', $size, 'inline-flex' => $i < $shownMobile, 'hidden sm:inline-flex' => $i >= $shownMobile])>
             <span aria-hidden="true">{{ $participant->initials() }}</span>
-            @if($participant->avatarUrl())
-                <img src="{{ $participant->avatarUrl() }}" alt="" loading="lazy" class="absolute inset-0 w-full h-full rounded-full object-cover">
+            @if($participant->avatarUrl)
+                <img src="{{ $participant->avatarUrl }}" alt="" loading="lazy" class="absolute inset-0 w-full h-full rounded-full object-cover">
             @endif
         </span>
     @endforeach

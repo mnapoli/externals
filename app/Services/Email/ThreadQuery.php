@@ -124,6 +124,8 @@ class ThreadQuery
                 DB::raw('MIN(emails.date) as firstDate'),
             ]);
 
+        $avatarUrls = app(AvatarUrls::class)->of($rows->pluck('fromEmail'));
+
         $participants = [];
         foreach ($rows as $row) {
             $email = $row->fromEmail !== null ? (string) $row->fromEmail : null;
@@ -131,6 +133,7 @@ class ThreadQuery
                 name: (string) ($row->fromName ?? $email ?? 'Unknown'),
                 email: $email,
                 messageCount: (int) $row->messageCount,
+                avatarUrl: $avatarUrls[$email] ?? null,
             );
         }
 

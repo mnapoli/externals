@@ -1,4 +1,4 @@
-@props(['item', 'reactions' => []])
+@props(['item', 'reactions' => [], 'avatars' => []])
 
 {{-- Replies are indented up to this depth; deeper replies stay at that level and say who they answer --}}
 @php($maxIndent = 3)
@@ -26,8 +26,9 @@
             @php($initials = collect(preg_split('/[\s.@_-]+/', $email->from->getNameOrEmail()))->filter()->take(2)->map(fn($part) => mb_strtoupper(mb_substr($part, 0, 1)))->implode(''))
             <span class="relative w-7 h-7 shrink-0 rounded-full bg-subtle text-[10px] font-semibold text-muted flex items-center justify-center" aria-hidden="true">
                 {{ $initials }}
-                @if($email->from->email)
-                    <img class="absolute inset-0 w-7 h-7 rounded-full" src="{{ \App\Support\Email\EmailAddress::avatarUrlOf($email->from->email) }}" alt="" loading="lazy">
+                @php($avatar = $avatars[$email->from->email ?? ''] ?? null)
+                @if($avatar)
+                    <img class="absolute inset-0 w-7 h-7 rounded-full object-cover" src="{{ $avatar }}" alt="" loading="lazy">
                 @endif
             </span>
             <span class="author font-semibold text-sm text-ink">{{ $email->from->getNameOrEmail() }}</span>
@@ -75,7 +76,7 @@
                 'ml-2 sm:ml-3 pl-3 sm:pl-5 border-l border-line-strong/70' => $depth < $maxIndent,
             ])>
             @foreach($item->replies as $reply)
-                <x-thread-item :item="$reply" :reactions="$reactions" />
+                <x-thread-item :item="$reply" :reactions="$reactions" :avatars="$avatars" />
             @endforeach
         </div>
     @endif

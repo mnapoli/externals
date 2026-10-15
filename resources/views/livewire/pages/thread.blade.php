@@ -4,6 +4,7 @@ use App\Actions\MarkEmailAsRead;
 use App\Exceptions\NotFoundException;
 use App\Models\Email;
 use App\Models\Vote;
+use App\Services\Email\AvatarUrls;
 use App\Services\Email\ReactionQuery;
 use App\Services\Email\ThreadQuery;
 use App\Services\Rfc\RfcThreads;
@@ -78,6 +79,7 @@ new #[Layout('components.layouts.app')] class extends Component {
             'subjectTags' => SubjectTags::parse($this->subject),
             'participants' => app(ThreadQuery::class)->participantsOf([$this->number])[$this->number] ?? [],
             'unreadCount' => $userId !== null ? count(array_filter($messages, fn(ThreadItem $item) => ! $item->email->isRead)) : 0,
+            'avatars' => app(AvatarUrls::class)->of(array_map(fn(ThreadItem $item) => $item->email->from->email, $messages)),
             'reactions' => app(ReactionQuery::class)->forEmails(array_map(fn(ThreadItem $item) => $item->email->number, $messages), $userId !== null ? (int) $userId : null),
             'votes' => (int) Vote::where('emailNumber', $this->number)->sum('value'),
             'userVote' => $userId !== null ? (int) (Vote::where('userId', $userId)->where('emailNumber', $this->number)->value('value') ?? 0) : 0,
@@ -264,7 +266,7 @@ new #[Layout('components.layouts.app')] class extends Component {
 
         <div class="mt-6 flex flex-col gap-3">
             @foreach($thread as $item)
-                <x-thread-item :item="$item" :reactions="$reactions" />
+                <x-thread-item :item="$item" :reactions="$reactions" :avatars="$avatars" />
             @endforeach
         </div>
     </div>

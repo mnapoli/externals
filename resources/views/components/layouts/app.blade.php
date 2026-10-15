@@ -87,6 +87,9 @@
     </header>
 
     <main id="main" class="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
+        @if(session()->has('status'))
+            <p role="status" class="mb-6 px-4 py-3 rounded-lg border border-accent-line bg-accent-soft text-sm text-ink-soft">{{ session('status') }}</p>
+        @endif
         {{ $slot }}
     </main>
 
@@ -100,11 +103,11 @@
             </p>
             <p>
                 Created by <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://mnapoli.fr">@mnapoli</a>, serverless with <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://bref.sh/" title="Serverless PHP applications">Bref</a>.
-                Search by <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://www.algolia.com">Algolia</a>, avatars by <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://gravatar.com">Gravatar</a>.
+                Search by <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://www.algolia.com">Algolia</a>, avatars by GitHub and <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://gravatar.com">Gravatar</a>.
             </p>
             <p>
-                <strong class="font-semibold text-ink-soft">About data:</strong> if you login using GitHub, no personal data (or GitHub token) will be stored.
-                The only thing stored is your GitHub ID, username and which threads/emails you have already read.
+                <strong class="font-semibold text-ink-soft">About data:</strong> if you log in with GitHub, we store your GitHub ID, username, the verified email addresses of your GitHub account, and which threads you have already read. No GitHub token is stored.
+                Your addresses are used to show your GitHub avatar next to the emails you send to the mailing list, and are never shared or sold.
             </p>
             <p>
                 <strong class="font-semibold text-ink-soft">For AI agents:</strong> add <code class="font-mono text-xs">.md</code> to any thread URL to read it as Markdown (or send <code class="font-mono text-xs">Accept: text/markdown</code>),

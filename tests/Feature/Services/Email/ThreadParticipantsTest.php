@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\GetOrCreateUser;
 use App\Actions\RefreshAllThreads;
 use App\Models\Email;
 use App\Services\Email\ThreadQuery;
@@ -29,12 +30,23 @@ test('the author of the thread comes first, then the most active participants', 
     expect($participants[2])->toHaveCount(1);
 });
 
-test('initials and avatar of a participant', function (): void {
-    $participant = new Participant('Rowan Tommins [IMSoP]', 'rowan@example.com', 3);
+test('initials of a participant', function (): void {
+    expect((new Participant('Rowan Tommins [IMSoP]', 'rowan@example.com', 3))->initials())->toBe('RT');
+});
 
-    expect($participant->initials())->toBe('RT');
-    expect($participant->avatarUrl())->toBe('https://www.gravatar.com/avatar/' . hash('sha256', 'rowan@example.com') . '?s=64&d=blank');
-    expect((new Participant('anonymous', null, 1))->avatarUrl())->toBeNull();
+test('participants come with their avatar', function (): void {
+    app(GetOrCreateUser::class)->handle('583231', 'octocat', null, ['author@example.com']);
+    $root = Email::factory()->create(['number' => 1, 'fromEmail' => 'author@example.com']);
+    Email::factory()->replyTo($root)->create(['fromEmail' => 'rowan@example.com', 'date' => '2026-01-01 10:00:00']);
+    Email::factory()->replyTo($root)->create(['fromEmail' => null, 'date' => '2026-01-02 10:00:00']);
+
+    $participants = app(ThreadQuery::class)->participantsOf([1])[1];
+
+    expect(array_map(fn(Participant $p) => $p->avatarUrl, $participants))->toBe([
+        'https://avatars.githubusercontent.com/u/583231?s=64&v=4',
+        'https://www.gravatar.com/avatar/' . hash('sha256', 'rowan@example.com') . '?s=64&d=blank',
+        null,
+    ]);
 });
 
 test('the thread list stacks up to 10 faces, then says how many more', function (): void {
