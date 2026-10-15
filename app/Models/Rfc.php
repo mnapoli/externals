@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Services\Rfc\RfcPageParser;
 use App\Services\Rfc\RfcStatus;
+use App\Support\Email\EmailAddress;
 use Database\Factories\RfcFactory;
 use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -78,9 +79,6 @@ class Rfc extends Model
 
     /**
      * Gravatar of the first author, transparent when there is none (the initials show through).
-     *
-     * Gravatar rather than unavatar.io (used for emails): unavatar.io allows 25 avatars per day
-     * and per visitor, and the list of RFCs shows ~200.
      */
     public function authorAvatarUrl(): ?string
     {
@@ -88,7 +86,7 @@ class Rfc extends Model
             return null;
         }
 
-        return 'https://www.gravatar.com/avatar/' . hash('sha256', mb_strtolower($matches[0])) . '?s=48&d=blank';
+        return EmailAddress::avatarUrlOf($matches[0], 48);
     }
 
     /**

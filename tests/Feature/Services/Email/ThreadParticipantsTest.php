@@ -33,7 +33,7 @@ test('initials and avatar of a participant', function (): void {
     $participant = new Participant('Rowan Tommins [IMSoP]', 'rowan@example.com', 3);
 
     expect($participant->initials())->toBe('RT');
-    expect($participant->avatarUrl())->toStartWith('https://unavatar.io/rowan%40example.com?fallback=');
+    expect($participant->avatarUrl())->toBe('https://www.gravatar.com/avatar/' . hash('sha256', 'rowan@example.com') . '?s=64&d=blank');
     expect((new Participant('anonymous', null, 1))->avatarUrl())->toBeNull();
 });
 

@@ -25,16 +25,9 @@ final readonly class Participant
         return implode('', array_map(fn(string $word) => mb_strtoupper(mb_substr($word, 0, 1)), array_slice($words, 0, 2)));
     }
 
-    /**
-     * Without a photo, unavatar serves a transparent image so that the initials show through.
-     */
     public function avatarUrl(): ?string
     {
-        if ($this->email === null) {
-            return null;
-        }
-
-        return 'https://unavatar.io/' . rawurlencode($this->email) . '?fallback=' . rawurlencode(url('/assets/images/transparent.png'));
+        return EmailAddress::avatarUrlOf($this->email);
     }
 
     /**

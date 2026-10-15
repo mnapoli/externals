@@ -27,7 +27,7 @@
             <span class="relative w-7 h-7 shrink-0 rounded-full bg-subtle text-[10px] font-semibold text-muted flex items-center justify-center" aria-hidden="true">
                 {{ $initials }}
                 @if($email->from->email)
-                    <img class="absolute inset-0 w-7 h-7 rounded-full" src="https://unavatar.io/{{ $email->from->email }}" alt="" loading="lazy">
+                    <img class="absolute inset-0 w-7 h-7 rounded-full" src="{{ \App\Support\Email\EmailAddress::avatarUrlOf($email->from->email) }}" alt="" loading="lazy">
                 @endif
             </span>
             <span class="author font-semibold text-sm text-ink">{{ $email->from->getNameOrEmail() }}</span>

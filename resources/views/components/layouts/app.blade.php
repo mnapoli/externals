@@ -100,7 +100,7 @@
             </p>
             <p>
                 Created by <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://mnapoli.fr">@mnapoli</a>, serverless with <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://bref.sh/" title="Serverless PHP applications">Bref</a>.
-                Search by <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://www.algolia.com">Algolia</a>, avatars by <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://unavatar.io">Unavatar</a>.
+                Search by <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://www.algolia.com">Algolia</a>, avatars by <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://gravatar.com">Gravatar</a>.
             </p>
             <p>
                 <strong class="font-semibold text-ink-soft">About data:</strong> if you login using GitHub, no personal data (or GitHub token) will be stored.
