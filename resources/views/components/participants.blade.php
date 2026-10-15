@@ -7,8 +7,7 @@
 <span {{ $attributes->merge(['class' => 'flex shrink-0 pl-1.5']) }}>
     @foreach(array_slice($participants, 0, $shown) as $i => $participant)
         <span title="{{ $participant->name }} · {{ $participant->messageCount }} {{ Str::plural('message', $participant->messageCount) }}"
-              @class(['relative -ml-1.5 rounded-full ring-2 ring-surface items-center justify-center font-semibold text-white select-none', $size, 'inline-flex' => $i < $shownMobile, 'hidden sm:inline-flex' => $i >= $shownMobile])
-              style="background-color: {{ $participant->color() }}">
+              @class(['relative -ml-1.5 rounded-full ring-2 ring-surface items-center justify-center bg-[#e4e4ea] font-semibold text-ink-soft select-none', $size, 'inline-flex' => $i < $shownMobile, 'hidden sm:inline-flex' => $i >= $shownMobile])>
             <span aria-hidden="true">{{ $participant->initials() }}</span>
             @if($participant->avatarUrl())
                 <img src="{{ $participant->avatarUrl() }}" alt="" loading="lazy" class="absolute inset-0 w-full h-full rounded-full object-cover">
@@ -16,10 +15,10 @@
         </span>
     @endforeach
     @if($count > $shownMobile)
-        <span class="sm:hidden -ml-1.5 inline-flex items-center justify-center rounded-full ring-2 ring-surface bg-subtle font-mono font-semibold text-ink-soft {{ $size }}">+{{ $count - $shownMobile }}</span>
+        <span class="sm:hidden -ml-1.5 inline-flex items-center justify-center rounded-full ring-2 ring-surface bg-surface border border-line-strong font-mono font-semibold text-muted {{ $size }}">+{{ $count - $shownMobile }}</span>
     @endif
     @if($count > $shown)
-        <span class="hidden sm:inline-flex -ml-1.5 items-center justify-center rounded-full ring-2 ring-surface bg-subtle font-mono font-semibold text-ink-soft {{ $size }}">+{{ $count - $shown }}</span>
+        <span class="hidden sm:inline-flex -ml-1.5 items-center justify-center rounded-full ring-2 ring-surface bg-surface border border-line-strong font-mono font-semibold text-muted {{ $size }}">+{{ $count - $shown }}</span>
     @endif
     <span class="sr-only">{{ $count }} {{ Str::plural('participant', $count) }}</span>
 </span>
