@@ -268,7 +268,7 @@ new #[Layout('components.layouts.app')] class extends Component {
             </details>
         @endif
         <p class="mb-5 pb-3 border-b border-line font-mono text-xs text-muted">
-            Text from <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="{{ $rfc->wikiUrl() }}">wiki.php.net</a>@if($rfc->fetchedAt) · <span title="{{ $rfc->fetchedAt->format('M j, Y H:i') }} UTC">synced {{ $rfc->fetchedAt->diffForHumans() }}</span>@endif
+            Text from <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="{{ $rfc->wikiUrl() }}">wiki.php.net</a>
         </p>
         @if($contentHtml !== null)
             <div class="rfc-content">
