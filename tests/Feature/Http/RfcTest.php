@@ -67,12 +67,15 @@ test('lists the RFCs by status', function (): void {
     $response->assertDontSee('Unlisted RFC');
 });
 
-test('shows the first RFCs of each section, and the others on demand', function (): void {
+test('shows the first RFCs of each section once opened, and the others on demand', function (): void {
     foreach (range(1, 12) as $i) {
         Rfc::factory()->create(['title' => "Declined RFC $i", 'status' => RfcStatus::Declined, 'indexPosition' => $i]);
     }
 
+    // Declined RFCs are closed by default: nothing is rendered until the visitor opens them
     $component = Volt::test('pages.rfcs')
+        ->assertDontSee('Declined RFC 1')
+        ->call('open', 'Declined')
         ->assertSee('Declined RFC 10')
         ->assertDontSee('Declined RFC 11')
         ->assertSee('Show 2 more');

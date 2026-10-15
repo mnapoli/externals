@@ -21,9 +21,22 @@ new #[Layout('components.layouts.app')] class extends Component {
     /** @var list<string> Titles of the sections showing all their RFCs */
     public array $expanded = [];
 
+    /** @var list<string> Titles of the sections closed by default that the visitor opened */
+    public array $opened = [];
+
     public function expand(string $section): void
     {
         $this->expanded[] = $section;
+    }
+
+    /**
+     * Sections closed by default are only rendered once opened: the archives are most of the ~940 RFCs.
+     */
+    public function open(string $section): void
+    {
+        if (! in_array($section, $this->opened, true)) {
+            $this->opened[] = $section;
+        }
     }
 
     public function rendering(View $view): void
@@ -52,11 +65,20 @@ new #[Layout('components.layouts.app')] class extends Component {
             }, $sections), fn(array $section) => $section['rfcs'] !== []));
         }
 
-        // Anchors and subsections ("PHP 8.5") of the sections, and the navigation: one entry per status
-        $sections = array_map(fn(array $section) => $section + [
-            'anchor' => 'section-' . Str::slug($section['title']),
-            'subtitle' => str_contains($section['title'], ' — ') ? Str::after($section['title'], ' — ') : null,
-        ], $sections);
+        // Anchors and subsections ("PHP 8.5") of the sections, the RFCs they show, and the navigation: one entry per status
+        $sections = array_map(function (array $section) use ($q) {
+            $loaded = $q !== '' || $section['open'] || in_array($section['title'], $this->opened, true);
+            $showAll = $q !== '' || in_array($section['title'], $this->expanded, true);
+            $shown = ! $loaded ? [] : ($showAll ? $section['rfcs'] : array_slice($section['rfcs'], 0, self::SECTION_PREVIEW));
+
+            return $section + [
+                'anchor' => 'section-' . Str::slug($section['title']),
+                'subtitle' => str_contains($section['title'], ' — ') ? Str::after($section['title'], ' — ') : null,
+                'loaded' => $loaded,
+                'shown' => $shown,
+                'hiddenCount' => $loaded ? count($section['rfcs']) - count($shown) : 0,
+            ];
+        }, $sections);
         $nav = [];
         foreach ($sections as $section) {
             $last = array_key_last($nav);
@@ -74,7 +96,7 @@ new #[Layout('components.layouts.app')] class extends Component {
             'sections' => $sections,
             'nav' => $nav,
             'total' => array_sum(array_map(fn(array $section) => count($section['rfcs']), $sections)),
-            'avatars' => app(AvatarUrls::class)->of(array_merge(...array_map(fn(array $section) => array_map(fn(Rfc $rfc) => $rfc->authorEmail(), $section['rfcs']), $sections)), 48),
+            'avatars' => app(AvatarUrls::class)->of(array_merge(...array_map(fn(array $section) => array_map(fn(Rfc $rfc) => $rfc->authorEmail(), $section['shown']), $sections)), 48),
             'searching' => $q !== '',
             'activity' => app(RfcThreads::class)->activityByRfc(),
             'userVotes' => auth()->check() ? RfcVote::where('userId', auth()->id())->pluck('value', 'rfcId') : collect(),
@@ -87,6 +109,15 @@ new #[Layout('components.layouts.app')] class extends Component {
 @endpush
 
 <div class="lg:grid lg:grid-cols-[13rem_minmax(0,56rem)] lg:gap-10 xl:gap-14"
+     x-data="{
+        {{-- Opens the section of the URL, e.g. /rfc#section-inactive --}}
+        openFromUrl() {
+            const section = location.hash.startsWith('#section-') && document.getElementById(location.hash.slice(1));
+            if (section) { section.open = true; section.scrollIntoView() }
+        },
+     }"
+     x-init="openFromUrl()"
+     x-on:hashchange.window="openFromUrl()"
      x-on:click="const link = $event.target.closest('a[data-section]'); if (link) document.getElementById(link.dataset.section).open = true">
     {{-- Sections of the index, ~25: jumping to one opens it --}}
     <nav aria-label="Sections" class="hidden lg:block">
@@ -141,11 +172,11 @@ new #[Layout('components.layouts.app')] class extends Component {
         @endif
 
         @foreach($sections as $section)
-            @php($showAll = $searching || in_array($section['title'], $expanded, true))
-            @php($hiddenCount = $showAll ? 0 : max(0, count($section['rfcs']) - self::SECTION_PREVIEW))
+            @php($hiddenCount = $section['hiddenCount'])
             @php($sub = $section['subtitle'])
             {{-- wire:ignore.self: re-renders must not close the sections opened by the visitor --}}
             <details id="{{ $section['anchor'] }}" wire:key="section-{{ $searching ? 'search' : 'all' }}-{{ $section['title'] }}" wire:ignore.self
+                     x-on:toggle="if ($el.open && ! $el.querySelector('[data-rfcs]')) $wire.open(@js($section['title'])).then(() => { if (location.hash === '#' + $el.id) $el.scrollIntoView() })"
                      class="group/section mb-4 open:mb-8 scroll-mt-20" @if($section['open']) open @endif>
                 <summary class="list-none [&::-webkit-details-marker]:hidden flex items-center gap-2.5 mb-3 cursor-pointer select-none rounded focus-visible:outline-2">
                     <svg class="w-3.5 h-3.5 shrink-0 text-faint -rotate-90 group-open/section:rotate-0 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
@@ -156,8 +187,11 @@ new #[Layout('components.layouts.app')] class extends Component {
                     <span class="font-mono text-xs text-muted">{{ count($section['rfcs']) }}</span>
                 </summary>
                 <div class="bg-surface border border-line rounded-lg overflow-hidden">
-                    <ul>
-                        @foreach($showAll ? $section['rfcs'] : array_slice($section['rfcs'], 0, self::SECTION_PREVIEW) as $rfc)
+                    @unless($section['loaded'])
+                        <p class="px-4 py-3 font-mono text-xs text-muted">Loading…</p>
+                    @endunless
+                    <ul @if($section['loaded']) data-rfcs @endif>
+                        @foreach($section['shown'] as $rfc)
                             @php($rfcActivity = $activity->get($rfc->slug))
                             @php($poll = $rfc->status === \App\Services\Rfc\RfcStatus::Voting ? $rfc->polls->first() : null)
                             @php($avatar = $avatars[$rfc->authorEmail() ?? ''] ?? null)
