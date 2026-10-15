@@ -42,7 +42,7 @@ new #[Layout('components.layouts.app')] class extends Component {
                     <div class="px-4 py-3 border-b border-line last:border-b-0">
                         <a href="/rfc/{{ $rfc->slug }}" class="block font-semibold text-sm text-ink hover:text-accent">{{ $rfc->title }}</a>
                         @if($closesAt)
-                            <span class="block mt-0.5 font-mono text-xs text-muted" title="{{ $poll->closesAt }}">Closes {{ $closesAt->diffForHumans() }}</span>
+                            <span class="block mt-0.5 font-mono text-xs text-muted" title="{{ $poll->closesAt }}">{{ $closesAt->isFuture() ? 'Closes in ' . $closesAt->diffForHumans(syntax: \Carbon\CarbonInterface::DIFF_ABSOLUTE) : 'Closed ' . $closesAt->diffForHumans() }}</span>
                         @endif
                         @if($yesShare !== null)
                             <span class="relative block mt-2 h-1.5 rounded-full bg-subtle" role="img" aria-label="{{ $poll->summary() }}, {{ round($yesShare * 100) }}% yes, 2/3 needed">
