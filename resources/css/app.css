@@ -145,6 +145,9 @@ code.highlighted .hl-comment { color: #6e6e7a; font-style: italic; }
 .rfc-content h2 {
     @apply text-xl font-semibold mt-10 mb-3 pb-1 border-b border-line;
 }
+.rfc-content > :first-child {
+    margin-top: 0;
+}
 .rfc-content h3 {
     @apply text-lg font-semibold mt-8 mb-2;
 }

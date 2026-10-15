@@ -83,7 +83,7 @@ new #[Layout('components.layouts.app')] class extends Component {
     return '<a class="text-accent-strong underline decoration-accent-line underline-offset-2 hover:decoration-accent-strong" href="' . $matches[0] . '">' . $label . '</a>';
 }, e((string) $value)))
 
-<div class="mx-auto max-w-[66rem] lg:grid lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-x-12 lg:items-start">
+<div class="mx-auto max-w-[70rem] lg:grid lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-x-12 lg:items-start">
     <header class="mb-6 lg:mb-8 lg:col-start-1">
         <a href="/rfc" class="text-sm text-muted hover:text-ink">← All RFCs</a>
         <div class="mt-3 flex flex-wrap items-center gap-2">
@@ -140,11 +140,7 @@ new #[Layout('components.layouts.app')] class extends Component {
                 <div class="flex flex-col">
                     @if($hasCommunity)
                         <div @class(['px-4 py-3.5 bg-[#fbfbff] border-line', 'order-first border-b' => $canVote && $rfc->polls->isNotEmpty(), 'order-last border-t' => ! $canVote && $rfc->polls->isNotEmpty()])>
-                            <h3 class="text-sm font-semibold text-ink">Community vote</h3>
-                            <p class="mt-0.5 mb-3 text-xs text-muted">
-                                {{ $canVote ? 'Anyone with a GitHub account can vote on externals.io.' : 'Votes on externals.io, closed since the RFC moved on.' }}
-                                Not the official vote.
-                            </p>
+                            <h3 class="mb-3 text-sm font-semibold text-ink">Community vote</h3>
                             <livewire:rfc-vote :rfc-id="$rfc->id" :can-vote="$canVote" :large="true"
                                                :upvotes="(int) $rfc->upvotes" :downvotes="(int) $rfc->downvotes"
                                                :user-vote="$userVote" />
@@ -270,7 +266,7 @@ new #[Layout('components.layouts.app')] class extends Component {
         @endif
     </aside>
 
-    <article class="lg:col-start-1 min-w-0 max-w-[72ch] text-[15px] sm:text-base" aria-label="Text of the RFC">
+    <article class="lg:col-start-1 min-w-0 text-[15px] sm:text-base" aria-label="Text of the RFC">
         @if(count($headings) > 2)
             <details class="lg:hidden mb-6 bg-surface border border-line rounded-lg group/contents">
                 <summary class="list-none [&::-webkit-details-marker]:hidden flex items-center justify-between px-4 py-3 cursor-pointer">
@@ -284,12 +280,14 @@ new #[Layout('components.layouts.app')] class extends Component {
                 </ol>
             </details>
         @endif
-        @if($contentHtml !== null)
-            <div class="rfc-content">
-                {!! $contentHtml !!}
-            </div>
-        @else
-            <p class="text-sm text-muted">The text of this RFC has not been imported yet: read it on <a class="underline" href="{{ $rfc->wikiUrl() }}">wiki.php.net</a>.</p>
-        @endif
+        <div class="bg-surface border border-line rounded-lg px-4 sm:px-8 lg:px-10 py-5 sm:py-8">
+            @if($contentHtml !== null)
+                <div class="rfc-content">
+                    {!! $contentHtml !!}
+                </div>
+            @else
+                <p class="text-sm text-muted">The text of this RFC has not been imported yet: read it on <a class="underline" href="{{ $rfc->wikiUrl() }}">wiki.php.net</a>.</p>
+            @endif
+        </div>
     </article>
 </div>
