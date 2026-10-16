@@ -42,7 +42,7 @@ new #[Layout('components.layouts.app')] class extends Component {
                 @foreach($voting as $rfc)
                     <div class="px-4 py-3 border-b border-line last:border-b-0">
                         <a href="/rfc/{{ $rfc->slug }}" class="block font-semibold text-sm text-ink hover:text-accent">{{ $rfc->title }}</a>
-                        <x-rfc-poll :poll="$rfc->polls->first()" class="mt-0.5" />
+                        <x-rfc-poll :poll="$rfc->currentPoll()" class="mt-0.5" />
                     </div>
                 @endforeach
             </section>

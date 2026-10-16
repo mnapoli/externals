@@ -54,11 +54,12 @@ class GithubController extends Controller
             return response()->view('auth.login-error', ['error' => $e->getMessage()], 400);
         }
 
+        $emails = $this->emails($githubUser instanceof OAuthTwoUser ? $githubUser->token : null);
         $user = app(GetOrCreateUser::class)->handle(
             (string) $githubUser->getId(),
             (string) $githubUser->getNickname(),
-            $githubUser->getEmail(),
-            $this->verifiedEmails($githubUser instanceof OAuthTwoUser ? $githubUser->token : null),
+            $emails['primary'] ?? $githubUser->getEmail(),
+            $emails['verified'],
         );
         // Read before Auth::login(), which saves the remember token and resets wasChanged()
         $emailJustStored = ! $user->wasRecentlyCreated && $user->wasChanged('email') && $user->getPrevious()['email'] === null;
@@ -74,28 +75,31 @@ class GithubController extends Controller
     }
 
     /**
-     * The address used on the mailing list is often not the primary one of the GitHub account.
+     * The verified addresses of the GitHub account: the one used on the mailing list is often not the primary one.
      *
-     * @return list<string> Empty if GitHub could not list them
+     * @return array{primary: ?string, verified: list<string>} Empty if GitHub could not list them
      */
-    private function verifiedEmails(?string $token): array
+    private function emails(?string $token): array
     {
+        $emails = ['primary' => null, 'verified' => []];
         if ($token === null || $token === '') {
-            return [];
+            return $emails;
         }
         try {
             $response = Http::withToken($token)->acceptJson()->timeout(5)->get('https://api.github.com/user/emails');
         } catch (Throwable) {
-            return [];
+            return $emails;
         }
         if (! $response->successful() || ! is_array($response->json())) {
-            return [];
+            return $emails;
         }
 
-        $emails = [];
         foreach ($response->json() as $email) {
             if (is_array($email) && ($email['verified'] ?? false) === true && is_string($email['email'] ?? null)) {
-                $emails[] = $email['email'];
+                $emails['verified'][] = $email['email'];
+                if (($email['primary'] ?? false) === true) {
+                    $emails['primary'] = $email['email'];
+                }
             }
         }
 

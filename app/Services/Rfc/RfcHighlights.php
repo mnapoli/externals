@@ -16,9 +16,6 @@ use Throwable;
  */
 class RfcHighlights
 {
-    /** RFCs need 2/3 of yes votes, abstentions aside */
-    public const float MAJORITY = 2 / 3;
-
     public function __construct(
         private readonly RfcThreads $rfcThreads,
     ) {}
@@ -38,9 +35,9 @@ class RfcHighlights
             : 'Closed ' . $closesAt->diffForHumans();
     }
 
-    public static function isPassing(float $yesShare): bool
+    public static function isPassing(RfcPoll $poll, float $yesShare): bool
     {
-        return $yesShare >= self::MAJORITY;
+        return $yesShare >= $poll->majority();
     }
 
     public static function closesAt(?RfcPoll $poll): ?CarbonImmutable
@@ -85,7 +82,7 @@ class RfcHighlights
             ->with('polls')
             ->get()
             ->filter(fn(Rfc $rfc) => $rfc->polls->contains(fn(RfcPoll $poll) => ! $poll->isClosed))
-            ->sortBy(fn(Rfc $rfc) => self::closesAt($rfc->polls->first())?->getTimestamp() ?? PHP_INT_MAX)
+            ->sortBy(fn(Rfc $rfc) => self::closesAt($rfc->currentPoll())?->getTimestamp() ?? PHP_INT_MAX)
             ->values();
     }
 

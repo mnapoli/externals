@@ -193,7 +193,7 @@ new #[Layout('components.layouts.app')] class extends Component {
                     <ul @if($section['loaded']) data-rfcs @endif>
                         @foreach($section['shown'] as $rfc)
                             @php($rfcActivity = $activity->get($rfc->slug))
-                            @php($poll = $rfc->status === \App\Services\Rfc\RfcStatus::Voting ? $rfc->polls->first() : null)
+                            @php($poll = $rfc->status === \App\Services\Rfc\RfcStatus::Voting ? $rfc->currentPoll() : null)
                             <li wire:key="rfc-{{ $rfc->slug }}" class="grid grid-cols-[1.75rem_minmax(0,1fr)] sm:grid-cols-[1.75rem_minmax(0,1fr)_auto] gap-x-3 items-start px-3 sm:px-4 py-3 border-b border-line last:border-b-0 hover:bg-[#fafaff]">
                                 <x-avatar :name="$rfc->authorName()" :url="$avatars[$rfc->authorEmail() ?? ''] ?? null" class="row-span-2 sm:row-span-1 mt-0.5" title="{{ $rfc->authors }}" />
                                 <div class="min-w-0">

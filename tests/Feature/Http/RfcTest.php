@@ -7,6 +7,7 @@ use App\Models\Email;
 use App\Models\Rfc;
 use App\Models\RfcPoll;
 use App\Models\Thread;
+use App\Services\Rfc\RfcHighlights;
 use App\Services\Rfc\RfcStatus;
 use App\Services\Rfc\RfcThreads;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -276,6 +277,38 @@ test('RFCs only mentioned by a thread are not shown as its RFC', function (): vo
 
     $this->get('/rfc/pipe-to-return')->assertSeeInOrder(['id="discussions"', 'href="/message/300"'], false)->assertDontSee('Mentioned in');
     $this->get('/rfc/pipe-assignment')->assertSeeInOrder(['Mentioned in', '[RFC] [Discussion] Pipe to return']);
+});
+
+test('a thread about an RFC no longer listed does not become the thread of the RFCs it mentions', function (): void {
+    Rfc::factory()->create(['slug' => 'pipe-to-return', 'title' => 'Pipe to return', 'status' => RfcStatus::Discussion, 'isListed' => false]);
+    Rfc::factory()->create(['slug' => 'pipe-assignment', 'title' => 'Pipe Assignment Operator', 'status' => RfcStatus::Declined]);
+    Email::factory()->create(['number' => 300, 'subject' => '[RFC] [Discussion] Pipe to return']);
+    app(RefreshAllThreads::class)->handle();
+    DB::table('rfc_threads')->insert([
+        ['rfcSlug' => 'pipe-to-return', 'threadNumber' => 300, 'source' => RfcThreads::SOURCE_EMAIL],
+        ['rfcSlug' => 'pipe-assignment', 'threadNumber' => 300, 'source' => RfcThreads::SOURCE_EMAIL],
+    ]);
+
+    expect($this->get('/')->getContent())->not->toContain('RFC · Declined');
+    $this->get('/message/300')->assertSeeInOrder(['Mentions', 'Pipe Assignment Operator'])->assertDontSee('Also mentions');
+    $this->get('/rfc/pipe-to-return')->assertSeeInOrder(['id="discussions"', 'href="/message/300"'], false);
+});
+
+test('the activity of an RFC only counts the threads about it', function (): void {
+    Rfc::factory()->create(['slug' => 'pipe-to-return', 'title' => 'Pipe to return', 'status' => RfcStatus::Discussion]);
+    Rfc::factory()->create(['slug' => 'pipe-assignment', 'title' => 'Pipe Assignment Operator', 'status' => RfcStatus::Discussion]);
+    Email::factory()->create(['number' => 300, 'subject' => '[RFC] [Discussion] Pipe to return']);
+    app(RefreshAllThreads::class)->handle();
+    DB::table('rfc_threads')->insert([
+        ['rfcSlug' => 'pipe-to-return', 'threadNumber' => 300, 'source' => RfcThreads::SOURCE_EMAIL],
+        ['rfcSlug' => 'pipe-assignment', 'threadNumber' => 300, 'source' => RfcThreads::SOURCE_EMAIL],
+    ]);
+
+    $activity = app(RfcThreads::class)->activityByRfc();
+
+    expect($activity->keys()->all())->toBe(['pipe-to-return'])
+        ->and($activity['pipe-to-return']->threadCount)->toBe(1)
+        ->and(app(RfcHighlights::class)->inDiscussion(5)->pluck('rfc.slug')->all())->toBe(['pipe-to-return']);
 });
 
 test('shows each implementation link of an RFC on its own line, with a short label', function (): void {

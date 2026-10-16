@@ -4,7 +4,6 @@ use App\Actions\MarkEmailAsRead;
 use App\Exceptions\NotFoundException;
 use App\Models\Email;
 use App\Models\Vote;
-use App\Services\Email\AvatarUrls;
 use App\Services\Email\ReactionQuery;
 use App\Services\Email\ThreadQuery;
 use App\Services\Rfc\RfcThreads;
@@ -72,14 +71,16 @@ new #[Layout('components.layouts.app')] class extends Component {
     {
         $messages = array_merge(...array_map(fn(ThreadItem $item) => $item->flatten(), $this->thread));
         $userId = auth()->id();
+        // The participants are the senders of the messages, with their avatar already looked up
+        $participants = app(ThreadQuery::class)->participantsOf([$this->number])[$this->number] ?? [];
 
         return [
             'thread' => $this->thread,
             'messages' => $messages,
             'subjectTags' => SubjectTags::parse($this->subject),
-            'participants' => app(ThreadQuery::class)->participantsOf([$this->number])[$this->number] ?? [],
+            'participants' => $participants,
             'unreadCount' => $userId !== null ? count(array_filter($messages, fn(ThreadItem $item) => ! $item->email->isRead)) : 0,
-            'avatars' => app(AvatarUrls::class)->of(array_map(fn(ThreadItem $item) => $item->email->from->email, $messages)),
+            'avatars' => collect($participants)->whereNotNull('email')->pluck('avatarUrl', 'email')->all(),
             'reactions' => app(ReactionQuery::class)->forEmails(array_map(fn(ThreadItem $item) => $item->email->number, $messages), $userId !== null ? (int) $userId : null),
             'votes' => (int) Vote::where('emailNumber', $this->number)->sum('value'),
             'userVote' => $userId !== null ? (int) (Vote::where('userId', $userId)->where('emailNumber', $this->number)->value('value') ?? 0) : 0,
@@ -245,7 +246,7 @@ new #[Layout('components.layouts.app')] class extends Component {
         @endif
 
         @if($rfc = $threadRfcs->primary)
-            @php($poll = $rfc->polls->first())
+            @php($poll = $rfc->currentPoll())
             <div class="card mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm">
                 <span class="label text-muted">RFC</span>
                 <a href="/rfc/{{ $rfc->slug }}" class="font-semibold hover:text-accent">{{ $rfc->title }}</a>

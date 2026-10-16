@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Auth\GithubController;
 use App\Models\User;
+use App\Services\Auth\GithubProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -63,7 +64,6 @@ test('callback stores the verified addresses of the GitHub account', function ()
     Socialite::fake('github', (new SocialiteUser)->setToken('token')->map([
         'id' => '12345',
         'nickname' => 'octocat',
-        'email' => 'octocat@github.com',
     ]));
     Http::fake(['https://api.github.com/user/emails' => Http::response([
         ['email' => 'octocat@github.com', 'primary' => true, 'verified' => true],
@@ -106,6 +106,10 @@ test('new accounts are not told that their address is stored', function (): void
     Socialite::fake('github', (new SocialiteUser)->map(['id' => '12345', 'nickname' => 'octocat', 'email' => 'octocat@github.com']));
 
     $this->get('/login?code=abc')->assertSessionMissing('status');
+});
+
+test('the GitHub provider leaves the addresses to the controller, which lists them all', function (): void {
+    expect(Socialite::driver('github'))->toBeInstanceOf(GithubProvider::class);
 });
 
 test('callback with invalid state renders error view', function (): void {

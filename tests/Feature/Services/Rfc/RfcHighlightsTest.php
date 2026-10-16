@@ -10,11 +10,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-function createPoll(Rfc $rfc, bool $isClosed, ?string $closesAt, int $yes = 0, int $no = 0): RfcPoll
+function createPoll(Rfc $rfc, bool $isClosed, ?string $closesAt, int $yes = 0, int $no = 0, int $position = 0): RfcPoll
 {
     return RfcPoll::create([
         'rfcId' => $rfc->id,
-        'position' => 0,
+        'position' => $position,
         'question' => 'Accept?',
         'isClosed' => $isClosed,
         'closesAt' => $closesAt,
@@ -33,6 +33,26 @@ test('RFCs with an open vote are listed, closest deadline first', function (): v
     Rfc::factory()->create(['slug' => 'discussed', 'status' => RfcStatus::Discussion]);
 
     expect(app(RfcHighlights::class)->voting()->pluck('slug')->all())->toBe(['sooner', 'later']);
+});
+
+test('RFCs are sorted by the deadline of their open vote, not of a vote already closed', function (): void {
+    $later = Rfc::factory()->create(['slug' => 'later', 'status' => RfcStatus::Voting]);
+    createPoll($later, true, '2026-10-01 00:00:00 UTC');
+    createPoll($later, false, '2026-10-22 00:00:00 UTC', position: 1);
+    $sooner = Rfc::factory()->create(['slug' => 'sooner', 'status' => RfcStatus::Voting]);
+    createPoll($sooner, false, '2026-10-19 13:15:00 UTC');
+
+    expect(app(RfcHighlights::class)->voting()->pluck('slug')->all())->toBe(['sooner', 'later'])
+        ->and($later->load('polls')->currentPoll()?->position)->toBe(1);
+});
+
+test('the main vote needs 2/3 of yes, the secondary votes a simple majority', function (): void {
+    $rfc = Rfc::factory()->create();
+    $main = createPoll($rfc, false, null, yes: 6, no: 4);
+    $secondary = createPoll($rfc, false, null, yes: 6, no: 4, position: 1);
+
+    expect(RfcHighlights::isPassing($main, 0.6))->toBeFalse()
+        ->and(RfcHighlights::isPassing($secondary, 0.6))->toBeTrue();
 });
 
 test('the share of yes ignores abstentions', function (): void {

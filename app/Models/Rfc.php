@@ -62,6 +62,14 @@ class Rfc extends Model
     }
 
     /**
+     * The vote to show in lists: the first one still open, else the first one.
+     */
+    public function currentPoll(): ?RfcPoll
+    {
+        return $this->polls->first(fn(RfcPoll $poll) => ! $poll->isClosed) ?? $this->polls->first();
+    }
+
+    /**
      * Community votes (not the official vote of the wiki).
      *
      * @return HasMany<RfcVote, $this>

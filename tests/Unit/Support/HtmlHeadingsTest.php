@@ -14,3 +14,9 @@ test('gives an id to the sections of the text', function (): void {
         ['level' => 2, 'id' => 'rfc-introduction-2', 'text' => 'Introduction'],
     ]);
 });
+
+test('ids stay unique when a heading looks like a numbered duplicate', function (): void {
+    $result = HtmlHeadings::anchor('<h2>Proposal</h2><h2>Proposal 2</h2><h2>Proposal</h2>', 'rfc-');
+
+    expect(array_column($result['headings'], 'id'))->toBe(['rfc-proposal', 'rfc-proposal-2', 'rfc-proposal-3']);
+});

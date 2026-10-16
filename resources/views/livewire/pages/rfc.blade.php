@@ -152,7 +152,7 @@ new #[Layout('components.layouts.app')] class extends Component {
                                             open
                                         @endif
                                         @if($yesShare !== null)
-                                            @php($passing = \App\Services\Rfc\RfcHighlights::isPassing($yesShare))
+                                            @php($passing = \App\Services\Rfc\RfcHighlights::isPassing($poll, $yesShare))
                                             · <span class="{{ $passing ? 'text-pass' : 'text-fail' }}">{{ round($yesShare * 100) }}% yes{{ $poll->isClosed ? '' : ($passing ? ', passing' : ', failing') }}</span>
                                         @endif
                                     </p>

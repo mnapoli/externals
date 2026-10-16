@@ -53,17 +53,40 @@ final readonly class ThreadRfcs
      */
     private static function findPrimary(string $subject, array $links): ?Rfc
     {
-        if (count($links) === 1) {
-            return $links[0]['rfc'];
-        }
-
         // The RFC page links to the thread: its author says it's the discussion of the RFC
         $fromWiki = array_values(array_filter($links, fn(array $link) => $link['fromWiki']));
         if (count($fromWiki) === 1) {
             return $fromWiki[0]['rfc'];
         }
 
+        if (count($links) === 1) {
+            return self::looselyMatches($subject, $links[0]['rfc']) ? $links[0]['rfc'] : null;
+        }
+
         return self::bestTitleMatch($subject, $fromWiki !== [] ? $fromWiki : $links);
+    }
+
+    /**
+     * Whether the subject shares half of the words of the shorter of it and the title (or the slug) of the RFC.
+     * Without other RFCs to compare with, a subject phrased differently ("BLAKE3 hash redux", "RFC: Enum" for
+     * "Enumerated Types", slug "enum") still counts, but not a thread that only cites a process RFC
+     * ("Voting access" for "Voting Process").
+     */
+    private static function looselyMatches(string $subject, Rfc $rfc): bool
+    {
+        $subjectWords = self::words($subject);
+        if ($subjectWords === []) {
+            // e.g. "[RFC] [VOTE]": nothing says the thread is about something else
+            return true;
+        }
+        foreach ([$rfc->title, $rfc->slug] as $name) {
+            $nameWords = self::words($name);
+            if ($nameWords !== [] && count(array_intersect($nameWords, $subjectWords)) / min(count($nameWords), count($subjectWords)) >= self::TITLE_MATCH) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -100,9 +123,23 @@ final readonly class ThreadRfcs
         $text = mb_strtolower((string) preg_replace('/\[[^\]]*\]/', ' ', $text));
         $words = preg_split('/[^\p{L}\p{N}]+/u', $text) ?: [];
 
-        return array_values(array_unique(array_filter(
+        $words = array_filter($words, fn(string $word) => mb_strlen($word) > 2 && ! in_array($word, self::IGNORED_WORDS, true));
+
+        // "checksums" matches "checksum", "class" stays "class"
+        return array_values(array_unique(array_map(
+            fn(string $word) => mb_strlen($word) > 3 && preg_match('/[^s]s$/', $word) ? mb_substr($word, 0, -1) : $word,
             $words,
-            fn(string $word) => mb_strlen($word) > 2 && ! in_array($word, self::IGNORED_WORDS, true),
         )));
+    }
+
+    /**
+     * Without the RFCs no longer listed on the wiki index. A thread about one of them only mentions the others.
+     */
+    public function listedOnly(): self
+    {
+        return new self(
+            $this->primary?->isListed ? $this->primary : null,
+            array_values(array_filter($this->mentions, fn(Rfc $rfc) => $rfc->isListed)),
+        );
     }
 }
