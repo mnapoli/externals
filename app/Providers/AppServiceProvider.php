@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use Algolia\AlgoliaSearch\Api\SearchClient;
+use App\Services\Auth\GithubProvider;
 use App\Services\Rss\RssBuilder;
 use App\Services\Rss\RssRfcBuilder;
 use App\Services\Search\AlgoliaEmailSearch;
@@ -13,6 +14,7 @@ use App\Services\Search\EmailSearch;
 use App\Services\Search\ReadOnlySearchIndex;
 use App\Services\Search\SearchIndex;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Socialite\Facades\Socialite;
 use League\CommonMark\CommonMarkConverter;
 use VStelmakh\UrlHighlight\Highlighter\HtmlHighlighter;
 use VStelmakh\UrlHighlight\UrlHighlight;
@@ -65,5 +67,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(RssRfcBuilder::class, fn() => new RssRfcBuilder((string) config('externals.rss_host')));
     }
 
-    public function boot(): void {}
+    public function boot(): void
+    {
+        Socialite::extend('github', fn() => Socialite::buildProvider(GithubProvider::class, config('services.github')));
+    }
 }

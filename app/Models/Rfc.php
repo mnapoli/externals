@@ -62,6 +62,14 @@ class Rfc extends Model
     }
 
     /**
+     * The vote to show in lists: the first one still open, else the first one.
+     */
+    public function currentPoll(): ?RfcPoll
+    {
+        return $this->polls->first(fn(RfcPoll $poll) => ! $poll->isClosed) ?? $this->polls->first();
+    }
+
+    /**
      * Community votes (not the official vote of the wiki).
      *
      * @return HasMany<RfcVote, $this>
@@ -77,37 +85,34 @@ class Rfc extends Model
     }
 
     /**
-     * Gravatar of the first author, transparent when there is none (the initials show through).
-     *
-     * Gravatar rather than unavatar.io (used for emails): unavatar.io allows 25 avatars per day
-     * and per visitor, and the list of RFCs shows ~200.
+     * Address of the first author, when the wiki gives one.
      */
-    public function authorAvatarUrl(): ?string
+    public function authorEmail(): ?string
     {
         if (! preg_match('/' . self::EMAIL_PATTERN . '/u', (string) $this->authors, $matches)) {
             return null;
         }
 
-        return 'https://www.gravatar.com/avatar/' . hash('sha256', mb_strtolower($matches[0])) . '?s=48&d=blank';
+        return $matches[0];
     }
 
     /**
-     * e.g. "LG" for "Larry Garfield (larry@garfieldtech.com), Ilija Tovilo"
+     * All the authors, without their email addresses, e.g. "Larry Garfield, Ilija Tovilo"
      */
-    public function authorInitials(): string
+    public function authorNames(): string
     {
-        // The name of the first author: before its email or the next author
-        $name = preg_split('/[,(<&\/]|\band\b|' . self::EMAIL_PATTERN . '/u', (string) $this->authors)[0] ?? '';
-        $words = array_values(array_filter(
-            preg_split('/\s+/u', mb_trim($name)) ?: [],
-            fn(string $word) => preg_match('/^\p{L}/u', $word) === 1,
-        ));
-        if ($words === []) {
-            return '';
-        }
-        $initials = mb_substr($words[0], 0, 1) . (count($words) > 1 ? mb_substr($words[count($words) - 1], 0, 1) : '');
+        $names = preg_replace(['/[(<]?\s*' . self::EMAIL_PATTERN . '\s*[)>]?/u', '/\(\s*\)/u', '/\s+([,)])/u', '/\s{2,}/u'], ['', '', '$1', ' '], (string) $this->authors);
 
-        return mb_strtoupper($initials);
+        return mb_trim((string) $names, " ,\t\n");
+    }
+
+    /**
+     * The name of the first author, e.g. "Larry Garfield" for "Larry Garfield (larry@garfieldtech.com), Ilija Tovilo"
+     */
+    public function authorName(): string
+    {
+        // Before its email or the next author
+        return mb_trim(preg_split('/[,(<&\/]|\band\b|' . self::EMAIL_PATTERN . '/u', (string) $this->authors)[0] ?? '');
     }
 
     public function wikiUrl(): string

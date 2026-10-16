@@ -2,31 +2,92 @@
 
 @source '../**/*.blade.php';
 @source '../**/*.js';
+@source '../../app/Services/Rfc/RfcStatus.php';
+
+@theme {
+    --font-sans: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    /* Text */
+    --color-ink: #17171c;
+    --color-ink-soft: #45454f;
+    --color-muted: #5b5b66;
+    --color-faint: #7a7a86;
+    /* Surfaces and lines */
+    --color-ground: #f7f7f9;
+    --color-surface: #ffffff;
+    --color-subtle: #f3f3f6;
+    --color-line: #e7e7ec;
+    --color-line-strong: #d5d5dd;
+    /* Accent: indigo, as on php.net */
+    --color-accent: #3d4a8f;
+    --color-accent-strong: #2a3f9e;
+    --color-accent-soft: #e8edff;
+    --color-accent-line: #9aa8e6;
+    /* States */
+    --color-pass: #2f7d4f;
+    --color-fail: #a33a3a;
+}
 
 @utility container {
     margin-inline: auto;
     padding-inline: 1rem;
 }
 
+@layer base {
+    body {
+        @apply bg-ground text-ink font-sans antialiased;
+    }
+    /* "->" and "=>" must not turn into arrows in PHP code */
+    code, pre, kbd, .font-mono {
+        font-variant-ligatures: none;
+    }
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-accent;
+    }
+}
+
 /* Alpine: hide elements until Alpine initialises */
 [x-cloak] { display: none !important; }
 
-/* https://stackoverflow.com/questions/71074/how-to-remove-firefoxs-dotted-outline-on-buttons-as-well-as-links */
-:focus { outline: none; }
-::-moz-focus-inner { border: 0; }
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto !important; }
+}
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
 
-.vote-action.active {
-    @apply text-red-400;
+/* Small uppercase label, used for chips and panel headers */
+@utility label {
+    @apply font-mono text-[11px] font-medium uppercase tracking-normal;
 }
 
-article:target {
-    background-color: #fdfbf0;
+/* Subject tags and RFC statuses */
+@utility chip {
+    @apply font-mono text-[11px] font-medium uppercase tracking-normal px-1.5 py-0.5 rounded whitespace-nowrap;
 }
-.email-content p, .email-content ol, .email-content ul, .email-content pre, .email-content blockquote {
-    @apply mt-2 mb-3;
+
+/* White block of content on the grey ground */
+@utility card {
+    @apply bg-surface border border-line rounded-lg;
+}
+
+@utility kbd {
+    @apply font-mono text-[11px] leading-4 px-1.5 rounded border border-b-2 border-line-strong bg-surface text-ink-soft;
+}
+
+/* Email body, rendered from the plain-text email */
+.email-content {
+    @apply text-base leading-relaxed;
+    max-width: 68ch;
+    overflow-wrap: anywhere;
+}
+.email-content p, .email-content ol, .email-content ul, .email-content pre, .email-content blockquote, .email-content details {
+    @apply mb-3;
+}
+.email-content > :last-child {
+    @apply mb-0;
 }
 .email-content ol, .email-content ul {
-    @apply ml-4 list-outside;
+    @apply ml-5 list-outside;
 }
 .email-content ul {
     @apply list-disc;
@@ -35,89 +96,75 @@ article:target {
     @apply list-decimal;
 }
 .email-content li {
-    @apply pl-2 my-1;
+    @apply pl-1 my-1;
 }
 .email-content a {
-    @apply text-red-600;
+    @apply text-accent-strong underline decoration-accent-line underline-offset-2 hover:text-ink;
 }
 .email-content code {
-    @apply text-xs text-red-700 bg-red-50 p-1 rounded;
+    @apply font-mono text-[0.875em] bg-subtle px-1 py-px rounded;
 }
 .email-content pre {
-    @apply bg-gray-100 border p-2 rounded;
+    @apply font-mono text-sm leading-normal bg-[#f5f5f8] border border-line rounded-md px-3 py-2.5 overflow-x-auto;
 }
 .email-content pre > code {
-    @apply text-sm text-gray-700 bg-transparent;
+    @apply bg-transparent p-0 text-[1em];
 }
 .email-content blockquote {
-    @apply text-sm text-gray-600 italic px-3;
+    @apply border-l-2 border-line-strong pl-3 text-ink-soft text-[0.95em];
 }
-/* Collapse last blockquote of an email */
-.email-content > blockquote:last-child {
-    visibility: hidden;
-    height: 1em;
-    position: relative;
+.email-content blockquote blockquote {
+    @apply mt-2;
 }
-.email-content > blockquote:last-child:after {
-    content: '…';
-    visibility: visible;
-    position: absolute;
-    top: 0;
-    left: 0;
+/* Long quotes are folded: see App\Support\Email\EmailHtml */
+.email-content details.quote > summary {
+    @apply inline-flex items-center gap-1.5 cursor-pointer select-none rounded bg-subtle px-2 py-1 font-mono text-xs text-ink-soft hover:text-ink list-none;
 }
-/* Hide nested blockquotes */
-article blockquote blockquote {
-    @apply hidden;
-}
-article:last-child {
-    margin-bottom: 0;
-}
-
-/* Article nesting */
-article article,
-article article article article,
-article article article article article article,
-article article article article article article article article,
-article article article article article article article article article article,
-article article article article article article article article article article article article,
-article article article article article article article article article article article article article {
-    @apply bg-gray-50;
-}
-article article article,
-article article article article article,
-article article article article article article article,
-article article article article article article article article article,
-article article article article article article article article article article article,
-article article article article article article article article article article article article article,
-article article article article article article article article article article article article article article article {
-    @apply bg-white;
-}
-
-/* Horizontally scrollable code blocks */
-article pre {
-    @apply overflow-x-scroll;
-}
-
-/* Hide search box before initialization */
-#search-container {
+.email-content details.quote > summary::-webkit-details-marker {
     display: none;
 }
+.email-content details.quote > summary::before {
+    content: '›';
+    @apply transition-transform;
+}
+.email-content details.quote[open] > summary::before {
+    transform: rotate(90deg);
+}
+.email-content details.quote > blockquote {
+    @apply mt-2 mb-0;
+}
+
+/* Syntax highlighting: see App\Support\CodeHighlighter */
+code.highlighted .hl-keyword { color: #3d4a8f; font-weight: 500; }
+code.highlighted .hl-type, code.highlighted .hl-generic, code.highlighted .hl-attribute { color: #7a4b00; }
+code.highlighted .hl-property { color: #1d6b6b; }
+code.highlighted .hl-variable { color: #8a3a6b; }
+code.highlighted .hl-value, code.highlighted .hl-literal { color: #2f7d4f; }
+code.highlighted .hl-number { color: #a14a16; }
+code.highlighted .hl-comment { color: #6e6e7a; font-style: italic; }
 
 /* RFC text, converted from the PHP wiki */
+.rfc-content {
+    @apply leading-relaxed;
+    max-width: 72ch;
+}
 .rfc-content h2 {
-    @apply text-xl font-normal mt-8 mb-2 pb-1 border-b border-gray-200;
+    @apply text-xl font-semibold mt-10 mb-3 pb-1 border-b border-line;
+}
+.rfc-content > :first-child {
+    margin-top: 0;
 }
 .rfc-content h3 {
-    @apply text-lg font-normal mt-6 mb-2;
+    @apply text-lg font-semibold mt-8 mb-2;
 }
 .rfc-content h4, .rfc-content h5 {
-    @apply font-semibold mt-4 mb-2;
+    @apply font-semibold mt-6 mb-2;
 }
 .rfc-content p, .rfc-content ol, .rfc-content ul, .rfc-content pre, .rfc-content blockquote, .rfc-content table {
     @apply mt-2 mb-3;
 }
 .rfc-content ol, .rfc-content ul {
-    @apply ml-4 list-outside;
+    @apply ml-5 list-outside;
 }
 .rfc-content ul {
     @apply list-disc;
@@ -126,31 +173,31 @@ article pre {
     @apply list-decimal;
 }
 .rfc-content li {
-    @apply pl-2 my-1;
+    @apply pl-1 my-1;
 }
 .rfc-content a {
-    @apply text-red-600;
+    @apply text-accent-strong underline decoration-accent-line underline-offset-2 hover:text-ink;
     /* Long URLs must not widen the page on mobile */
     overflow-wrap: anywhere;
 }
 .rfc-content code {
-    @apply text-xs text-red-700 bg-red-50 p-1 rounded;
+    @apply font-mono text-[0.875em] bg-subtle px-1 py-px rounded;
 }
 .rfc-content pre {
-    @apply bg-gray-100 border border-gray-200 p-2 rounded overflow-x-auto;
+    @apply font-mono text-sm bg-[#f5f5f8] border border-line rounded-md px-3 py-2.5 overflow-x-auto;
 }
 .rfc-content pre > code {
-    @apply text-sm text-gray-700 bg-transparent p-0;
+    @apply bg-transparent p-0 text-[1em];
 }
 .rfc-content blockquote {
-    @apply text-gray-600 border-l-4 border-gray-200 px-3;
+    @apply text-ink-soft border-l-2 border-line-strong pl-3;
 }
 .rfc-content table {
     @apply block overflow-x-auto text-sm;
 }
 .rfc-content th, .rfc-content td {
-    @apply border border-gray-200 px-2 py-1 text-left align-top;
+    @apply border border-line px-2 py-1.5 text-left align-top;
 }
 .rfc-content th {
-    @apply bg-gray-50 font-semibold;
+    @apply bg-subtle font-semibold;
 }

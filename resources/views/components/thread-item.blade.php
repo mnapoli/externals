@@ -1,41 +1,76 @@
-@props(['item'])
+@props(['item', 'reactions' => [], 'avatars' => []])
 
+{{-- Replies are indented up to this depth; deeper replies stay at that level and say who they answer --}}
+@php($maxIndent = 3)
 @php($email = $item->email)
+@php($depth = $item->depth())
+@php($parent = $item->parent?->email)
+@php($tracksRead = auth()->check())
+@php($unread = $tracksRead && ! $email->isRead)
+@php($replyCount = $item->descendantCount())
+@php($unreadReplies = $tracksRead ? $item->unreadDescendantCount() : 0)
 
 <article id="{{ $email->number }}"
          x-data="{ open: true }"
-         class="mb-6 overflow-hidden {{ $email->isRead ? '' : 'unread' }}">
-
-    <header class="text-xs sm:text-sm text-gray-300 bg-gray-600 rounded-tl py-1 px-2 relative">
-        <button type="button" @click="open = !open" class="mr-2 cursor-pointer">
-            <svg class="w-4 h-4 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-        </button>
-        @if($email->from->email)
-            <img class="hidden sm:block absolute top-0 right-0 mt-1 mr-2 rounded-full border border-gray-100 shadow-lg w-16 h-16 text-white bg-white" src="https://unavatar.io/{{ $email->from->email }}"
-                 alt="{{ $email->from->getNameOrEmail() }}" title="{{ $email->from->getNameOrEmail() }}">
-        @endif
-        <a class="underline" href="#{{ $email->number }}" title="{{ $email->date->format('Y-m-d H:i') }}"><time datetime="{{ $email->date->format(DATE_ATOM) }}">{{ \Carbon\Carbon::instance($email->date)->diffForHumans() }}</time></a>
-        by <strong class="author">{{ $email->from->getNameOrEmail() }}</strong>
-        <span class="text-xs text-gray-500">
-            — <a href="/email/{{ $email->number }}/source" target="_blank" rel="nofollow">view source</a>
-            — <a href="{{ \App\Support\Email\EmailReplyUrl::build($email) }}" rel="nofollow">reply</a>
-        </span>
-        @if(! $email->isRead)
-            <div class="ml-4 inline-block bg-blue-100 rounded px-2 py-1 leading-none text-xs text-blue-600">unread</div>
-        @endif
-    </header>
-
-    <div x-show="open" class="border-l border-gray-200 pl-2 sm:pl-4 pt-1 pb-1">
-        <div class="email-content overflow-hidden text-sm sm:text-base mb-6">
-            {!! $email->content !!}
-        </div>
-        <div class="sm:ml-2">
-            @foreach($item->replies as $reply)
-                <x-thread-item :item="$reply" />
-            @endforeach
+         @thread-collapse-read.window="open = {{ $tracksRead && $email->isRead && $unreadReplies === 0 ? 'false' : 'open' }}"
+         @thread-expand-all.window="open = true"
+         @thread-reveal.window="if ($el.contains(document.getElementById($event.detail))) open = true"
+         data-message
+         @class(['group/msg', 'unread' => $unread])>
+    <div @class([
+            'rounded-lg border bg-surface group-target/msg:ring-4 group-target/msg:ring-accent-soft group-data-target/msg:ring-4 group-data-target/msg:ring-accent-soft',
+            'border-accent-line' => $unread,
+            'border-line' => ! $unread,
+        ])>
+        <header class="flex flex-wrap items-center gap-x-2.5 gap-y-1 pl-3 sm:pl-4 pr-1 py-1.5 text-[13px] text-muted" :class="open && 'border-b border-[#f0f0f4]'">
+            <x-avatar :name="$email->from->getNameOrEmail()" :url="$avatars[$email->from->email ?? ''] ?? null" aria-hidden="true" />
+            <span class="author font-semibold text-sm text-ink">{{ $email->from->getNameOrEmail() }}</span>
+            @if($parent && $depth > $maxIndent)
+                <a href="#{{ $parent->number }}" class="font-mono text-[11px] text-muted bg-subtle hover:text-ink px-1.5 py-0.5 rounded whitespace-nowrap"
+                   title="In reply to {{ $parent->from->getNameOrEmail() }}">↳ {{ $parent->from->getNameOrEmail() }}</a>
+            @endif
+            <a class="font-mono text-xs text-muted hover:text-ink" href="#{{ $email->number }}" title="{{ $email->date->format('D, M j, Y \a\t H:i') }} UTC"><time datetime="{{ $email->date->format(DATE_ATOM) }}">{{ \Carbon\Carbon::instance($email->date)->diffForHumans() }}</time></a>
+            @if($unread)
+                <span class="w-[7px] h-[7px] rounded-full bg-accent" aria-hidden="true"></span><span class="sr-only">Unread</span>
+            @endif
+            <span x-show="! open" x-cloak class="font-mono text-xs">
+                @if($replyCount > 0){{ $replyCount }} {{ Str::plural('reply', $replyCount) }}@endif
+                @if($unreadReplies > 0) · <span class="text-accent-strong font-semibold">{{ $unreadReplies }} unread</span>@endif
+            </span>
+            <span class="ml-auto flex items-center">
+                <a href="/email/{{ $email->number }}/source" target="_blank" rel="nofollow" class="hidden sm:inline px-2 py-1 rounded text-xs text-muted hover:bg-subtle hover:text-ink">source</a>
+                <a href="{{ \App\Support\Email\EmailReplyUrl::build($email) }}" rel="nofollow" class="hidden sm:inline px-2 py-1 rounded text-xs text-muted hover:bg-subtle hover:text-ink">reply by email</a>
+                <button type="button" @click="open = ! open" :aria-expanded="open" aria-label="Collapse or expand this message and its replies"
+                        class="inline-flex items-center justify-center w-9 h-8 rounded text-muted hover:bg-subtle hover:text-ink cursor-pointer">
+                    <x-chevron :disclosure="false" class="w-4 h-4" x-bind:class="! open && '-rotate-90'" />
+                </button>
+            </span>
+        </header>
+        <div x-show="open">
+            <div class="email-content px-3 sm:px-[18px] pt-3 pb-1">
+                {!! \App\Support\Email\EmailHtml::present($email->content) !!}
+            </div>
+            <div class="px-3 sm:px-[18px] pt-2 pb-3 flex flex-wrap items-center gap-2">
+                <livewire:email-reactions :email-number="$email->number"
+                                          :counts="$reactions[$email->number]['counts'] ?? []"
+                                          :mine="$reactions[$email->number]['mine'] ?? []"
+                                          :key="'reactions-' . $email->number" />
+                <span class="sm:hidden ml-auto flex">
+                    <a href="/email/{{ $email->number }}/source" target="_blank" rel="nofollow" class="px-2 py-1.5 text-xs text-muted">source</a>
+                    <a href="{{ \App\Support\Email\EmailReplyUrl::build($email) }}" rel="nofollow" class="px-2 py-1.5 text-xs text-muted">reply</a>
+                </span>
+            </div>
         </div>
     </div>
 
+    @if($item->replies !== [])
+        <div x-show="open" @class([
+                'mt-3 flex flex-col gap-3',
+                'ml-2 sm:ml-3 pl-3 sm:pl-5 border-l border-line-strong/70' => $depth < $maxIndent,
+            ])>
+            @foreach($item->replies as $reply)
+                <x-thread-item :item="$reply" :reactions="$reactions" :avatars="$avatars" />
+            @endforeach
+        </div>
+    @endif
 </article>

@@ -16,6 +16,10 @@ new class extends Component {
     #[Locked]
     public bool $canVote = true;
 
+    /** Big buttons that say what they do, for the page of the RFC */
+    #[Locked]
+    public bool $large = false;
+
     public int $upvotes = 0;
     public int $downvotes = 0;
     public int $userVote = 0;
@@ -23,9 +27,7 @@ new class extends Component {
     public function vote(int $value): void
     {
         if (! auth()->check()) {
-            $this->js(<<<'JS'
-                alert('You must log in to vote. To log in, click the "log in" link in the top-right corner.');
-            JS);
+            $this->redirect(route('login'));
 
             return;
         }
@@ -45,19 +47,46 @@ new class extends Component {
     }
 }; ?>
 
-<div class="vote-actions inline-flex items-center gap-1 text-sm text-gray-300 whitespace-nowrap" title="Community vote">
-    @if($canVote)
-        <a class="vote-action upvote text-xl font-bold leading-none {{ $userVote === 1 ? 'active' : '' }}"
-           href="#" wire:click.prevent="vote(1)" title="Upvote">&blacktriangle;</a>
+<div @if(! $large) class="inline-flex items-center gap-0.5 font-mono text-xs text-muted whitespace-nowrap" title="Community opinion on externals.io, not the official vote" @endif>
+    @if($large)
+        @if($canVote)
+            <div class="grid grid-cols-2 gap-2" role="group" aria-label="Community vote">
+                @foreach([1 => ['▲', 'In favor', $upvotes], -1 => ['▼', 'Against', $downvotes]] as $value => [$arrow, $label, $count])
+                    <button type="button" wire:click="vote({{ $value }})" aria-pressed="{{ $userVote === $value ? 'true' : 'false' }}"
+                            @class([
+                                'inline-flex items-center justify-center gap-2 h-10 px-3 rounded-md border text-sm font-medium cursor-pointer transition-colors',
+                                'border-accent bg-accent text-white' => $userVote === $value,
+                                'border-line-strong bg-surface text-ink hover:border-accent-line hover:bg-accent-soft' => $userVote !== $value,
+                            ])>
+                        <span class="text-xs" aria-hidden="true">{{ $arrow }}</span>
+                        {{ $label }}
+                        <span @class(['font-mono tabular-nums', 'text-white/80' => $userVote === $value, 'text-muted' => $userVote !== $value])>{{ $count }}</span>
+                    </button>
+                @endforeach
+            </div>
+            @guest
+                <p class="mt-2 text-xs text-muted"><a href="{{ route('login') }}" class="text-accent-strong underline decoration-accent-line underline-offset-2 hover:decoration-accent-strong">Log in with GitHub</a> to vote.</p>
+            @endguest
+        @else
+            <p class="flex gap-4 font-mono text-sm text-ink-soft">
+                <span><span class="text-faint" aria-hidden="true">▲</span> {{ $upvotes }} in favor</span>
+                <span><span class="text-faint" aria-hidden="true">▼</span> {{ $downvotes }} against</span>
+            </p>
+        @endif
     @else
-        <span class="text-xl leading-none" title="Upvotes">&blacktriangle;</span>
+        @if($canVote)
+            <button type="button" wire:click="vote(1)" aria-pressed="{{ $userVote === 1 ? 'true' : 'false' }}" aria-label="Upvote"
+                    class="w-7 h-7 rounded cursor-pointer {{ $userVote === 1 ? 'bg-accent-soft text-accent-strong' : 'text-faint hover:bg-subtle hover:text-ink' }}">▲</button>
+        @else
+            <span class="w-5 text-center text-faint" aria-label="Upvotes">▲</span>
+        @endif
+        <span class="min-w-[2ch] tabular-nums {{ $upvotes > 0 ? 'text-ink-soft' : '' }}">{{ $upvotes }}</span>
+        @if($canVote)
+            <button type="button" wire:click="vote(-1)" aria-pressed="{{ $userVote === -1 ? 'true' : 'false' }}" aria-label="Downvote"
+                    class="w-7 h-7 rounded cursor-pointer {{ $userVote === -1 ? 'bg-accent-soft text-accent-strong' : 'text-faint hover:bg-subtle hover:text-ink' }}">▼</button>
+        @else
+            <span class="w-5 text-center text-faint" aria-label="Downvotes">▼</span>
+        @endif
+        <span class="min-w-[2ch] tabular-nums {{ $downvotes > 0 ? 'text-ink-soft' : '' }}">{{ $downvotes }}</span>
     @endif
-    <span class="min-w-[2ch] tabular-nums @if($upvotes > 0) text-gray-600 @endif">{{ $upvotes }}</span>
-    @if($canVote)
-        <a class="vote-action downvote text-xl font-bold leading-none {{ $userVote === -1 ? 'active' : '' }}"
-           href="#" wire:click.prevent="vote(-1)" title="Downvote">&blacktriangledown;</a>
-    @else
-        <span class="text-xl leading-none" title="Downvotes">&blacktriangledown;</span>
-    @endif
-    <span class="min-w-[2ch] tabular-nums @if($downvotes > 0) text-gray-600 @endif">{{ $downvotes }}</span>
 </div>

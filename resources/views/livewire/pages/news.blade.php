@@ -7,13 +7,11 @@ new #[Layout('components.layouts.app')] class extends Component {
     //
 }; ?>
 
-<div>
-    <div class="page-header">
-        <h1>What's new?</h1>
-    </div>
+<div class="mx-auto max-w-3xl">
+    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight mb-4">What's new?</h1>
 
-    <div class="news">
-        <p class="lead">
+    <div class="leading-relaxed [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mt-8 [&_h2]:mb-2 [&_p]:mb-3 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:mb-3 [&_a]:text-accent-strong [&_a]:underline [&_a]:underline-offset-2">
+        <p class="text-lg text-ink-soft">
             Welcome on version 2 of externals.io. The application has been extensively rewritten in order to make the whole experience better.
         </p>
 
