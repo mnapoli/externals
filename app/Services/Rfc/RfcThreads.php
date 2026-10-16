@@ -191,13 +191,17 @@ class RfcThreads
      * Number of threads about each RFC and date of their latest activity.
      * A thread that only mentions an RFC is not activity on it: it would bring back old RFCs cited as prior art.
      *
+     * @param  array<string>|null  $slugs  The RFCs to look at, null for all of them (slower: every link is classified)
      * @return Collection<string, RfcActivity> Keyed by RFC slug
      */
-    public function activityByRfc(): Collection
+    public function activityByRfc(?array $slugs = null): Collection
     {
+        if ($slugs === []) {
+            return collect();
+        }
         $threads = DB::table('emails')
             ->join('threads', 'threads.emailId', '=', 'emails.id')
-            ->whereIn('emails.number', DB::table('rfc_threads')->select('threadNumber'))
+            ->whereIn('emails.number', DB::table('rfc_threads')->select('threadNumber')->when($slugs !== null, fn($query) => $query->whereIn('rfcSlug', $slugs)))
             ->get(['emails.number', 'emails.subject', 'threads.lastUpdate']);
         $links = $this->rfcLinksOfThreads(
             $threads->mapWithKeys(fn(object $thread) => [(int) $thread->number => (string) $thread->subject])->all(),
@@ -208,7 +212,7 @@ class RfcThreads
         $lastUpdates = [];
         foreach ($threads as $thread) {
             $slug = ($links[(int) $thread->number] ?? null)?->primary?->slug;
-            if ($slug === null) {
+            if ($slug === null || ($slugs !== null && ! in_array($slug, $slugs, true))) {
                 continue;
             }
             $counts[$slug] = ($counts[$slug] ?? 0) + 1;

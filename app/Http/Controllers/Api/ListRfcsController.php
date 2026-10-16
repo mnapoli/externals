@@ -21,12 +21,12 @@ class ListRfcsController extends Controller
         ]);
         $status = isset($validated['status']) ? RfcStatus::from($validated['status']) : null;
 
-        $activity = $threads->activityByRfc();
         $rfcs = Rfc::query()
             ->where('isListed', true)
             ->when($status, fn($query) => $query->where('status', $status))
             ->orderBy('indexPosition')
             ->get(['slug', 'title', 'status', 'indexSubsection', 'phpVersion', 'authors', 'date']);
+        $activity = $threads->activityByRfc($status !== null ? $rfcs->map(fn(Rfc $rfc) => $rfc->slug)->all() : null);
 
         return response()->json([
             'data' => $rfcs->map(function (Rfc $rfc) use ($activity): array {

@@ -98,7 +98,7 @@ new #[Layout('components.layouts.app')] class extends Component {
             'total' => array_sum(array_map(fn(array $section) => count($section['rfcs']), $sections)),
             'avatars' => app(AvatarUrls::class)->of(array_merge(...array_map(fn(array $section) => array_map(fn(Rfc $rfc) => $rfc->authorEmail(), $section['shown']), $sections)), 48),
             'searching' => $q !== '',
-            'activity' => app(RfcThreads::class)->activityByRfc(),
+            'activity' => app(RfcThreads::class)->activityByRfc(array_merge(...array_map(fn(array $section) => array_map(fn(Rfc $rfc) => $rfc->slug, $section['shown']), $sections))),
             'userVotes' => auth()->check() ? RfcVote::where('userId', auth()->id())->pluck('value', 'rfcId') : collect(),
         ];
     }
