@@ -107,24 +107,6 @@ class Rfc extends Model
         return mb_trim(preg_split('/[,(<&\/]|\band\b|' . self::EMAIL_PATTERN . '/u', (string) $this->authors)[0] ?? '');
     }
 
-    /**
-     * e.g. "LG" for "Larry Garfield (larry@garfieldtech.com), Ilija Tovilo"
-     */
-    public function authorInitials(): string
-    {
-        $name = $this->authorName();
-        $words = array_values(array_filter(
-            preg_split('/\s+/u', mb_trim($name)) ?: [],
-            fn(string $word) => preg_match('/^\p{L}/u', $word) === 1,
-        ));
-        if ($words === []) {
-            return '';
-        }
-        $initials = mb_substr($words[0], 0, 1) . (count($words) > 1 ? mb_substr($words[count($words) - 1], 0, 1) : '');
-
-        return mb_strtoupper($initials);
-    }
-
     public function wikiUrl(): string
     {
         return RfcPageParser::WIKI_URL . '/rfc/' . $this->slug;

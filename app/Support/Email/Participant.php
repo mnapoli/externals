@@ -15,14 +15,4 @@ final readonly class Participant
         public int $messageCount,
         public ?string $avatarUrl = null,
     ) {}
-
-    /**
-     * Shown under the photo, or instead of it when the person has none.
-     */
-    public function initials(): string
-    {
-        $words = array_values(array_filter(preg_split('/[\s.@_-]+/u', $this->name) ?: []));
-
-        return implode('', array_map(fn(string $word) => mb_strtoupper(mb_substr($word, 0, 1)), array_slice($words, 0, 2)));
-    }
 }

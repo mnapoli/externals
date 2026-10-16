@@ -6,13 +6,9 @@
 @php($shownMobile = $count > $maxMobile ? $maxMobile - 1 : $count)
 <span {{ $attributes->merge(['class' => 'flex shrink-0 pl-1.5']) }}>
     @foreach(array_slice($participants, 0, $shown) as $i => $participant)
-        <span title="{{ $participant->name }} · {{ $participant->messageCount }} {{ Str::plural('message', $participant->messageCount) }}"
-              @class(['relative -ml-1.5 rounded-full ring-2 ring-surface items-center justify-center bg-[#e4e4ea] font-semibold text-ink-soft select-none', $size, 'inline-flex' => $i < $shownMobile, 'hidden sm:inline-flex' => $i >= $shownMobile])>
-            <span aria-hidden="true">{{ $participant->initials() }}</span>
-            @if($participant->avatarUrl)
-                <img src="{{ $participant->avatarUrl }}" alt="" loading="lazy" class="absolute inset-0 w-full h-full rounded-full object-cover">
-            @endif
-        </span>
+        <x-avatar :name="$participant->name" :url="$participant->avatarUrl" :size="$size"
+                  :display="$i < $shownMobile ? 'inline-flex' : 'hidden sm:inline-flex'" class="-ml-1.5 ring-2 ring-surface"
+                  title="{{ $participant->name }} · {{ $participant->messageCount }} {{ Str::plural('message', $participant->messageCount) }}" />
     @endforeach
     @if($count > $shownMobile)
         <span class="sm:hidden -ml-1.5 inline-flex items-center justify-center rounded-full ring-2 ring-surface bg-surface border border-line-strong font-mono font-semibold text-muted {{ $size }}">+{{ $count - $shownMobile }}</span>

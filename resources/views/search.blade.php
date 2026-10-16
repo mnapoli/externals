@@ -23,21 +23,15 @@
             </p>
 
             @if($results->hits !== [])
-                <ol class="bg-surface border border-line rounded-lg overflow-hidden">
+                <ol class="card overflow-hidden">
                     @foreach($results->hits as $hit)
                         @php($subject = \App\Support\Email\SubjectTags::parse($hit->subject))
-                        @php($avatar = $avatars[$hit->number] ?? null)
                         <li class="flex gap-3 px-3 sm:px-4 py-3.5 border-b border-line last:border-b-0 hover:bg-[#fafaff]">
-                            <span class="relative mt-0.5 w-7 h-7 shrink-0 rounded-full bg-[#e4e4ea] text-[10px] font-semibold text-ink-soft flex items-center justify-center select-none">
-                                <span aria-hidden="true">{{ (new \App\Support\Email\Participant($hit->author, null, 1))->initials() }}</span>
-                                @if($avatar)
-                                    <img src="{{ $avatar }}" alt="" loading="lazy" class="absolute inset-0 w-full h-full rounded-full object-cover">
-                                @endif
-                            </span>
+                            <x-avatar :name="$hit->author" :url="$avatars[$hit->number] ?? null" class="mt-0.5" />
                             <div class="min-w-0 flex-1">
                                 <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                                     @foreach($subject->tags as $tag)
-                                        <span class="label px-1.5 py-0.5 rounded whitespace-nowrap bg-subtle text-ink-soft">{{ $tag }}</span>
+                                        <span class="chip bg-subtle text-ink-soft">{{ $tag }}</span>
                                     @endforeach
                                     <a class="font-medium text-[15px] leading-snug text-ink hover:text-accent [overflow-wrap:anywhere]" href="/message/{{ $hit->threadNumber }}#{{ $hit->number }}">{{ $subject->title }}</a>
                                 </div>

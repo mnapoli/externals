@@ -30,10 +30,6 @@ test('the author of the thread comes first, then the most active participants', 
     expect($participants[2])->toHaveCount(1);
 });
 
-test('initials of a participant', function (): void {
-    expect((new Participant('Rowan Tommins [IMSoP]', 'rowan@example.com', 3))->initials())->toBe('RT');
-});
-
 test('participants come with their avatar', function (): void {
     app(GetOrCreateUser::class)->handle('583231', 'octocat', null, ['author@example.com']);
     $root = Email::factory()->create(['number' => 1, 'fromEmail' => 'author@example.com']);

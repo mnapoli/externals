@@ -23,14 +23,7 @@
             'border-line' => ! $unread,
         ])>
         <header class="flex flex-wrap items-center gap-x-2.5 gap-y-1 pl-3 sm:pl-4 pr-1 py-1.5 text-[13px] text-muted" :class="open && 'border-b border-[#f0f0f4]'">
-            @php($initials = collect(preg_split('/[\s.@_-]+/', $email->from->getNameOrEmail()))->filter()->take(2)->map(fn($part) => mb_strtoupper(mb_substr($part, 0, 1)))->implode(''))
-            <span class="relative w-7 h-7 shrink-0 rounded-full bg-subtle text-[10px] font-semibold text-muted flex items-center justify-center" aria-hidden="true">
-                {{ $initials }}
-                @php($avatar = $avatars[$email->from->email ?? ''] ?? null)
-                @if($avatar)
-                    <img class="absolute inset-0 w-7 h-7 rounded-full object-cover" src="{{ $avatar }}" alt="" loading="lazy">
-                @endif
-            </span>
+            <x-avatar :name="$email->from->getNameOrEmail()" :url="$avatars[$email->from->email ?? ''] ?? null" aria-hidden="true" />
             <span class="author font-semibold text-sm text-ink">{{ $email->from->getNameOrEmail() }}</span>
             @if($parent && $depth > $maxIndent)
                 <a href="#{{ $parent->number }}" class="font-mono text-[11px] text-muted bg-subtle hover:text-ink px-1.5 py-0.5 rounded whitespace-nowrap"
@@ -49,7 +42,7 @@
                 <a href="{{ \App\Support\Email\EmailReplyUrl::build($email) }}" rel="nofollow" class="hidden sm:inline px-2 py-1 rounded text-xs text-muted hover:bg-subtle hover:text-ink">reply by email</a>
                 <button type="button" @click="open = ! open" :aria-expanded="open" aria-label="Collapse or expand this message and its replies"
                         class="inline-flex items-center justify-center w-9 h-8 rounded text-muted hover:bg-subtle hover:text-ink cursor-pointer">
-                    <svg class="w-4 h-4 transition-transform" :class="! open && '-rotate-90'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                    <x-chevron :disclosure="false" class="w-4 h-4" x-bind:class="! open && '-rotate-90'" />
                 </button>
             </span>
         </header>

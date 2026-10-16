@@ -60,6 +60,16 @@ html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
     @apply font-mono text-[11px] font-medium uppercase tracking-normal;
 }
 
+/* Subject tags and RFC statuses */
+@utility chip {
+    @apply font-mono text-[11px] font-medium uppercase tracking-normal px-1.5 py-0.5 rounded whitespace-nowrap;
+}
+
+/* White block of content on the grey ground */
+@utility card {
+    @apply bg-surface border border-line rounded-lg;
+}
+
 @utility kbd {
     @apply font-mono text-[11px] leading-4 px-1.5 rounded border border-b-2 border-line-strong bg-surface text-ink-soft;
 }

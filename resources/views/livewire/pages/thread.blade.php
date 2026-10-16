@@ -211,7 +211,7 @@ new #[Layout('components.layouts.app')] class extends Component {
                 @if($tags !== [])
                     <div class="flex flex-wrap gap-1.5">
                         @foreach($tags as $tag)
-                            <span class="label px-1.5 py-0.5 rounded bg-subtle text-ink-soft">{{ $tag }}</span>
+                            <span class="chip bg-subtle text-ink-soft">{{ $tag }}</span>
                         @endforeach
                     </div>
                 @endif
@@ -246,10 +246,10 @@ new #[Layout('components.layouts.app')] class extends Component {
 
         @if($rfc = $threadRfcs->primary)
             @php($poll = $rfc->polls->first())
-            <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-line bg-surface px-4 py-3 text-sm">
+            <div class="card mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm">
                 <span class="label text-muted">RFC</span>
                 <a href="/rfc/{{ $rfc->slug }}" class="font-semibold hover:text-accent">{{ $rfc->title }}</a>
-                <span class="label px-1.5 py-0.5 rounded {{ $rfc->status->badgeClasses() }}">{{ $rfc->status->badgeLabel() . ($rfc->phpVersion !== null ? " · PHP {$rfc->phpVersion}" : "") }}</span>
+                <x-rfc-badge :status="$rfc->status" :php-version="$rfc->phpVersion" />
                 @if($poll?->hasVotes())
                     <span class="sm:ml-auto font-mono text-xs text-muted">Official vote: {{ $poll->summary() }}@if(! $poll->isClosed) · open @endif</span>
                 @endif

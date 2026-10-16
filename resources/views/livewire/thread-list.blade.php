@@ -101,7 +101,7 @@ new class extends Component {
 
 <div class="thread-list">
     @if($threads === [])
-        <p class="px-4 py-10 text-center text-muted bg-surface border border-line rounded-lg">
+        <p class="px-4 py-10 text-center text-muted card">
             @if($mode === 'top')
                 No thread got upvotes in the last month. <a href="/" class="text-accent-strong underline underline-offset-2">Browse the latest threads</a>.
             @else
@@ -109,7 +109,7 @@ new class extends Component {
             @endif
         </p>
     @else
-    <ol class="bg-surface border border-line rounded-lg overflow-hidden">
+    <ol class="card overflow-hidden">
         @foreach($threads as $thread)
             @php($subject = \App\Support\Email\SubjectTags::parse($thread->subject))
             @php($primaryRfc = ($rfcs[$thread->number] ?? null)?->primary)
@@ -120,21 +120,15 @@ new class extends Component {
                     'bg-[#fbfbff] shadow-[inset_3px_0_0_var(--color-accent)] hover:bg-[#f6f8ff]' => $thread->newCount > 0,
                     'hover:bg-[#fafaff]' => $thread->newCount === 0,
                 ])>
-                <div class="row-start-1 col-start-2 sm:col-start-1 flex flex-col items-center font-mono text-[13px] text-ink-soft" role="group" aria-label="Thread vote">
-                    <button type="button" wire:click="vote({{ $thread->number }}, 1)" aria-pressed="{{ $thread->userVote === 1 ? 'true' : 'false' }}" aria-label="Upvote"
-                            class="w-9 h-6 sm:h-5 rounded text-[11px] cursor-pointer {{ $thread->userVote === 1 ? 'bg-accent-soft text-accent-strong' : 'text-faint hover:bg-subtle hover:text-ink' }}">▲</button>
-                    <span class="leading-tight {{ $thread->userVote ? 'text-accent-strong font-semibold' : '' }}">{{ $thread->votes }}</span>
-                    <button type="button" wire:click="vote({{ $thread->number }}, -1)" aria-pressed="{{ $thread->userVote === -1 ? 'true' : 'false' }}" aria-label="Downvote"
-                            class="w-9 h-6 sm:h-5 rounded text-[11px] cursor-pointer {{ $thread->userVote === -1 ? 'bg-accent-soft text-accent-strong' : 'text-faint hover:bg-subtle hover:text-ink' }}">▼</button>
-                </div>
+                <x-thread-score class="row-start-1 col-start-2 sm:col-start-1" :votes="$thread->votes" :user-vote="$thread->userVote"
+                                up="vote({{ $thread->number }}, 1)" down="vote({{ $thread->number }}, -1)" />
                 <div class="row-start-1 col-start-1 sm:col-start-2 min-w-0">
                     <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                         @if($primaryRfc)
-                            <a href="/rfc/{{ $primaryRfc->slug }}" title="RFC: {{ $primaryRfc->title }}"
-                               class="label px-1.5 py-0.5 rounded whitespace-nowrap {{ $primaryRfc->status->badgeClasses() }}">RFC · {{ $primaryRfc->status->badgeLabel() }}</a>
+                            <x-rfc-badge :status="$primaryRfc->status" prefix="RFC" href="/rfc/{{ $primaryRfc->slug }}" title="RFC: {{ $primaryRfc->title }}" />
                         @endif
                         @foreach($primaryRfc === null ? $subject->tags : $subject->tagsExcept('RFC', 'Discussion') as $tag)
-                            <span class="label px-1.5 py-0.5 rounded whitespace-nowrap bg-subtle text-ink-soft">{{ $tag }}</span>
+                            <span class="chip bg-subtle text-ink-soft">{{ $tag }}</span>
                         @endforeach
                         <a href="/message/{{ $thread->number }}"
                            class="text-[15px] sm:text-base leading-snug {{ $unread ? 'font-bold text-ink' : 'font-medium' }} {{ $thread->votes < -1 ? 'text-faint' : 'text-ink' }} hover:text-accent">

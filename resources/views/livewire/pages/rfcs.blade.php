@@ -177,16 +177,16 @@ new #[Layout('components.layouts.app')] class extends Component {
             {{-- wire:ignore.self: re-renders must not close the sections opened by the visitor --}}
             <details id="{{ $section['anchor'] }}" wire:key="section-{{ $searching ? 'search' : 'all' }}-{{ $section['title'] }}" wire:ignore.self
                      x-on:toggle="if ($el.open && ! $el.querySelector('[data-rfcs]')) $wire.open(@js($section['title'])).then(() => { if (location.hash === '#' + $el.id) $el.scrollIntoView() })"
-                     class="group/section mb-4 open:mb-8" @if($section['open']) open @endif>
+                     class="group/disclosure mb-4 open:mb-8" @if($section['open']) open @endif>
                 <summary class="list-none [&::-webkit-details-marker]:hidden flex items-center gap-2.5 mb-3 cursor-pointer select-none rounded focus-visible:outline-2">
-                    <svg class="w-3.5 h-3.5 shrink-0 text-faint -rotate-90 group-open/section:rotate-0 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+                    <x-chevron class="w-3.5 h-3.5 text-faint" />
                     <h2 class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-                        <span class="label px-1.5 py-0.5 rounded {{ $section['status']->badgeClasses() }}">{{ $section['status']->badgeLabel() }}</span>
+                        <x-rfc-badge :status="$section['status']" />
                         @if($sub)<span class="text-base font-semibold text-ink">{{ $sub }}</span>@endif
                     </h2>
                     <span class="font-mono text-xs text-muted">{{ count($section['rfcs']) }}</span>
                 </summary>
-                <div class="bg-surface border border-line rounded-lg overflow-hidden">
+                <div class="card overflow-hidden">
                     @unless($section['loaded'])
                         <p class="px-4 py-3 font-mono text-xs text-muted">Loading…</p>
                     @endunless
@@ -194,15 +194,8 @@ new #[Layout('components.layouts.app')] class extends Component {
                         @foreach($section['shown'] as $rfc)
                             @php($rfcActivity = $activity->get($rfc->slug))
                             @php($poll = $rfc->status === \App\Services\Rfc\RfcStatus::Voting ? $rfc->polls->first() : null)
-                            @php($avatar = $avatars[$rfc->authorEmail() ?? ''] ?? null)
                             <li wire:key="rfc-{{ $rfc->slug }}" class="grid grid-cols-[1.75rem_minmax(0,1fr)] sm:grid-cols-[1.75rem_minmax(0,1fr)_auto] gap-x-3 items-start px-3 sm:px-4 py-3 border-b border-line last:border-b-0 hover:bg-[#fafaff]">
-                                <span class="row-span-2 sm:row-span-1 relative mt-0.5 w-7 h-7 shrink-0 rounded-full bg-[#e4e4ea] text-[10px] font-semibold text-ink-soft flex items-center justify-center select-none"
-                                      title="{{ $rfc->authors }}">
-                                    <span aria-hidden="true">{{ $rfc->authorInitials() }}</span>
-                                    @if($avatar)
-                                        <img src="{{ $avatar }}" alt="" loading="lazy" class="absolute inset-0 w-full h-full rounded-full object-cover">
-                                    @endif
-                                </span>
+                                <x-avatar :name="$rfc->authorName()" :url="$avatars[$rfc->authorEmail() ?? ''] ?? null" class="row-span-2 sm:row-span-1 mt-0.5" title="{{ $rfc->authors }}" />
                                 <div class="min-w-0">
                                     <a href="/rfc/{{ $rfc->slug }}" class="font-medium text-[15px] leading-snug text-ink hover:text-accent [overflow-wrap:anywhere]">{{ $rfc->title }}</a>
                                     @if($rfc->authorName() !== '' || $rfcActivity)

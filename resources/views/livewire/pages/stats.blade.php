@@ -27,7 +27,7 @@ new #[Layout('components.layouts.app')] class extends Component {
 
     <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         @foreach(['users' => $userCount, 'threads' => $threadCount, 'emails' => $emailCount] as $label => $count)
-            <div class="bg-surface border border-line rounded-lg px-5 py-4">
+            <div class="card px-5 py-4">
                 <dt class="label text-muted">{{ Str::plural(Str::singular($label), $count) }}</dt>
                 <dd class="mt-1 text-3xl font-bold tabular-nums">{{ number_format($count) }}</dd>
             </div>

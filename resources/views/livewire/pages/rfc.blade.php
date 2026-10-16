@@ -73,21 +73,11 @@ new #[Layout('components.layouts.app')] class extends Component {
     <link rel="alternate" type="text/markdown" href="/rfc/{{ $rfc->slug }}.md" title="RFC as Markdown">
 @endpush
 
-@php($statusLabel = $rfc->status->badgeLabel() . ($rfc->phpVersion !== null ? " · PHP {$rfc->phpVersion}" : ''))
-{{-- Links in the metadata of the wiki, with short labels: "php/php-src#17118" rather than the whole URL --}}
-@php($linkify = fn(?string $value) => preg_replace_callback('#https?://[^\s<>"]+[^\s<>".,;:)]#', function (array $matches): string {
-    $label = preg_match('#^https?://github\.com/([^/]+/[^/]+)/(?:pull|issues)/(\d+)#', $matches[0], $github) ? "{$github[1]}#{$github[2]}"
-        : (preg_match('#^https?://github\.com/([^/]+/[^/]+)/commit/([0-9a-f]{7})#', $matches[0], $github) ? "{$github[1]}@{$github[2]}"
-        : preg_replace('#^https?://(www\.)?#', '', $matches[0]));
-
-    return '<a class="text-accent-strong underline decoration-accent-line underline-offset-2 hover:decoration-accent-strong" href="' . $matches[0] . '">' . $label . '</a>';
-}, e((string) $value)))
-
 <div class="mx-auto max-w-[70rem] lg:grid lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-x-12 lg:items-start">
     <header class="mb-6 lg:mb-8 lg:col-start-1">
         <a href="/rfc" class="text-sm text-muted hover:text-ink">← All RFCs</a>
         <div class="mt-3 flex flex-wrap items-center gap-2">
-            <span class="label px-1.5 py-0.5 rounded {{ $rfc->status->badgeClasses() }}">{{ $statusLabel }}</span>
+            <x-rfc-badge :status="$rfc->status" :php-version="$rfc->phpVersion" />
             @if(! $rfc->isListed)
                 <span class="text-xs text-muted">no longer listed on the wiki index</span>
             @endif
@@ -95,12 +85,7 @@ new #[Layout('components.layouts.app')] class extends Component {
         <h1 class="mt-2 text-2xl sm:text-[2rem] leading-tight font-bold tracking-tight [overflow-wrap:anywhere]">{{ $rfc->title }}</h1>
         <div class="mt-3 flex items-center gap-2.5 text-sm text-ink-soft">
             @if($rfc->authorName() !== '')
-                <span class="relative w-7 h-7 shrink-0 rounded-full bg-[#e4e4ea] text-[10px] font-semibold text-ink-soft flex items-center justify-center select-none">
-                    <span aria-hidden="true">{{ $rfc->authorInitials() }}</span>
-                    @if($authorAvatar)
-                        <img src="{{ $authorAvatar }}" alt="" class="absolute inset-0 w-full h-full rounded-full object-cover">
-                    @endif
-                </span>
+                <x-avatar :name="$rfc->authorName()" :url="$authorAvatar" />
                 <span class="min-w-0">by <span class="text-ink font-medium">{{ $rfc->authorNames() }}</span></span>
             @endif
         </div>
@@ -120,7 +105,7 @@ new #[Layout('components.layouts.app')] class extends Component {
                     <span class="shrink-0">implementation</span>
                     <div class="min-w-0 space-y-1">
                         @foreach($implementations as $implementation)
-                            <p>{!! $linkify($implementation) !!}</p>
+                            <p>{!! \App\Support\ShortLinks::html($implementation) !!}</p>
                         @endforeach
                     </div>
                 </div>
@@ -132,7 +117,7 @@ new #[Layout('components.layouts.app')] class extends Component {
         @php($canVote = $rfc->status->acceptsCommunityVotes())
         @php($hasCommunity = $canVote || $rfc->upvotes || $rfc->downvotes)
         @if($hasCommunity || $rfc->polls->isNotEmpty())
-            <section class="bg-surface border border-line rounded-lg overflow-hidden" aria-labelledby="voting">
+            <section class="card overflow-hidden" aria-labelledby="voting">
                 <div class="px-4 py-2.5 border-b border-line">
                     <h2 id="voting" class="label text-ink-soft">Voting</h2>
                 </div>
@@ -154,20 +139,21 @@ new #[Layout('components.layouts.app')] class extends Component {
                             </div>
                             @foreach($rfc->polls as $poll)
                                 @php($total = array_sum(array_column($poll->choices, 'count')))
-                                @php($closesAt = \App\Services\Rfc\RfcHighlights::closesAt($poll))
+                                @php($closes = \App\Services\Rfc\RfcHighlights::closesLabel($poll))
                                 @php($yesShare = \App\Services\Rfc\RfcHighlights::yesShare($poll))
                                 <div class="px-4 pt-2 pb-3 border-b border-line last:border-b-0">
                                     <p class="text-[13px] text-ink">{{ $poll->question }}</p>
                                     <p class="mt-0.5 font-mono text-xs text-muted">
                                         @if($poll->isClosed)
                                             closed
-                                        @elseif($closesAt)
-                                            <span title="{{ $poll->closesAt }}">{{ $closesAt->isFuture() ? 'closes in ' . $closesAt->diffForHumans(syntax: \Carbon\CarbonInterface::DIFF_ABSOLUTE) : 'closed ' . $closesAt->diffForHumans() }}</span>
+                                        @elseif($closes)
+                                            <span title="{{ $poll->closesAt }}">{{ Str::lcfirst($closes) }}</span>
                                         @else
                                             open
                                         @endif
                                         @if($yesShare !== null)
-                                            · <span class="{{ $yesShare >= 2 / 3 ? 'text-pass' : 'text-fail' }}">{{ round($yesShare * 100) }}% yes{{ $poll->isClosed ? '' : ($yesShare >= 2 / 3 ? ', passing' : ', failing') }}</span>
+                                            @php($passing = \App\Services\Rfc\RfcHighlights::isPassing($yesShare))
+                                            · <span class="{{ $passing ? 'text-pass' : 'text-fail' }}">{{ round($yesShare * 100) }}% yes{{ $poll->isClosed ? '' : ($passing ? ', passing' : ', failing') }}</span>
                                         @endif
                                     </p>
                                     @if($total > 0)
@@ -207,7 +193,7 @@ new #[Layout('components.layouts.app')] class extends Component {
             </section>
         @endif
 
-        <section class="bg-surface border border-line rounded-lg overflow-hidden" aria-labelledby="discussions">
+        <section class="card overflow-hidden" aria-labelledby="discussions">
             <div class="flex items-baseline justify-between gap-2 px-4 py-2.5 border-b border-line">
                 <h2 id="discussions" class="label text-ink-soft">Discussions</h2>
                 @if($threads->isNotEmpty())<span class="font-mono text-xs text-muted">{{ $threads->count() }}</span>@endif
@@ -231,9 +217,9 @@ new #[Layout('components.layouts.app')] class extends Component {
                 </p>
             @endforelse
             @if($mentions->isNotEmpty())
-                <details class="group/mentions border-t border-line">
+                <details class="group/disclosure border-t border-line">
                     <summary class="list-none [&::-webkit-details-marker]:hidden flex items-center gap-2 px-4 py-2.5 cursor-pointer font-mono text-xs text-muted hover:text-ink hover:bg-subtle">
-                        <svg class="w-3 h-3 -rotate-90 group-open/mentions:rotate-0 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+                        <x-chevron class="w-3 h-3" />
                         Mentioned in {{ $mentions->count() }} other {{ Str::plural('thread', $mentions->count()) }}
                     </summary>
                     @foreach($mentions as $thread)
@@ -248,7 +234,7 @@ new #[Layout('components.layouts.app')] class extends Component {
 
         @if(count($headings) > 2)
             {{-- Sticks once the cards above are scrolled past --}}
-            <nav aria-label="Contents" class="hidden lg:block sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto bg-surface border border-line rounded-lg px-2 py-3"
+            <nav aria-label="Contents" class="hidden lg:block sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto card px-2 py-3"
                  x-data="{ current: null }"
                  x-init="const headings = [...document.querySelectorAll('.rfc-content h2[id], .rfc-content h3[id]')];
                     const update = () => { let current = null; for (const h of headings) { if (h.getBoundingClientRect().top < 120) current = h.id } $data.current = current };
@@ -268,10 +254,10 @@ new #[Layout('components.layouts.app')] class extends Component {
 
     <article class="lg:col-start-1 min-w-0 text-[15px] sm:text-base" aria-label="Text of the RFC">
         @if(count($headings) > 2)
-            <details class="lg:hidden mb-6 bg-surface border border-line rounded-lg group/contents">
+            <details class="lg:hidden mb-6 card group/disclosure">
                 <summary class="list-none [&::-webkit-details-marker]:hidden flex items-center justify-between px-4 py-3 cursor-pointer">
                     <span class="label text-ink-soft">Contents</span>
-                    <svg class="w-3.5 h-3.5 text-faint -rotate-90 group-open/contents:rotate-0 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+                    <x-chevron class="w-3.5 h-3.5 text-faint" />
                 </summary>
                 <ol class="px-2 pb-3">
                     @foreach($headings as $heading)
@@ -280,7 +266,7 @@ new #[Layout('components.layouts.app')] class extends Component {
                 </ol>
             </details>
         @endif
-        <div class="bg-surface border border-line rounded-lg px-4 sm:px-8 lg:px-10 py-5 sm:py-8">
+        <div class="card px-4 sm:px-8 lg:px-10 py-5 sm:py-8">
             @if($contentHtml !== null)
                 <div class="rfc-content">
                     {!! $contentHtml !!}

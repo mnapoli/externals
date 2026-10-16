@@ -7,6 +7,7 @@ namespace App\Services\Rfc;
 use App\Models\Rfc;
 use App\Models\RfcPoll;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Throwable;
 
@@ -15,9 +16,32 @@ use Throwable;
  */
 class RfcHighlights
 {
+    /** RFCs need 2/3 of yes votes, abstentions aside */
+    public const float MAJORITY = 2 / 3;
+
     public function __construct(
         private readonly RfcThreads $rfcThreads,
     ) {}
+
+    /**
+     * e.g. "Closes in 3 days", "Closed 2 hours ago", or null when the wiki gives no date we can read.
+     */
+    public static function closesLabel(?RfcPoll $poll): ?string
+    {
+        $closesAt = self::closesAt($poll);
+        if ($closesAt === null) {
+            return null;
+        }
+
+        return $closesAt->isFuture()
+            ? 'Closes in ' . $closesAt->diffForHumans(syntax: CarbonInterface::DIFF_ABSOLUTE)
+            : 'Closed ' . $closesAt->diffForHumans();
+    }
+
+    public static function isPassing(float $yesShare): bool
+    {
+        return $yesShare >= self::MAJORITY;
+    }
 
     public static function closesAt(?RfcPoll $poll): ?CarbonImmutable
     {

@@ -32,10 +32,6 @@ new class extends Component {
     }
 }; ?>
 
-<div class="flex flex-col items-center pt-1 font-mono text-sm text-ink-soft" role="group" aria-label="Thread vote">
-    <button type="button" wire:click="vote(1)" aria-pressed="{{ $userVote === 1 ? 'true' : 'false' }}" aria-label="Upvote this thread"
-            class="w-9 h-7 rounded text-xs cursor-pointer {{ $userVote === 1 ? 'bg-accent-soft text-accent-strong' : 'text-faint hover:bg-subtle hover:text-ink' }}">▲</button>
-    <span class="{{ $userVote ? 'text-accent-strong font-semibold' : '' }}">{{ $votes }}</span>
-    <button type="button" wire:click="vote(-1)" aria-pressed="{{ $userVote === -1 ? 'true' : 'false' }}" aria-label="Downvote this thread"
-            class="w-9 h-7 rounded text-xs cursor-pointer {{ $userVote === -1 ? 'bg-accent-soft text-accent-strong' : 'text-faint hover:bg-subtle hover:text-ink' }}">▼</button>
+<div class="pt-1">
+    <x-thread-score :votes="$votes" :user-vote="$userVote" up="vote(1)" down="vote(-1)" large />
 </div>

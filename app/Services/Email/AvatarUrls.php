@@ -4,11 +4,19 @@ declare(strict_types=1);
 
 namespace App\Services\Email;
 
-use App\Support\Email\EmailAddress;
 use Illuminate\Support\Facades\DB;
 
 class AvatarUrls
 {
+    /**
+     * Gravatar rather than unavatar.io, which allows 25 avatars per day and per visitor: lists show dozens.
+     * Without a photo, Gravatar serves a transparent image so that the initials underneath show through.
+     */
+    private static function gravatar(string $normalizedEmail, int $size): string
+    {
+        return 'https://www.gravatar.com/avatar/' . hash('sha256', $normalizedEmail) . "?s={$size}&d=blank";
+    }
+
     /**
      * The GitHub avatar of the people who logged in with an account where the address is verified,
      * Gravatar otherwise (transparent when there is no photo, so that the initials underneath show through).
@@ -38,7 +46,7 @@ class AvatarUrls
             $githubId = $githubIds[$key] ?? null;
             $urls[$email] = is_numeric($githubId)
                 ? "https://avatars.githubusercontent.com/u/{$githubId}?s={$size}&v=4"
-                : (string) EmailAddress::avatarUrlOf($email, $size);
+                : self::gravatar($key, $size);
         }
 
         return $urls;

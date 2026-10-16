@@ -34,7 +34,7 @@ new #[Layout('components.layouts.app')] class extends Component {
             <a href="/rfc" class="text-sm text-muted hover:text-ink">All RFCs →</a>
         </div>
         @if($voting->isNotEmpty())
-            <section class="bg-surface border border-line rounded-lg overflow-hidden" aria-labelledby="voting-title">
+            <section class="card overflow-hidden" aria-labelledby="voting-title">
                 <div class="flex justify-between items-center px-4 py-2.5 border-b border-line">
                     <h3 id="voting-title" class="label text-ink-soft">Voting now</h3>
                     <span class="font-mono text-xs text-accent-strong">{{ $voting->count() }}</span>
@@ -49,7 +49,7 @@ new #[Layout('components.layouts.app')] class extends Component {
         @endif
 
         @if($inDiscussion->isNotEmpty())
-            <section class="bg-surface border border-line rounded-lg overflow-hidden" aria-labelledby="discussion-title">
+            <section class="card overflow-hidden" aria-labelledby="discussion-title">
                 <div class="flex justify-between items-center px-4 py-2.5 border-b border-line">
                     <h3 id="discussion-title" class="label text-ink-soft">Under discussion</h3>
                 </div>
@@ -66,7 +66,7 @@ new #[Layout('components.layouts.app')] class extends Component {
         @endif
 
         @auth
-            <section class="hidden lg:block bg-surface border border-line rounded-lg px-4 py-3 text-sm text-ink-soft" aria-labelledby="keyboard-title">
+            <section class="hidden lg:block card px-4 py-3 text-sm text-ink-soft" aria-labelledby="keyboard-title">
                 <h2 id="keyboard-title" class="label mb-2">Keyboard</h2>
                 <dl class="grid grid-cols-[4rem_minmax(0,1fr)] gap-y-1.5 items-center">
                     <dt><span class="kbd">/</span></dt><dd>Search</dd>
