@@ -94,7 +94,7 @@ class RfcHighlights
     public function inDiscussion(int $limit): Collection
     {
         $rfcs = Rfc::where('status', RfcStatus::Discussion)->get()->keyBy('slug');
-        $activity = $this->rfcThreads->activityByRfc(array_map('strval', $rfcs->keys()->all()))
+        $activity = $this->rfcThreads->activityByRfc(array_values(array_map('strval', $rfcs->keys()->all())))
             ->filter(fn(RfcActivity $activity) => $activity->lastActivity !== null)
             ->sortByDesc(fn(RfcActivity $activity) => $activity->lastActivity?->getTimestamp());
 

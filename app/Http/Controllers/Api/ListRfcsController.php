@@ -26,7 +26,7 @@ class ListRfcsController extends Controller
             ->when($status, fn($query) => $query->where('status', $status))
             ->orderBy('indexPosition')
             ->get(['slug', 'title', 'status', 'indexSubsection', 'phpVersion', 'authors', 'date']);
-        $activity = $threads->activityByRfc($status !== null ? $rfcs->map(fn(Rfc $rfc) => $rfc->slug)->all() : null);
+        $activity = $threads->activityByRfc($status !== null ? array_values($rfcs->map(fn(Rfc $rfc) => $rfc->slug)->all()) : null);
 
         return response()->json([
             'data' => $rfcs->map(function (Rfc $rfc) use ($activity): array {

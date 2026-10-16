@@ -191,7 +191,7 @@ class RfcThreads
      * Number of threads about each RFC and date of their latest activity.
      * A thread that only mentions an RFC is not activity on it: it would bring back old RFCs cited as prior art.
      *
-     * @param  array<string>|null  $slugs  The RFCs to look at, null for all of them (slower: every link is classified)
+     * @param  list<string>|null  $slugs  The RFCs to look at, null for all of them (slower: every link is classified)
      * @return Collection<string, RfcActivity> Keyed by RFC slug
      */
     public function activityByRfc(?array $slugs = null): Collection
