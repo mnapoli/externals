@@ -14,7 +14,9 @@
 
     <meta name="google-site-verification" content="hTdWskuVWUMoQAWfM3WcbBH16xhAxqzOyjfJbQmRor0" />
 
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
     <link rel="preconnect" href="https://www.google-analytics.com">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -39,59 +41,78 @@
     <script async defer data-domain="externals.io" src="https://plausible.io/js/plausible.js"></script>
     @stack('head')
 </head>
-<body class="antialiased">
+<body class="min-h-dvh flex flex-col">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-surface focus:px-3 focus:py-2">Skip to content</a>
 
-    <div id="php-survey-banner" class="w-full px-5 py-3 bg-[#62a66d] text-white text-base font-semibold leading-snug text-center shadow-[0_2px_6px_rgba(0,0,0,0.18)]">
-        <a href="https://surveys.jetbrains.com/s3/ex-state-of-php-2026" target="_blank" rel="noopener noreferrer" class="underline underline-offset-[3px]">Take the State of PHP 2026 Survey →</a>
-    </div>
-
-    <nav class="bg-white text-gray-600 font-light w-full shadow">
-        <div class="container max-w-4xl flex items-center">
-            <a class="block px-1 py-3 mr-4" href="/"><img src="/assets/images/logo.svg" alt="externals" class="w-10 sm:w-16"></a>
-            <div class="flex-grow flex items-center text-sm sm:text-base">
-                <a class="block px-2 sm:px-4 py-2 sm:py-3" href="/">Latest</a>
-                <a class="block px-2 sm:px-4 py-2 sm:py-3" href="/top">Top</a>
-                <a class="block px-2 sm:px-4 py-2 sm:py-3" href="/rfc">RFCs</a>
-            </div>
-            <div class="text-sm">
+    <header class="sticky top-0 z-30 bg-surface border-b border-line"
+            x-data
+            @keydown.window="if ($event.key === '/' && ! ['INPUT', 'TEXTAREA'].includes($event.target.tagName)) { $event.preventDefault(); $refs.search.focus() }">
+        <div class="mx-auto max-w-7xl px-3 sm:px-6 h-14 flex items-center gap-2 sm:gap-6">
+            <a href="/" class="font-mono font-semibold text-base shrink-0" aria-label="externals, home"><span class="text-accent">#</span>externals</a>
+            @php($section = request()->is('rfc', 'rfc/*') ? 'rfcs' : (request()->is('top') ? 'top' : (request()->is('/') ? 'latest' : null)))
+            <nav aria-label="Main" class="flex gap-0.5 sm:gap-1 text-sm sm:text-[15px]">
+                @foreach(['latest' => ['/', 'Latest'], 'top' => ['/top', 'Top'], 'rfcs' => ['/rfc', 'RFCs']] as $key => [$href, $label])
+                    <a href="{{ $href }}" @if($section === $key) aria-current="page" @endif
+                       class="px-2 sm:px-2.5 py-1.5 rounded-md {{ $section === $key ? 'bg-subtle text-ink font-semibold' : 'text-ink-soft hover:text-ink hover:bg-subtle' }}">{{ $label }}</a>
+                @endforeach
+            </nav>
+            <form action="/search" method="get" role="search" class="hidden md:flex flex-1 max-w-sm items-center gap-2 h-9 px-2.5 rounded-md border border-line-strong bg-ground focus-within:border-accent-line focus-within:bg-surface">
+                <svg class="w-3.5 h-3.5 shrink-0 text-faint" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input x-ref="search" type="search" name="q" value="{{ request()->is('search') ? request()->query('q') : '' }}" placeholder="Search threads"
+                       aria-label="Search" class="flex-1 min-w-0 bg-transparent text-sm outline-none placeholder:text-faint">
+                <span class="kbd" aria-hidden="true">/</span>
+            </form>
+            <div class="ml-auto flex items-center gap-1 sm:gap-2 text-sm">
+                <a href="/search" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md text-ink hover:bg-subtle" aria-label="Search">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                </a>
                 @auth
-                    <img class="w-5 h-5 bg-white inline-block rounded-full mr-1" src="https://github.com/{{ auth()->user()->name }}.png?size=40">
-                    {{ auth()->user()->name }}
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                    <img class="hidden sm:block w-6 h-6 rounded-full bg-subtle" src="https://github.com/{{ auth()->user()->name }}.png?size=48" alt="">
+                    <span class="hidden sm:inline font-mono text-xs text-ink-soft">{{ auth()->user()->name }}</span>
+                    <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" title="Logout" class="align-baseline cursor-pointer">
-                            <svg class="w-4 h-4 inline" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><title>Log Out</title><path d='M304 336v40a40 40 0 01-40 40H104a40 40 0 01-40-40V136a40 40 0 0140-40h152c22.09 0 48 17.91 48 40v40M368 336l80-80-80-80M176 256h256' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32'/></svg>
+                        <button type="submit" class="inline-flex items-center justify-center w-9 h-9 rounded-md text-muted hover:text-ink hover:bg-subtle cursor-pointer" aria-label="Log out" title="Log out">
+                            <svg class="w-4 h-4" viewBox="0 0 512 512" aria-hidden="true"><path d="M304 336v40a40 40 0 01-40 40H104a40 40 0 01-40-40V136a40 40 0 0140-40h152c22.09 0 48 17.91 48 40v40M368 336l80-80-80-80M176 256h256" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>
                         </button>
                     </form>
                 @else
-                    <svg class="w-4 h-4 inline -mt-0.5 fill-current text-gray-400"
-                         xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path d='M256 32C132.3 32 32 134.9 32 261.7c0 101.5 64.2 187.5 153.2 217.9a17.56 17.56 0 003.8.4c8.3 0 11.5-6.1 11.5-11.4 0-5.5-.2-19.9-.3-39.1a102.4 102.4 0 01-22.6 2.7c-43.1 0-52.9-33.5-52.9-33.5-10.2-26.5-24.9-33.6-24.9-33.6-19.5-13.7-.1-14.1 1.4-14.1h.1c22.5 2 34.3 23.8 34.3 23.8 11.2 19.6 26.2 25.1 39.6 25.1a63 63 0 0025.6-6c2-14.8 7.8-24.9 14.2-30.7-49.7-5.8-102-25.5-102-113.5 0-25.1 8.7-45.6 23-61.6-2.3-5.8-10-29.2 2.2-60.8a18.64 18.64 0 015-.5c8.1 0 26.4 3.1 56.6 24.1a208.21 208.21 0 01112.2 0c30.2-21 48.5-24.1 56.6-24.1a18.64 18.64 0 015 .5c12.2 31.6 4.5 55 2.2 60.8 14.3 16.1 23 36.6 23 61.6 0 88.2-52.4 107.6-102.3 113.3 8 7.1 15.2 21.1 15.2 42.5 0 30.7-.3 55.5-.3 63 0 5.4 3.1 11.5 11.4 11.5a19.35 19.35 0 004-.4C415.9 449.2 480 363.1 480 261.7 480 134.9 379.7 32 256 32z'/></svg>
-                    <a href="{{ route('login') }}" class="text-red-500" rel="nofollow">Log in <span class="hidden sm:inline">with GitHub</span></a>
-                    <span class="hidden sm:inline">to track unread emails</span>
+                    <a href="{{ route('login') }}" rel="nofollow" title="Log in to track unread emails, vote and react"
+                       class="inline-flex items-center gap-2 h-9 px-2.5 sm:px-3 rounded-md border border-line-strong bg-surface text-ink hover:border-accent-line whitespace-nowrap">
+                        <svg class="hidden sm:block w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 6.6 2 12.2c0 4.5 2.9 8.3 6.8 9.7.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 2.9.8.1-.7.4-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10.1 10.1 0 0 0 22 12.2C22 6.6 17.5 2 12 2Z"/></svg>
+                        <span>Log in<span class="hidden lg:inline"> with GitHub</span></span>
+                    </a>
                 @endauth
             </div>
         </div>
-    </nav>
+    </header>
 
-    <div class="container max-w-4xl mt-4 sm:mt-8">
+    <main id="main" class="flex-1 w-full mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
+        @if(session()->has('status'))
+            <p role="status" class="mb-6 px-4 py-3 rounded-lg border border-accent-line bg-accent-soft text-sm text-ink-soft">{{ session('status') }}</p>
+        @endif
         {{ $slot }}
-    </div>
+    </main>
 
-    <footer class="bg-gray-700 text-gray-400 py-8 mt-8 text-xs sm:text-sm">
-        <div class="container max-w-4xl">
-            <p class="mb-2">
-                <strong>For AI agents:</strong> add <code>.md</code> to any thread URL to read it as Markdown (or send <code>Accept: text/markdown</code>),
-                search with <a class="underline" href="/search.md?q=enum">/search.md?q=…</a>, list RFCs with <a class="underline" href="/rfc.md">/rfc.md</a>, or use the read-only <a class="underline" href="/api">JSON API</a>.
-                Details in <a class="underline" href="/llms.txt">/llms.txt</a>.
+    <footer class="border-t border-line bg-surface text-sm text-muted">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 py-8 space-y-3">
+            <p class="flex flex-wrap gap-x-5 gap-y-2">
+                <span class="text-ink">Opening PHP's <a class="underline decoration-line-strong underline-offset-2 hover:text-accent" href="https://news-web.php.net/php.internals">#internals</a> mailing list to the outside.</span>
+                <a class="hover:text-ink" href="https://github.com/mnapoli/externals">GitHub</a>
+                <a class="hover:text-ink" href="/rss">RSS</a>
+                <a class="hover:text-ink" href="/rss-rfc">RSS (RFCs)</a>
             </p>
-            <p class="mb-2">Contribute to the project on GitHub: <a class="underline" href="https://github.com/mnapoli/externals">mnapoli/externals</a></p>
-            <p class="mb-2">
-                Externals is a serverless application created by <a class="underline" href="https://mnapoli.fr">@mnapoli</a> and deployed with <a class="underline" href="https://bref.sh/" title="Serverless PHP applications">Bref</a>.
+            <p>
+                Created by <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://mnapoli.fr">@mnapoli</a>, serverless with <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://bref.sh/" title="Serverless PHP applications">Bref</a>.
+                Search by <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://www.algolia.com">Algolia</a>, avatars by GitHub and <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://gravatar.com">Gravatar</a>.
             </p>
-            <p class="mb-2">Search sponsored by <a class="underline" href="https://www.algolia.com">Algolia</a> and avatars provided by <a href="https://unavatar.io">Unavatar</a>.</p>
-            <p class="mb-2">
-                <strong>About data:</strong> if you login using GitHub, no personal data (or GitHub token) will be stored.<br>
-                The only thing stored is your GitHub ID, username and which threads/emails you have already read.
+            <p>
+                <strong class="font-semibold text-ink-soft">About data:</strong> if you log in with GitHub, we store your GitHub ID, username, the verified email addresses of your GitHub account, and which threads you have already read. No GitHub token is stored.
+                Your addresses are used to show your GitHub avatar next to the emails you send to the mailing list, and are never shared or sold.
+            </p>
+            <p>
+                <strong class="font-semibold text-ink-soft">For AI agents:</strong> add <code class="font-mono text-xs">.md</code> to any thread URL to read it as Markdown (or send <code class="font-mono text-xs">Accept: text/markdown</code>),
+                search with <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="/search.md?q=enum">/search.md?q=…</a>, list RFCs with <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="/rfc.md">/rfc.md</a>, or use the read-only <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="/api">JSON API</a>.
+                Details in <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="/llms.txt">/llms.txt</a>.
             </p>
         </div>
     </footer>

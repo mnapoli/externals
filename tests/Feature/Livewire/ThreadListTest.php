@@ -111,5 +111,5 @@ test('threads link to the RFCs they discuss', function (): void {
     $html = Volt::test('thread-list', ['mode' => 'latest'])->html();
 
     expect(mb_substr_count($html, 'href="/rfc/pipe-operator-v3"'))->toBe(1);
-    expect($html)->toContain('RFC · In voting');
+    expect($html)->toContain('RFC · Voting');
 });

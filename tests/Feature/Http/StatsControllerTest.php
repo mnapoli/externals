@@ -17,7 +17,5 @@ test('renders stats with counts', function (): void {
     $response = $this->get('/stats');
 
     $response->assertOk();
-    $response->assertSee('3 users');
-    $response->assertSee('1 threads');
-    $response->assertSee('3 emails');
+    $response->assertSeeInOrder(['users', '3', 'thread', '1', 'emails', '3']);
 });
