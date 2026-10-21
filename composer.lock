@@ -228,16 +228,16 @@
         },
         {
             "name": "bref/bref",
-            "version": "3.0.13",
+            "version": "3.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brefphp/bref.git",
-                "reference": "53c403bdf8afc58fa1c71cc03cf76eafd59aee06"
+                "reference": "3b1dbda5680930187bd44b7c863429e570b35692"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brefphp/bref/zipball/53c403bdf8afc58fa1c71cc03cf76eafd59aee06",
-                "reference": "53c403bdf8afc58fa1c71cc03cf76eafd59aee06",
+                "url": "https://api.github.com/repos/brefphp/bref/zipball/3b1dbda5680930187bd44b7c863429e570b35692",
+                "reference": "3b1dbda5680930187bd44b7c863429e570b35692",
                 "shasum": ""
             },
             "require": {
@@ -289,7 +289,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brefphp/bref/issues",
-                "source": "https://github.com/brefphp/bref/tree/3.0.13"
+                "source": "https://github.com/brefphp/bref/tree/3.0.14"
             },
             "funding": [
                 {
@@ -301,7 +301,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-12T12:36:10+00:00"
+            "time": "2026-10-21T14:07:00+00:00"
         },
         {
             "name": "bref/laravel-bridge",
