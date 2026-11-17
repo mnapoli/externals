@@ -14,7 +14,6 @@ use App\Services\Search\ReadOnlySearchIndex;
 use App\Services\Search\SearchIndex;
 use Illuminate\Support\ServiceProvider;
 use League\CommonMark\CommonMarkConverter;
-use VStelmakh\UrlHighlight\Highlighter\HtmlHighlighter;
 use VStelmakh\UrlHighlight\UrlHighlight;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
             'allow_unsafe_links' => false,
         ]));
 
-        $this->app->singleton(UrlHighlight::class, fn() => new UrlHighlight());
+        $this->app->singleton(UrlHighlight::class, fn() => new UrlHighlight);
 
         $this->app->singleton(SearchClient::class, fn() => SearchClient::create(
             (string) config('services.algolia.app_id'),
