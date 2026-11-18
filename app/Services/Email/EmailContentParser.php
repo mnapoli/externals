@@ -7,6 +7,9 @@ namespace App\Services\Email;
 use Illuminate\Support\Facades\Log;
 use League\CommonMark\CommonMarkConverter;
 use Throwable;
+use VStelmakh\UrlHighlight\Highlighter\Anchor;
+use VStelmakh\UrlHighlight\Highlighter\CallbackHighlighter;
+use VStelmakh\UrlHighlight\Url;
 use VStelmakh\UrlHighlight\UrlHighlight;
 
 class EmailContentParser
@@ -34,7 +37,7 @@ class EmailContentParser
             $content = nl2br($content);
         }
 
-        return $this->urlHighlight->highlightUrls($content);
+        return $this->highlightUrls($content);
     }
 
     /**
@@ -103,5 +106,17 @@ class EmailContentParser
     private function stripQuoteHeaders(string $content): string
     {
         return preg_replace('/^([> ]*)On .+, .+ wrote:\r?$/m', '$1', $content);
+    }
+
+    private function highlightUrls(string $content): string
+    {
+        $highlighter = new CallbackHighlighter(function (Url $url): string {
+            return Anchor::fromUrl($url)
+                ->withAttribute('rel', 'nofollow')
+                ->withAttribute('target', '_blank')
+                ->render();
+        });
+
+        return $this->urlHighlight->highlight($content, $highlighter);
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b9035f1d9eec6cbdcf566614b2464212",
+    "content-hash": "885257009f43149d11cdafcb9c65662c",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -7004,71 +7004,6 @@
             "time": "2026-10-28T09:35:49+00:00"
         },
         {
-            "name": "symfony/polyfill-php72",
-            "version": "v1.31.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-php72.git",
-                "reference": "fa2ae56c44f03bed91a39bfc9822e31e7c5c38ce"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/fa2ae56c44f03bed91a39bfc9822e31e7c5c38ce",
-                "reference": "fa2ae56c44f03bed91a39bfc9822e31e7c5c38ce",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2"
-            },
-            "type": "metapackage",
-            "extra": {
-                "thanks": {
-                    "url": "https://github.com/symfony/polyfill",
-                    "name": "symfony/polyfill"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill backporting some PHP 7.2+ features to lower PHP versions",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "polyfill",
-                "portable",
-                "shim"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/polyfill-php72/tree/v1.31.0"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2024-09-09T11:45:10+00:00"
-        },
-        {
             "name": "symfony/polyfill-php80",
             "version": "v1.43.0",
             "source": {
@@ -8602,30 +8537,29 @@
         },
         {
             "name": "vstelmakh/url-highlight",
-            "version": "v3.2.0",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vstelmakh/url-highlight.git",
-                "reference": "5e9ba63a8753361583a079d3107c888fb66338f1"
+                "reference": "50600f3682704c9750f93ab6f34e390f08a8aaeb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vstelmakh/url-highlight/zipball/5e9ba63a8753361583a079d3107c888fb66338f1",
-                "reference": "5e9ba63a8753361583a079d3107c888fb66338f1",
+                "url": "https://api.github.com/repos/vstelmakh/url-highlight/zipball/50600f3682704c9750f93ab6f34e390f08a8aaeb",
+                "reference": "50600f3682704c9750f93ab6f34e390f08a8aaeb",
                 "shasum": ""
             },
             "require": {
-                "ext-json": "*",
                 "ext-mbstring": "*",
-                "php": "^7.1 || ^8",
-                "symfony/polyfill-php72": "^1.10"
+                "php": "^8.4"
             },
             "require-dev": {
-                "phpbench/phpbench": "^0.16 || ^1.2.6",
-                "phpstan/phpstan": "^1.4",
-                "phpunit/phpunit": "^7.5.3 || ^8 || ^9.3",
-                "squizlabs/php_codesniffer": "^3.7.1",
-                "vstelmakh/covelyzer": "^0.2"
+                "ext-intl": "*",
+                "friendsofphp/php-cs-fixer": "^3.95",
+                "phpbench/phpbench": "^1.7",
+                "phpstan/phpstan": "^2.2",
+                "phpstan/phpstan-strict-rules": "^2.0",
+                "phpunit/phpunit": "^13.3"
             },
             "type": "library",
             "autoload": {
@@ -8643,7 +8577,7 @@
                     "homepage": "https://github.com/vstelmakh"
                 }
             ],
-            "description": "Library to parse urls from string input",
+            "description": "Library to find URLs in text and turn them into clickable links",
             "homepage": "https://github.com/vstelmakh/url-highlight",
             "keywords": [
                 "Linkify",
@@ -8655,9 +8589,10 @@
             ],
             "support": {
                 "issues": "https://github.com/vstelmakh/url-highlight/issues",
-                "source": "https://github.com/vstelmakh/url-highlight/tree/v3.2.0"
+                "source": "https://github.com/vstelmakh/url-highlight/tree/4.1.0"
             },
-            "time": "2026-04-14T19:58:01+00:00"
+            "time": "2026-11-15T16:16:25+00:00",
+            "published-time": "2026-11-15T16:19:02+00:00"
         },
         {
             "name": "zbateson/mail-mime-parser",
@@ -12415,5 +12350,5 @@
         "ext-pdo": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.11.0"
 }

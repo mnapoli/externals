@@ -20,7 +20,7 @@
         "livewire/livewire": "^4.3",
         "livewire/volt": "^1.10",
         "sentry/sentry-laravel": "^4.10",
-        "vstelmakh/url-highlight": "^3.0",
+        "vstelmakh/url-highlight": "^4.1",
         "zbateson/mail-mime-parser": "^3.0"
     },
     "require-dev": {
