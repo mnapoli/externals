@@ -16,7 +16,6 @@ use App\Services\Search\SearchIndex;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Socialite\Facades\Socialite;
 use League\CommonMark\CommonMarkConverter;
-use VStelmakh\UrlHighlight\Highlighter\HtmlHighlighter;
 use VStelmakh\UrlHighlight\UrlHighlight;
 
 class AppServiceProvider extends ServiceProvider
@@ -31,14 +30,7 @@ class AppServiceProvider extends ServiceProvider
             'allow_unsafe_links' => false,
         ]));
 
-        $this->app->singleton(UrlHighlight::class, function () {
-            $highlighter = new HtmlHighlighter('http', [
-                'rel' => 'nofollow',
-                'target' => '_blank',
-            ]);
-
-            return new UrlHighlight(null, $highlighter);
-        });
+        $this->app->singleton(UrlHighlight::class, fn() => new UrlHighlight);
 
         $this->app->singleton(SearchClient::class, fn() => SearchClient::create(
             (string) config('services.algolia.app_id'),
