@@ -157,7 +157,7 @@ new #[Layout('components.layouts.app')] class extends Component {
 
     @if($showOutline)
         {{-- Outline: sticky column on large screens, bottom sheet on small ones --}}
-        <div x-show="outlineOpen" x-cloak x-transition.opacity @click="outlineOpen = false" class="lg:hidden fixed inset-0 z-40 bg-ink/45" aria-hidden="true"></div>
+        <div x-show="outlineOpen" x-cloak x-transition.opacity @click="outlineOpen = false" class="lg:hidden fixed inset-0 z-40 bg-scrim" aria-hidden="true"></div>
         <nav aria-label="Thread outline"
              :class="outlineOpen && 'flex!'"
              @keydown.escape="outlineOpen = false"
@@ -171,8 +171,8 @@ new #[Layout('components.layouts.app')] class extends Component {
             </div>
             @if($unreadCount > 0)
                 <div role="group" aria-label="Outline filter" class="mx-4 lg:mx-3 mb-2 flex rounded-md bg-subtle p-0.5 text-xs">
-                    <button type="button" @click="filter = 'all'" :aria-pressed="filter === 'all'" class="flex-1 rounded py-1.5 lg:py-1 cursor-pointer" :class="filter === 'all' ? 'bg-surface font-semibold shadow-sm' : 'text-ink-soft'">All</button>
-                    <button type="button" @click="filter = 'unread'" :aria-pressed="filter === 'unread'" class="flex-1 rounded py-1.5 lg:py-1 cursor-pointer" :class="filter === 'unread' ? 'bg-surface font-semibold shadow-sm' : 'text-ink-soft'">Unread in context</button>
+                    <button type="button" @click="filter = 'all'" :aria-pressed="filter === 'all'" class="flex-1 rounded py-1.5 lg:py-1 cursor-pointer" :class="filter === 'all' ? 'bg-raised font-semibold shadow-sm' : 'text-ink-soft'">All</button>
+                    <button type="button" @click="filter = 'unread'" :aria-pressed="filter === 'unread'" class="flex-1 rounded py-1.5 lg:py-1 cursor-pointer" :class="filter === 'unread' ? 'bg-raised font-semibold shadow-sm' : 'text-ink-soft'">Unread in context</button>
                 </div>
             @endif
             <ol class="overflow-y-auto overscroll-contain px-2 pb-3">
@@ -236,10 +236,10 @@ new #[Layout('components.layouts.app')] class extends Component {
             <div class="mt-5 flex flex-wrap gap-2">
                 @if($unreadCount > 0)
                     <button type="button" @click="cursor = 0; nextUnread()"
-                            class="inline-flex items-center gap-2 h-9 px-3 rounded-md bg-accent text-white text-sm font-semibold hover:bg-accent-strong cursor-pointer">
+                            class="inline-flex items-center gap-2 h-9 px-3 rounded-md bg-accent text-on-accent text-sm font-semibold hover:bg-accent-strong cursor-pointer">
                         Jump to first unread
-                        <span class="font-mono text-xs bg-white/20 rounded px-1.5">{{ $unreadCount }}</span>
-                        <span class="hidden sm:inline kbd bg-transparent text-white border-white/40">n</span>
+                        <span class="font-mono text-xs bg-on-accent/20 rounded px-1.5">{{ $unreadCount }}</span>
+                        <span class="hidden sm:inline kbd bg-transparent text-on-accent border-on-accent/40">n</span>
                     </button>
                     <button type="button" @click="$dispatch('thread-collapse-read')" class="h-9 px-3 rounded-md border border-line-strong bg-surface text-sm hover:border-accent-line cursor-pointer">Collapse read</button>
                 @endif
@@ -287,8 +287,8 @@ new #[Layout('components.layouts.app')] class extends Component {
                 </button>
             @endif
             @if($unreadCount > 0)
-                <button type="button" @click="nextUnread()" class="ml-auto inline-flex items-center gap-2 h-11 px-3.5 rounded-md bg-accent text-white text-[15px] font-semibold cursor-pointer">
-                    Next unread <span class="font-mono text-xs bg-white/20 rounded px-1.5">{{ $unreadCount }}</span>
+                <button type="button" @click="nextUnread()" class="ml-auto inline-flex items-center gap-2 h-11 px-3.5 rounded-md bg-accent text-on-accent text-[15px] font-semibold cursor-pointer">
+                    Next unread <span class="font-mono text-xs bg-on-accent/20 rounded px-1.5">{{ $unreadCount }}</span>
                 </button>
             @endif
         </div>

@@ -127,7 +127,7 @@ new #[Layout('components.layouts.app')] class extends Component {
                 {{-- What visitors can act on first: the community vote while the RFC can change, the official result after --}}
                 <div class="flex flex-col">
                     @if($hasCommunity)
-                        <div @class(['px-4 py-3.5 bg-[#fbfbff] border-line', 'order-first border-b' => $canVote && $rfc->polls->isNotEmpty(), 'order-last border-t' => ! $canVote && $rfc->polls->isNotEmpty()])>
+                        <div @class(['px-4 py-3.5 bg-highlight border-line', 'order-first border-b' => $canVote && $rfc->polls->isNotEmpty(), 'order-last border-t' => ! $canVote && $rfc->polls->isNotEmpty()])>
                             <h3 class="mb-3 text-sm font-semibold text-ink">Community vote</h3>
                             <livewire:rfc-vote :rfc-id="$rfc->id" :can-vote="$canVote" :large="true"
                                                :upvotes="(int) $rfc->upvotes" :downvotes="(int) $rfc->downvotes"

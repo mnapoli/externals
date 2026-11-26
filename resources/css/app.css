@@ -17,16 +17,70 @@
     --color-ground: #f7f7f9;
     --color-surface: #ffffff;
     --color-subtle: #f3f3f6;
+    /* The selected option of a toggle on a subtle background */
+    --color-raised: #ffffff;
+    --color-highlight: #fbfbff;
+    --color-highlight-strong: #f6f8ff;
     --color-line: #e7e7ec;
     --color-line-strong: #d5d5dd;
+    --color-scrim: rgb(23 23 28 / 45%);
     /* Accent: indigo, as on php.net */
     --color-accent: #3d4a8f;
     --color-accent-strong: #2a3f9e;
     --color-accent-soft: #e8edff;
     --color-accent-line: #9aa8e6;
+    --color-on-accent: #ffffff;
     /* States */
     --color-pass: #2f7d4f;
+    --color-pass-soft: #e3f3e9;
     --color-fail: #a33a3a;
+    --color-fail-soft: #fbe7e7;
+    --color-warn: #7a4b00;
+    --color-warn-soft: #fdf1d8;
+}
+
+/* Dark mode: picked in the footer (data-theme on <html>), or the system setting when nothing was picked */
+@custom-variant dark {
+    &:where([data-theme="dark"], [data-theme="dark"] *) {
+        @slot;
+    }
+    @media (prefers-color-scheme: dark) {
+        &:where(:not([data-theme="light"], [data-theme="light"] *)) {
+            @slot;
+        }
+    }
+}
+
+/* Dark mode only redefines the colors above */
+:root {
+    color-scheme: light;
+    @variant dark {
+        color-scheme: dark;
+        --color-ink: #ececf1;
+        --color-ink-soft: #c5c5cf;
+        --color-muted: #a3a3af;
+        --color-faint: #9595a2;
+        --color-ground: #111116;
+        --color-surface: #1a1a21;
+        --color-subtle: #24242d;
+        --color-raised: #34343f;
+        --color-highlight: #1d1e28;
+        --color-highlight-strong: #23253a;
+        --color-line: #2d2d37;
+        --color-line-strong: #40404d;
+        --color-scrim: rgb(0 0 0 / 65%);
+        --color-accent: #8f9cf0;
+        --color-accent-strong: #b1bbff;
+        --color-accent-soft: #272c4d;
+        --color-accent-line: #56609f;
+        --color-on-accent: #111116;
+        --color-pass: #62c28c;
+        --color-pass-soft: #17301f;
+        --color-fail: #f08080;
+        --color-fail-soft: #3b1d1f;
+        --color-warn: #e2b45f;
+        --color-warn-soft: #3a2c12;
+    }
 }
 
 @utility container {
@@ -104,7 +158,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
     @apply font-mono text-[0.875em] bg-subtle px-1 py-px rounded;
 }
 .email-content pre {
-    @apply font-mono text-sm leading-normal bg-[#f5f5f8] border border-line rounded-md px-3 py-2.5 overflow-x-auto;
+    @apply font-mono text-sm leading-normal bg-subtle border border-line rounded-md px-3 py-2.5 overflow-x-auto;
 }
 .email-content pre > code {
     @apply bg-transparent p-0 text-[1em];
@@ -134,13 +188,13 @@ html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
 }
 
 /* Syntax highlighting: see App\Support\CodeHighlighter */
-code.highlighted .hl-keyword { color: #3d4a8f; font-weight: 500; }
-code.highlighted .hl-type, code.highlighted .hl-generic, code.highlighted .hl-attribute { color: #7a4b00; }
-code.highlighted .hl-property { color: #1d6b6b; }
-code.highlighted .hl-variable { color: #8a3a6b; }
-code.highlighted .hl-value, code.highlighted .hl-literal { color: #2f7d4f; }
-code.highlighted .hl-number { color: #a14a16; }
-code.highlighted .hl-comment { color: #6e6e7a; font-style: italic; }
+code.highlighted .hl-keyword { color: #3d4a8f; font-weight: 500; @variant dark { color: #a3aeff; } }
+code.highlighted .hl-type, code.highlighted .hl-generic, code.highlighted .hl-attribute { color: #7a4b00; @variant dark { color: #e2b45f; } }
+code.highlighted .hl-property { color: #1d6b6b; @variant dark { color: #5cc6c6; } }
+code.highlighted .hl-variable { color: #8a3a6b; @variant dark { color: #ec94c9; } }
+code.highlighted .hl-value, code.highlighted .hl-literal { color: #2f7d4f; @variant dark { color: #6fcf97; } }
+code.highlighted .hl-number { color: #a14a16; @variant dark { color: #f2a067; } }
+code.highlighted .hl-comment { color: #6e6e7a; font-style: italic; @variant dark { color: #9a9aa8; } }
 
 /* RFC text, converted from the PHP wiki */
 .rfc-content {
@@ -183,7 +237,7 @@ code.highlighted .hl-comment { color: #6e6e7a; font-style: italic; }
     @apply font-mono text-[0.875em] bg-subtle px-1 py-px rounded;
 }
 .rfc-content pre {
-    @apply font-mono text-sm bg-[#f5f5f8] border border-line rounded-md px-3 py-2.5 overflow-x-auto;
+    @apply font-mono text-sm bg-subtle border border-line rounded-md px-3 py-2.5 overflow-x-auto;
 }
 .rfc-content pre > code {
     @apply bg-transparent p-0 text-[1em];

@@ -81,11 +81,11 @@ enum RfcStatus: string
     public function badgeClasses(): string
     {
         return match ($this) {
-            self::Voting => 'bg-[#e3ebff] text-accent-strong',
-            self::Discussion => 'bg-[#fdf1d8] text-[#7a4b00]',
+            self::Voting => 'bg-accent-soft text-accent-strong',
+            self::Discussion => 'bg-warn-soft text-warn',
             self::Draft => 'bg-subtle text-muted',
-            self::Accepted, self::Implemented => 'bg-[#e3f3e9] text-pass',
-            self::Declined => 'bg-[#fbe7e7] text-fail',
+            self::Accepted, self::Implemented => 'bg-pass-soft text-pass',
+            self::Declined => 'bg-fail-soft text-fail',
             self::Withdrawn, self::Inactive, self::Obsolete => 'bg-subtle text-faint',
         };
     }

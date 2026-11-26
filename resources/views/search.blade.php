@@ -26,7 +26,7 @@
                 <ol class="card overflow-hidden">
                     @foreach($results->hits as $hit)
                         @php($subject = \App\Support\Email\SubjectTags::parse($hit->subject))
-                        <li class="flex gap-3 px-3 sm:px-4 py-3.5 border-b border-line last:border-b-0 hover:bg-[#fafaff]">
+                        <li class="flex gap-3 px-3 sm:px-4 py-3.5 border-b border-line last:border-b-0 hover:bg-highlight">
                             <x-avatar :name="$hit->author" :url="$avatars[$hit->number] ?? null" class="mt-0.5" />
                             <div class="min-w-0 flex-1">
                                 <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -38,7 +38,7 @@
                                 <p class="mt-0.5 text-[13px] text-muted">
                                     {{ $hit->author }} · <time class="font-mono text-xs" datetime="{{ $hit->date->toAtomString() }}" title="{{ $hit->date->format('D, M j, Y \a\t H:i') }} UTC">{{ $hit->date->diffForHumans() }}</time>
                                 </p>
-                                <p class="mt-1.5 text-sm text-ink-soft line-clamp-3 [overflow-wrap:anywhere] [&_mark]:bg-[#fdf1d8] [&_mark]:text-ink [&_mark]:rounded-sm [&_mark]:px-0.5">{!! $hit->snippetAsHtml() !!}</p>
+                                <p class="mt-1.5 text-sm text-ink-soft line-clamp-3 [overflow-wrap:anywhere] [&_mark]:bg-warn-soft [&_mark]:text-ink [&_mark]:rounded-sm [&_mark]:px-0.5">{!! $hit->snippetAsHtml() !!}</p>
                             </div>
                         </li>
                     @endforeach

@@ -123,8 +123,8 @@ new class extends Component {
             <li wire:key="thread-{{ $thread->number }}"
                 @class([
                     'grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[3rem_minmax(0,1fr)_auto] gap-x-3 sm:gap-x-4 items-center px-3 sm:px-4 py-3.5 border-b border-line last:border-b-0',
-                    'bg-[#fbfbff] shadow-[inset_3px_0_0_var(--color-accent)] hover:bg-[#f6f8ff]' => $thread->newCount > 0,
-                    'hover:bg-[#fafaff]' => $thread->newCount === 0,
+                    'bg-highlight shadow-[inset_3px_0_0_var(--color-accent)] hover:bg-highlight-strong' => $thread->newCount > 0,
+                    'hover:bg-highlight' => $thread->newCount === 0,
                 ])>
                 <x-thread-score class="row-start-1 col-start-2 sm:col-start-1" :votes="$thread->votes" :user-vote="$thread->userVote"
                                 up="vote({{ $thread->number }}, 1)" down="vote({{ $thread->number }}, -1)" />
@@ -145,7 +145,7 @@ new class extends Component {
                         <x-participants :participants="$participants[$thread->number] ?? []" />
                         <span class="font-mono text-xs text-ink-soft">{{ $thread->emailCount }} {{ Str::plural('message', $thread->emailCount) }}</span>
                         @if($thread->newCount > 0)
-                            <span class="inline-flex items-center rounded-full bg-accent px-2 py-0.5 font-mono text-xs font-semibold text-white">{{ $thread->newCount }} new</span>
+                            <span class="inline-flex items-center rounded-full bg-accent px-2 py-0.5 font-mono text-xs font-semibold text-on-accent">{{ $thread->newCount }} new</span>
                         @endif
                         <a href="/message/{{ $thread->number }}" class="sm:hidden font-mono text-xs text-muted hover:text-ink" title="Last message {{ $thread->lastUpdate->format('D, M j, Y \a\t H:i T') }}"><time datetime="{{ $thread->lastUpdate->toAtomString() }}">{{ $thread->lastUpdate->diffForHumans(short: true) }}</time></a>
                         @if($thread->votes < -1)<span class="text-xs text-muted">low score</span>@endif

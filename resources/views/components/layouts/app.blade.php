@@ -6,6 +6,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{-- The theme picked in the footer, applied before the first paint so the page doesn't flash in the other one --}}
+    <script>
+        try {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+        } catch {}
+    </script>
     <link rel="alternate" type="application/rss+xml" href="/rss" title="Latest emails"/>
     <link rel="alternate" type="application/rss+xml" href="/rss-rfc" title="Latest RFC Threads"/>
 
@@ -20,6 +27,8 @@
     <link rel="preconnect" href="https://www.google-analytics.com">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- Livewire only injects its assets into pages that render a component, and the theme switch needs Alpine on every page --}}
+    @livewireStyles
 
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
     <link rel="icon" type="image/png" href="/assets/images/favicon-32x32.png" sizes="32x32" />
@@ -95,12 +104,45 @@
 
     <footer class="border-t border-line bg-surface text-sm text-muted">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 py-8 space-y-3">
-            <p class="flex flex-wrap gap-x-5 gap-y-2">
-                <span class="text-ink">Opening PHP's <a class="underline decoration-line-strong underline-offset-2 hover:text-accent" href="https://news-web.php.net/php.internals">#internals</a> mailing list to the outside.</span>
-                <a class="hover:text-ink" href="https://github.com/mnapoli/externals">GitHub</a>
-                <a class="hover:text-ink" href="/rss">RSS</a>
-                <a class="hover:text-ink" href="/rss-rfc">RSS (RFCs)</a>
-            </p>
+            <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-3">
+                <p class="flex flex-wrap gap-x-5 gap-y-2">
+                    <span class="text-ink">Opening PHP's <a class="underline decoration-line-strong underline-offset-2 hover:text-accent" href="https://news-web.php.net/php.internals">#internals</a> mailing list to the outside.</span>
+                    <a class="hover:text-ink" href="https://github.com/mnapoli/externals">GitHub</a>
+                    <a class="hover:text-ink" href="/rss">RSS</a>
+                    <a class="hover:text-ink" href="/rss-rfc">RSS (RFCs)</a>
+                </p>
+                {{-- Light, dark, or auto (the system setting): stored in the browser. Hidden without JavaScript, as it couldn't work --}}
+                <div class="flex items-center gap-2.5" x-cloak
+                     x-data="{
+                         theme: 'auto',
+                         init() { this.load() },
+                         load() {
+                             let stored = null;
+                             try { stored = localStorage.getItem('theme') } catch {}
+                             this.apply(stored === 'light' || stored === 'dark' ? stored : 'auto');
+                         },
+                         apply(theme) {
+                             this.theme = theme;
+                             if (theme === 'auto') delete document.documentElement.dataset.theme;
+                             else document.documentElement.dataset.theme = theme;
+                         },
+                         pick(theme) {
+                             this.apply(theme);
+                             try { theme === 'auto' ? localStorage.removeItem('theme') : localStorage.setItem('theme', theme) } catch {}
+                         },
+                     }"
+                     @storage.window="load()" @pageshow.window="load()">
+                    <span id="theme-label">Theme</span>
+                    <div role="radiogroup" aria-labelledby="theme-label" class="flex rounded-md bg-subtle p-0.5 text-xs">
+                        @foreach(['light' => 'Light', 'dark' => 'Dark', 'auto' => 'Auto'] as $value => $label)
+                            <label @if($value === 'auto') title="Follow the system setting" @endif
+                                   class="px-2.5 py-1.5 lg:py-1 rounded cursor-pointer text-ink-soft hover:text-ink has-checked:bg-raised has-checked:text-ink has-checked:font-semibold has-checked:shadow-sm has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent">
+                                <input type="radio" name="theme" value="{{ $value }}" autocomplete="off" :checked="theme === '{{ $value }}'" @change="pick('{{ $value }}')" class="sr-only">{{ $label }}
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
             <p>
                 Created by <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://mnapoli.fr">@mnapoli</a>, serverless with <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://bref.sh/" title="Serverless PHP applications">Bref</a>.
                 Search by <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://www.algolia.com">Algolia</a>, avatars by GitHub and <a class="underline decoration-line-strong underline-offset-2 hover:text-ink" href="https://gravatar.com">Gravatar</a>.
@@ -116,5 +158,6 @@
             </p>
         </div>
     </footer>
+    @livewireScripts
 </body>
 </html>
