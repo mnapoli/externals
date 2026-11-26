@@ -6,9 +6,14 @@ use App\Models\Rfc;
 use App\Models\RfcPoll;
 use App\Services\Rfc\RfcHighlights;
 use App\Services\Rfc\RfcStatus;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+
+beforeEach(function (): void {
+    $this->travelTo(CarbonImmutable::parse('2026-10-15 00:00:00 UTC'));
+});
 
 function createPoll(Rfc $rfc, bool $isClosed, ?string $closesAt, int $yes = 0, int $no = 0, int $position = 0): RfcPoll
 {
@@ -33,6 +38,15 @@ test('RFCs with an open vote are listed, closest deadline first', function (): v
     Rfc::factory()->create(['slug' => 'discussed', 'status' => RfcStatus::Discussion]);
 
     expect(app(RfcHighlights::class)->voting()->pluck('slug')->all())->toBe(['sooner', 'later']);
+});
+
+test('RFCs whose poll is still open on the wiki after its deadline are not voting anymore', function (): void {
+    $overdue = Rfc::factory()->create(['slug' => 'overdue', 'status' => RfcStatus::Voting]);
+    createPoll($overdue, false, '2026-10-01 00:00:00 UTC');
+    $undated = Rfc::factory()->create(['slug' => 'undated', 'status' => RfcStatus::Voting]);
+    createPoll($undated, false, 'until the end of the week');
+
+    expect(app(RfcHighlights::class)->voting()->pluck('slug')->all())->toBe(['undated']);
 });
 
 test('RFCs are sorted by the deadline of their open vote, not of a vote already closed', function (): void {

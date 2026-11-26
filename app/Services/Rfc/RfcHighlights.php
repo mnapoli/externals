@@ -72,6 +72,19 @@ class RfcHighlights
     }
 
     /**
+     * Whether people can still vote: authors often leave the poll of the wiki open after its deadline.
+     */
+    public static function isOpen(RfcPoll $poll): bool
+    {
+        if ($poll->isClosed) {
+            return false;
+        }
+        $closesAt = self::closesAt($poll);
+
+        return $closesAt === null || $closesAt->isFuture();
+    }
+
+    /**
      * RFCs with an open vote, the closest deadline first.
      *
      * @return Collection<int, Rfc>
@@ -81,7 +94,7 @@ class RfcHighlights
         return Rfc::where('status', RfcStatus::Voting)
             ->with('polls')
             ->get()
-            ->filter(fn(Rfc $rfc) => $rfc->polls->contains(fn(RfcPoll $poll) => ! $poll->isClosed))
+            ->filter(fn(Rfc $rfc) => $rfc->polls->contains(fn(RfcPoll $poll) => self::isOpen($poll)))
             ->sortBy(fn(Rfc $rfc) => self::closesAt($rfc->currentPoll())?->getTimestamp() ?? PHP_INT_MAX)
             ->values();
     }
