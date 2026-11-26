@@ -13,9 +13,11 @@ new class extends Component {
     #[Locked]
     public int $emailNumber;
 
+    #[Locked]
     /** @var list<array{reaction: string, count: int}> */
     public array $counts = [];
 
+    #[Locked]
     /** @var list<string> Reactions of the current user */
     public array $mine = [];
 
@@ -56,10 +58,10 @@ new class extends Component {
                     :class="picking && 'border-solid border-accent-line text-accent-strong'">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="12" r="8"/><path d="M8 14s1 1.5 3 1.5 3-1.5 3-1.5M8.5 9.5h.01M13.5 9.5h.01M20 3v4M18 5h4"/></svg>
             </button>
-            <div x-show="picking" x-cloak x-transition.opacity.duration.100ms role="menu" aria-label="Pick a reaction"
+            <div x-show="picking" x-cloak x-transition.opacity.duration.100ms role="group" aria-label="Pick a reaction"
                  class="absolute left-0 bottom-full mb-1.5 z-20 flex gap-0.5 p-1 bg-surface border border-line-strong rounded-xl shadow-lg">
                 @foreach(Reaction::cases() as $reaction)
-                    <button type="button" role="menuitem" wire:click="toggle('{{ $reaction->value }}')" @click="picking = false"
+                    <button type="button" wire:click="toggle('{{ $reaction->value }}')" @click="picking = false"
                             aria-label="{{ $reaction->label() }}" title="{{ $reaction->label() }}"
                             class="w-9 h-9 rounded-lg text-lg cursor-pointer hover:bg-accent-soft {{ in_array($reaction->value, $mine, true) ? 'bg-accent-soft' : '' }}">{{ $reaction->emoji() }}</button>
                 @endforeach

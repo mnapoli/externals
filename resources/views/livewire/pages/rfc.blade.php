@@ -1,5 +1,6 @@
 <?php
 
+use App\Support\ComputesViewDataOnce;
 use App\Exceptions\NotFoundException;
 use App\Models\Rfc;
 use App\Models\RfcVote;
@@ -15,6 +16,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.app')] class extends Component {
+    use ComputesViewDataOnce;
+
     public string $slug = '';
 
     public function mount(string $slug): mixed
@@ -42,7 +45,7 @@ new #[Layout('components.layouts.app')] class extends Component {
     /**
      * @return array<string, mixed>
      */
-    public function with(): array
+    protected function viewData(): array
     {
         $rfc = $this->rfc();
         ['discussions' => $threads, 'mentions' => $mentions] = app(RfcThreads::class)->discussionsOf($rfc);

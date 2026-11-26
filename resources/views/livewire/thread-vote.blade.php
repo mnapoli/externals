@@ -12,7 +12,9 @@ new class extends Component {
     #[Locked]
     public int $number;
 
+    #[Locked]
     public int $votes = 0;
+    #[Locked]
     public int $userVote = 0;
 
     public function vote(int $value): void

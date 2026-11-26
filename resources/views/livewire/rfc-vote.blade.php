@@ -20,8 +20,11 @@ new class extends Component {
     #[Locked]
     public bool $large = false;
 
+    #[Locked]
     public int $upvotes = 0;
+    #[Locked]
     public int $downvotes = 0;
+    #[Locked]
     public int $userVote = 0;
 
     public function vote(int $value): void

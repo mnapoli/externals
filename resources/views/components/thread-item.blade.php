@@ -23,7 +23,7 @@
             'border-line' => ! $unread,
         ])>
         <header class="flex flex-wrap items-center gap-x-2.5 gap-y-1 pl-3 sm:pl-4 pr-1 py-1.5 text-[13px] text-muted" :class="open && 'border-b border-[#f0f0f4]'">
-            <x-avatar :name="$email->from->getNameOrEmail()" :url="$avatars[$email->from->email ?? ''] ?? null" aria-hidden="true" />
+            <x-avatar :name="$email->from->getNameOrEmail()" :url="$avatars[mb_strtolower($email->from->email ?? '')] ?? null" aria-hidden="true" />
             <span class="author font-semibold text-sm text-ink">{{ $email->from->getNameOrEmail() }}</span>
             @if($parent && $depth > $maxIndent)
                 <a href="#{{ $parent->number }}" class="font-mono text-[11px] text-muted bg-subtle hover:text-ink px-1.5 py-0.5 rounded whitespace-nowrap"

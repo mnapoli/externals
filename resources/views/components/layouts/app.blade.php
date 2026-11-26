@@ -46,7 +46,7 @@
 
     <header class="sticky top-0 z-30 bg-surface border-b border-line"
             x-data
-            @keydown.window="if ($event.key === '/' && ! ['INPUT', 'TEXTAREA'].includes($event.target.tagName)) { $event.preventDefault(); $refs.search.focus() }">
+            @keydown.window="if ($event.key === '/' && ! ['INPUT', 'TEXTAREA'].includes($event.target.tagName) && $refs.search.offsetParent !== null) { $event.preventDefault(); $refs.search.focus() }">
         <div class="mx-auto max-w-7xl px-3 sm:px-6 h-14 flex items-center gap-2 sm:gap-6">
             <a href="/" class="font-mono font-semibold text-base shrink-0" aria-label="externals, home"><span class="text-accent">#</span>externals</a>
             @php($section = request()->is('rfc', 'rfc/*') ? 'rfcs' : (request()->is('top') ? 'top' : (request()->is('/') ? 'latest' : null)))

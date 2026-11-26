@@ -1,5 +1,6 @@
 <?php
 
+use App\Support\ComputesViewDataOnce;
 use App\Actions\CastVote;
 use App\Models\Email;
 use App\Models\Vote;
@@ -12,6 +13,8 @@ use Livewire\Attributes\Url;
 use Livewire\Volt\Component;
 
 new class extends Component {
+    use ComputesViewDataOnce;
+
     /** Either "latest" or "top". */
     public string $mode = 'latest';
 
@@ -44,7 +47,7 @@ new class extends Component {
     /**
      * @return array<string, mixed>
      */
-    public function with(): array
+    protected function viewData(): array
     {
         $user = auth()->user();
 
@@ -65,13 +68,16 @@ new class extends Component {
             fn() => Email::where('isThreadRoot', true)->count(),
         );
 
+        $pageCount = max(1, (int) ceil($threadCount / 20));
+        // ?page= comes from the URL: no "Page -3 of 28", and no endless "Newer" links from an empty page
+        $this->page = min(max(1, $this->page), $pageCount);
         $threads = app(ThreadQuery::class)->findLatestThreads($this->page, $user);
 
         return [
             'threads' => $threads,
             'rfcs' => $this->rfcsOf($threads),
             'participants' => $this->participantsOf($threads),
-            'pageCount' => (int) ceil($threadCount / 20),
+            'pageCount' => $pageCount,
         ];
     }
 

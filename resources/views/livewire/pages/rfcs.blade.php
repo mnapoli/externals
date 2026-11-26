@@ -1,5 +1,6 @@
 <?php
 
+use App\Support\ComputesViewDataOnce;
 use App\Models\Rfc;
 use App\Models\RfcVote;
 use App\Services\Email\AvatarUrls;
@@ -11,6 +12,8 @@ use Livewire\Attributes\Url;
 use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.app')] class extends Component {
+    use ComputesViewDataOnce;
+
     /** RFCs shown per section before "Show more": rendering all ~940 RFCs is slow. */
     public const int SECTION_PREVIEW = 10;
 
@@ -47,7 +50,7 @@ new #[Layout('components.layouts.app')] class extends Component {
     /**
      * @return array<string, mixed>
      */
-    public function with(): array
+    protected function viewData(): array
     {
         $sections = app(RfcList::class)->sections();
 

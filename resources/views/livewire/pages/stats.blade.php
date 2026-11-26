@@ -1,5 +1,6 @@
 <?php
 
+use App\Support\ComputesViewDataOnce;
 use App\Models\Email;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
@@ -7,10 +8,12 @@ use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.app')] class extends Component {
+    use ComputesViewDataOnce;
+
     /**
      * @return array<string, mixed>
      */
-    public function with(): array
+    protected function viewData(): array
     {
         $ttl = now()->addMinutes(5);
 

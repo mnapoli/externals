@@ -35,6 +35,8 @@ class GithubController extends Controller
         }
 
         if (! $request->has('code')) {
+            $this->rememberPageToReturnTo($request);
+
             return Socialite::driver('github')->redirect();
         }
 
@@ -71,7 +73,19 @@ class GithubController extends Controller
             $request->session()->flash('status', sprintf(self::EMAIL_STORED_MESSAGE, $user->email));
         }
 
-        return redirect('/');
+        return redirect()->intended('/');
+    }
+
+    /**
+     * Back to the page where the guest clicked "Log in", voted or reacted, rather than the home page.
+     */
+    private function rememberPageToReturnTo(Request $request): void
+    {
+        $referer = (string) $request->headers->get('referer');
+        $isSameSite = str_starts_with($referer, mb_rtrim($request->root(), '/') . '/');
+        if ($isSameSite && ! str_starts_with($referer, route('login'))) {
+            redirect()->setIntendedUrl($referer);
+        }
     }
 
     /**

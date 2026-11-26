@@ -1,5 +1,6 @@
 <?php
 
+use App\Support\ComputesViewDataOnce;
 use App\Actions\MarkEmailAsRead;
 use App\Exceptions\NotFoundException;
 use App\Models\Email;
@@ -16,6 +17,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.app')] class extends Component {
+    use ComputesViewDataOnce;
+
     public int $number = 0;
 
     public string $subject = '';
@@ -67,7 +70,7 @@ new #[Layout('components.layouts.app')] class extends Component {
     /**
      * @return array<string, mixed>
      */
-    public function with(): array
+    protected function viewData(): array
     {
         $messages = array_merge(...array_map(fn(ThreadItem $item) => $item->flatten(), $this->thread));
         $userId = auth()->id();
@@ -80,7 +83,8 @@ new #[Layout('components.layouts.app')] class extends Component {
             'subjectTags' => SubjectTags::parse($this->subject),
             'participants' => $participants,
             'unreadCount' => $userId !== null ? count(array_filter($messages, fn(ThreadItem $item) => ! $item->email->isRead)) : 0,
-            'avatars' => collect($participants)->whereNotNull('email')->pluck('avatarUrl', 'email')->all(),
+            // Lowercased: MySQL groups the participants regardless of the case of their address
+            'avatars' => collect($participants)->whereNotNull('email')->mapWithKeys(fn($participant) => [mb_strtolower($participant->email) => $participant->avatarUrl])->all(),
             'reactions' => app(ReactionQuery::class)->forEmails(array_map(fn(ThreadItem $item) => $item->email->number, $messages), $userId !== null ? (int) $userId : null),
             'votes' => (int) Vote::where('emailNumber', $this->number)->sum('value'),
             'userVote' => $userId !== null ? (int) (Vote::where('userId', $userId)->where('emailNumber', $this->number)->value('value') ?? 0) : 0,

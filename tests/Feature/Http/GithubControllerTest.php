@@ -30,6 +30,20 @@ test('unauthenticated user without code is redirected to github', function (): v
     $response->assertRedirect('https://socialite.fake/github/authorize');
 });
 
+test('the user is sent back to the page where they clicked log in', function (): void {
+    Socialite::fake('github', (new SocialiteUser)->map(['id' => '12345', 'nickname' => 'octocat']));
+    $this->get('/login', ['Referer' => url('/message/123')]);
+
+    $this->get('/login?code=abc')->assertRedirect(url('/message/123'));
+});
+
+test('the user is not sent back to another site after logging in', function (): void {
+    Socialite::fake('github', (new SocialiteUser)->map(['id' => '12345', 'nickname' => 'octocat']));
+    $this->get('/login', ['Referer' => 'https://evil.example/']);
+
+    $this->get('/login?code=abc')->assertRedirect('/');
+});
+
 test('callback with code creates user and logs in', function (): void {
     Socialite::fake('github', (new SocialiteUser)->map([
         'id' => '12345',
