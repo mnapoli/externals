@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "42ad8cb10e4a5cd1a984e398bcaa6fd6",
+    "content-hash": "a276640760c473f368319ac9ac8a85bd",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -430,6 +430,62 @@
                 }
             ],
             "time": "2026-02-26T14:43:26+00:00"
+        },
+        {
+            "name": "bref/logger",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brefphp/logger.git",
+                "reference": "823c9ff4e08a19f95a92cf0e9baaab86dfe2e084"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brefphp/logger/zipball/823c9ff4e08a19f95a92cf0e9baaab86dfe2e084",
+                "reference": "823c9ff4e08a19f95a92cf0e9baaab86dfe2e084",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=8.0",
+                "psr/log": "^1.1 | ^2.0 | ^3.0"
+            },
+            "require-dev": {
+                "mnapoli/hard-mode": "^0.3",
+                "phpstan/phpstan": "^1",
+                "phpunit/phpunit": "^10.5|^11|^12"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Bref\\Logger\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "All you need to log with Bref on AWS Lambda",
+            "keywords": [
+                "aws-lambda",
+                "bref",
+                "cloudwatch",
+                "lambda",
+                "logger",
+                "psr-3"
+            ],
+            "support": {
+                "issues": "https://github.com/brefphp/logger/issues",
+                "source": "https://github.com/brefphp/logger/tree/2.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/mnapoli",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-06-14T11:15:09+00:00",
+            "published-time": "2025-06-14T11:15:49+00:00"
         },
         {
             "name": "bref/monolog-bridge",
@@ -4741,6 +4797,64 @@
             "time": "2023-04-10T20:06:20+00:00"
         },
         {
+            "name": "psr/http-server-middleware",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-server-middleware.git",
+                "reference": "c1481f747daaa6a0782775cd6a8c26a1bf4a3829"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-server-middleware/zipball/c1481f747daaa6a0782775cd6a8c26a1bf4a3829",
+                "reference": "c1481f747daaa6a0782775cd6a8c26a1bf4a3829",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr/http-message": "^1.0 || ^2.0",
+                "psr/http-server-handler": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP server-side middleware",
+            "keywords": [
+                "http",
+                "http-interop",
+                "middleware",
+                "psr",
+                "psr-15",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "support": {
+                "issues": "https://github.com/php-fig/http-server-middleware/issues",
+                "source": "https://github.com/php-fig/http-server-middleware/tree/1.0.2"
+            },
+            "time": "2023-04-11T06:14:47+00:00",
+            "published-time": "2023-04-11T06:15:22+00:00"
+        },
+        {
             "name": "psr/log",
             "version": "3.0.2",
             "source": {
@@ -5269,6 +5383,105 @@
                 }
             ],
             "time": "2026-11-19T10:49:48+00:00"
+        },
+        {
+            "name": "sentry/sentry-bref",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/getsentry/sentry-bref.git",
+                "reference": "0758fddd7cf1426b2363e71ebb70a31e2355ce82"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/getsentry/sentry-bref/zipball/0758fddd7cf1426b2363e71ebb70a31e2355ce82",
+                "reference": "0758fddd7cf1426b2363e71ebb70a31e2355ce82",
+                "shasum": ""
+            },
+            "require": {
+                "bref/bref": "^3.0.13",
+                "bref/logger": "^1 | ^2",
+                "php": "^8.2",
+                "psr/http-server-middleware": "^1.0",
+                "sentry/sentry": "^4.33"
+            },
+            "conflict": {
+                "laravel/framework": "<12",
+                "symfony/http-foundation": "<6.4",
+                "symfony/http-kernel": "<6.4"
+            },
+            "require-dev": {
+                "aws/aws-sdk-php": "^3",
+                "bref/laravel-bridge": "^3",
+                "friendsofphp/php-cs-fixer": "^3.95",
+                "laravel/framework": "^12 | ^13",
+                "phpstan/phpstan": "^2",
+                "phpunit/phpunit": "^9",
+                "sentry/sentry-laravel": "^4.28",
+                "symfony/dependency-injection": "^6.4 | ^7 | ^8",
+                "symfony/event-dispatcher": "^6.4 | ^7 | ^8",
+                "symfony/http-kernel": "^6.4 | ^7 | ^8"
+            },
+            "suggest": {
+                "sentry/sentry-laravel": "For Laravel applications: Lambda contexts and cold starts in Laravel's transactions",
+                "sentry/sentry-symfony": "For Symfony applications: cold starts in Symfony's transactions"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Sentry\\Bref\\Laravel\\BrefSentryServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/init.php"
+                ],
+                "psr-4": {
+                    "Sentry\\Bref\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sentry",
+                    "email": "accounts@sentry.io"
+                }
+            ],
+            "description": "Bref SDK for Sentry (https://sentry.io)",
+            "homepage": "https://sentry.io",
+            "keywords": [
+                "bref",
+                "crash-reporting",
+                "crash-reports",
+                "error-handler",
+                "error-monitoring",
+                "log",
+                "logging",
+                "profiling",
+                "sentry",
+                "tracing"
+            ],
+            "support": {
+                "issues": "https://github.com/getsentry/sentry-bref/issues",
+                "source": "https://github.com/getsentry/sentry-bref/tree/1.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://sentry.io/",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://sentry.io/pricing/",
+                    "type": "custom"
+                }
+            ],
+            "time": "2026-11-17T17:04:44+00:00",
+            "published-time": "2026-11-17T17:09:13+00:00"
         },
         {
             "name": "sentry/sentry-laravel",
