@@ -17,6 +17,12 @@ test('short lines keep their line break', function (): void {
     expect(EmailHtml::unwrapLines($html))->toBe($html);
 });
 
+test('code pasted without fences keeps its line breaks', function (): void {
+    $html = "<p>public readonly float \$magnitude = sqrt(\$dx * \$dx + \$dy * \$dy); <br>\npublic readonly float \$direction = atan2(\$dy, \$dx); <br>\n}</p>";
+
+    expect(EmailHtml::unwrapLines($html))->toBe($html);
+});
+
 test('long quotes are folded', function (): void {
     $html = "<blockquote>\n<p>one <br>\ntwo <br>\nthree <br>\nfour</p>\n</blockquote>\n<p>My answer</p>";
 

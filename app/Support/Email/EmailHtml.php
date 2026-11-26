@@ -28,16 +28,17 @@ class EmailHtml
     /**
      * Emails are hard-wrapped around 72 characters, and every line break of the plain text is stored as `<br>`.
      * In a proportional font these breaks fall mid-sentence: join the lines that were wrapped,
-     * keep the short ones (signatures, lists, code written without fences).
+     * keep the short ones (signatures, lists) and the ones ending like a statement of code pasted without fences.
      */
     public static function unwrapLines(string $html): string
     {
         return (string) preg_replace_callback(
             '#(?<line>(?:^|(?<=>))[^\n]*?) <br>\n#m',
             function (array $matches): string {
-                $text = html_entity_decode(strip_tags($matches['line']));
+                $text = mb_trim(html_entity_decode(strip_tags($matches['line'])));
+                $endsLikeCode = in_array(mb_substr($text, -1), [';', '{', '}'], true);
 
-                return mb_strlen(mb_trim($text)) >= self::WRAPPED_LINE_LENGTH
+                return mb_strlen($text) >= self::WRAPPED_LINE_LENGTH && ! $endsLikeCode
                     ? $matches['line'] . ' '
                     : $matches[0];
             },
