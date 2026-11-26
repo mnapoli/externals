@@ -26,6 +26,8 @@ class ThreadSummary
         public readonly int $votes,
         public readonly bool $isRead,
         public readonly ?int $userVote,
+        /** Emails received since the user last opened the thread, 0 if they never did */
+        public readonly int $newCount = 0,
     ) {}
 
     public static function fromRow(stdClass $row): self
@@ -41,6 +43,7 @@ class ThreadSummary
             votes: (int) $row->votes,
             isRead: (bool) $row->isRead,
             userVote: $row->userVote !== null ? (int) $row->userVote : null,
+            newCount: (int) ($row->newCount ?? 0),
         );
     }
 }

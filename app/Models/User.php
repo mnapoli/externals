@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property string $githubId
  * @property string $name
+ * @property string|null $email Primary address of the GitHub account, null until the first login since we store it
  * @property string|null $remember_token
  */
 class User extends Model implements Authenticatable

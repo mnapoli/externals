@@ -19,7 +19,7 @@ test('every page tells agents where to find the markdown and the api', function 
 test('the thread page links to its markdown version', function (): void {
     Email::factory()->create(['number' => 100]);
 
-    $this->get('/message/100')->assertSee('<a href="/message/100.md" type="text/markdown"', false);
+    $this->get('/message/100')->assertSee('<link rel="alternate" type="text/markdown" href="/message/100.md"', false);
 });
 
 test('the api index lists the endpoints', function (): void {
@@ -44,5 +44,5 @@ test('unknown pages still return the html 404 page', function (): void {
     $response = $this->get('/unknown');
 
     $response->assertNotFound();
-    $response->assertSee('😱');
+    $response->assertSee("This page doesn't exist", false);
 });

@@ -36,7 +36,7 @@ class RfcMarkdown
             $lines[] = '';
             foreach ($section['rfcs'] as $rfc) {
                 $line = sprintf('- [%s](%s)', $this->escape($rfc->title), $rfc->url() . '.md');
-                $poll = $rfc->status === RfcStatus::Voting ? $rfc->polls->first() : null;
+                $poll = $rfc->status === RfcStatus::Voting ? $rfc->currentPoll() : null;
                 if ($poll instanceof RfcPoll) {
                     $line .= ' — vote: ' . $poll->summary() . ' (' . $poll->stateLabel() . ')';
                 }

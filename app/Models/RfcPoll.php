@@ -46,6 +46,14 @@ class RfcPoll extends Model
         return implode(' · ', array_map(fn(array $choice) => "{$choice['label']}: {$choice['count']}", $this->choices));
     }
 
+    /**
+     * Share of yes needed: 2/3 for the main vote (the first one), a simple majority for the secondary votes.
+     */
+    public function majority(): float
+    {
+        return $this->position === 0 ? 2 / 3 : 1 / 2;
+    }
+
     public function hasVotes(): bool
     {
         return array_sum(array_column($this->choices, 'count')) > 0;

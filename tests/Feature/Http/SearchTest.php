@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\Email;
 use App\Services\Search\EmailSearch;
 use App\Services\Search\SearchHit;
 use App\Services\Search\SearchResults;
@@ -49,10 +50,14 @@ test('the search page works without a query', function (): void {
 });
 
 test('the search page lists results', function (): void {
+    Email::factory()->create(['number' => 101, 'fromEmail' => 'alice@example.com']);
+
     $response = $this->get('/search?q=enum');
 
     $response->assertOk();
-    $response->assertSee('<a class="underline" href="/message/100#101">[RFC] Something &lt;new&gt;</a>', false);
+    $response->assertSee('href="/message/100#101">Something &lt;new&gt;</a>', false);
+    $response->assertSeeInOrder(['>RFC</span>', 'Something &lt;new&gt;', 'Alice'], false);
+    $response->assertSee('https://www.gravatar.com/avatar/' . hash('sha256', 'alice@example.com'), false);
     $response->assertSee('the <mark>enum</mark> &lt;proposal&gt;', false);
     $response->assertSee('href="' . url('/search?q=enum&amp;page=2') . '" rel="next"', false);
     $response->assertSee('<link rel="alternate" type="text/markdown" href="' . url('/search.md?q=enum') . '"', false);

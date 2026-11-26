@@ -24,6 +24,15 @@ test('page count reflects thread root count', function (): void {
         ->assertViewHas('pageCount', 2);
 });
 
+test('a page out of range shows the closest page', function (): void {
+    Email::factory()->count(25)->create();
+    app(RefreshAllThreads::class)->handle();
+
+    Volt::test('thread-list', ['mode' => 'latest'])
+        ->set('page', -3)->assertSet('page', 1)
+        ->set('page', 99)->assertSet('page', 2);
+});
+
 test('guest cannot vote', function (): void {
     Email::factory()->create(['number' => 42]);
 
@@ -111,5 +120,5 @@ test('threads link to the RFCs they discuss', function (): void {
     $html = Volt::test('thread-list', ['mode' => 'latest'])->html();
 
     expect(mb_substr_count($html, 'href="/rfc/pipe-operator-v3"'))->toBe(1);
-    expect($html)->toContain('RFC · In voting');
+    expect($html)->toContain('RFC · Voting');
 });

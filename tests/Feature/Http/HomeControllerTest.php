@@ -12,7 +12,7 @@ test('renders home for guest', function (): void {
 
     $response->assertOk();
     $response->assertSee('mailing list to the outside', false);
-    $response->assertSee('id="search-input"', false);
+    $response->assertSee('<form action="/search" method="get" role="search"', false);
 });
 
 test('renders home for authenticated user', function (): void {

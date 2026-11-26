@@ -122,57 +122,110 @@ class RfcThreads
     }
 
     /**
-     * The (listed) RFCs of several threads, for lists of threads.
+     * The RFC each thread is about, and the RFCs it only mentions.
      *
-     * Only the columns needed for a badge are loaded.
-     *
-     * @param  list<int>  $threadNumbers
-     * @return array<int, list<Rfc>> Keyed by thread number
+     * @param  array<int, string>  $subjects  Subjects of the threads, keyed by thread number
+     * @param  bool  $listedOnly  Hide the RFCs that are no longer listed on the wiki index (they still count to find
+     *                            the RFC of the thread, so that it is the same on every page)
+     * @return array<int, ThreadRfcs> Keyed by thread number, only the threads linked to RFCs
      */
-    public function rfcsOfThreads(array $threadNumbers): array
+    public function rfcLinksOfThreads(array $subjects, bool $listedOnly = true): array
     {
-        if ($threadNumbers === []) {
+        if ($subjects === []) {
             return [];
         }
 
-        $rfcs = Rfc::query()
+        $rows = Rfc::query()
             ->join('rfc_threads', 'rfc_threads.rfcSlug', '=', 'rfcs.slug')
-            ->whereIn('rfc_threads.threadNumber', $threadNumbers)
-            ->where('rfcs.isListed', true)
-            // A thread can be linked to an RFC twice: from its email and from the wiki
-            ->distinct()
+            ->whereIn('rfc_threads.threadNumber', array_keys($subjects))
             ->orderBy('rfcs.indexPosition')
-            ->get(['rfcs.id', 'rfcs.slug', 'rfcs.title', 'rfcs.status', 'rfcs.phpVersion', 'rfcs.indexPosition', 'rfc_threads.threadNumber']);
+            ->get(['rfcs.id', 'rfcs.slug', 'rfcs.title', 'rfcs.status', 'rfcs.phpVersion', 'rfcs.isListed', 'rfcs.indexPosition', 'rfc_threads.threadNumber', 'rfc_threads.source']);
 
-        $byThread = [];
-        foreach ($rfcs as $rfc) {
-            $byThread[(int) $rfc->getAttribute('threadNumber')][] = $rfc;
+        // A thread can be linked to an RFC twice: from its email and from the wiki
+        $links = [];
+        foreach ($rows as $rfc) {
+            $threadNumber = (int) $rfc->getAttribute('threadNumber');
+            $fromWiki = $rfc->getAttribute('source') === self::SOURCE_WIKI;
+            if (isset($links[$threadNumber][$rfc->slug])) {
+                $links[$threadNumber][$rfc->slug]['fromWiki'] = $links[$threadNumber][$rfc->slug]['fromWiki'] || $fromWiki;
+            } else {
+                $links[$threadNumber][$rfc->slug] = ['rfc' => $rfc, 'fromWiki' => $fromWiki];
+            }
         }
 
-        return $byThread;
+        $threadRfcs = [];
+        foreach ($links as $threadNumber => $threadLinks) {
+            $classified = ThreadRfcs::classify($subjects[$threadNumber] ?? '', array_values($threadLinks));
+            if ($listedOnly) {
+                $classified = $classified->listedOnly();
+                if ($classified->primary === null && $classified->mentions === []) {
+                    continue;
+                }
+            }
+            $threadRfcs[$threadNumber] = $classified;
+        }
+
+        return $threadRfcs;
     }
 
     /**
-     * Number of linked threads and date of the latest activity, for all RFCs.
+     * The threads about an RFC, and the threads that only mention it, oldest first.
      *
+     * @return array{discussions: Collection<int, LinkedThread>, mentions: Collection<int, LinkedThread>}
+     */
+    public function discussionsOf(Rfc $rfc): array
+    {
+        $threads = $this->threadsOf($rfc->slug);
+        $links = $this->rfcLinksOfThreads(
+            $threads->mapWithKeys(fn(LinkedThread $thread) => [$thread->number => $thread->subject])->all(),
+            listedOnly: false,
+        );
+        [$discussions, $mentions] = $threads->partition(
+            fn(LinkedThread $thread) => ($links[$thread->number] ?? null)?->primary?->slug === $rfc->slug,
+        );
+
+        return ['discussions' => $discussions->values(), 'mentions' => $mentions->values()];
+    }
+
+    /**
+     * Number of threads about each RFC and date of their latest activity.
+     * A thread that only mentions an RFC is not activity on it: it would bring back old RFCs cited as prior art.
+     *
+     * @param  list<string>|null  $slugs  The RFCs to look at, null for all of them (slower: every link is classified)
      * @return Collection<string, RfcActivity> Keyed by RFC slug
      */
-    public function activityByRfc(): Collection
+    public function activityByRfc(?array $slugs = null): Collection
     {
-        return DB::table('rfc_threads')
-            ->join('emails', 'emails.number', '=', 'rfc_threads.threadNumber')
+        if ($slugs === []) {
+            return collect();
+        }
+        $threads = DB::table('emails')
             ->join('threads', 'threads.emailId', '=', 'emails.id')
-            ->groupBy('rfc_threads.rfcSlug')
-            ->select([
-                'rfc_threads.rfcSlug',
-                DB::raw('COUNT(DISTINCT rfc_threads.threadNumber) as threadCount'),
-                DB::raw('MAX(threads.lastUpdate) as lastActivity'),
-            ])
-            ->get()
-            ->mapWithKeys(fn(object $row) => [(string) $row->rfcSlug => new RfcActivity(
-                threadCount: (int) $row->threadCount,
-                lastActivity: $row->lastActivity !== null ? CarbonImmutable::parse($row->lastActivity) : null,
-            )]);
+            ->whereIn('emails.number', DB::table('rfc_threads')->select('threadNumber')->when($slugs !== null, fn($query) => $query->whereIn('rfcSlug', $slugs)))
+            ->get(['emails.number', 'emails.subject', 'threads.lastUpdate']);
+        $links = $this->rfcLinksOfThreads(
+            $threads->mapWithKeys(fn(object $thread) => [(int) $thread->number => (string) $thread->subject])->all(),
+            listedOnly: false,
+        );
+
+        $counts = [];
+        $lastUpdates = [];
+        foreach ($threads as $thread) {
+            $slug = ($links[(int) $thread->number] ?? null)?->primary?->slug;
+            if ($slug === null || ($slugs !== null && ! in_array($slug, $slugs, true))) {
+                continue;
+            }
+            $counts[$slug] = ($counts[$slug] ?? 0) + 1;
+            $lastUpdate = $thread->lastUpdate !== null ? CarbonImmutable::parse($thread->lastUpdate) : null;
+            if ($lastUpdate !== null && ($lastUpdates[$slug] ?? null)?->greaterThan($lastUpdate) !== true) {
+                $lastUpdates[$slug] = $lastUpdate;
+            }
+        }
+
+        return collect($counts)->map(fn(int $count, int|string $slug) => new RfcActivity(
+            threadCount: $count,
+            lastActivity: $lastUpdates[$slug] ?? null,
+        ));
     }
 
     /**

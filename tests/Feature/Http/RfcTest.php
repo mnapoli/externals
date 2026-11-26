@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Actions\RefreshAllThreads;
 use App\Models\Email;
 use App\Models\Rfc;
 use App\Models\RfcPoll;
 use App\Models\Thread;
+use App\Services\Rfc\RfcHighlights;
 use App\Services\Rfc\RfcStatus;
 use App\Services\Rfc\RfcThreads;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -59,17 +61,22 @@ test('lists the RFCs by status', function (): void {
     $response = $this->get('/rfc');
 
     $response->assertOk();
-    $response->assertSeeInOrder(['In voting', 'Enumerations', 'Implemented — PHP 8.5', 'Pipe operator', '1 thread']);
+    // Sections of the same status are grouped in the navigation, e.g. the PHP versions under "Implemented"
+    $response->assertSeeInOrder(['In voting', 'Implemented', 'href="#section-implemented-php-85"', 'PHP 8.5'], false);
+    $response->assertSeeInOrder(['Voting', 'Enumerations', 'Implemented', 'PHP 8.5', 'Pipe operator', 'Larry Garfield', '1 thread']);
     $response->assertSee('href="/rfc/pipe-operator-v3"', false);
     $response->assertDontSee('Unlisted RFC');
 });
 
-test('shows the first RFCs of each section, and the others on demand', function (): void {
+test('shows the first RFCs of each section once opened, and the others on demand', function (): void {
     foreach (range(1, 12) as $i) {
         Rfc::factory()->create(['title' => "Declined RFC $i", 'status' => RfcStatus::Declined, 'indexPosition' => $i]);
     }
 
+    // Declined RFCs are closed by default: nothing is rendered until the visitor opens them
     $component = Volt::test('pages.rfcs')
+        ->assertDontSee('Declined RFC 1')
+        ->call('open', 'Declined')
         ->assertSee('Declined RFC 10')
         ->assertDontSee('Declined RFC 11')
         ->assertSee('Show 2 more');
@@ -104,12 +111,12 @@ test('shows an RFC with its votes, threads and text', function (): void {
 
     $response->assertOk();
     $response->assertSee('Pipe operator');
-    $response->assertSee('Implemented (PHP 8.5)');
+    $response->assertSee('Implemented · PHP 8.5');
     $response->assertSee('Larry Garfield');
     $response->assertSeeInOrder(['Add the pipe operator?', 'Yes', '33', 'No', '7', 'alcaeus']);
     $response->assertSee('href="/message/100"', false);
     $response->assertSee('[RFC] Pipe Operator (again)');
-    $response->assertSee('<h2>Introduction</h2>', false);
+    $response->assertSee('<h2 id="rfc-introduction">Introduction</h2>', false);
     // Links to imported RFCs stay on externals.io
     $response->assertSee('href="' . url('/rfc/enumerations') . '"', false);
     $response->assertSee('href="https://wiki.php.net/rfc/unknown"', false);
@@ -207,7 +214,7 @@ test('threads show the RFCs they discuss', function (): void {
 
     $this->get('/message/100')
         ->assertSee('href="/rfc/pipe-operator-v3"', false)
-        ->assertSee('Implemented (PHP 8.5)')
+        ->assertSee('Implemented · PHP 8.5')
         ->assertSee('Yes: 33 · No: 7');
 
     expect($this->get('/message/100.md')->getContent())
@@ -250,4 +257,67 @@ test('the list of RFCs shows the avatar or the initials of the first author', fu
     $response->assertSee('https://www.gravatar.com/avatar/' . hash('sha256', 'larry@garfieldtech.com') . '?s=48&amp;d=blank', false);
     $response->assertSee('LG');
     $response->assertSee('SE');
+});
+
+test('RFCs only mentioned by a thread are not shown as its RFC', function (): void {
+    Rfc::factory()->create(['slug' => 'pipe-to-return', 'title' => 'Pipe to return', 'status' => RfcStatus::Discussion]);
+    Rfc::factory()->create(['slug' => 'pipe-assignment', 'title' => 'Pipe Assignment Operator', 'status' => RfcStatus::Declined]);
+    Email::factory()->create(['number' => 300, 'subject' => '[RFC] [Discussion] Pipe to return']);
+    app(RefreshAllThreads::class)->handle();
+    DB::table('rfc_threads')->insert([
+        ['rfcSlug' => 'pipe-to-return', 'threadNumber' => 300, 'source' => RfcThreads::SOURCE_EMAIL],
+        ['rfcSlug' => 'pipe-assignment', 'threadNumber' => 300, 'source' => RfcThreads::SOURCE_EMAIL],
+    ]);
+
+    $list = $this->get('/')->getContent();
+    expect($list)->toContain('RFC · Discussion')->not->toContain('RFC · Declined');
+
+    $this->get('/message/300')
+        ->assertSeeInOrder(['Pipe to return', 'Also mentions', 'Pipe Assignment Operator']);
+
+    $this->get('/rfc/pipe-to-return')->assertSeeInOrder(['id="discussions"', 'href="/message/300"'], false)->assertDontSee('Mentioned in');
+    $this->get('/rfc/pipe-assignment')->assertSeeInOrder(['Mentioned in', '[RFC] [Discussion] Pipe to return']);
+});
+
+test('a thread about an RFC no longer listed does not become the thread of the RFCs it mentions', function (): void {
+    Rfc::factory()->create(['slug' => 'pipe-to-return', 'title' => 'Pipe to return', 'status' => RfcStatus::Discussion, 'isListed' => false]);
+    Rfc::factory()->create(['slug' => 'pipe-assignment', 'title' => 'Pipe Assignment Operator', 'status' => RfcStatus::Declined]);
+    Email::factory()->create(['number' => 300, 'subject' => '[RFC] [Discussion] Pipe to return']);
+    app(RefreshAllThreads::class)->handle();
+    DB::table('rfc_threads')->insert([
+        ['rfcSlug' => 'pipe-to-return', 'threadNumber' => 300, 'source' => RfcThreads::SOURCE_EMAIL],
+        ['rfcSlug' => 'pipe-assignment', 'threadNumber' => 300, 'source' => RfcThreads::SOURCE_EMAIL],
+    ]);
+
+    expect($this->get('/')->getContent())->not->toContain('RFC · Declined');
+    $this->get('/message/300')->assertSeeInOrder(['Mentions', 'Pipe Assignment Operator'])->assertDontSee('Also mentions');
+    $this->get('/rfc/pipe-to-return')->assertSeeInOrder(['id="discussions"', 'href="/message/300"'], false);
+});
+
+test('the activity of an RFC only counts the threads about it', function (): void {
+    Rfc::factory()->create(['slug' => 'pipe-to-return', 'title' => 'Pipe to return', 'status' => RfcStatus::Discussion]);
+    Rfc::factory()->create(['slug' => 'pipe-assignment', 'title' => 'Pipe Assignment Operator', 'status' => RfcStatus::Discussion]);
+    Email::factory()->create(['number' => 300, 'subject' => '[RFC] [Discussion] Pipe to return']);
+    app(RefreshAllThreads::class)->handle();
+    DB::table('rfc_threads')->insert([
+        ['rfcSlug' => 'pipe-to-return', 'threadNumber' => 300, 'source' => RfcThreads::SOURCE_EMAIL],
+        ['rfcSlug' => 'pipe-assignment', 'threadNumber' => 300, 'source' => RfcThreads::SOURCE_EMAIL],
+    ]);
+
+    $activity = app(RfcThreads::class)->activityByRfc();
+
+    expect($activity->keys()->all())->toBe(['pipe-to-return'])
+        ->and($activity['pipe-to-return']->threadCount)->toBe(1)
+        ->and(app(RfcHighlights::class)->inDiscussion(5)->pluck('rfc.slug')->all())->toBe(['pipe-to-return']);
+});
+
+test('shows each implementation link of an RFC on its own line, with a short label', function (): void {
+    Rfc::factory()->create([
+        'slug' => 'pear',
+        'implementation' => 'https://github.com/php/php-src/pull/17118; https://example.com/pear (PoC)',
+    ]);
+
+    $this->get('/rfc/pear')
+        ->assertSee('<p><a class="text-accent-strong underline decoration-accent-line underline-offset-2 hover:decoration-accent-strong" href="https://github.com/php/php-src/pull/17118">php/php-src#17118</a></p>', false)
+        ->assertSee('<p><a class="text-accent-strong underline decoration-accent-line underline-offset-2 hover:decoration-accent-strong" href="https://example.com/pear">example.com/pear</a> (PoC)</p>', false);
 });
