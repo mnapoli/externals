@@ -122,8 +122,7 @@ class EmailSynchronizer
 
             return null;
         }
-        $fromArray = (new EmailAddressParser($fromHeader->getRawValue()))->parse();
-        $from = $fromArray[0] ?? null;
+        $from = EmailAddressParser::sender($fromHeader);
         if (! $from) {
             Log::warning("Cannot synchronize message $number because the 'from' header could not be parsed");
 
