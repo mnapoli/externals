@@ -12,6 +12,13 @@ test('the stored theme is applied by a script in the head, before the page is pa
     expect($head)->toContain("localStorage.getItem('theme')");
 });
 
+test('the browser bar on mobile takes the color of the header, in light and dark', function (): void {
+    $this->get('/')
+        ->assertOk()
+        ->assertSee('<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">', false)
+        ->assertSee('<meta name="theme-color" content="#1a1a21" media="(prefers-color-scheme: dark)">', false);
+});
+
 test('the footer offers a light, dark or auto theme, which browsers do not restore on Back', function (): void {
     $this->get('/')
         ->assertOk()

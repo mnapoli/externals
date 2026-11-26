@@ -6,12 +6,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{-- The color of the browser bar on mobile: the header's (--color-surface), in the system theme until one is picked in the footer --}}
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1a1a21" media="(prefers-color-scheme: dark)">
     {{-- The theme picked in the footer, applied before the first paint so the page doesn't flash in the other one --}}
     <script>
-        try {
-            const theme = localStorage.getItem('theme');
+        window.applyTheme = (theme) => {
+            const colors = { light: '#ffffff', dark: '#1a1a21' };
             if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
-        } catch {}
+            else delete document.documentElement.dataset.theme;
+            // A picked theme wins over the system one in both tags
+            for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
+                meta.content = colors[theme] ?? (meta.media.includes('dark') ? colors.dark : colors.light);
+            }
+        };
+        try { applyTheme(localStorage.getItem('theme')) } catch {}
     </script>
     <link rel="alternate" type="application/rss+xml" href="/rss" title="Latest emails"/>
     <link rel="alternate" type="application/rss+xml" href="/rss-rfc" title="Latest RFC Threads"/>
@@ -123,8 +132,7 @@
                          },
                          apply(theme) {
                              this.theme = theme;
-                             if (theme === 'auto') delete document.documentElement.dataset.theme;
-                             else document.documentElement.dataset.theme = theme;
+                             applyTheme(theme);
                          },
                          pick(theme) {
                              this.apply(theme);
