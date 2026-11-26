@@ -104,3 +104,11 @@ test('a sender without a name has only an address', function (): void {
 test('an obfuscated sender address is still read', function (): void {
     expect(parseSender('John Doe <john . doe@example.com>'))->email->toBe('john.doe@example.com')->name->toBe('John Doe');
 });
+
+test('a sender name written before an unbracketed address is not merged into the address', function (): void {
+    expect(parseSender('John Doe john@example.com'))->email->toBe('john@example.com')->name->toBe('John Doe');
+});
+
+test('a sender whose name is their address has no name', function (): void {
+    expect(parseSender('"john@example.com" <john@example.com>'))->email->toBe('john@example.com')->name->toBeNull();
+});

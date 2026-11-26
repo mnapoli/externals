@@ -28,15 +28,19 @@ class EmailAddressParser
     /**
      * The sender of an email. The mail parser decodes names ("=?UTF-8?Q?…?=") and quoted names
      * ("Doe, John"), and this parser fills in what it misses, e.g. names written as a comment.
+     * The address comes from this parser first: the mail parser merges an unbracketed name into it.
      */
     public static function sender(IHeader $from): ?EmailAddress
     {
         $loose = (new self($from->getRawValue()))->parse()[0] ?? null;
         $email = $from instanceof AddressHeader ? $from->getEmail() : null;
-        $name = $from instanceof AddressHeader ? $from->getPersonName() : null;
+        $name = $from instanceof AddressHeader ? mb_trim((string) $from->getPersonName()) : '';
 
-        $email = filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : $loose?->email;
-        $name = $name !== null && mb_trim($name) !== '' ? mb_trim($name) : $loose?->name;
+        $email = $loose->email ?? (filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : null);
+        $name = $name !== '' ? $name : $loose?->name;
+        if ($name === $email) {
+            $name = null;
+        }
         if ($email === null && $name === null) {
             return null;
         }
