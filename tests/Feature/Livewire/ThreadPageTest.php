@@ -70,3 +70,17 @@ test('the thread list counts the messages received since the last visit', functi
         ->test('thread-list', ['mode' => 'latest'])
         ->assertSee('2 new');
 });
+
+test('the outline shows how long ago each message was sent, and the replies of the last 24 hours stand out', function (): void {
+    $this->travelTo('2026-11-26 12:00:00');
+    $root = Email::factory()->create(['number' => 1, 'date' => '2026-10-07 10:32:00']);
+    Email::factory()->replyTo($root)->create(['number' => 2, 'date' => '2026-10-08 09:00:00']);
+    Email::factory()->replyTo($root)->create(['number' => 3, 'date' => '2026-11-25 08:00:00']);
+    Email::factory()->replyTo($root)->create(['number' => 4, 'date' => '2026-11-26 09:00:00']);
+
+    $html = $this->get('/message/1')->assertOk()->getContent();
+
+    expect($html)->toContain('text-faint" datetime="2026-10-07T10:32:00+00:00" title="Wed, Oct 7, 2026 at 10:32 UTC">1mo</time>')
+        ->toContain('text-faint" datetime="2026-11-25T08:00:00+00:00" title="Wed, Nov 25, 2026 at 08:00 UTC">1d</time>')
+        ->toContain('text-ink" datetime="2026-11-26T09:00:00+00:00" title="Thu, Nov 26, 2026 at 09:00 UTC">3h</time>');
+});

@@ -199,7 +199,9 @@ new #[Layout('components.layouts.app')] class extends Component {
                                 <span class="w-[7px] h-[7px] shrink-0 rounded-full bg-accent" aria-hidden="true"></span><span class="sr-only">Unread:</span>
                             @endif
                             <span class="truncate">{{ $message->email->from->getNameOrEmail() }}</span>
-                            <time class="ml-auto pl-2 font-mono text-[11px] font-normal text-faint" datetime="{{ $message->email->date->format(DATE_ATOM) }}">{{ $message->email->date->format($first && $message->email->date->format('Ymd') === $first->date->format('Ymd') ? 'H:i' : 'M j') }}</time>
+                            @php($sent = \Carbon\Carbon::instance($message->email->date))
+                            @php($recent = $sent->isAfter(now()->subDay()))
+                            <time @class(['ml-auto pl-2 font-mono text-[11px] font-normal', 'text-ink' => $recent, 'text-faint' => ! $recent]) datetime="{{ $sent->toAtomString() }}" title="{{ $sent->format('D, M j, Y \a\t H:i') }} UTC">{{ \App\Support\ShortTimeAgo::of($sent) }}</time>
                         </a>
                     </li>
                 @endforeach
