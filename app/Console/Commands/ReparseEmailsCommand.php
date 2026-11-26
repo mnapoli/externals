@@ -11,13 +11,13 @@ use ZBateson\MailMimeParser\MailMimeParser;
 
 class ReparseEmailsCommand extends Command
 {
-    protected $signature = 'externals:reparse';
+    protected $signature = 'externals:reparse {--from= : The number of the email to start from, e.g. to resume a run that stopped; it goes down to the first email}';
     protected $description = 'Re-parse the content of every email from its stored source';
 
     public function handle(EmailContentParser $parser): int
     {
         $start = microtime(true);
-        $maxNumber = (int) Email::max('number');
+        $maxNumber = $this->option('from') === null ? (int) Email::max('number') : (int) $this->option('from');
         $mailParser = new MailMimeParser;
 
         for ($number = $maxNumber; $number > 0; $number--) {

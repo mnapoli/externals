@@ -52,6 +52,8 @@ class EmailContentParser
      */
     public function toMarkdown(string $content): string
     {
+        // The decoded text can hold bytes that aren't UTF-8 when an email declares the wrong charset, which MySQL rejects
+        $content = mb_scrub($content, 'UTF-8');
         $content = $this->stripMailingListFooter($content);
         $content = mb_rtrim($content, " \t\n\r\0\x0B->");
         $content = $this->stripTrailingUnindentedQuotation($content);
