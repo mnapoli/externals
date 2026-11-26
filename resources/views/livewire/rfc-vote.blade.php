@@ -58,12 +58,12 @@ new class extends Component {
                     <button type="button" wire:click="vote({{ $value }})" aria-pressed="{{ $userVote === $value ? 'true' : 'false' }}"
                             @class([
                                 'inline-flex items-center justify-center gap-2 h-10 px-3 rounded-md border text-sm font-medium cursor-pointer transition-colors',
-                                'border-accent bg-accent text-white' => $userVote === $value,
+                                'border-accent bg-accent text-on-accent' => $userVote === $value,
                                 'border-line-strong bg-surface text-ink hover:border-accent-line hover:bg-accent-soft' => $userVote !== $value,
                             ])>
                         <span class="text-xs" aria-hidden="true">{{ $arrow }}</span>
                         {{ $label }}
-                        <span @class(['font-mono tabular-nums', 'text-white/80' => $userVote === $value, 'text-muted' => $userVote !== $value])>{{ $count }}</span>
+                        <span @class(['font-mono tabular-nums', 'text-on-accent/80' => $userVote === $value, 'text-muted' => $userVote !== $value])>{{ $count }}</span>
                     </button>
                 @endforeach
             </div>
