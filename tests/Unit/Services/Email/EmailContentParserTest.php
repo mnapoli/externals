@@ -150,6 +150,23 @@ test('should linkify links', function (): void {
     $this->assertEquals($expected, mb_trim($this->parser->parse($content)));
 });
 
+test('file names written without a scheme are not links', function (string $content): void {
+    expect(mb_trim($this->parser->parse($content)))->toBe("<p>$content</p>");
+})->with([
+    'a shared library' => ['Load opcache.so before xdebug.so'],
+    'an autoconf template' => ['See configure.in and Makefile.in'],
+    'a script' => ['Run build/buildcheck.sh first'],
+    'an archive' => ['Download php-8.4.0-Win32.zip'],
+]);
+
+test('websites with the same endings are still links', function (string $content, string $href): void {
+    expect($this->parser->parse($content))->toContain('<a href="' . $href . '"');
+})->with([
+    'with a scheme' => ['See https://example.so/page', 'https://example.so/page'],
+    'starting with www' => ['See www.example.in', 'http://www.example.in'],
+    'another ending' => ['See wiki.php.net/rfc/enums', 'http://wiki.php.net/rfc/enums'],
+]);
+
 test('should detect php functions', function (): void {
     $content = 'Try to call preg_match() without parameters.';
     $expected = '<p>Try to call <code>preg_match()</code> without parameters.</p>';

@@ -14,6 +14,12 @@ use VStelmakh\UrlHighlight\UrlHighlight;
 
 class EmailContentParser
 {
+    /**
+     * Endings of domains that are also common file extensions, e.g. "opcache.so", "configure.in" or "build.sh".
+     * Written without "https://", these are file names, not websites.
+     */
+    private const array FILE_EXTENSIONS = ['so', 'la', 'in', 'sh', 'py', 'rs', 'pl', 'pm', 'md', 'cc', 'ac', 'am', 'mo', 'zip', 'inc'];
+
     public function __construct(
         private readonly UrlHighlight $urlHighlight,
         private readonly CommonMarkConverter $markdownParser,
@@ -111,6 +117,10 @@ class EmailContentParser
     private function highlightUrls(string $content): string
     {
         $highlighter = new CallbackHighlighter(function (Url $url): string {
+            if ($this->isFileName($url)) {
+                return $url->full;
+            }
+
             return Anchor::fromUrl($url)
                 ->withAttribute('rel', 'nofollow')
                 ->withAttribute('target', '_blank')
@@ -118,5 +128,15 @@ class EmailContentParser
         });
 
         return $this->urlHighlight->highlight($content, $highlighter);
+    }
+
+    private function isFileName(Url $url): bool
+    {
+        if ($url->scheme !== null || $url->isEmail() || str_starts_with(mb_strtolower($url->host), 'www.')) {
+            return false;
+        }
+        $extension = mb_strtolower(mb_substr((string) mb_strrchr($url->host, '.'), 1));
+
+        return in_array($extension, self::FILE_EXTENSIONS, true);
     }
 }
