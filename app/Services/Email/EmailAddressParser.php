@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace App\Services\Email;
 
 use App\Support\Email\EmailAddress;
+use ZBateson\MailMimeParser\Header\AddressHeader;
+use ZBateson\MailMimeParser\Header\IHeader;
 
 /**
+ * Parses the loose addresses found in old emails: "john@example.com (John Doe)", "john . doe@example.com"…
+ *
  * @see https://github.com/madewithlove/why-cant-we-have-nice-things/blob/master/src/Services/IdentityExtractor.php
  */
 class EmailAddressParser
@@ -20,6 +24,25 @@ class EmailAddressParser
     public function __construct(
         private readonly string $string,
     ) {}
+
+    /**
+     * The sender of an email. The mail parser decodes names ("=?UTF-8?Q?…?=") and quoted names
+     * ("Doe, John"), and this parser fills in what it misses, e.g. names written as a comment.
+     */
+    public static function sender(IHeader $from): ?EmailAddress
+    {
+        $loose = (new self($from->getRawValue()))->parse()[0] ?? null;
+        $email = $from instanceof AddressHeader ? $from->getEmail() : null;
+        $name = $from instanceof AddressHeader ? $from->getPersonName() : null;
+
+        $email = filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : $loose?->email;
+        $name = $name !== null && mb_trim($name) !== '' ? mb_trim($name) : $loose?->name;
+        if ($email === null && $name === null) {
+            return null;
+        }
+
+        return new EmailAddress($email, $name);
+    }
 
     /**
      * @return EmailAddress[]
