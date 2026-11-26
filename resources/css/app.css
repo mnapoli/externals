@@ -77,7 +77,6 @@ html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
 /* Email body, rendered from the plain-text email */
 .email-content {
     @apply text-base leading-relaxed;
-    max-width: 68ch;
     overflow-wrap: anywhere;
 }
 .email-content p, .email-content ol, .email-content ul, .email-content pre, .email-content blockquote, .email-content details {
