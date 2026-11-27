@@ -11,7 +11,7 @@ use App\Services\Rfc\RfcStatus;
 use App\Services\Rfc\RfcThreads;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Livewire\Volt\Volt;
+use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
@@ -20,7 +20,7 @@ test('page count reflects thread root count', function (): void {
     app(RefreshAllThreads::class)->handle();
 
     // 25 threads / 20 per page = 2 pages
-    Volt::test('thread-list', ['mode' => 'latest'])
+    Livewire::test('thread-list', ['mode' => 'latest'])
         ->assertViewHas('pageCount', 2);
 });
 
@@ -28,7 +28,7 @@ test('a page out of range shows the closest page', function (): void {
     Email::factory()->count(25)->create();
     app(RefreshAllThreads::class)->handle();
 
-    Volt::test('thread-list', ['mode' => 'latest'])
+    Livewire::test('thread-list', ['mode' => 'latest'])
         ->set('page', -3)->assertSet('page', 1)
         ->set('page', 99)->assertSet('page', 2);
 });
@@ -36,7 +36,7 @@ test('a page out of range shows the closest page', function (): void {
 test('guest cannot vote', function (): void {
     Email::factory()->create(['number' => 42]);
 
-    Volt::test('thread-list', ['mode' => 'latest'])
+    Livewire::test('thread-list', ['mode' => 'latest'])
         ->call('vote', 42, 1);
 
     $this->assertDatabaseCount('votes', 0);
@@ -46,7 +46,7 @@ test('authenticated user can vote', function (): void {
     Email::factory()->create(['number' => 42]);
     $user = User::factory()->create();
 
-    Volt::actingAs($user)
+    Livewire::actingAs($user)
         ->test('thread-list', ['mode' => 'latest'])
         ->call('vote', 42, 1);
 
@@ -61,7 +61,7 @@ test('clicking the active vote again removes it', function (): void {
     Email::factory()->create(['number' => 42]);
     $user = User::factory()->create();
 
-    $component = Volt::actingAs($user)->test('thread-list', ['mode' => 'latest']);
+    $component = Livewire::actingAs($user)->test('thread-list', ['mode' => 'latest']);
     $component->call('vote', 42, 1);
     $component->call('vote', 42, 1);
 
@@ -77,7 +77,7 @@ test('top mode lists recently updated threads with positive votes', function ():
     Vote::factory()->create(['userId' => User::factory()->create()->id, 'emailNumber' => 42, 'value' => 1]);
     app(RefreshAllThreads::class)->handle();
 
-    Volt::test('thread-list', ['mode' => 'top'])
+    Livewire::test('thread-list', ['mode' => 'top'])
         ->assertSee('Voted recent thread');
 });
 
@@ -89,7 +89,7 @@ test('top mode excludes threads without positive votes', function (): void {
     ]);
     app(RefreshAllThreads::class)->handle();
 
-    Volt::test('thread-list', ['mode' => 'top'])
+    Livewire::test('thread-list', ['mode' => 'top'])
         ->assertDontSee('Unvoted recent thread');
 });
 
@@ -102,7 +102,7 @@ test('top mode excludes voted threads older than a month', function (): void {
     Vote::factory()->create(['userId' => User::factory()->create()->id, 'emailNumber' => 42, 'value' => 1]);
     app(RefreshAllThreads::class)->handle();
 
-    Volt::test('thread-list', ['mode' => 'top'])
+    Livewire::test('thread-list', ['mode' => 'top'])
         ->assertDontSee('Voted stale thread');
 });
 
@@ -117,7 +117,7 @@ test('threads link to the RFCs they discuss', function (): void {
         ['rfcSlug' => 'pipe-operator-v3', 'threadNumber' => 42, 'source' => RfcThreads::SOURCE_WIKI],
     ]);
 
-    $html = Volt::test('thread-list', ['mode' => 'latest'])->html();
+    $html = Livewire::test('thread-list', ['mode' => 'latest'])->html();
 
     expect(mb_substr_count($html, 'href="/rfc/pipe-operator-v3"'))->toBe(1);
     expect($html)->toContain('RFC · Voting');

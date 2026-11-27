@@ -4,7 +4,7 @@ use App\Actions\ToggleReaction;
 use App\Services\Email\ReactionQuery;
 use App\Support\Reaction;
 use Livewire\Attributes\Locked;
-use Livewire\Volt\Component;
+use Livewire\Component;
 
 /*
  * Emoji reactions on one email. A component of its own so that reacting doesn't re-render the whole thread.

@@ -1,6 +1,5 @@
 <?php
 
-use App\Support\ComputesViewDataOnce;
 use App\Actions\CastVote;
 use App\Models\Email;
 use App\Models\Vote;
@@ -10,11 +9,9 @@ use App\Services\Rfc\ThreadRfcs;
 use App\Support\Email\ThreadSummary;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Url;
-use Livewire\Volt\Component;
+use Livewire\Component;
 
 new class extends Component {
-    use ComputesViewDataOnce;
-
     /** Either "latest" or "top". */
     public string $mode = 'latest';
 
@@ -47,7 +44,7 @@ new class extends Component {
     /**
      * @return array<string, mixed>
      */
-    protected function viewData(): array
+    public function with(): array
     {
         $user = auth()->user();
 

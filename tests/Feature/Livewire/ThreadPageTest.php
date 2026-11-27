@@ -7,7 +7,7 @@ use App\Models\Email;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Livewire\Volt\Volt;
+use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
@@ -48,7 +48,7 @@ test('user can vote on the thread page', function (): void {
     Email::factory()->create(['number' => 42]);
     $user = User::factory()->create();
 
-    Volt::actingAs($user)
+    Livewire::actingAs($user)
         ->test('thread-vote', ['number' => 42])
         ->call('vote', 1)
         ->assertSet('votes', 1)
@@ -66,7 +66,7 @@ test('the thread list counts the messages received since the last visit', functi
     app(RefreshAllThreads::class)->handle();
     DB::table('user_emails_read')->insert(['emailId' => $root->id, 'userId' => $user->id, 'lastReadDate' => '2026-01-02 10:00:00']);
 
-    Volt::actingAs($user)
+    Livewire::actingAs($user)
         ->test('thread-list', ['mode' => 'latest'])
         ->assertSee('2 new');
 });

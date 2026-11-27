@@ -8,14 +8,14 @@ use App\Models\User;
 use App\Services\Rfc\RfcList;
 use App\Services\Rfc\RfcStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Volt\Volt;
+use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
 test('guest cannot vote on an RFC', function (): void {
     $rfc = Rfc::factory()->create();
 
-    Volt::test('rfc-vote', ['rfcId' => $rfc->id])
+    Livewire::test('rfc-vote', ['rfcId' => $rfc->id])
         ->call('vote', 1);
 
     $this->assertDatabaseCount('rfc_votes', 0);
@@ -26,7 +26,7 @@ test('user can upvote and downvote an RFC', function (): void {
     $user = User::factory()->create();
     RfcVote::create(['userId' => User::factory()->create()->id, 'rfcId' => $rfc->id, 'value' => 1, 'updatedAt' => now()]);
 
-    $component = Volt::actingAs($user)->test('rfc-vote', ['rfcId' => $rfc->id, 'upvotes' => 1]);
+    $component = Livewire::actingAs($user)->test('rfc-vote', ['rfcId' => $rfc->id, 'upvotes' => 1]);
 
     $component->call('vote', 1)
         ->assertSet('upvotes', 2)
@@ -44,7 +44,7 @@ test('clicking the active vote again removes it', function (): void {
     $rfc = Rfc::factory()->create();
     $user = User::factory()->create();
 
-    Volt::actingAs($user)->test('rfc-vote', ['rfcId' => $rfc->id])
+    Livewire::actingAs($user)->test('rfc-vote', ['rfcId' => $rfc->id])
         ->call('vote', 1)
         ->call('vote', 1)
         ->assertSet('upvotes', 0)
@@ -57,10 +57,10 @@ test('archived RFCs are closed to community votes', function (): void {
     $rfc = Rfc::factory()->create(['status' => RfcStatus::Implemented]);
     $user = User::factory()->create();
 
-    Volt::actingAs($user)->test('rfc-vote', ['rfcId' => $rfc->id, 'canVote' => false])
+    Livewire::actingAs($user)->test('rfc-vote', ['rfcId' => $rfc->id, 'canVote' => false])
         ->call('vote', 1);
     // Even if the client claims otherwise
-    Volt::actingAs($user)->test('rfc-vote', ['rfcId' => $rfc->id])
+    Livewire::actingAs($user)->test('rfc-vote', ['rfcId' => $rfc->id])
         ->call('vote', 1);
 
     $this->assertDatabaseCount('rfc_votes', 0);

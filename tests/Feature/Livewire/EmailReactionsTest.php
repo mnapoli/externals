@@ -8,14 +8,14 @@ use App\Models\User;
 use App\Services\Email\ReactionQuery;
 use App\Support\Reaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Volt\Volt;
+use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
 test('guest is sent to the login instead of reacting', function (): void {
     Email::factory()->create(['number' => 42]);
 
-    Volt::test('email-reactions', ['emailNumber' => 42])
+    Livewire::test('email-reactions', ['emailNumber' => 42])
         ->call('toggle', '+1')
         ->assertRedirect(route('login'));
 
@@ -28,7 +28,7 @@ test('user can add and remove a reaction', function (): void {
     $other = User::factory()->create();
     EmailReaction::create(['userId' => $other->id, 'emailNumber' => 42, 'reaction' => Reaction::Rocket, 'createdAt' => now()]);
 
-    $component = Volt::actingAs($user)->test('email-reactions', ['emailNumber' => 42, 'counts' => [['reaction' => 'rocket', 'count' => 1]]]);
+    $component = Livewire::actingAs($user)->test('email-reactions', ['emailNumber' => 42, 'counts' => [['reaction' => 'rocket', 'count' => 1]]]);
 
     $component->call('toggle', '+1')
         ->assertSet('counts', [['reaction' => '+1', 'count' => 1], ['reaction' => 'rocket', 'count' => 1]])
@@ -43,7 +43,7 @@ test('user can add and remove a reaction', function (): void {
 test('unknown reactions are ignored', function (): void {
     Email::factory()->create(['number' => 42]);
 
-    Volt::actingAs(User::factory()->create())
+    Livewire::actingAs(User::factory()->create())
         ->test('email-reactions', ['emailNumber' => 42])
         ->call('toggle', 'thinking');
 
@@ -76,7 +76,7 @@ test('reactions are shown on the thread page', function (): void {
 test('the thumbs down reaction can be toggled', function (): void {
     Email::factory()->create(['number' => 42]);
 
-    Volt::actingAs(User::factory()->create())
+    Livewire::actingAs(User::factory()->create())
         ->test('email-reactions', ['emailNumber' => 42])
         ->call('toggle', '-1')
         ->assertSet('counts', [['reaction' => '-1', 'count' => 1]])

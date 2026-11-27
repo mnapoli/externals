@@ -1,17 +1,14 @@
 <?php
 
-use App\Support\ComputesViewDataOnce;
 use App\Services\Rfc\RfcHighlights;
 use Livewire\Attributes\Layout;
-use Livewire\Volt\Component;
+use Livewire\Component;
 
 new #[Layout('components.layouts.app')] class extends Component {
-    use ComputesViewDataOnce;
-
     /**
      * @return array<string, mixed>
      */
-    protected function viewData(): array
+    public function with(): array
     {
         $highlights = app(RfcHighlights::class);
 

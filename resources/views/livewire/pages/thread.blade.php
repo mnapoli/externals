@@ -1,6 +1,5 @@
 <?php
 
-use App\Support\ComputesViewDataOnce;
 use App\Actions\MarkEmailAsRead;
 use App\Exceptions\NotFoundException;
 use App\Models\Email;
@@ -14,11 +13,9 @@ use App\Support\Email\ThreadItem;
 use App\Support\Email\ThreadStructuredData;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
-use Livewire\Volt\Component;
+use Livewire\Component;
 
 new #[Layout('components.layouts.app')] class extends Component {
-    use ComputesViewDataOnce;
-
     public int $number = 0;
 
     public string $subject = '';
@@ -70,7 +67,7 @@ new #[Layout('components.layouts.app')] class extends Component {
     /**
      * @return array<string, mixed>
      */
-    protected function viewData(): array
+    public function with(): array
     {
         $messages = array_merge(...array_map(fn(ThreadItem $item) => $item->flatten(), $this->thread));
         $userId = auth()->id();
