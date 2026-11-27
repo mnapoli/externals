@@ -34,7 +34,7 @@ It is the only place where the internals mailing list and the RFC wiki are woven
 
 ## Capabilities and Constraints
 
-- Laravel + Livewire/Volt + Tailwind v4, serverless on AWS Lambda via Bref.
+- Laravel + Livewire + Tailwind v4, serverless on AWS Lambda via Bref.
 - Pages: latest threads, top, RFC list and RFC pages, thread pages, search (Algolia), stats, news.
 - Signals that coexist and must stay visually distinct:
   - thread votes (▲/▼, net score; drives "Top");

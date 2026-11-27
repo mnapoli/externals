@@ -7,9 +7,3 @@ parameters:
 
     paths:
         - app
-
-    ignoreErrors:
-        # Used by the Volt components, in Blade files that PHPStan doesn't analyse
-        -
-            identifier: trait.unused
-            path: app/Support/ComputesViewDataOnce.php

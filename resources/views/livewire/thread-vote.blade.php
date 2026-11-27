@@ -3,7 +3,7 @@
 use App\Actions\CastVote;
 use App\Models\Vote;
 use Livewire\Attributes\Locked;
-use Livewire\Volt\Component;
+use Livewire\Component;
 
 /*
  * Vote on a thread, on the thread page. A component of its own so that voting doesn't re-render the whole thread.

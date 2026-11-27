@@ -4,7 +4,7 @@ use App\Actions\CastRfcVote;
 use App\Models\Rfc;
 use App\Models\RfcVote;
 use Livewire\Attributes\Locked;
-use Livewire\Volt\Component;
+use Livewire\Component;
 
 /*
  * Community vote on an RFC. A component of its own so that voting doesn't re-render the whole list of RFCs.

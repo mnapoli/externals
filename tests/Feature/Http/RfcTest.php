@@ -12,7 +12,7 @@ use App\Services\Rfc\RfcStatus;
 use App\Services\Rfc\RfcThreads;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Livewire\Volt\Volt;
+use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
@@ -74,7 +74,7 @@ test('shows the first RFCs of each section once opened, and the others on demand
     }
 
     // Declined RFCs are closed by default: nothing is rendered until the visitor opens them
-    $component = Volt::test('pages.rfcs')
+    $component = Livewire::test('pages.rfcs')
         ->assertDontSee('Declined RFC 1')
         ->call('open', 'Declined')
         ->assertSee('Declined RFC 10')
@@ -92,7 +92,7 @@ test('filters the RFCs by title or slug', function (): void {
         Rfc::factory()->create(['title' => "Declined RFC $i", 'status' => RfcStatus::Declined, 'indexPosition' => 10 + $i]);
     }
 
-    Volt::test('pages.rfcs')
+    Livewire::test('pages.rfcs')
         ->set('q', 'PIPE-operator')
         ->assertSee('Pipe operator')
         ->assertDontSee('Enumerations')
