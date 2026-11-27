@@ -58,10 +58,22 @@ class EmailContentParser
         $content = mb_rtrim($content, " \t\n\r\0\x0B->");
         $content = $this->stripTrailingUnindentedQuotation($content);
         $content = $this->stripQuoteHeaders($content);
+        $content = $this->stripRepeatedLinks($content);
 
         $content = $this->parsePhpFunctions($content);
 
         return $this->parsePhpConstants($content);
+    }
+
+    /**
+     * Mail clients write the words they turned into links followed by the link, e.g. "libphp.so<http://libphp.so>"
+     * or "https://php.net<https://php.net>": the text is enough.
+     */
+    private function stripRepeatedLinks(string $content): string
+    {
+        $content = preg_replace('#([^\s<>]+)<(?:https?://|mailto:)\1/?>#i', '$1', $content) ?? $content;
+
+        return preg_replace('#((?:https?://|mailto:)[^\s<>]+)<\1/?>#i', '$1', $content) ?? $content;
     }
 
     private function parsePhpFunctions(string $content): string
