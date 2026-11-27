@@ -73,7 +73,8 @@
                 "issues": "https://github.com/algolia/algoliasearch-client-php/issues",
                 "source": "https://github.com/algolia/algoliasearch-client-php/tree/4.55.0"
             },
-            "time": "2026-11-17T13:47:05+00:00"
+            "time": "2026-11-17T13:47:05+00:00",
+            "published-time": "2026-11-17T13:47:11+00:00"
         },
         {
             "name": "aws/aws-crt-php",
@@ -127,20 +128,21 @@
                 "issues": "https://github.com/awslabs/aws-crt-php/issues",
                 "source": "https://github.com/awslabs/aws-crt-php/tree/v1.2.7"
             },
-            "time": "2024-10-18T22:15:13+00:00"
+            "time": "2024-10-18T22:15:13+00:00",
+            "published-time": "2024-10-23T18:30:53+00:00"
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.407.1",
+            "version": "3.408.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "205fcddb1f2bc9ac98412d6f1eeb4ad5d5ac7229"
+                "reference": "6ef06d2fbda9570d766b4146e1dadc5e24f6bc78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/205fcddb1f2bc9ac98412d6f1eeb4ad5d5ac7229",
-                "reference": "205fcddb1f2bc9ac98412d6f1eeb4ad5d5ac7229",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/6ef06d2fbda9570d766b4146e1dadc5e24f6bc78",
+                "reference": "6ef06d2fbda9570d766b4146e1dadc5e24f6bc78",
                 "shasum": ""
             },
             "require": {
@@ -222,9 +224,10 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.407.1"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.408.0"
             },
-            "time": "2026-11-21T00:21:38+00:00"
+            "time": "2026-11-25T19:08:58+00:00",
+            "published-time": "2026-11-25T19:16:29+00:00"
         },
         {
             "name": "bref/bref",
@@ -301,7 +304,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-11-19T14:53:34+00:00"
+            "time": "2026-11-19T14:53:34+00:00",
+            "published-time": "2026-11-19T14:56:00+00:00"
         },
         {
             "name": "bref/laravel-bridge",
@@ -373,7 +377,8 @@
                 "issues": "https://github.com/brefphp/laravel-bridge/issues",
                 "source": "https://github.com/brefphp/laravel-bridge/tree/3.1.8"
             },
-            "time": "2026-11-15T21:06:41+00:00"
+            "time": "2026-11-15T21:06:41+00:00",
+            "published-time": "2026-11-15T21:11:34+00:00"
         },
         {
             "name": "bref/laravel-health-check",
@@ -429,7 +434,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-26T14:43:26+00:00"
+            "time": "2026-02-26T14:43:26+00:00",
+            "published-time": "2026-02-26T14:43:51+00:00"
         },
         {
             "name": "bref/logger",
@@ -538,7 +544,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-09-26T19:17:27+00:00"
+            "time": "2026-09-26T19:17:27+00:00",
+            "published-time": "2026-09-26T19:18:43+00:00"
         },
         {
             "name": "brick/math",
@@ -731,7 +738,8 @@
                 "issues": "https://github.com/crwlrsoft/query-string/issues",
                 "source": "https://github.com/crwlrsoft/query-string"
             },
-            "time": "2023-04-12T21:31:58+00:00"
+            "time": "2023-04-12T21:31:58+00:00",
+            "published-time": "2023-04-12T21:34:54+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -1181,7 +1189,8 @@
                 "issues": "https://github.com/googleapis/php-jwt/issues",
                 "source": "https://github.com/googleapis/php-jwt/tree/v7.2.2"
             },
-            "time": "2026-11-17T00:25:19+00:00"
+            "time": "2026-11-17T00:25:19+00:00",
+            "published-time": "2026-11-17T19:16:00+00:00"
         },
         {
             "name": "fruitcake/php-cors",
@@ -1797,7 +1806,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-05T12:05:19+00:00"
+            "time": "2026-10-05T12:05:19+00:00",
+            "published-time": "2026-10-05T12:05:43+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -1947,7 +1957,8 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-11-04T10:34:30+00:00"
+            "time": "2026-11-04T10:34:30+00:00",
+            "published-time": "2026-11-04T10:56:11+00:00"
         },
         {
             "name": "laravel/framework",
@@ -2185,16 +2196,16 @@
         },
         {
             "name": "laravel/octane",
-            "version": "v2.25.0",
+            "version": "v2.26.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/octane.git",
-                "reference": "011378678beb71729a773668fda74dba78f44aec"
+                "reference": "68f6941c4499ddf3cff48b8e5e94d46e57ca3601"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/octane/zipball/011378678beb71729a773668fda74dba78f44aec",
-                "reference": "011378678beb71729a773668fda74dba78f44aec",
+                "url": "https://api.github.com/repos/laravel/octane/zipball/68f6941c4499ddf3cff48b8e5e94d46e57ca3601",
+                "reference": "68f6941c4499ddf3cff48b8e5e94d46e57ca3601",
                 "shasum": ""
             },
             "require": {
@@ -2270,7 +2281,8 @@
                 "issues": "https://github.com/laravel/octane/issues",
                 "source": "https://github.com/laravel/octane"
             },
-            "time": "2026-11-17T14:41:32+00:00"
+            "time": "2026-11-18T13:22:02+00:00",
+            "published-time": "2026-11-24T16:25:19+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -2463,7 +2475,8 @@
                 "issues": "https://github.com/laravel/socialite/issues",
                 "source": "https://github.com/laravel/socialite"
             },
-            "time": "2026-11-11T14:30:26+00:00"
+            "time": "2026-11-11T14:30:26+00:00",
+            "published-time": "2026-11-17T15:22:18+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -2531,7 +2544,8 @@
                 "issues": "https://github.com/laravel/tinker/issues",
                 "source": "https://github.com/laravel/tinker/tree/v3.2.0"
             },
-            "time": "2026-11-11T14:11:46+00:00"
+            "time": "2026-11-11T14:11:46+00:00",
+            "published-time": "2026-11-17T15:22:49+00:00"
         },
         {
             "name": "league/commonmark",
@@ -2946,7 +2960,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-19T04:13:34+00:00"
+            "time": "2026-10-19T04:13:34+00:00",
+            "published-time": "2026-10-19T04:15:03+00:00"
         },
         {
             "name": "league/mime-type-detection",
@@ -3079,7 +3094,8 @@
                 "issues": "https://github.com/thephpleague/oauth1-client/issues",
                 "source": "https://github.com/thephpleague/oauth1-client/tree/v1.12.0"
             },
-            "time": "2026-09-19T05:12:51+00:00"
+            "time": "2026-09-19T05:12:51+00:00",
+            "published-time": "2026-09-19T05:15:31+00:00"
         },
         {
             "name": "league/uri",
@@ -3268,16 +3284,16 @@
         },
         {
             "name": "livewire/livewire",
-            "version": "v4.4.8",
+            "version": "v4.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/livewire.git",
-                "reference": "8d7f8fc6138274a2f3384c9db354ca012215a259"
+                "reference": "33bd7d18b52d787b107bb7da9911be3c392b88c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/livewire/zipball/8d7f8fc6138274a2f3384c9db354ca012215a259",
-                "reference": "8d7f8fc6138274a2f3384c9db354ca012215a259",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/33bd7d18b52d787b107bb7da9911be3c392b88c3",
+                "reference": "33bd7d18b52d787b107bb7da9911be3c392b88c3",
                 "shasum": ""
             },
             "require": {
@@ -3332,7 +3348,7 @@
             "description": "A front-end framework for Laravel.",
             "support": {
                 "issues": "https://github.com/livewire/livewire/issues",
-                "source": "https://github.com/livewire/livewire/tree/v4.4.8"
+                "source": "https://github.com/livewire/livewire/tree/v4.4.10"
             },
             "funding": [
                 {
@@ -3340,7 +3356,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-21T12:53:46+00:00"
+            "time": "2026-11-24T13:59:35+00:00",
+            "published-time": "2026-11-24T14:27:22+00:00"
         },
         {
             "name": "livewire/volt",
@@ -3411,7 +3428,8 @@
                 "issues": "https://github.com/livewire/volt/issues",
                 "source": "https://github.com/livewire/volt"
             },
-            "time": "2026-07-31T16:13:54+00:00"
+            "time": "2026-07-31T16:13:54+00:00",
+            "published-time": "2026-08-04T19:32:00+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3578,7 +3596,8 @@
                 "issues": "https://github.com/jmespath/jmespath.php/issues",
                 "source": "https://github.com/jmespath/jmespath.php/tree/2.10.0"
             },
-            "time": "2026-11-17T14:51:12+00:00"
+            "time": "2026-11-17T14:51:12+00:00",
+            "published-time": "2026-11-17T14:51:38+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -3995,16 +4014,16 @@
         },
         {
             "name": "nyholm/psr7",
-            "version": "1.8.2",
+            "version": "1.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Nyholm/psr7.git",
-                "reference": "a71f2b11690f4b24d099d6b16690a90ae14fc6f3"
+                "reference": "26c1581611614447a5ff753a450390a23f3e323e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Nyholm/psr7/zipball/a71f2b11690f4b24d099d6b16690a90ae14fc6f3",
-                "reference": "a71f2b11690f4b24d099d6b16690a90ae14fc6f3",
+                "url": "https://api.github.com/repos/Nyholm/psr7/zipball/26c1581611614447a5ff753a450390a23f3e323e",
+                "reference": "26c1581611614447a5ff753a450390a23f3e323e",
                 "shasum": ""
             },
             "require": {
@@ -4057,7 +4076,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Nyholm/psr7/issues",
-                "source": "https://github.com/Nyholm/psr7/tree/1.8.2"
+                "source": "https://github.com/Nyholm/psr7/tree/1.8.3"
             },
             "funding": [
                 {
@@ -4069,7 +4088,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-09-09T07:06:30+00:00"
+            "time": "2026-11-26T08:19:16+00:00",
+            "published-time": "2026-11-26T08:20:50+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -4138,7 +4158,8 @@
                 "issues": "https://github.com/paragonie/constant_time_encoding/issues",
                 "source": "https://github.com/paragonie/constant_time_encoding"
             },
-            "time": "2026-11-18T13:55:22+00:00"
+            "time": "2026-11-18T13:55:22+00:00",
+            "published-time": "2026-11-18T13:55:46+00:00"
         },
         {
             "name": "php-di/invoker",
@@ -4193,7 +4214,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-08-30T10:22:22+00:00"
+            "time": "2025-08-30T10:22:22+00:00",
+            "published-time": "2025-08-30T10:22:43+00:00"
         },
         {
             "name": "php-di/php-di",
@@ -4266,7 +4288,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-16T11:10:48+00:00"
+            "time": "2025-08-16T11:10:48+00:00",
+            "published-time": "2025-08-16T11:11:08+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -4458,7 +4481,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-11-20T07:41:04+00:00"
+            "time": "2026-11-20T07:41:04+00:00",
+            "published-time": "2026-11-20T07:46:17+00:00"
         },
         {
             "name": "psr/clock",
@@ -4831,7 +4855,8 @@
             "support": {
                 "source": "https://github.com/php-fig/http-server-handler/tree/1.0.2"
             },
-            "time": "2023-04-10T20:06:20+00:00"
+            "time": "2023-04-10T20:06:20+00:00",
+            "published-time": "2023-04-10T20:07:30+00:00"
         },
         {
             "name": "psr/http-server-middleware",
@@ -5071,7 +5096,8 @@
                 "issues": "https://github.com/bobthecow/psysh/issues",
                 "source": "https://github.com/bobthecow/psysh/tree/v0.12.24"
             },
-            "time": "2026-06-29T15:41:09+00:00"
+            "time": "2026-06-29T15:41:09+00:00",
+            "published-time": "2026-06-29T15:41:53+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -5327,7 +5353,8 @@
                 "issues": "https://github.com/Riverline/multipart-parser/issues",
                 "source": "https://github.com/Riverline/multipart-parser/tree/2.3.0"
             },
-            "time": "2026-11-05T15:12:49+00:00"
+            "time": "2026-11-05T15:12:49+00:00",
+            "published-time": "2026-11-05T15:16:23+00:00"
         },
         {
             "name": "sentry/sentry",
@@ -5424,7 +5451,8 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-11-19T10:49:48+00:00"
+            "time": "2026-11-19T10:49:48+00:00",
+            "published-time": "2026-11-19T11:52:05+00:00"
         },
         {
             "name": "sentry/sentry-bref",
@@ -5615,7 +5643,8 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-11-19T14:23:20+00:00"
+            "time": "2026-11-19T14:23:20+00:00",
+            "published-time": "2026-11-19T14:26:01+00:00"
         },
         {
             "name": "symfony/clock",
@@ -6190,16 +6219,16 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v8.1.11",
+            "version": "v8.1.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "58f57b6a33e3495f7f41e01258f1ae5ef76cccd2"
+                "reference": "a8f7a3cf9d3140902eaee85baf1f8e98666d336a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/58f57b6a33e3495f7f41e01258f1ae5ef76cccd2",
-                "reference": "58f57b6a33e3495f7f41e01258f1ae5ef76cccd2",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/a8f7a3cf9d3140902eaee85baf1f8e98666d336a",
+                "reference": "a8f7a3cf9d3140902eaee85baf1f8e98666d336a",
                 "shasum": ""
             },
             "require": {
@@ -6237,7 +6266,7 @@
             "description": "Provides basic utilities for the filesystem",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/filesystem/tree/v8.1.11"
+                "source": "https://github.com/symfony/filesystem/tree/v8.1.12"
             },
             "funding": [
                 {
@@ -6257,7 +6286,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-11-04T08:39:20+00:00"
+            "time": "2026-11-24T15:59:55+00:00",
+            "published-time": "2026-11-25T09:29:32+00:00"
         },
         {
             "name": "symfony/finder",
@@ -6758,7 +6788,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-18T14:56:39+00:00"
+            "time": "2026-10-18T14:56:39+00:00",
+            "published-time": "2026-10-28T18:24:07+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -6926,7 +6957,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-29T06:25:14+00:00"
+            "time": "2026-09-29T06:25:14+00:00",
+            "published-time": "2026-09-30T10:23:39+00:00"
         },
         {
             "name": "symfony/polyfill-intl-grapheme",
@@ -7916,16 +7948,16 @@
         },
         {
             "name": "symfony/psr-http-message-bridge",
-            "version": "v8.1.9",
+            "version": "v8.1.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/psr-http-message-bridge.git",
-                "reference": "cfa8f3ac693fec234a91d8745b45ed9a81a0b799"
+                "reference": "3d6c3785ee0aa498f6d912f1af7cf48fd978705b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/psr-http-message-bridge/zipball/cfa8f3ac693fec234a91d8745b45ed9a81a0b799",
-                "reference": "cfa8f3ac693fec234a91d8745b45ed9a81a0b799",
+                "url": "https://api.github.com/repos/symfony/psr-http-message-bridge/zipball/3d6c3785ee0aa498f6d912f1af7cf48fd978705b",
+                "reference": "3d6c3785ee0aa498f6d912f1af7cf48fd978705b",
                 "shasum": ""
             },
             "require": {
@@ -7979,7 +8011,7 @@
                 "psr-7"
             ],
             "support": {
-                "source": "https://github.com/symfony/psr-http-message-bridge/tree/v8.1.9"
+                "source": "https://github.com/symfony/psr-http-message-bridge/tree/v8.1.12"
             },
             "funding": [
                 {
@@ -7999,7 +8031,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-07T08:21:34+00:00"
+            "time": "2026-11-24T14:12:36+00:00",
+            "published-time": "2026-11-25T09:29:46+00:00"
         },
         {
             "name": "symfony/routing",
@@ -8937,7 +8970,8 @@
                 "issues": "https://github.com/vstelmakh/url-highlight/issues",
                 "source": "https://github.com/vstelmakh/url-highlight/tree/4.1.0"
             },
-            "time": "2026-11-15T16:16:25+00:00"
+            "time": "2026-11-15T16:16:25+00:00",
+            "published-time": "2026-11-15T16:19:02+00:00"
         },
         {
             "name": "zbateson/mail-mime-parser",
@@ -9013,7 +9047,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-09-28T20:32:29+00:00"
+            "time": "2026-09-28T20:32:29+00:00",
+            "published-time": "2026-11-09T21:50:59+00:00"
         },
         {
             "name": "zbateson/mb-wrapper",
@@ -9082,7 +9117,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-12-20T22:05:33+00:00"
+            "time": "2024-12-20T22:05:33+00:00",
+            "published-time": "2024-12-20T22:09:44+00:00"
         },
         {
             "name": "zbateson/stream-decorators",
@@ -9145,7 +9181,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-04-29T21:42:39+00:00"
+            "time": "2024-04-29T21:42:39+00:00",
+            "published-time": "2024-04-29T21:49:26+00:00"
         }
     ],
     "packages-dev": [
@@ -9353,7 +9390,8 @@
                 "issues": "https://github.com/FakerPHP/Faker/issues",
                 "source": "https://github.com/FakerPHP/Faker/tree/v1.24.1"
             },
-            "time": "2024-11-21T13:46:39+00:00"
+            "time": "2024-11-21T13:46:39+00:00",
+            "published-time": "2024-11-21T13:47:18+00:00"
         },
         {
             "name": "fidry/cpu-core-counter",
@@ -9543,7 +9581,8 @@
                 "issues": "https://github.com/hamcrest/hamcrest-php/issues",
                 "source": "https://github.com/hamcrest/hamcrest-php/tree/v3.0.0"
             },
-            "time": "2026-03-17T11:56:53+00:00"
+            "time": "2026-03-17T11:56:53+00:00",
+            "published-time": "2026-06-16T10:52:40+00:00"
         },
         {
             "name": "iamcal/sql-parser",
@@ -9584,7 +9623,8 @@
                 "issues": "https://github.com/iamcal/SQLParser/issues",
                 "source": "https://github.com/iamcal/SQLParser/tree/v0.7"
             },
-            "time": "2026-01-28T22:20:33+00:00"
+            "time": "2026-01-28T22:20:33+00:00",
+            "published-time": "2026-01-28T22:23:28+00:00"
         },
         {
             "name": "larastan/larastan",
@@ -9673,7 +9713,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-11-11T15:06:29+00:00"
+            "time": "2026-11-11T15:06:29+00:00",
+            "published-time": "2026-11-11T15:14:16+00:00"
         },
         {
             "name": "laravel/pail",
@@ -9753,7 +9794,8 @@
                 "issues": "https://github.com/laravel/pail/issues",
                 "source": "https://github.com/laravel/pail"
             },
-            "time": "2026-11-09T14:56:19+00:00"
+            "time": "2026-11-09T14:56:19+00:00",
+            "published-time": "2026-11-10T16:07:50+00:00"
         },
         {
             "name": "laravel/pint",
@@ -9823,7 +9865,8 @@
                 "issues": "https://github.com/laravel/pint/issues",
                 "source": "https://github.com/laravel/pint"
             },
-            "time": "2026-11-11T16:45:13+00:00"
+            "time": "2026-11-11T16:45:13+00:00",
+            "published-time": "2026-11-11T16:45:39+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -9905,7 +9948,8 @@
                 "security": "https://github.com/mockery/mockery/security/advisories",
                 "source": "https://github.com/mockery/mockery"
             },
-            "time": "2026-08-19T19:37:52+00:00"
+            "time": "2026-08-19T19:37:52+00:00",
+            "published-time": "2026-08-19T19:38:57+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -10966,7 +11010,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-11-19T10:31:11+00:00"
+            "time": "2026-11-19T10:31:11+00:00",
+            "published-time": "2026-11-19T10:31:27+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
