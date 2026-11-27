@@ -167,6 +167,14 @@ test('websites with the same endings are still links', function (string $content
     'another ending' => ['See wiki.php.net/rfc/enums', 'http://wiki.php.net/rfc/enums'],
 ]);
 
+test('bytes that are not UTF-8 are replaced', function (): void {
+    // "\x8C" is a curly quote in Windows-1252, in an email that declares UTF-8
+    $html = $this->parser->parse("\$apos = curry('strpos\x8C, arg(1), 'a');");
+
+    expect(mb_check_encoding($html, 'UTF-8'))->toBeTrue()
+        ->and($html)->toContain("curry('strpos?, arg(1)");
+});
+
 test('should detect php functions', function (): void {
     $content = 'Try to call preg_match() without parameters.';
     $expected = '<p>Try to call <code>preg_match()</code> without parameters.</p>';
