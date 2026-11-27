@@ -175,6 +175,19 @@ test('bytes that are not UTF-8 are replaced', function (): void {
         ->and($html)->toContain("curry('strpos?, arg(1)");
 });
 
+test('a link that repeats the text before it is dropped', function (string $content, string $expected): void {
+    expect(mb_trim($this->parser->parse($content)))->toBe($expected);
+})->with([
+    'a file name' => ['an embedder of libphp.so<http://libphp.so> could', '<p>an embedder of libphp.so could</p>'],
+    'a domain' => ['See php.net<http://php.net/>.', '<p>See <a href="http://php.net" rel="nofollow" target="_blank">php.net</a>.</p>'],
+    'a URL' => ['See https://php.net<https://php.net> now', '<p>See <a href="https://php.net" rel="nofollow" target="_blank">https://php.net</a> now</p>'],
+    'an address' => ['Mail john@example.com<mailto:john@example.com> now', '<p>Mail <a href="mailto:john@example.com" rel="nofollow" target="_blank">john@example.com</a> now</p>'],
+]);
+
+test('a link on other text is kept', function (): void {
+    expect($this->parser->parse('Thanks Tim<https://externals.io/message/1>'))->toContain('href="https://externals.io/message/1"');
+});
+
 test('should detect php functions', function (): void {
     $content = 'Try to call preg_match() without parameters.';
     $expected = '<p>Try to call <code>preg_match()</code> without parameters.</p>';
